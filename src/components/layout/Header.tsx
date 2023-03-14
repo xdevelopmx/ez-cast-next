@@ -14,10 +14,10 @@ export const Header = () => {
 				<div className="collapse navbar-collapse" id="navbarText">
 					<ul className="navbar-nav ml-auto">
 						<li className="nav-item active">
-							<a className="nav-link" href="index.html">INICIO <span className="sr-only">(current)</span></a>
+							<a className="nav-link" href="./">INICIO <span className="sr-only">(current)</span></a>
 						</li>
 						<li className="nav-item ml-lg-3 mr-lg-3">
-							<a className="nav-link" href="login_ezcast.html">EZ-CAST</a>
+							<a className="nav-link" href="/login">EZ-CAST</a>
 						</li>
 						<li className="nav-item ml-lg-3 mr-lg-3">
 							<a className="nav-link" href="login_treehouse.html">TREEHOUSE</a>

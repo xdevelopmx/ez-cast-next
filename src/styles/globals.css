@@ -1,18 +1,22 @@
-/* @font-face {
+@font-face {
   font-family: "Tenor Sans";
-  src: url("../fonts/TenorSans-Regular.woff2") format("woff2");
+  src: url("../../public/assets/fonts/TenorSans-Regular.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "Gill Sans";
-  src: url("../fonts/GillSans.woff2") format("woff2");
+  src: url("../../public/assets/fonts/GillSans.woff2") format("woff2");
 }
 
 @font-face {
   font-family: "Gill Sans Bold";
-  src: url("../fonts/GillSans-Bold.woff2") format("woff2");
-} */
+  src: url("../../public/assets/fonts/GillSans-Bold.woff2") format("woff2");
+}
 
+body {
+  --color_a: var(--ezcast);
+  --color_b: #4ab7c6;
+}
 
 /*Pagepiling*/
 

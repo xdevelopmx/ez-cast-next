@@ -54,13 +54,13 @@ export const LoginForm = () => {
                 </div>
                 <div className="flex_half">
                     <a href="#" className="btn btn-intro btn-social btn-social-login mr-3 ml-3"><motion.img height="16" className="mr-2"
-                    src="img/facebook-logo.svg" alt="Facebook" />Facebook</a>
+                    src="assets/img/iconos/facebook-logo.svg" alt="Facebook" />Facebook</a>
                 </div>
                 </div>
             </div>
             <p className="text-white mt-2">Necesitas ayuda? Accede a nuestros 
             <a href="ayuda_ezcast.html" className="text-white">
-                <u>tutoriales y preguntas frecuentes.</u>
+                <u> tutoriales y preguntas frecuentes.</u>
             </a>
             </p>
         </div>
