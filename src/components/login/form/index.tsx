@@ -58,9 +58,9 @@ export const LoginForm = () => {
                 </div>
                 </div>
             </div>
-            <p className="text-white mt-2">Necesitas ayuda? Accede a nuestros 
+            <p className="text-white mt-2">Necesitas ayuda? Accede a nuestros &nbsp;
             <a href="ayuda_ezcast.html" className="text-white">
-                <u> tutoriales y preguntas frecuentes.</u>
+                <u>tutoriales y preguntas frecuentes.</u>
             </a>
             </p>
         </div>
