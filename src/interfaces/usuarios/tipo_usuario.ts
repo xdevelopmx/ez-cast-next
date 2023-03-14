@@ -1,0 +1,1 @@
+export type tipo_usuario = 'cazatalentos' | 'administrador' | 'talento'
