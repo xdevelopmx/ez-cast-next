@@ -1,9 +1,12 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import { useState } from "react";
 
 import { Header, Pagepiling } from "~/components";
 
 const Home: NextPage = () => {
+
+  const [pagina, setPagina] = useState(0)
 
   return (
     <>
@@ -13,8 +16,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
-      <Pagepiling />
+      <Header tieneFondoBlanco={pagina !== 0} />
+      <Pagepiling onCambiarPagina={pagina => setPagina(pagina)} />
     </>
   );
 };

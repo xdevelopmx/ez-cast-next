@@ -1,4 +1,5 @@
-import React, { CSSProperties } from 'react'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { CSSProperties, FC } from 'react'
 import { motion } from 'framer-motion'
 import { PagePilingComponent } from './PagePilingComponent';
 
@@ -8,10 +9,15 @@ const estilos: CSSProperties = {
     height: '100vh',
 }
 
-export const Pagepiling = () => {
+interface Props {
+    onCambiarPagina?: (pagina: number) => void;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
 
     return (
-        <PagePilingComponent>
+        <PagePilingComponent onCambiarPagina={onCambiarPagina}>
             <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="assets/posters/posterhome.png">
                     <source src='assets/video/video1.mp4' type="video/mp4" />
@@ -32,13 +38,13 @@ export const Pagepiling = () => {
                 </a>
             </div>
 
-            <div 
-                className="section" 
+            <div
+                className="section"
                 style={{
-                    ...estilos, 
+                    ...estilos,
                     backgroundColor: 'rgb(249, 178, 51)',
-                    display:'flex'
-                }} 
+                    display: 'flex'
+                }}
                 data-anchor="section_1">
                 <div className="row align-items-center no-gutters justify-content-md-around justify-content-center yellow_cap">
                     <div className="col-md-4 col-sm-4 col-5 text-center text-uppercase">
@@ -101,7 +107,7 @@ export const Pagepiling = () => {
             </div>
 
             <div className="section" style={estilos}>
-                <div className="row no-gutters w-100 h-100" style={{backgroundColor: 'rgb(78, 177, 6)'}}>
+                <div className="row no-gutters w-100 h-100" style={{ backgroundColor: 'rgb(78, 177, 6)' }}>
                     <div className="col-md-6 align-self-center">
                         <div className="p-lg-5 m-3 text-white">
                             <h1>TREEHOUSE</h1>

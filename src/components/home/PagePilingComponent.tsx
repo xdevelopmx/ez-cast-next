@@ -1,11 +1,13 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { useState, Children, useEffect, useRef, FC, ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface Props {
     children: ReactNode;
+    onCambiarPagina?: (pagina: number) => void;
 }
 
-const duration = 1
+const duration = .6
 
 const variants = {
     inicial: ({ direccion, duration }: { direccion: 'incrementando' | 'decrementando', duration: number }) => ({
@@ -29,7 +31,8 @@ const variants = {
     }),
 }
 
-export const PagePilingComponent: FC<Props> = ({ children }) => {
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const PagePilingComponent: FC<Props> = ({ children, onCambiarPagina }) => {
     const [pagina, setPagina] = useState(0)
     const [direccion, setDireccion] = useState('')
     const animando = useRef(false)
@@ -39,13 +42,23 @@ export const PagePilingComponent: FC<Props> = ({ children }) => {
         const { deltaY } = e
         if (!animando.current) {
             animando.current = true
-            if (deltaY > 0) {
-                setPagina(pagina => pagina + 1)
-                setDireccion('incrementando')
-            } else {
-                setPagina(pagina => pagina - 1)
-                setDireccion('decrementando')
-            }
+            setPagina(pagina => {
+                let nuevaPagina = pagina;
+                if (deltaY > 0) {
+                    nuevaPagina = pagina + 1;
+                } else {
+                    nuevaPagina = pagina - 1;
+                }
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                nuevaPagina = Math.max(0, Math.min(hijos!.length - 1, nuevaPagina));
+                if (nuevaPagina === pagina) {
+                    animando.current = false;
+                    return pagina;
+                } else {
+                    setDireccion(deltaY > 0 ? 'incrementando' : 'decrementando');
+                    return nuevaPagina;
+                }
+            })
         }
     }
 
@@ -55,7 +68,13 @@ export const PagePilingComponent: FC<Props> = ({ children }) => {
         return () => {
             document.removeEventListener('wheel', detectarRueda)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        onCambiarPagina && onCambiarPagina(pagina)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pagina])
 
     return (
         <AnimatePresence
@@ -66,7 +85,7 @@ export const PagePilingComponent: FC<Props> = ({ children }) => {
         >
             <motion.div
                 key={pagina}
-                style={{position: 'relative'}}
+                style={{ position: 'relative' }}
                 variants={variants}
                 custom={{
                     direccion,
