@@ -30,6 +30,7 @@ export const Pagepiling = () => {
                     </svg>
                 </a>
             </div>
+
             <div 
                 className="section" 
                 style={{
@@ -62,6 +63,7 @@ export const Pagepiling = () => {
                     </div>
                 </div>
             </div>
+
             <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="assets/posters/posterhome.png">
                     <source src="assets/video/TCvideo2.mp4" type="video/mp4" />
@@ -70,22 +72,24 @@ export const Pagepiling = () => {
                     <source src="assets/video/TCvideo2.mp4" type="video/mp4" />
                 </video>
             </div>
+
             <div className="section" style={estilos}>
-                <div className="row no-gutters w-100 h-100">
+                <div className="row no-gutters w-100 h-100" style={{ backgroundColor: "#069cb1" }}>
                     <div className="col-md-6 align-self-center">
-                        <div className="p-lg-5 m-3 text-white" data-animation="fade-up">
+                        <div className="p-lg-5 m-3 text-white">
                             <h1>EZ-CAST</h1>
                             <p>EZ-CAST el lugar para los que quieren encontrar y ser encontrados, CASTINGS  </p>
                             <a href="#" className="know_more">Conoce más</a>
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#069cb1" }}>
+                        <div className="img_talent w-100 h-100 aos-init" style={{ backgroundColor: "#069cb1" }}>
                             <motion.img src="assets/img/imagen1.jpg" alt='' />
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox.png">
                     <source src="assets/video/TCvideo3.mp4" type="video/mp4" />
@@ -94,10 +98,11 @@ export const Pagepiling = () => {
                     <source src="assets/video/TCvideo3.mp4" type="video/mp4" />
                 </video>
             </div>
+
             <div className="section" style={estilos}>
-                <div className="row no-gutters w-100 h-100">
+                <div className="row no-gutters w-100 h-100" style={{backgroundColor: 'rgb(78, 177, 6)'}}>
                     <div className="col-md-6 align-self-center">
-                        <div className="p-lg-5 m-3 text-white" data-animation="fade-up">
+                        <div className="p-lg-5 m-3 text-white">
                             <h1>TREEHOUSE</h1>
                             <p>PRÓXIMAMENTE</p>
                             <p>¿Una mejor manera de buscar, encontrar, rentar locaciones!</p>
@@ -105,24 +110,26 @@ export const Pagepiling = () => {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#4EB106" }}>
+                        <div className="img_talent w-100 h-100 aos-init" style={{ backgroundColor: "#4EB106" }}>
                             <motion.img src="assets/img/imagen2.jpg" alt='' />
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className="section" style={estilos}>
-                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox.png">
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox01.png">
                     <source src="#" type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox.png">
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox01.png">
                     <source src="#" type="video/mp4" />
                 </video>
             </div>
+
             <div className="section" style={estilos}>
-                <div className="row no-gutters w-100 h-100">
+                <div className="row no-gutters w-100 h-100" style={{ backgroundColor: "#CB1B29" }}>
                     <div className="col-md-6 align-self-center">
-                        <div className="p-lg-5 m-3 text-white" data-animation="fade-up">
+                        <div className="p-lg-5 m-3 text-white">
                             <h1>TALENT+</h1>
                             <p>PRÓXIMAMENTE</p>
                             <p>Encuentra al profesional independiente adecuado para comenzar a trabajar en su proyecto en minutos. Todo un mundo de talento autónomo a tu alcance.</p>
@@ -130,17 +137,18 @@ export const Pagepiling = () => {
                         </div>
                     </div>
                     <div className="col-md-6">
-                        <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#CB1B29" }}>
+                        <div className="img_talent w-100 h-100 aos-init" style={{ backgroundColor: "#CB1B29" }}>
                             <motion.img src="assets/img/imagen2.jpg" alt='' />
                         </div>
                     </div>
                 </div>
             </div>
+
             <div className="section pp-scrollable" style={estilos}>
-                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox.png">
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox02.png">
                     <source src="#" type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox.png">
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox02.png">
                     <source src="#" type="video/mp4" />
                 </video>
                 <footer className="p-3 p-lg-5">
