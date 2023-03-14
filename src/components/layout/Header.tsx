@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import React, { FC } from 'react'
 import { motion } from 'framer-motion'
+import Link from 'next/link';
 
 interface Props {
 	tieneFondoBlanco?: boolean;
@@ -9,36 +10,36 @@ interface Props {
 export const Header: FC<Props> = ({ tieneFondoBlanco }) => {
 	return (
 		<nav className={`navbar navbar-expand-lg ${tieneFondoBlanco ? 'navbar-light' : 'navbar-dark'} p-4`}>
-			<a className="navbar-brand ml-lg-5 w-sm-50" href="#">
+			<Link href="/" className="navbar-brand ml-lg-5 w-sm-50">
 				{!tieneFondoBlanco && <motion.img src="assets/img/logo_blanco.svg" className="d-inline-block align-top w-100" alt="" />}
 				{tieneFondoBlanco && <motion.img src="assets/img/logo_color.svg" className="d-inline-block align-top w-100" alt="" />}
-			</a>
+			</Link>
 			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 				<span className="navbar-toggler-icon"></span>
 			</button>
 			<div className="collapse navbar-collapse" id="navbarText">
 				<ul className="navbar-nav ml-auto">
 					<li className="nav-item active">
-						<a className="nav-link" href="./">INICIO <span className="sr-only">(current)</span></a>
+						<Link className="nav-link" href="/">INICIO <span className="sr-only">(current)</span></Link>
 					</li>
 					<li className="nav-item ml-lg-3 mr-lg-3">
-						<a className="nav-link" href="/login">EZ-CAST</a>
+						<Link className="nav-link" href="/login">EZ-CAST</Link>
 					</li>
 					<li className="nav-item ml-lg-3 mr-lg-3">
-						<a className="nav-link" href="login_treehouse.html">TREEHOUSE</a>
+						<Link className="nav-link" href="/">TREEHOUSE</Link>
 					</li>
 					<li className="nav-item ml-lg-3 mr-lg-3">
-						<a className="nav-link" href="login_talentplus.html">TALENT+</a>
+						<Link className="nav-link" href="/">TALENT+</Link>
 					</li>
 					<li className="nav-item ml-lg-3 mr-lg-3">
-						<a className="nav-link" href="#">EXTRAS</a>
+						<Link className="nav-link" href="/">EXTRAS</Link>
 					</li>
 					<li className="nav-item ml-lg-3 mr-lg-3">
-						<a className="nav-link  d-flex" href="#">
+						<Link className="nav-link  d-flex" href="/">
 							<motion.img className="n-light mx-1" src='assets/img/iconos/store_icon_white.svg' alt="icono" />
 							<motion.img className="n-dark mx-1" src="assets/img/iconos/store_icon_white.svg" alt="icono" />
 							ONLINE STORE
-						</a>
+						</Link>
 					</li>
 					<li className="nav-item ml-lg-3 mr-lg-3 d-flex leng_box">
 						<motion.img className="active" src='assets/img/b_mex.png' alt="icono" />
