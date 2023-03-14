@@ -1,17 +1,19 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { PagePilingComponent } from './PagePilingComponent';
+
 
 export const Pagepiling = () => {
 
     return (
-        <div id="pagepiling">
+        <PagePilingComponent>
             <div className="section">
-                <video autoPlay loop muted className="video_bg" poster="img/posterhome.png">
-                    <source src='assets/video/vide1.mp4' type="video/mp4" />
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterhome.png">
+                    <source src='assets/video/video1.mp4' type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="img/posterhome.png">
-                    <source src="assets/video/vide1.mp4" type="video/mp4" />
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterhome.png">
+                    <source src="assets/video/video1.mp4" type="video/mp4" />
                 </video>
                 <div className="elm_abs w-30">
                     <p className="h2">HAZ CINE Y MÁS</p>
@@ -31,8 +33,8 @@ export const Pagepiling = () => {
                         <h1 className="titulo_page">Talent<br />Corner</h1>
                     </div>
                     <div className="col-md-2 col-sm-4 col-5 text-md-right text-sm-center">
-                        {/* <Image src="img/camara.svg" id="camera" className="mb-2" alt='' />
-                        <Image src="img/sombra-camara.svg" id="shadow_camera" alt='' /> */}
+                        <motion.img src="assets/img/camara.svg" id="camera" className="mb-2" alt='' />
+                        <motion.img src="assets/img/sombra-camara.svg" id="shadow_camera" alt='' />
                     </div>
                     <div className="col-md-4">
                         <div className="m-4 p-4 d-flex align-items-center projected ">
@@ -162,6 +164,7 @@ export const Pagepiling = () => {
                     </div>
                 </footer>
             </div>
-        </div>
+
+        </PagePilingComponent>
     )
 }

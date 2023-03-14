@@ -13,6 +13,20 @@
   src: url("../fonts/GillSans-Bold.woff2") format("woff2");
 } */
 
+
+/*Pagepiling*/
+
+.contenedor{
+  position: relative;
+}
+
+.img{
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+}
+
 h1,
 h2,
 h3,

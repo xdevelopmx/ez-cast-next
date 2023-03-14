@@ -1,12 +1,9 @@
-import styles from "./index.module.css";
 import { type NextPage } from "next";
 import Head from "next/head";
 
 import { Header, Pagepiling } from "~/components";
-import Script from "next/script";
 
 const Home: NextPage = () => {
-
 
   return (
     <>
@@ -19,9 +16,6 @@ const Home: NextPage = () => {
 
       <Header />
       <Pagepiling />
-
-      <Script src="https://code.jquery.com/jquery-3.5.1.min.js" />
-      <Script src="https://cdnjs.cloudflare.com/ajax/libs/pagePiling.js/1.5.6/jquery.pagepiling.min.js" />
     </>
   );
 };
