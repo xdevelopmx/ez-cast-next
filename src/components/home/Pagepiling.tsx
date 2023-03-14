@@ -144,7 +144,7 @@ export const Pagepiling = () => {
                 </div>
             </div>
 
-            <div className="section pp-scrollable" style={estilos}>
+            <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox02.png">
                     <source src="#" type="video/mp4" />
                 </video>

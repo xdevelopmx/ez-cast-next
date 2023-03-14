@@ -7,9 +7,15 @@ interface Props {
 
 const duration = 1
 
+const obtenerAltoBody = () => {
+    const isServer = typeof window === 'undefined';
+    const bodyHeight = isServer ? 0 : document.body.clientHeight;
+    return bodyHeight;
+}
+
 const variants = {
     inicial: ({ direccion, duration }: { direccion: 'incrementando' | 'decrementando', duration: number }) => ({
-        y: direccion === 'incrementando' ? 0 : -1024,
+        y: direccion === 'incrementando' ? 0 : -obtenerAltoBody(),
         transition: {
             duration
         }
@@ -21,7 +27,7 @@ const variants = {
         }
     }),
     salida: ({ direccion, duration }: { direccion: 'incrementando' | 'decrementando', duration: number }) => ({
-        y: direccion === 'incrementando' ? -1024 : 0,
+        y: direccion === 'incrementando' ? -obtenerAltoBody() : 0,
         zIndex: direccion === 'incrementando' ? 100 : 0,
         transition: {
             duration
