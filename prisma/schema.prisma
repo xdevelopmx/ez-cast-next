@@ -2,65 +2,224 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "mysql"
+  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
 model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cazatalentos {
+  id              Int        @id @default(autoincrement())
+  usuario         String
+  email           String
+  contrasenia     String
+  nombre          String
+  apellido        String
+  tipo_membresia  String
+  cobro_membresia String
+  id_openpay      String
+  profile_img_url String?
+  posicion        String
+  compania        String
+  biografia       String
+  vimeo           String
+  youtube         String
+  linkedin        String
+  instagram       String
+  twitter         String
+  imdb            String
+  pagina_web      String
+  proyectos       Proyecto[]
+}
+
+model Proyecto {
+  id                   Int          @id @default(autoincrement())
+  nombre               String
+  sindicato            String
+  tipo                 String
+  director_casting     String
+  telefono_contacto    String
+  email_contacto       String
+  productor            String
+  casa_productora      String
+  director             String
+  agencia_publicidad   String
+  sinopsis             String
+  url_archivo          String?
+  detalles_adicionales String
+  locacion             String
+  url_foto_portada     String?
+  compartir_nombre     Boolean      @default(true)
+  estatus              String       @default("Por Validar")
+  id_cazatalentos      Int
+  cazatalentos         Cazatalentos @relation(fields: [id_cazatalentos], references: [id])
+  roles                Roles[]
+}
+
+model Roles {
+  id                   Int                     @id @default(autoincrement())
+  nombre               String
+  id_tipo_rol          Int
+  descripcion          String?
+  foto_referencia      String?
+  lineas               String?
+  detalles_adicionales String?
+  estatus              String                  @default("SIN_FINALIZAR")
+  id_proyecto          Int
+  proyecto             Proyecto                @relation(fields: [id_proyecto], references: [id])
+  compensaciones       CompensacionesPorRoles?
+  filtros_demograficos FiltrosDemoPorRoles?
+  habilidades          HabilidadesPorRoles?
+  nsfw                 NSFWPorRoles?
+}
+
+model HabilidadesPorRoles {
+  id                        Int                        @id @default(autoincrement())
+  especificacion            String?
+  id_rol                    Int                        @unique
+  rol                       Roles                      @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  habilidades_seleccionadas HabilidadesSelecPorRoles[]
+}
+
+model HabilidadesSelecPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_habilidades_por_rol Int
+  id_habilidad           Int
+  habilidad_por_rol      HabilidadesPorRoles @relation(fields: [id_habilidades_por_rol], references: [id], onDelete: Cascade)
+}
+
+model NSFWPorRoles {
+  id                 Int                         @id @default(autoincrement())
+  descripcion        String?
+  id_rol             Int                         @unique
+  rol                Roles                       @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  nsfw_seleccionados NSFWSeleccionadosPorRoles[]
+}
+
+model NSFWSeleccionadosPorRoles {
+  id              Int          @id @default(autoincrement())
+  id_nsfw         Int
+  id_nsfw_por_rol Int
+  nsfw_por_rol    NSFWPorRoles @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
+}
+
+model FiltrosDemoPorRoles {
+  id                  Int                         @id @default(autoincrement())
+  id_rol              Int                         @unique
+  rango_edad_inicio   Int
+  rango_edad_fin      Int
+  rango_edad_en_meses Boolean
+  id_pais             Int
+  rol                 Roles                       @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  aparencias_etnicas  AparenciasEtnicasPorRoles[]
+  animal              AnimalPorRoles[]
+  generos             GenerosPorRoles[]
+}
+
+model AnimalPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_animal              Int
+  descripcion            String
+  tamanio                String
+  id_filtro_demo_por_rol Int
+  filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+}
+
+model AparenciasEtnicasPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_aparencia_etnica    Int
+  id_filtro_demo_por_rol Int
+  filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+}
+
+model GenerosPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_genero              Int
+  id_filtro_demo_por_rol Int
+  filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+}
+
+model CompensacionesPorRoles {
+  id                                      Int                        @id @default(autoincrement())
+  id_rol                                  Int                        @unique
+  datos_adicionales                       String
+  suma_total_compensaciones_no_monetarias Decimal?
+  compensaciones_no_monetarias            CompNoMonetariasPorRoles[]
+  sueldo                                  SueldosPorRoles?
+  rol                                     Roles                      @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+}
+
+model CompNoMonetariasPorRoles {
+  id                       Int                    @id @default(autoincrement())
+  id_compensacion          Int
+  // se agrega el campo de descripcion en caso de que
+  // se selecicone otro que no este en el catalogo
+  descripcion_compensacion String
+  id_comp_por_rol          Int
+  compensaciones_por_rol   CompensacionesPorRoles @relation(fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
+}
+
+model SueldosPorRoles {
+  id                     Int                    @id @default(autoincrement())
+  cantidad               Decimal
+  periodo                String
+  id_comp_por_rol        Int                    @unique
+  compensaciones_por_rol CompensacionesPorRoles @relation(fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }
