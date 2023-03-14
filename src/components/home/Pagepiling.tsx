@@ -1,14 +1,17 @@
+import Image from 'next/image'
 import React from 'react'
+import { motion } from 'framer-motion'
 
 export const Pagepiling = () => {
+
     return (
         <div id="pagepiling">
             <div className="section">
                 <video autoPlay loop muted className="video_bg" poster="img/posterhome.png">
-                    <source src="videos/TCvideo1.mov" type="video/mp4" />
+                    <source src='assets/video/vide1.mp4' type="video/mp4" />
                 </video>
                 <video autoPlay loop muted className="video_bg video_mobile" poster="img/posterhome.png">
-                    <source src="videos/responsive/RD001.mov" type="video/mp4" />
+                    <source src="assets/video/vide1.mp4" type="video/mp4" />
                 </video>
                 <div className="elm_abs w-30">
                     <p className="h2">HAZ CINE Y MÁS</p>
@@ -28,8 +31,8 @@ export const Pagepiling = () => {
                         <h1 className="titulo_page">Talent<br />Corner</h1>
                     </div>
                     <div className="col-md-2 col-sm-4 col-5 text-md-right text-sm-center">
-                        <img src="img/camara.svg" id="camera" className="mb-2" />
-                        <img src="img/sombra-camara.svg" id="shadow_camera" />
+                        {/* <Image src="img/camara.svg" id="camera" className="mb-2" alt='' />
+                        <Image src="img/sombra-camara.svg" id="shadow_camera" alt='' /> */}
                     </div>
                     <div className="col-md-4">
                         <div className="m-4 p-4 d-flex align-items-center projected ">
@@ -66,7 +69,7 @@ export const Pagepiling = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#069cb1" }}>
-                            <img src="img/imagen1.jpg" />
+                            {/* <Image src="img/imagen1.jpg" alt='' /> */}
                         </div>
                     </div>
                 </div>
@@ -91,7 +94,7 @@ export const Pagepiling = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#4EB106" }}>
-                            <img src="img/imagen2.jpg" />
+                            {/* <Image src="img/imagen2.jpg" alt='' /> */}
                         </div>
                     </div>
                 </div>
@@ -116,7 +119,7 @@ export const Pagepiling = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#CB1B29" }}>
-                            <img src="img/imagen2.jpg" />
+                            {/* <Image src="img/imagen2.jpg" alt='' /> */}
                         </div>
                     </div>
                 </div>
@@ -139,7 +142,7 @@ export const Pagepiling = () => {
                                     <a href="#" className="footer_link">Talent+</a>
                                 </div>
                                 <div className="col-md-4">
-                                    <img height="40" className="d-block" />
+                                    <Image src={''} height="40" className="d-block" alt='' />
                                     <a href="#" className="footer_link">Templates</a>
                                     <a href="#" className="footer_link">Online Store</a>
                                     <a href="#" className="footer_link">Tutoriales</a>
