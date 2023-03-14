@@ -1,14 +1,17 @@
-import Image from 'next/image'
-import React, { useEffect } from 'react'
+import React, { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import { PagePilingComponent } from './PagePilingComponent';
 
+const estilos: CSSProperties = {
+    width: '100%',
+    height: '100vh',
+}
 
 export const Pagepiling = () => {
 
     return (
         <PagePilingComponent>
-            <div className="section">
+            <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="assets/posters/posterhome.png">
                     <source src='assets/video/video1.mp4' type="video/mp4" />
                 </video>
@@ -21,13 +24,20 @@ export const Pagepiling = () => {
                     <p>En Talent Corner® descubre herramientas increíbles que te ayudarán a traer esa visión a la realidad. ¡Que nadie te cierre la puerta y crea las oportunidades que muchos solo imaginan!” </p>
                 </div>
                 <a href="#section_1" className="link_bottom">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" className="css-i6dzq1">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="css-i6dzq1">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <polyline points="19 12 12 19 5 12"></polyline>
                     </svg>
                 </a>
             </div>
-            <div className="section" data-anchor="section_1">
+            <div 
+                className="section" 
+                style={{
+                    ...estilos, 
+                    backgroundColor: 'rgb(249, 178, 51)',
+                    display:'flex'
+                }} 
+                data-anchor="section_1">
                 <div className="row align-items-center no-gutters justify-content-md-around justify-content-center yellow_cap">
                     <div className="col-md-4 col-sm-4 col-5 text-center text-uppercase">
                         <h1 className="titulo_page">Talent<br />Corner</h1>
@@ -52,15 +62,15 @@ export const Pagepiling = () => {
                     </div>
                 </div>
             </div>
-            <div className="section">
-                <video autoPlay loop muted className="video_bg" poster="img/posterhome.png">
-                    <source src="videos/TCvideo2.mov" type="video/mp4" />
+            <div className="section" style={estilos}>
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterhome.png">
+                    <source src="assets/video/TCvideo2.mp4" type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="img/posterhome.png">
-                    <source src="videos/responsive/RD002.mov" type="video/mp4" />
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterhome.png">
+                    <source src="assets/video/TCvideo2.mp4" type="video/mp4" />
                 </video>
             </div>
-            <div className="section">
+            <div className="section" style={estilos}>
                 <div className="row no-gutters w-100 h-100">
                     <div className="col-md-6 align-self-center">
                         <div className="p-lg-5 m-3 text-white" data-animation="fade-up">
@@ -71,20 +81,20 @@ export const Pagepiling = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#069cb1" }}>
-                            {/* <Image src="img/imagen1.jpg" alt='' /> */}
+                            <motion.img src="assets/img/imagen1.jpg" alt='' />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="section">
-                <video autoPlay loop muted className="video_bg" poster="img/posterprox.png">
-                    <source src="videos/TCvideo3.mov" type="video/mp4" />
+            <div className="section" style={estilos}>
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox.png">
+                    <source src="assets/video/TCvideo3.mp4" type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="img/posterhome.png">
-                    <source src="videos/responsive/RD003.mov" type="video/mp4" />
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox.png">
+                    <source src="assets/video/TCvideo3.mp4" type="video/mp4" />
                 </video>
             </div>
-            <div className="section">
+            <div className="section" style={estilos}>
                 <div className="row no-gutters w-100 h-100">
                     <div className="col-md-6 align-self-center">
                         <div className="p-lg-5 m-3 text-white" data-animation="fade-up">
@@ -96,20 +106,20 @@ export const Pagepiling = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#4EB106" }}>
-                            {/* <Image src="img/imagen2.jpg" alt='' /> */}
+                            <motion.img src="assets/img/imagen2.jpg" alt='' />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="section">
-                <video autoPlay loop muted className="video_bg" poster="img/posterprox01.png">
+            <div className="section" style={estilos}>
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox.png">
                     <source src="#" type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="img/posterprox01.png">
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox.png">
                     <source src="#" type="video/mp4" />
                 </video>
             </div>
-            <div className="section">
+            <div className="section" style={estilos}>
                 <div className="row no-gutters w-100 h-100">
                     <div className="col-md-6 align-self-center">
                         <div className="p-lg-5 m-3 text-white" data-animation="fade-up">
@@ -121,16 +131,16 @@ export const Pagepiling = () => {
                     </div>
                     <div className="col-md-6">
                         <div className="img_talent w-100 h-100 aos-init" data-animation="mask_off" style={{ backgroundColor: "#CB1B29" }}>
-                            {/* <Image src="img/imagen2.jpg" alt='' /> */}
+                            <motion.img src="assets/img/imagen2.jpg" alt='' />
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="section pp-scrollable">
-                <video autoPlay loop muted className="video_bg" poster="img/posterprox02.png">
+            <div className="section pp-scrollable" style={estilos}>
+                <video autoPlay loop muted className="video_bg" poster="assets/posters/posterprox.png">
                     <source src="#" type="video/mp4" />
                 </video>
-                <video autoPlay loop muted className="video_bg video_mobile" poster="img/posterprox02.png">
+                <video autoPlay loop muted className="video_bg video_mobile" poster="assets/posters/posterprox.png">
                     <source src="#" type="video/mp4" />
                 </video>
                 <footer className="p-3 p-lg-5">
@@ -144,7 +154,7 @@ export const Pagepiling = () => {
                                     <a href="#" className="footer_link">Talent+</a>
                                 </div>
                                 <div className="col-md-4">
-                                    <Image src={''} height="40" className="d-block" alt='' />
+                                    <motion.img src={''} height="40" className="d-block" alt='' />
                                     <a href="#" className="footer_link">Templates</a>
                                     <a href="#" className="footer_link">Online Store</a>
                                     <a href="#" className="footer_link">Tutoriales</a>
