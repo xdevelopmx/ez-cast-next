@@ -18,19 +18,6 @@ body {
   --color_b: #4ab7c6;
 }
 
-/*Pagepiling*/
-
-.contenedor{
-  position: relative;
-}
-
-.img{
-  position: absolute;
-  width: 100%;
-  height: 100vh;
-  object-fit: cover;
-}
-
 h1,
 h2,
 h3,
