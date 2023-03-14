@@ -2,7 +2,7 @@ import styles from "./index.module.css";
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { Header, LoginForm } from "~/components";
+import { FondoLogin, Header } from "~/components";
 import Script from "next/script";
 
 const Home: NextPage = () => {
@@ -18,7 +18,7 @@ const Home: NextPage = () => {
       </Head>
 
       <Header />
-      <LoginForm />
+      <FondoLogin />
       
 
       <Script src="https://code.jquery.com/jquery-3.5.1.min.js" />
