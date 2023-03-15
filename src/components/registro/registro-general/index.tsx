@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { motion } from 'framer-motion'
 import { Paso1 } from '../paso1'
@@ -6,6 +6,11 @@ import { Paso2 } from '../paso2'
 import { Paso3 } from '../paso3'
 
 export const RegistroGeneral = () => {
+
+  const [pasoRegistro, setPasoRegistro] = useState({
+    pasos: 'paso1'
+  })
+
   return (
     <>
         <div className="intro_container text-center ezcast_container pb-3">
@@ -22,9 +27,48 @@ export const RegistroGeneral = () => {
           </svg>
           &nbsp;REGRESAR A INFORMACIÓN EZ-CAST
         </a>
-        <Paso1 />
-        <Paso2 />
-        <Paso3 />
+        <input
+              className='a'
+              type={'radio'}
+              name='agenda_de_desarrollo'
+              value={'paso1'}
+              checked={pasoRegistro.pasos === 'paso1'}
+              onChange={e => setPasoRegistro(mpps => ({
+                  ...mpps, pasos: e.target.value
+              }))}
+          />
+          <p className='a'>1</p>
+          <input
+              className='a'
+              type={'radio'}
+              name='agenda_de_desarrollo'
+              value={'paso2'}
+              checked={pasoRegistro.pasos === 'paso2'}
+              onChange={e => setPasoRegistro(mpps => ({
+                  ...mpps, pasos: e.target.value
+              }))}
+          />
+          <p className='a'>2</p>
+          <input
+              className='a'
+              type={'radio'}
+              name='agenda_de_desarrollo'
+              value={'paso3'}
+              checked={pasoRegistro.pasos === 'paso3'}
+              onChange={e => setPasoRegistro(mpps => ({
+                  ...mpps, pasos: e.target.value
+              }))}
+          />
+          <p className='a'>3</p>
+        {pasoRegistro.pasos === 'paso1' &&
+          <Paso1 />
+        }
+        {pasoRegistro.pasos === 'paso2' &&
+          <Paso2 />
+        }
+        {pasoRegistro.pasos === 'paso3' &&
+          <Paso3 />
+        }
         {/* <div>
           <div className="d-lg-flex mt-5">
             <div>

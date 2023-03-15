@@ -8,7 +8,7 @@ export const Paso1 = () => {
       <div>
           <div className="d-lg-flex mt-5">
             <div>
-              <p className="font-weight-bold mr-3">Paso 2</p>
+              <p className="font-weight-bold mr-3">Paso 1</p>
             </div>
             <div>
               <p className="color_a">Crea tu perfil </p>
