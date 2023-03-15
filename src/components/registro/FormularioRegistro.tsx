@@ -3,11 +3,12 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+import { CreaTuPerfil } from './';
 
 const steps = [
-    'Select master blaster campaign settings',
-    'Create an ad group',
-    'Create an ad',
+    '',
+    '',
+    '',
 ];
 
 
@@ -18,12 +19,15 @@ export const FormularioRegistro = () => {
     return (
         <Box sx={{ width: '100%' }}>
             <Stepper activeStep={paso} alternativeLabel>
-                {steps.map((label, i) => (
-                    <Step key={label}>
-                        <StepLabel onClick={() => setPaso(i + 1)}>{label}</StepLabel>
+                {steps.map((_, i) => (
+                    <Step key={`step${i}`}>
+                        <StepLabel onClick={() => setPaso(i + 1)}></StepLabel>
                     </Step>
                 ))}
             </Stepper>
+            <form autoComplete="off">
+                {paso === 1 && <CreaTuPerfil setPaso={setPaso} />}
+            </form>
         </Box>
     )
 }
