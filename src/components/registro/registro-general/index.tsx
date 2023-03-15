@@ -1,6 +1,9 @@
 import React from 'react'
 
 import { motion } from 'framer-motion'
+import { Paso1 } from '../paso1'
+import { Paso2 } from '../paso2'
+import { Paso3 } from '../paso3'
 
 export const RegistroGeneral = () => {
   return (
@@ -10,7 +13,7 @@ export const RegistroGeneral = () => {
         <p className="h1 text-uppercase text-white m-0">Registro EZ-CAST</p>
       </div>
       <div className="intro_container">
-        <a href="intro_ezcast.html" className="text-dark">
+        <a href="./" className="text-dark">
           <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
             x="0px" y="0px" width="18px" viewBox="0 0 18.5 15.8" style={{background: 'new 0 0 18.5 15.8'}}>
             <path id="Path_1_2_" className="st0" d="M24.2,4.7" />
@@ -19,188 +22,10 @@ export const RegistroGeneral = () => {
           </svg>
           &nbsp;REGRESAR A INFORMACIÓN EZ-CAST
         </a>
-        <div>
-          <div className="d-lg-flex mt-5">
-            <div>
-              <p className="font-weight-bold mr-3">Paso 1</p>
-            </div>
-            <div>
-              <p className="color_a">Tipo de membresía</p>
-            </div>
-          </div>
-          <hr className="m-0" />
-        </div>
-        <div className="d-lg-flex ml-lg-5 mt-lg-4">
-          <div className="mr-2 ml-2 mt-2">
-            <select className="form-control form-control-sm select_custom">
-              <option>Talento</option>
-              <option>Cazatalento</option>
-              <option>Representante</option>
-            </select>
-          </div>
-          <div className="mr-2 ml-2 mt-2">
-            <select className="form-control form-control-sm select_custom">
-              <option>Gratis</option>
-              <option>Standard</option>
-              <option>Premium</option>
-              <option>Executive</option>
-            </select>
-          </div>
-          <div className="mr-2 ml-2 mt-2">
-            <select className="form-control form-control-sm select_custom">
-              <option>Anual</option>
-              <option>Mensual</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <div className="d-lg-flex mt-5">
-            <div>
-              <p className="font-weight-bold mr-3">Paso 2</p>
-            </div>
-            <div>
-              <p className="color_a">Crea tu perfil </p>
-            </div>
-          </div>
-          <hr className="m-0" />
-        </div>
-        <div className="row ml-lg-5 mt-lg-4">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label htmlFor="username">Nombre de usuario</label>
-              <input type="text" className="form-control form-control-sm text_custom" id="username" />
-            </div>
-          </div>
-          <div className="col-md-3 offset-md-2">
-            <div className="form-group">
-              <label htmlFor="Email">Email</label>
-              <input type="Email" className="form-control form-control-sm text_custom" id="Email" />
-            </div>
-          </div>
-        </div>
-        <div className="row ml-lg-5">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label htmlFor="Contrasenia">Contraseña</label>
-              <input type="password" className="form-control form-control-sm text_custom" id="Contrasenia" />
-            </div>
-          </div>
-          <div className="col-md-3 offset-md-2">
-            <div className="form-group">
-              <label htmlFor="contrasenia_confirm">Confirma contraseña</label>
-              <input type="password" className="form-control form-control-sm text_custom" id="contrasenia_confirm" />
-            </div>
-          </div>
-        </div>
-        <div className="row ml-lg-5">
-          <div className=" offset-md-2 col-md-4 text-center">
-            <div className="text-center">
-              <p>O registrate con</p>
-            </div>
-            <div className="d-lg-flex">
-              <div className="flex_one">
-                <a href="#" className="btn btn-intro btn-social mr-1 ml-1"><motion.img height="16" className="mr-2"
-                    src="assets/img/iconos/google-logo.svg" />Google</a>
-              </div>
-              <div className="flex_one">
-                <a href="#" className="btn btn-intro btn-social mr-1 ml-1"><motion.img height="16" className="mr-2"
-                    src="assets/img/iconos/facebook-logo.svg" />Facebook</a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="d-lg-flex mt-5">
-            <div>
-              <p className="font-weight-bold mr-3">Paso 3</p>
-            </div>
-            <div>
-              <p className="color_a">Pago</p>
-            </div>
-          </div>
-          <hr className="m-0" />
-        </div>
-        <div className=" ml-lg-5">
-          <p className="color_a mt-3 font-weight-bold">Total: $3000 MXP</p>
-          <p>Forma de pago</p>
-          <div className="d-lg-flex">
-            <div>
-              <a href="#" className="btn btn-intro btn-social btn-paywith">Crédito/Débito</a>
-            </div>
-            <div>
-              <a href="#" className="btn btn-intro btn-social btn-paywith">PayPal</a>
-            </div>
-          </div>
-        </div>
-        <div className="row ml-lg-5 mt-lg-4">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label htmlFor="card_name">Nombre en la tarjeta</label>
-              <input type="text" className="form-control form-control-sm text_custom" id="card_name" />
-            </div>
-          </div>
-          <div className="col-md-4 offset-md-2">
-            <label>Fecha de caducidad</label>
-            <div className="d-lg-flex justify-content-around">
-              <div className="pl-2 pr-2">
-                <select className="form-control form-control-sm select_custom">
-                  <option>Enero</option>
-                  <option>Febrero</option>
-                  <option>Marzo</option>
-                  <option>To-Be-Filled-By-Backend</option>
-                </select>
-              </div>
-              <div className="pl-2 pr-2">
-                <select className="form-control form-control-sm select_custom">
-                  <option>2022</option>
-                  <option>2021</option>
-                  <option>2020</option>
-                  <option>To-Be-Filled-By-Backend</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row ml-lg-5 mt-lg-4">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label htmlFor="card_number">Número de tarjeta</label>
-              <input type="number" className="form-control form-control-sm text_custom" id="card_number" />
-            </div>
-          </div>
-          <div className="col-md-6 offset-md-2">
-            <label>CVV</label>
-            <div className="d-lg-flex justify-content-around align-items-center">
-              <div>
-                <input type="number" className="form-control form-control-sm text_custom" id="cvv" />
-              </div>
-              <div className="pl-2 pr-2">
-                <p className="color_a small m-0">Código de 3 o 4 números al reverso de la tarjeta</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row ml-lg-5 mt-lg-4">
-          <div className="col-md-7">
-            <div className="form-group">
-              <label htmlFor="card_number">Dirección</label>
-              <input type="number" className="form-control form-control-sm text_custom" id="card_number" />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label htmlFor="card_number">Ciudad</label>
-              <input type="number" className="form-control form-control-sm text_custom" id="card_number" />
-            </div>
-          </div>
-          <div className="col-md-2">
-            <div className="form-group">
-              <label htmlFor="card_number">C.P.</label>
-              <input type="number" className="form-control form-control-sm text_custom" id="card_number" />
-            </div>
-          </div>
-        </div>
-        <div>
+        <Paso1 />
+        <Paso2 />
+        <Paso3 />
+        {/* <div>
           <div className="d-lg-flex mt-5">
             <div>
               <p className="font-weight-bold mr-3">Paso 4</p>
@@ -227,7 +52,7 @@ export const RegistroGeneral = () => {
             </label>
           </div>
         </div>
-        {/* <div>
+        <div>
           <div className="d-lg-flex mt-5">
             <div>
               <p className="font-weight-bold mr-3">Paso 5</p>

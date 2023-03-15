@@ -13,7 +13,7 @@ export const LoginForm = () => {
         <div className="box_cart_login">
             <div className="login_container text-center">
                 <p className="h1 text-uppercase mb-3 text-center">EZ-CAST</p>
-                <p className="text-muted">No tienes cuenta? <a href="registro_ezcast.html" className="color_a">Registrate aquí</a></p>
+                <p className="text-muted">No tienes cuenta? <a href="/registro" className="color_a">Registrate aquí</a></p>
                 <div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
                     <div className="flex_half">
                         <label htmlFor="user">Usuario</label>
