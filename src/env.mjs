@@ -8,6 +8,7 @@ const server = z.object({
   DATABASE_URL: z.string(),
   FILES_ROOT_FOLDER: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  APP_URL: z.string(),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)
@@ -40,6 +41,7 @@ const client = z.object({
  */
 const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
+  APP_URL: process.env.APP_URL,
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,

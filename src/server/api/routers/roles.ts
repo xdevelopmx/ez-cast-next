@@ -325,7 +325,6 @@ export const RolesRouter = createTRPCRouter({
 				base64: z.string(),
 				extension: z.string()
 			}).nullish()
-			
 		}))
 		.mutation(async ({ input, ctx }) => {
 			const updated_files: {lineas: null | string, foto_referencia: null | string} = {lineas: null, foto_referencia: null};
