@@ -28,7 +28,7 @@ export const FormularioRegistro = () => {
                     ))}
                 </Stepper>
             </div>
-            <form autoComplete="off">
+            <form autoComplete="off" style={{minHeight: 531}}>
                 {paso === 1 && <CreaTuPerfil setPaso={setPaso} />}
                 {paso === 2 && <TipoDeMembresia setPaso={setPaso} />}
                 {paso === 3 && <Pago setPaso={setPaso} />}

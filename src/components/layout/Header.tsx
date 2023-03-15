@@ -1,18 +1,35 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import React, { FC } from 'react'
+import { type FC, useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link';
+import useScrolled from '~/hooks/useScrolled';
 
 interface Props {
 	tieneFondoBlanco?: boolean;
+	disabletieneFondoBlanco?: boolean;
 }
 
-export const Header: FC<Props> = ({ tieneFondoBlanco }) => {
+export const Header: FC<Props> = ({ tieneFondoBlanco, disabletieneFondoBlanco = false }) => {
+
+	const [esBlanco, setEsBlanco] = useState(tieneFondoBlanco)
+
+	const estaArriba = useScrolled()
+
+	useEffect(() => {
+		setEsBlanco(tieneFondoBlanco)
+	}, [tieneFondoBlanco])
+
+	useEffect(() => {
+		if (!disabletieneFondoBlanco) {
+			setEsBlanco(estaArriba)
+		}
+	}, [estaArriba, disabletieneFondoBlanco])
+
+
 	return (
-		<nav className={`navbar navbar-expand-lg ${tieneFondoBlanco ? 'navbar-light' : 'navbar-dark'} p-4`}>
+		<nav className={`navbar navbar-expand-lg ${esBlanco ? 'navbar-light' : 'navbar-dark'} p-4`}>
 			<Link href="/" className="navbar-brand ml-lg-5 w-sm-50">
-				{!tieneFondoBlanco && <motion.img src="assets/img/logo_blanco.svg" className="d-inline-block align-top w-100" alt="" />}
-				{tieneFondoBlanco && <motion.img src="assets/img/logo_color.svg" className="d-inline-block align-top w-100" alt="" />}
+				{!esBlanco && <motion.img src="assets/img/logo_blanco.svg" className="d-inline-block align-top w-100" alt="" />}
+				{esBlanco && <motion.img src="assets/img/logo_color.svg" className={`d-inline-block align-top w-100`} alt="" />}
 			</Link>
 			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
 				<span className="navbar-toggler-icon"></span>
