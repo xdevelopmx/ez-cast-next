@@ -1,6 +1,6 @@
 import { type NextPage } from "next"
 import Head from "next/head";
-import { MainLayout } from "~/components";
+import { MainLayout, RestablecerContrasenaComponent } from "~/components";
 
 const RestablecerContrasena: NextPage = () => {
     return (
@@ -12,7 +12,7 @@ const RestablecerContrasena: NextPage = () => {
             </Head>
 
             <MainLayout>
-
+                <RestablecerContrasenaComponent />
             </MainLayout>
         </>
     )
