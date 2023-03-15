@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { FondoLogin, MainLayout } from "~/components";
+import { LoginForm, MainLayout } from "~/components";
 
 const Login: NextPage = () => {
 
@@ -15,7 +15,7 @@ const Login: NextPage = () => {
       </Head>
 
       <MainLayout>
-        <FondoLogin />
+        <LoginForm />
       </MainLayout>
     </>
   );
