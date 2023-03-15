@@ -18,6 +18,10 @@ body {
   --color_b: #4ab7c6;
 }
 
+.filtro-blanco{
+  filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(288deg) brightness(102%) contrast(102%);
+}
+
 h1,
 h2,
 h3,
@@ -168,7 +172,7 @@ a.text-grey:hover {
   left: 0;
   height: 100%;
   width: 100%;
-  /* background: url("../img/proyector.svg"); */
+  background: url("../../public/assets/img/proyector.svg");
   background-repeat: no-repeat;
   background-position: 63%;
   background-size: auto 80%;
@@ -221,7 +225,7 @@ h1 {
   left: 0;
   width: 24px;
   height: 100%;
-  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='1.5rem' height='1.5rem' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cline x1='5' y1='12' x2='19' y2='12'%3E%3C/line%3E%3Cpolyline points='12 5 19 12 12 19'%3E%3C/polyline%3E%3C/svg%3E"); */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='1.5rem' height='1.5rem' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cline x1='5' y1='12' x2='19' y2='12'%3E%3C/line%3E%3Cpolyline points='12 5 19 12 12 19'%3E%3C/polyline%3E%3C/svg%3E");
   background-position: center;
   background-repeat: no-repeat;
 }
@@ -809,7 +813,7 @@ footer {
   right: -14%;
   height: 120px;
   width: 83px;
-  /* background: url("../img/signosinterrogacion.svg"); */
+  background: url("../../public/assets/img/signosinterrogacion.svg");
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -817,7 +821,7 @@ footer {
 .select_custom {
   border-radius: 50px;
   background: var(--color_a);
-  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-position: 95% 50%;
   background-repeat: no-repeat;
   color: #fff !important;
@@ -834,13 +838,13 @@ footer {
   background-color: #fff;
   color: #000 !important;
   border-radius: 5px;
-  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23000' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
 .select_custom:hover,
 .select_custom:focus {
   background: var(--color_a);
-  /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round' class='css-i6dzq1'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-position: 95% 50%;
   background-repeat: no-repeat;
   color: #fff !important;
@@ -1820,15 +1824,15 @@ table.boxBtnTable td {
 }
 
 .intro_Banner_full.seccionCazatalentos {
-  /* background: url(../img/banner_intro_full.png) no-repeat center / cover; */
+  background: url(../../public/assets/img/banner_intro_full.png) no-repeat center / cover;
 }
 
 .intro_Banner_full.seccionTalentos {
-  /* background: url(../img/banner_intro_full_01.png) no-repeat center / cover; */
+  background: url(../../public/assets/img/banner_intro_full_01.png) no-repeat center / cover;
 }
 
 .intro_Banner_full.seccionRepresentante {
-  /* background: url(../img/banner_intro_full_02.png) no-repeat center / cover; */
+  background: url(../../public/assets/img/banner_intro_full_02.png) no-repeat center / cover;
 }
 
 .intro_Banner_full .cerrar_secion_white {
@@ -3130,6 +3134,47 @@ p.edo_pendiente {
   .navbar-brand.ml-lg-5.w-sm-50 {
     width: 70% !important;
   }
+}
+
+.botones {
+  margin: 40px auto 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.botones.btn-r {
+  justify-content: flex-end;
+}
+
+.botones.btn-l {
+  justify-content: flex-start;
+}
+
+.botones button{
+  background-color: transparent;
+  color: #069CB1;
+  border: none;
+  display: flex;
+  gap: 15px;
+}
+
+.jc-c {
+  justify-content: center;
+}
+
+.paso-stepper {
+  font-weight: 700;
+  margin: 30px 0 0 0;
+  color: #069CB1;
+  border-bottom: 1px solid #069CB1;
+}
+
+.paso-stepper span {
+  font-weight: 500;
+}
+
+.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed, .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active {
+  color: #069CB1!important;
 }
 
 @media (min-width: 1440px) {}

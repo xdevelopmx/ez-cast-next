@@ -16,7 +16,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header tieneFondoBlanco={pagina !== 0} />
+      <Header tieneFondoBlanco={pagina !== 0} disabletieneFondoBlanco />
       <Pagepiling onCambiarPagina={pagina => setPagina(pagina)} />
     </>
   );
