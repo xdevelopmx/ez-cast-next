@@ -13,9 +13,9 @@ export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
     return (
         <>
             <h3 className="paso-stepper">
-                Paso 1 <span>Crea tu perfil</span>
+                Paso 1 <span>- crea tu perfil</span>
             </h3>
-            <div className="row ml-lg-5 mt-lg-4">
+            <div className="row ml-lg-5 mt-lg-4 jc-c">
                 <div className="col-md-3">
                     <FormGroup label='Nombre' />
                 </div>
@@ -23,7 +23,7 @@ export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
                     <FormGroup label='Apellidos' />
                 </div>
             </div>
-            <div className="row ml-lg-5 mt-lg-4">
+            <div className="row ml-lg-5 mt-lg-4 jc-c">
                 <div className="col-md-3">
                     <FormGroup label='Usuario' />
                 </div>
@@ -32,7 +32,7 @@ export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
                 </div>
 
             </div>
-            <div className="row ml-lg-5 mt-lg-4">
+            <div className="row ml-lg-5 mt-lg-4 jc-c">
                 <div className="col-md-3">
                     <FormGroup label='Contraseña' type="password" />
                 </div>
@@ -40,7 +40,7 @@ export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
                     <FormGroup label='Repetir Contraseña' type="password" />
                 </div>
             </div>
-            <div className="row ml-lg-5">
+            <div className="row ml-lg-5 jc-c">
                 <div className="col-md-4 text-center">
                     <div className="text-center">
                         <p>O registrate con</p>
@@ -59,12 +59,11 @@ export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
                     </div>
                 </div>
             </div>
-            <div className="text-ar">
+            <div className="botones btn-r">
                 <button className="boton-next-step margen" type='button' onClick={siguientePaso}>
                     Siguiente Paso <motion.img src="assets/img/iconos/arow_r_blue.svg" />
                 </button>
             </div>
-
         </>
     )
 }
