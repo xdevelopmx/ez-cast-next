@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { MainLayout, RegistroGeneral } from "~/components";
+import { MainLayout, RegistroComponent } from "~/components";
 
 const Registro: NextPage = () => {
 
@@ -15,7 +15,7 @@ const Registro: NextPage = () => {
       </Head>
 
       <MainLayout>
-        <RegistroGeneral />
+        <RegistroComponent />
       </MainLayout>
     </>
   );
