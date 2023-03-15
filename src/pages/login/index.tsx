@@ -1,7 +1,7 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { FondoLogin, Header } from "~/components";
+import { FondoLogin, MainLayout } from "~/components";
 
 const Login: NextPage = () => {
 
@@ -14,8 +14,9 @@ const Login: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
-      <FondoLogin />
+      <MainLayout>
+        <FondoLogin />
+      </MainLayout>
     </>
   );
 };

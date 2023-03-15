@@ -1,8 +1,7 @@
-import styles from "./index.module.css";
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { Header, RegistroGeneral } from "~/components";
+import { MainLayout, RegistroGeneral } from "~/components";
 
 const Registro: NextPage = () => {
 
@@ -15,8 +14,9 @@ const Registro: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Header />
-      <RegistroGeneral />
+      <MainLayout>
+        <RegistroGeneral />
+      </MainLayout>
     </>
   );
 };
