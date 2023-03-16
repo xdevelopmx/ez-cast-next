@@ -1,12 +1,30 @@
-import React, { useState } from 'react'
+import React, { useReducer, useState } from 'react'
 
 import { motion } from 'framer-motion'
 import { type tipo_usuario } from '~/interfaces'
 import { useLogin } from '../hooks/useLogin'
 import Link from 'next/link'
 import { CarrucelFondo } from '~/components/shared'
+import { signIn } from 'next-auth/react'
+import { TipoUsuario } from '~/server/auth'
+
+type LoginForm = {
+    user: string,
+    password: string,
+    tipo_usuario: TipoUsuario,
+    correo_usuario: string,
+} 
+
+function reducer(state: LoginForm, action: {type: string, value: {[key: string]: string | TipoUsuario}}) {
+    if (action.type === 'update-form') {
+      return { ...state, ...action.value }
+    }
+    throw Error(`Accion no definida ${action.type}`)
+  }
 
 export const LoginForm = () => {
+
+    const [state, dispatch] = useReducer(reducer, null);
 
     const [tipoUsuario, setTipoUsuario] = useState<tipo_usuario>('cazatalentos')
     const { estaSeleccionado } = useLogin()
@@ -19,7 +37,7 @@ export const LoginForm = () => {
                     <p className="text-muted">No tienes cuenta? <Link href="/registro" className="color_a">Registrate aquí</Link></p>
                     <div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
                         <div className="flex_half">
-                            <label htmlFor="user">Usuario</label>
+                            <label htmlFor="user">Usuario / Email</label>
                         </div>
                         <div className="flex_one">
                             <input type="text" className="form-control form-control-sm text_custom login_custom m-0" id="user" />
@@ -67,7 +85,17 @@ export const LoginForm = () => {
                     </div>
 
                     <div className="text-center mt-3 pl-2 pr-2">
-                        <a href="#" className="btn btn-intro btn-confirm mt-0">Log In</a>
+                        <button className="btn btn-intro btn-confirm mt-0" onClick={()=>{
+                            signIn('credentials', {
+                                user: 'tester',
+                                password: 'lolxd',
+                                tipo_usuario: 'talento',
+                                correo_usuario: '',
+                                redirect: false,
+                            }).then(res => {
+                                console.log(res);
+                            }).catch(console.log);
+                        }}>Log In</button>
                     </div>
 
 
