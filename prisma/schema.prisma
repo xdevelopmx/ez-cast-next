@@ -2,65 +2,377 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = env("DATABASE_URL")
+  provider = "mysql"
+  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model Cazatalentos {
+  id              Int                            @id @default(autoincrement())
+  usuario         String
+  email           String
+  contrasenia     String
+  nombre          String
+  apellido        String
+  tipo_membresia  String
+  cobro_membresia String
+  id_openpay      String
+  profile_img_url String?
+  posicion        String
+  compania        String
+  biografia       String
+  proyectos       Proyecto[]
+  redes_sociales  RedesSocialesPorCazatalentos[]
 }
 
-// Necessary for Next auth
-model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? // @db.Text
-    access_token      String? // @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? // @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-    @@unique([provider, providerAccountId])
+model Talentos {
+  id              Int                        @id @default(autoincrement())
+  usuario         String 
+  email           String 
+  contrasenia     String 
+  nombre          String 
+  apellido        String 
+  tipo_membresia  String 
+  cobro_membresia String 
+  profile_img_url String? 
+  redes_sociales  RedesSocialesPorTalentos[]
+  representante   RepresentantesPorTalentos?
+  info_basica     InfoBasicaPorTalentos?
+  media MediaPorTalentos[]
 }
 
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model RepresentantesPorTalentos {
+  id                   Int      @id @default(autoincrement())
+  nombre               String
+  agencia              String
+  email                String
+  telefono             String
+  url_carta_responsiva String
+  id_talento           Int      @unique
+  talento              Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
-model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
+model InfoBasicaPorTalentos {
+  id                  Int                      @id @default(autoincrement())
+  edad                Int
+  peso                Int
+  altura              Int
+  biografia           String
+  url_cv              String
+  id_talento          Int                      @unique
+  id_union            Int
+  id_estado_republica Int
+  union               CatalogoUniones          @relation(fields: [id_union], references: [id])
+  talento             Talentos                 @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+model CatalogoUniones {
+  id                       Int                     @id @default(autoincrement())
+  nombre                   String
+  info_basica_por_talentos InfoBasicaPorTalentos[]
+}
 
-    @@unique([identifier, token])
+model RedesSocialesPorTalentos {
+  id         Int      @id @default(autoincrement())
+  nombre     String
+  url        String
+  id_talento Int
+  talento    Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+}
+
+model RedesSocialesPorCazatalentos {
+  id              Int          @id @default(autoincrement())
+  nombre          String
+  url             String
+  id_cazatalentos Int
+  cazatalentos    Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+}
+
+model Administradores {
+  id          Int    @id @default(autoincrement())
+  usuario     String
+  email       String
+  contrasenia String
+}
+
+model Proyecto {
+  id                   Int          @id @default(autoincrement())
+  nombre               String
+  sindicato            String
+  tipo                 String
+  director_casting     String
+  telefono_contacto    String
+  email_contacto       String
+  productor            String
+  casa_productora      String
+  director             String
+  agencia_publicidad   String
+  sinopsis             String
+  url_archivo          String?
+  detalles_adicionales String
+  locacion             String
+  url_foto_portada     String?
+  compartir_nombre     Boolean      @default(true)
+  estatus              String       @default("Por Validar")
+  id_cazatalentos      Int
+  cazatalentos         Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  rol                  Roles[]
+}
+
+model Roles {
+  id                   Int                    @id @default(autoincrement())
+  nombre               String
+  id_tipo_rol          Int
+  descripcion          String?
+  foto_referencia      String?
+  lineas               String?
+  detalles_adicionales String?
+  estatus              String                 @default("SIN_FINALIZAR")
+  id_proyecto          Int
+  proyecto             Proyecto               @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  compensaciones       CompensacionesPorRoles @relation(map: "compensaciones", fields: [id], references: [id_rol], onDelete: Cascade)
+  filtros_demograficos FiltrosDemoPorRoles    @relation(map: "filtros", fields: [id], references: [id_rol], onDelete: Cascade)
+  habilidades          HabilidadesPorRoles    @relation(map: "habilidades", fields: [id], references: [id_rol], onDelete: Cascade)
+  requisitos           RequisitosPorRoles     @relation(map: "requisitos", fields: [id], references: [id_rol], onDelete: Cascade)
+  nsfw                 NSFWPorRoles           @relation(map: "nsfw", fields: [id], references: [id_rol], onDelete: Cascade)
+  casting              CastingPorRoles[]
+  filmaciones          FilmacionPorRoles[]
+  tipo_rol             CatalogoTiposRoles     @relation(fields: [id_tipo_rol], references: [id])
+}
+
+model CatalogoTiposRoles {
+  id     Int     @id @default(autoincrement())
+  nombre String
+  tipo   String
+  rol    Roles[]
+}
+
+model CatalogosCompNoMones {
+  id     Int    @id @default(autoincrement())
+  nombre String
+}
+
+model HabilidadesPorRoles {
+  id                        Int                        @id @default(autoincrement())
+  especificacion            String?
+  id_rol                    Int                        @unique
+  rol                       Roles?
+  habilidades_seleccionadas HabilidadesSelecPorRoles[]
+}
+
+model HabilidadesSelecPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_habilidades_por_rol Int
+  id_habilidad           Int
+  habilidad_por_rol      HabilidadesPorRoles @relation(fields: [id_habilidades_por_rol], references: [id], onDelete: Cascade)
+  habilidad              CatalogoHabilidades @relation(fields: [id_habilidad], references: [id])
+}
+
+model CatalogoHabilidades {
+  id                                  Int                        @id @default(autoincrement())
+  nombre                              String
+  habilidades_seleccionadas_por_roles HabilidadesSelecPorRoles[]
+}
+
+model NSFWPorRoles {
+  id                 Int                         @id @default(autoincrement())
+  descripcion        String?
+  id_rol             Int                         @unique
+  rol                Roles?
+  nsfw_seleccionados NSFWSeleccionadosPorRoles[]
+}
+
+model NSFWSeleccionadosPorRoles {
+  id              Int            @id @default(autoincrement())
+  id_nsfw         Int
+  id_nsfw_por_rol Int
+  nsfw_por_rol    NSFWPorRoles   @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
+  nsfw            CatalogoANSFW? @relation(fields: [id_nsfw], references: [id])
+}
+
+model CatalogoANSFW {
+  id                        Int                         @id
+  nombre                    String
+  NSFWSeleccionadosPorRoles NSFWSeleccionadosPorRoles[]
+}
+
+model FiltrosDemoPorRoles {
+  id                  Int                         @id @default(autoincrement())
+  id_rol              Int                         @unique
+  rango_edad_inicio   Int
+  rango_edad_fin      Int
+  rango_edad_en_meses Boolean
+  id_pais             Int
+  rol                 Roles?
+  aparencias_etnicas  AparenciasEtnicasPorRoles[]
+  animal              AnimalPorRoles?
+  generos             GenerosPorRoles[]
+  pais                CatalogoPaises              @relation(fields: [id_pais], references: [id])
+}
+
+model AnimalPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_animal              Int
+  descripcion            String
+  tamanio                String
+  id_filtro_demo_por_rol Int                 @unique
+  filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+  animal                 CatalogoAnimales    @relation(fields: [id_animal], references: [id])
+}
+
+model CatalogoAnimales {
+  id               Int              @id
+  nombre           String
+  animal_por_roles AnimalPorRoles[]
+}
+
+model AparenciasEtnicasPorRoles {
+  id                     Int                       @id @default(autoincrement())
+  id_aparencia_etnica    Int
+  id_filtro_demo_por_rol Int
+  filtros_demograficos   FiltrosDemoPorRoles       @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+  aparencia_etnica       CatalogoAparenciasEtnicas @relation(fields: [id_aparencia_etnica], references: [id])
+}
+
+model CatalogoAparenciasEtnicas {
+  id                           Int                         @id
+  nombre                       String
+  aparencias_etnicas_por_roles AparenciasEtnicasPorRoles[]
+}
+
+model GenerosPorRoles {
+  id                     Int                 @id @default(autoincrement())
+  id_genero              Int
+  id_filtro_demo_por_rol Int
+  filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+  genero                 CatalogoGeneros     @relation(fields: [id_genero], references: [id])
+}
+
+model CatalogoGeneros {
+  id               Int               @id
+  nombre           String
+  genero_por_roles GenerosPorRoles[]
+}
+
+model CatalogoPaises {
+  id                  Int                   @id
+  nombre              String
+  FiltrosDemoPorRoles FiltrosDemoPorRoles[]
+}
+
+model CompensacionesPorRoles {
+  id                                      Int                      @id @default(autoincrement())
+  id_rol                                  Int                      @unique
+  datos_adicionales                       String
+  suma_total_compensaciones_no_monetarias Decimal?
+  compensaciones_no_monetarias            CompNoMonetariasPorRoles[]
+  sueldo                                  SueldosPorRoles?          @relation(map: "sueldo", fields: [id], references: [id_comp_por_rol], onDelete: Cascade)
+  rol                                     Roles?
+}
+
+model CompNoMonetariasPorRoles {
+  id                       Int                     @id @default(autoincrement())
+  id_compensacion          Int
+  // se agrega el campo de descripcion en caso de que
+  // se selecicone otro que no este en el catalogo
+  descripcion_compensacion String
+  id_comp_por_rol          Int
+  compensaciones_por_rol   CompensacionesPorRoles @relation(map: "compensaciones_no_monetarias", fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
+}
+
+model SueldosPorRoles {
+  id                     Int                     @id @default(autoincrement())
+  cantidad               Decimal
+  periodo                String
+  id_comp_por_rol        Int         @unique       
+  compensaciones_por_rol CompensacionesPorRoles?
+}
+
+model Media {
+  id               Int                @id @default(autoincrement())
+  nombre           String
+  path             String
+  extension        String
+  MediaPorTalentos MediaPorTalentos[]
+}
+
+model MediaPorTalentos {
+  id            Int    @id @default(autoincrement())
+  referencia    String
+  identificador String
+  id_talento    Int
+  id_media      Int
+  talento Talentos @relation(fields: [id_talento], references: [id])
+  media         Media  @relation(fields: [id_media], references: [id])
+}
+
+model RequisitosPorRoles {
+  id                     Int                        @id @default(autoincrement())
+  presentacion_solicitud DateTime
+  informacion            String
+  uso_horario            String
+  id_rol                 Int                        @unique
+  id_idioma              Int
+  id_estado_republica    Int
+  rol                    Roles?
+  idioma                 CatalogoIdiomas            @relation(fields: [id_idioma], references: [id])
+  estado_republica       CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
+  medios_multimedia      MediosMultimediaPorRoles[]
+}
+
+model CatalogoIdiomas {
+  id                 Int                  @id @default(autoincrement())
+  nombre             String
+  RequisitosPorRoles RequisitosPorRoles[]
+}
+
+model CatalogoEstadosRepublica {
+  id                      Int                     @id @default(autoincrement())
+  nombre                  String
+  info_basica_por_talento InfoBasicaPorTalentos[]
+  requisitos_por_roles    RequisitosPorRoles[]
+  casting_por_roles       CastingPorRoles[]
+  filmacion_por_roles     FilmacionPorRoles[]
+}
+
+model MediosMultimediaPorRoles {
+  id                      Int                      @id @default(autoincrement())
+  id_requisitos_por_roles Int
+  id_medio_multimedia     Int
+  requisitos_por_rol      RequisitosPorRoles       @relation(fields: [id_requisitos_por_roles], references: [id])
+  medio_multimedia        CatalogoMediosMultimedia @relation(fields: [id_medio_multimedia], references: [id])
+}
+
+model CatalogoMediosMultimedia {
+  id                Int                        @id @default(autoincrement())
+  nombre            String
+  medios_multimedia MediosMultimediaPorRoles[]
+}
+
+model CastingPorRoles {
+  id                  Int                      @id @default(autoincrement())
+  fecha_inicio        DateTime
+  fecha_fin           DateTime?
+  id_rol              Int
+  id_estado_republica Int
+  estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  rol                 Roles                    @relation(map: "casting", fields: [id_rol], references: [id], onDelete: Cascade)
+}
+
+model FilmacionPorRoles {
+  id                  Int                      @id @default(autoincrement())
+  fecha_inicio        DateTime
+  fecha_fin           DateTime?
+  id_rol              Int
+  id_estado_republica Int
+  estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  rol                 Roles                    @relation(map: "filmacion", fields: [id_rol], references: [id], onDelete: Cascade)
 }
