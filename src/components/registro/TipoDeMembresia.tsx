@@ -1,50 +1,45 @@
 import { type FC } from 'react'
 import { motion } from 'framer-motion'
+import { TipoUsuario, TipoMembresia, TipoCobro } from '~/enums';
 
 interface Props {
-    setPaso: (paso: number | ((paso: number) => number)) => void;
+    state: {
+        tipo_usuario: TipoUsuario,
+        tipo_membresia: TipoMembresia,
+        cobro_membresia: TipoCobro
+    },
+    onFormChange: (input: {[id: string]: (string | number)}) => void;
 }
 
-export const TipoDeMembresia: FC<Props> = ({ setPaso }) => {
+export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {
 
-    const siguientePaso = () => setPaso(paso => paso + 1)
-    const anteriorPaso = () => setPaso(paso => paso - 1)
-
+    
   return (
     <>
-        <h3 className="paso-stepper">
-            Paso 2 <span> - tipo de membresía</span>
-        </h3>
         <div className="d-lg-flex ml-lg-5 mt-lg-4 jc-c">
             <div className="mr-2 ml-2 mt-2">
-                <select className="form-control form-control-sm select_custom">
-                    <option>Talento</option>
-                    <option>Cazatalento</option>
-                    <option>Representante</option>
+                <select value={state.tipo_usuario} onChange={(e) => {onFormChange({tipo_usuario: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
+                    <option value={TipoUsuario.TALENTO}>Talento</option>
+                    <option value={TipoUsuario.CAZATALENTOS}>Cazatalento</option>
+                    <option value={TipoUsuario.NO_DEFINIDO}>Representante</option>
                 </select>
             </div>
             <div className="mr-2 ml-2 mt-2">
-                <select className="form-control form-control-sm select_custom">
-                    <option>Gratis</option>
-                    <option>Standard</option>
-                    <option>Premium</option>
-                    <option>Executive</option>
+                <select value={state.tipo_membresia} onChange={(e) => {onFormChange({tipo_membresia: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
+                    <option value={TipoMembresia.GRATIS}>{TipoMembresia.GRATIS}</option>
+                    <option value={TipoMembresia.STANDARD}>{TipoMembresia.STANDARD}</option>
+                    <option value={TipoMembresia.PREMIUM}>{TipoMembresia.PREMIUM}</option>
+                    <option value={TipoMembresia.STANDARD}>{TipoMembresia.EXECUTIVE}</option>
                 </select>
             </div>
-            <div className="mr-2 ml-2 mt-2">
-                <select className="form-control form-control-sm select_custom">
-                    <option>Anual</option>
-                    <option>Mensual</option>
-                </select>
-            </div>
-        </div>
-        <div className="botones">
-            <button className="boton-prev-step margen" type='button' onClick={anteriorPaso}>
-                <motion.img src="assets/img/iconos/arow_l_blue.svg" /> Anterior Paso
-            </button>
-            <button className="boton-next-step margen" type='button' onClick={siguientePaso}>
-                Siguiente Paso <motion.img src="assets/img/iconos/arow_r_blue.svg" />
-            </button>
+            {state.tipo_membresia !== TipoMembresia.GRATIS &&
+                <div className="mr-2 ml-2 mt-2">
+                    <select value={state.cobro_membresia} onChange={(e) => {onFormChange({cobro_membresia: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
+                        <option value={TipoCobro.ANUAL}>Anual</option>
+                        <option value={TipoCobro.MENSUAL}>Mensual</option>
+                    </select>
+                </div>
+            }
         </div>
     </>
   )

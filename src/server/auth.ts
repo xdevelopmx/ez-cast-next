@@ -2,15 +2,11 @@ import { type GetServerSidePropsContext } from "next";
 import {
 	getServerSession,
 	type NextAuthOptions,
-	type DefaultSession,
-	type DefaultUser,
 	type User,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "~/env.mjs";
-import { prisma } from "~/server/db";
-import Constants from "~/constants";
-import { Cazatalentos, Talentos } from "@prisma/client";
+import { TipoUsuario } from "~/enums";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -18,13 +14,6 @@ import { Cazatalentos, Talentos } from "@prisma/client";
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
-
-// Define a role enum
-export enum TipoUsuario {
-	TALENTO = "talento",
-	CAZATALENTOS = "cazatalentos",
-	NO_DEFINIDO = 'no_definido',
-}
 
 declare module "next-auth" {
 	interface User {

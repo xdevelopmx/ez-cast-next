@@ -3,41 +3,44 @@ import { motion } from 'framer-motion'
 import { FormGroup } from '../shared'
 
 interface Props {
-    setPaso: (paso: number | ((paso: number) => number)) => void;
+    state: {
+        nombre: string,
+        apellido: string,
+        usuario: string,
+        email: string,
+        contrasenia: string,
+        confirmacion_contrasenia: string
+    },
+    onFormChange: (input: {[id: string]: (string | number)}) => void;
 }
 
-export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
-
-    const siguientePaso = () => setPaso(paso => paso + 1)
+export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
 
     return (
         <>
-            <h3 className="paso-stepper">
-                Paso 1 <span>- crea tu perfil</span>
-            </h3>
             <div className="row ml-lg-5 mt-lg-4 jc-c">
                 <div className="col-md-3">
-                    <FormGroup label='Nombre' />
+                    <FormGroup value={state.nombre} onChange={(e) => { onFormChange({nombre: e.currentTarget.value}) }} label='Nombre' />
                 </div>
                 <div className="col-md-3 offset-md-2">
-                    <FormGroup label='Apellidos' />
+                    <FormGroup value={state.apellido} onChange={(e) => { onFormChange({apellido: e.currentTarget.value}) }} label='Apellidos' />
                 </div>
             </div>
             <div className="row ml-lg-5 mt-lg-4 jc-c">
                 <div className="col-md-3">
-                    <FormGroup label='Usuario' />
+                    <FormGroup value={state.usuario} onChange={(e) => { onFormChange({usuario: e.currentTarget.value}) }} label='Usuario' />
                 </div>
                 <div className="col-md-3 offset-md-2">
-                    <FormGroup label='Correo electrónico' type="email" />
+                    <FormGroup value={state.email} onChange={(e) => { onFormChange({email: e.currentTarget.value}) }} label='Correo electrónico' type="email" />
                 </div>
 
             </div>
             <div className="row ml-lg-5 mt-lg-4 jc-c">
                 <div className="col-md-3">
-                    <FormGroup label='Contraseña' type="password" />
+                    <FormGroup value={state.contrasenia} onChange={(e) => { onFormChange({contrasenia: e.currentTarget.value}) }} label='Contraseña' type="password" />
                 </div>
                 <div className="col-md-3 offset-md-2">
-                    <FormGroup label='Repetir Contraseña' type="password" />
+                    <FormGroup value={state.confirmacion_contrasenia} onChange={(e) => { onFormChange({confirmacion_contrasenia: e.currentTarget.value}) }} label='Repetir Contraseña' type="password" />
                 </div>
             </div>
             <div className="row ml-lg-5 jc-c">
@@ -58,11 +61,6 @@ export const CreaTuPerfil: FC<Props> = ({ setPaso }) => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="botones btn-r">
-                <button className="boton-next-step margen" type='button' onClick={siguientePaso}>
-                    Siguiente Paso <motion.img src="assets/img/iconos/arow_r_blue.svg" />
-                </button>
             </div>
         </>
     )

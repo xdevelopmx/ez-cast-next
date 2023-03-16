@@ -5,6 +5,7 @@ import { SessionProvider } from "next-auth/react";
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import { AnimatePresence } from "framer-motion";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -12,7 +13,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+        <AnimatePresence
+          mode="wait"
+          initial={true}
+          onExitComplete={() => { window.scrollTo(0, 0) }}
+				>
+          <Component {...pageProps} />
+        </AnimatePresence>
     </SessionProvider>
   );
 };
