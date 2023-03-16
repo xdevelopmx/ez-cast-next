@@ -1,7 +1,7 @@
 
 import { Cazatalentos, Talentos } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { TipoUsuario } from "~/server/auth";
+import { TipoUsuario } from "~/enums";
 import { prisma } from "~/server/db";
 
 interface Request extends NextApiRequest {
@@ -24,9 +24,8 @@ export default async function handler(req: Request, res: NextApiResponse) {
 				where: {
 					OR: [
 						{ email: { equals: (form.email) ? form.email : '' } },
-						{
-							usuario: { equals: (form.username) ? form.username : '' }
-						}],
+						{ usuario: { equals: (form.username) ? form.username : '' } }
+					],
 				}
 			});
 			if (talento) {

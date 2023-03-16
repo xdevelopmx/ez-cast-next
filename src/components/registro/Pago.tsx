@@ -3,18 +3,13 @@ import { motion } from 'framer-motion'
 import { FormGroup } from '../shared';
 
 interface Props {
-    setPaso: (paso: number | ((paso: number) => number)) => void;
+    onFormChange: (input: {[id: string]: (string | number)}) => void;
 }
 
-export const Pago: FC<Props> = ({ setPaso }) => {
-
-    const anteriorPaso = () => setPaso(paso => paso - 1)
+export const Pago: FC<Props> = ({ onFormChange }) => {
 
   return (
     <>
-        <h3 className="paso-stepper">
-            Paso 3 <span> - pago</span>
-        </h3>
         <div className=" ml-lg-5">
             <p className="color_a mt-3 font-weight-bold">Total: $3000 MXP</p>
             <p>Forma de pago</p>
@@ -76,11 +71,6 @@ export const Pago: FC<Props> = ({ setPaso }) => {
             <div className="col-md-2">
                 <FormGroup label='C.P.' id='cp' />
             </div>
-        </div>
-        <div className="botones btn-l">
-            <button className="boton-prev-step margen" type='button' onClick={anteriorPaso}>
-                <motion.img src="assets/img/iconos/arow_l_blue.svg" /> Anterior Paso
-            </button>
         </div>
     </>
   )

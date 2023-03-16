@@ -7,8 +7,8 @@ import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-import { TipoUsuario } from "~/server/auth";
 import type { Cazatalentos, Talentos } from "@prisma/client";
+import { TipoUsuario } from "~/enums";
 
 export const AuthRouter = createTRPCRouter({
     getById: publicProcedure
@@ -29,7 +29,7 @@ export const AuthRouter = createTRPCRouter({
 				contrasenia: z.string().min(1).max(255), 
 				usuario: z.string().min(1).max(255), 
 				email: z.string().email(), 
-				profile_img_url: z.string(), 
+				profile_img_url: z.string().nullish(), 
 				tipo_membresia: z.string(),
 				cobro_membresia: z.string(),
 				id_openpay: z.string().nullish(),
