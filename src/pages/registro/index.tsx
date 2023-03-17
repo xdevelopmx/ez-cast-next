@@ -134,9 +134,6 @@ const RegistroPage: NextPage = () => {
 										dispatch({type: 'update-form', value: {step_active: step}});
 									}}
 									onFinish={() => {
-										if (state.user) {
-
-										}
 										create_user.mutate({...state});
 									}}
     								current_step={state.step_active}

@@ -5,7 +5,7 @@ export const Titulos = () => {
   return (
     <>
         <div className="h-50-vh">
-            <motion.img src="assets/img/ezcasthelp.jpg" className="w-100 h-100 intro_img" />
+            <motion.img src="/assets/img/ezcasthelp.jpg" className="w-100 h-100 intro_img" />
         </div>
         <section className="ezcast_container">
             <div className="intro_container">

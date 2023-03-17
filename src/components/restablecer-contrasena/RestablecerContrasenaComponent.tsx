@@ -8,7 +8,7 @@ export const RestablecerContrasenaComponent = () => {
         <CarrucelFondo>
             <div className="box_cart_login">
                 <div className="login_container text-center">
-                    <motion.img className="logo_head_cart" src="assets/img/iconos/EZ_Claqueta_N_S.svg" alt="icono" />
+                    <motion.img className="logo_head_cart" src="/assets/img/iconos/EZ_Claqueta_N_S.svg" alt="icono" />
                     <p className="h1 text-uppercase mb-3 text-center">EZ-CAST</p>
 
                     <p className="text-muted">¿Olvidaste tu <span className="color_a">contraseña?</span></p>
