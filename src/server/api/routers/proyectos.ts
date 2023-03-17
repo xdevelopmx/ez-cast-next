@@ -8,9 +8,9 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { TipoUsuario } from "~/server/auth";
 import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
+import { TipoUsuario } from "~/enums";
 
 export const ProyectosRouter = createTRPCRouter({
     getAllByIdCazatalentos: publicProcedure

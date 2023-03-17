@@ -439,7 +439,79 @@ export const RolesRouter = createTRPCRouter({
 			return input;
 		}
 	),
-	
+	saveInfoCastingYFilmacion: publicProcedure
+    	.input(z.object({ 
+			id_rol: z.number(),
+			id_estado_republica: z.number(),
+			fechas: z.array(z.object({
+				inicio: z.date(),
+				fin: z.date().nullish(),
+			})),
+			action: z.string()
+		}))
+		.mutation(async ({ input, ctx }) => {
+
+			if (input.action === 'casting') {
+				const deleted_fechas = await ctx.prisma.castingPorRoles.deleteMany({where: {id_rol: input.id_rol}});
+				if (!deleted_fechas) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'No se pudieron eliminar los datos de la fechas de castings',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				const saved_fechas = await ctx.prisma.castingPorRoles.createMany({
+					data: input.fechas.map((dates) => {
+						return {
+							id_rol: input.id_rol,
+							id_estado_republica: input.id_estado_republica,
+							fecha_inicio: dates.inicio,
+							fecha_fin: dates.fin
+						}
+					})
+				});
+				if (!saved_fechas) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'No se pudieron guardar los datos de la fechas de castings',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return saved_fechas;
+			} else {
+				const deleted_fechas = await ctx.prisma.filmacionPorRoles.deleteMany({where: {id_rol: input.id_rol}});
+				if (!deleted_fechas) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'No se pudieron eliminar los datos de la fechas de filmaciones',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				const saved_fechas = await ctx.prisma.filmacionPorRoles.createMany({
+					data: input.fechas.map((dates) => {
+						return {
+							id_rol: input.id_rol,
+							id_estado_republica: input.id_estado_republica,
+							fecha_inicio: dates.inicio,
+							fecha_fin: dates.fin
+						}
+					})
+				});
+				if (!saved_fechas) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'No se pudieron guardar los datos de la fechas de filmaciones',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return saved_fechas;
+			}
+		}
+	),
 	
 
 });
