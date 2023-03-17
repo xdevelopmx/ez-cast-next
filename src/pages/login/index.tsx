@@ -9,6 +9,7 @@ import { CarrucelFondo, MainLayout } from "~/components";
 import { Link } from "@mui/material";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TipoUsuario } from "~/enums";
+import useLang from "~/hooks/useLang";
 
 type LoginForm = {
   user: string,
@@ -25,6 +26,8 @@ function reducer(state: LoginForm, action: {type: string, value: {[key: string]:
 }
 
 const LoginPage: NextPage = () => {
+
+    const texts = useLang('en');
 
   const [state, dispatch] = useReducer(reducer, {user: '', password: '', tipo_usuario: TipoUsuario.NO_DEFINIDO});
 
@@ -63,6 +66,7 @@ const LoginPage: NextPage = () => {
                               id="password" />
                         </div>
                     </div>
+                    {JSON.stringify(texts)}
                     <p className="text-muted">Olvido contraseña? <Link href="/restablecer-contrasena" className="color_a">Restablecer</Link></p>
                     <p>Ingresar como</p>
 

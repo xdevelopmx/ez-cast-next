@@ -10,6 +10,7 @@ import { useMemo, useReducer } from "react";
 import { MStepper } from "~/components/shared/MStepper";
 import { TipoCobro, TipoMembresia, TipoUsuario } from "~/enums";
 import { api } from "~/utils/api";
+import useLang from "~/hooks/useLang";
 
 type CreateUserForm = {
 	tipo_usuario: TipoUsuario,
@@ -61,6 +62,8 @@ function reducer(state: CreateUserForm, action: {type: string, value: {[key: str
   }
 
 const RegistroPage: NextPage = () => {
+
+	const texts = useLang('es');
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -123,6 +126,7 @@ const RegistroPage: NextPage = () => {
 							</svg>
 							&nbsp;&nbsp;REGRESAR A INFORMACIÓN EZ-CAST
 						</Link>
+						{JSON.stringify(texts)}
 						<Box sx={{ width: '100%' }}>
 							<br />
 							<div style={{width: '200px', margin: '0 auto'}}>
