@@ -1,7 +1,13 @@
-import React from 'react'
+import { type FC } from 'react'
 import { FormGroup } from '~/components'
+import { type Proyecto } from '~/interfaces';
 
-export const InformacionGeneral = () => {
+interface Props {
+    state: Proyecto;
+    onFormChange: (input: { [id: string]: (string | number) }) => void;
+}
+
+export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
     return (
         <>
             <div>
@@ -17,7 +23,11 @@ export const InformacionGeneral = () => {
             </div>
             <div className="row mt-lg-4">
                 <div className="col-md-3 mr-md-5">
-                    <FormGroup label='Nombre de proyecto*' />
+                    <FormGroup
+                        value={state.nombre}
+                        onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                        label='Nombre de proyecto*'
+                    />
                 </div>
                 <div className="col-md-3 mr-md-5">
                     <label htmlFor="username">Sindicato*</label>
@@ -83,10 +93,16 @@ export const InformacionGeneral = () => {
             <div className="row mt-lg-5">
                 <div className="col-md-3 mr-md-5"></div>
                 <div className="col-md-3 mr-md-5">
-                    <FormGroup label='Nombre de sindicato' />
+                    <FormGroup
+                        value={state.sindicato}
+                        onChange={(e) => { onFormChange({ sindicato: e.currentTarget.value }) }}
+                        label='Nombre de sindicato'
+                    />
                 </div>
                 <div className="col-md-3 mr-md-5">
-                    <FormGroup label='Otro' />
+                    <FormGroup 
+                        label='Otro' 
+                    />
                 </div>
             </div>
         </>
