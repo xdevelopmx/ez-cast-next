@@ -37,7 +37,6 @@ const useLang = (lang: string) => {
 
     const [texts, setTexts] = useState<{[key: string]: string}>({});
 
-
     useEffect(() => {
         if (TEXTS_BY_PATHNAME[route.pathname]) {
             const by_path = TEXTS_BY_PATHNAME[route.pathname];

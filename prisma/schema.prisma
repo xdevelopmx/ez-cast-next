@@ -34,18 +34,18 @@ model Cazatalentos {
 
 model Talentos {
   id              Int                        @id @default(autoincrement())
-  usuario         String 
-  email           String 
-  contrasenia     String 
-  nombre          String 
-  apellido        String 
-  tipo_membresia  String 
-  cobro_membresia String 
-  profile_img_url String? 
+  usuario         String
+  email           String
+  contrasenia     String
+  nombre          String
+  apellido        String
+  tipo_membresia  String
+  cobro_membresia String
+  profile_img_url String?
   redes_sociales  RedesSocialesPorTalentos[]
   representante   RepresentantesPorTalentos?
   info_basica     InfoBasicaPorTalentos?
-  media MediaPorTalentos[]
+  media           MediaPorTalentos[]
 }
 
 model RepresentantesPorTalentos {
@@ -177,9 +177,19 @@ model HabilidadesSelecPorRoles {
 }
 
 model CatalogoHabilidades {
-  id                                  Int                        @id @default(autoincrement())
-  nombre                              String
+  id                                  Int                              @id @default(autoincrement())
+  es                                  String
+  en                                  String
   habilidades_seleccionadas_por_roles HabilidadesSelecPorRoles[]
+  habilidades_especificas             CatalogoHabilidadesEspecificas[]
+}
+
+model CatalogoHabilidadesEspecificas {
+  id           Int                 @id @default(autoincrement())
+  es           String
+  en           String
+  id_habilidad Int
+  habilidad    CatalogoHabilidades @relation(fields: [id_habilidad], references: [id])
 }
 
 model NSFWPorRoles {
@@ -269,17 +279,17 @@ model CatalogoPaises {
 }
 
 model CompensacionesPorRoles {
-  id                                      Int                      @id @default(autoincrement())
-  id_rol                                  Int                      @unique
+  id                                      Int                        @id @default(autoincrement())
+  id_rol                                  Int                        @unique
   datos_adicionales                       String
   suma_total_compensaciones_no_monetarias Decimal?
   compensaciones_no_monetarias            CompNoMonetariasPorRoles[]
-  sueldo                                  SueldosPorRoles?          @relation(map: "sueldo", fields: [id], references: [id_comp_por_rol], onDelete: Cascade)
+  sueldo                                  SueldosPorRoles?           @relation(map: "sueldo", fields: [id], references: [id_comp_por_rol], onDelete: Cascade)
   rol                                     Roles?
 }
 
 model CompNoMonetariasPorRoles {
-  id                       Int                     @id @default(autoincrement())
+  id                       Int                    @id @default(autoincrement())
   id_compensacion          Int
   // se agrega el campo de descripcion en caso de que
   // se selecicone otro que no este en el catalogo
@@ -292,7 +302,7 @@ model SueldosPorRoles {
   id                     Int                     @id @default(autoincrement())
   cantidad               Decimal
   periodo                String
-  id_comp_por_rol        Int         @unique       
+  id_comp_por_rol        Int                     @unique
   compensaciones_por_rol CompensacionesPorRoles?
 }
 
@@ -305,13 +315,13 @@ model Media {
 }
 
 model MediaPorTalentos {
-  id            Int    @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   referencia    String
   identificador String
   id_talento    Int
   id_media      Int
-  talento Talentos @relation(fields: [id_talento], references: [id])
-  media         Media  @relation(fields: [id_media], references: [id])
+  talento       Talentos @relation(fields: [id_talento], references: [id])
+  media         Media    @relation(fields: [id_media], references: [id])
 }
 
 model RequisitosPorRoles {
