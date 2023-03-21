@@ -40,8 +40,8 @@ export default function MotionDiv(props: {
             animation = <motion.div
                 id={props.id}
                 style={props.style}
-                initial={{ opacity: 0, x: 0 }}
-                animate={{ opacity: 1, x: 100 }}
+                initial={{ opacity: 0, x: -650 }}
+                animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 15 }}
                 transition={{ opacity: 0.1, x: 0.1 }}
             >
@@ -53,10 +53,10 @@ export default function MotionDiv(props: {
             animation = <motion.div
                 id={props.id}
                 style={props.style}
-                initial={{ opacity: 0, x: 100 }}
+                initial={{ opacity: 0.1, x: 650 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 15 }}
-                transition={{ opacity: 0.2, x: 0.3 }}
+                transition={{ opacity: 0.2, }}
             >
                 {props.children}
             </motion.div>

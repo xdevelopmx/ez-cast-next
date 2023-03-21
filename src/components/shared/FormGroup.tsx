@@ -1,4 +1,8 @@
-import type { ChangeEventHandler, FC, HTMLInputTypeAttribute } from 'react'
+
+import { TextField } from '@mui/material';
+import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
+import type Image from 'next/image';
+import { MContainer } from '../layout/MContainer';
 
 interface Props {
     label?: string;
@@ -6,13 +10,31 @@ interface Props {
     type?: HTMLInputTypeAttribute;
     onChange?: ChangeEventHandler<HTMLInputElement>;
     value?: string;
+    style?: CSSProperties;
+    className?: string;
+    labelStyle?: CSSProperties;
+    labelClassName?: string,
+    rootStyle?: CSSProperties,
+    icon?: JSX.Element,
 }
 
-export const FormGroup: FC<Props> = ({ label, id, type = 'text', onChange, value }) => {
+export const FormGroup: FC<Props> = ({ icon, rootStyle, className, labelClassName, label, id, type = 'text', onChange, value, labelStyle, style }) => {
+    let input: JSX.Element = <input style={{...style}} value={value} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`}  id={id} />;
+    if (type === 'text-area') {
+        input = <TextField id={id} className={className} style={{...style}} value={value} onChange={onChange}  multiline rows={3} maxRows={3}/>;
+    }
+    let label_element: JSX.Element | null = null; 
+    if (label) {
+        label_element = <label style={labelStyle} className={labelClassName} htmlFor={id}>{label}</label>;
+        if (icon) {
+            label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
+        }
+    }
+
     return (
-        <div className="form-group">
-            {label && <label htmlFor={id}>{label}</label>}
-            <input value={value} onChange={onChange} type={type} className="form-control form-control-sm text_custom" id={id} />
+        <div className="form-group" style={rootStyle}>
+            {label_element}
+            {input}
         </div>
     )
 }

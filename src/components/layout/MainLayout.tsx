@@ -1,16 +1,20 @@
-import { type ReactNode, type FC } from 'react'
+
+import { type ReactNode, type FC, CSSProperties } from 'react'
 import { Footer, Header } from './'
 
 interface Props {
     children: ReactNode,
-    menuSiempreBlanco?: boolean
+    menuSiempreBlanco?: boolean,
+    style?: CSSProperties
 }
 
-export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false }) => {
+export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, style }) => {
     return (
         <>
             <Header menuSiempreBlanco={menuSiempreBlanco} />
-            {children}
+            <div style={{marginTop: 76, ...style}}>
+                {children}
+            </div>
             <Footer />
         </>
     )
