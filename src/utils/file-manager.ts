@@ -50,17 +50,6 @@ export const FileManager = {
             return {result: null, error: new Error('No se definio una carpeta donde almacenar los archivos')}; 
         }
     },
-    convertFileToBase64: (file: File, onComplete: (base64_file: string | null) => void) => {
-            const reader = new FileReader();
-            reader.onloadend = function () {
-                if (reader.result) {
-                    onComplete(reader.result as string);
-                } else {
-                    onComplete(null);
-                }
-            }
-            reader.readAsDataURL(file);
-    },
     getFileAsBase64: async (file_path: string) => {
         const result: {file: null | string, error: Error | null} = { file: null, error: null };
         try {
