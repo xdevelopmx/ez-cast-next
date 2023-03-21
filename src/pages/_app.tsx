@@ -1,7 +1,6 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import CssBaseline from '@mui/material/CssBaseline';
 
 import { api } from "~/utils/api";
 
