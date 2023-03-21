@@ -1,15 +1,16 @@
+import Link from 'next/link'
 import React from 'react'
 
 export const ListadoProductos = () => {
   return (
     <>
-        <div className="row title_list_proyects">
+      <div className="row title_list_proyects">
         <div className="col d-lg-flex mt-5">
           <div>
             <p className="font-weight-bold h2 mr-3 mb-2">Proyectos</p>
           </div>
           <div>
-            <a href="#" className="btn btn-intro btn-price mb-2">Nuevo proyecto</a>
+            <Link href="/cazatalentos/proyecto" className="btn btn-intro btn-price mb-2">Nuevo proyecto</Link>
           </div>
         </div>
       </div>

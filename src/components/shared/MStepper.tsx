@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useRef, useState, type FC } from 'react'
+import { type CSSProperties, useEffect, useRef, useState, type FC } from 'react'
 import { motion } from 'framer-motion'
 import MotionDiv from '../layout/MotionDiv';
 import { Grid, Step, StepLabel, Stepper } from '@mui/material';
