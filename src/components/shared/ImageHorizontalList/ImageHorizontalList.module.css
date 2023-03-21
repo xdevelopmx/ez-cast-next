@@ -1,0 +1,23 @@
+.border-element-selected {
+    border: 2px;
+    border-style: solid;
+    border-color: #4ab7c6;
+    border-radius: 8px;
+}
+
+.border-element {
+    border: 2px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 8px;
+        
+}
+
+.text-element-selected {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 1.1rem;
+    color: #4ab7c6;
+    max-width: 128px;
+}

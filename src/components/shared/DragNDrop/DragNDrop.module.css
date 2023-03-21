@@ -1,0 +1,10 @@
+.root {
+    max-width: 300px;
+}
+
+.alert {
+    margin-bottom: 8px;
+    height: 32px;
+    max-width: 350px;
+    line-height: 1px;
+}

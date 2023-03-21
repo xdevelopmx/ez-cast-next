@@ -1,0 +1,11 @@
+.GrayHeader {
+    background-color: lightgrey;
+    height: 32px;
+}
+
+
+.GrayHeader > tr > th {
+    font-size: 1.3rem;
+    font-weight: bolder;
+    padding: 8px;
+}
