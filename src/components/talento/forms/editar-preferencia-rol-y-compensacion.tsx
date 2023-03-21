@@ -6,7 +6,7 @@ import classes from './talento-forms.module.css';
 import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import Image from 'next/image';
-import { MCheckboxGroup, MSelect, MRadioGroup } from '~/components/shared';
+import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/shared';
 
 interface Props {
     state: {
@@ -115,20 +115,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
                                 label='Adicional'
                             />
-                            <a onClick={() => {
-                                console.log('hola')
-                            }}
-                                style={{ marginTop: 16, padding: 4, fontWeight: 800, color: '#4ab7c6' }}
-                                className="btn  btn-social mr-1 ml-1">
-                                <Image
-                                    width={16}
-                                    height={16}
-                                    className="mr-2"
-                                    src="/assets/img/iconos/cruz_blue.svg"
-                                    alt="Boton de agregar credito"
-                                />
-                                Agregar otra locación
-                            </a>
+                            <AddButton text='Agregar otra localizacion' onClick={() => { console.log('hola') }} />
                         </MContainer>
                     </MContainer>
 
@@ -250,21 +237,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     value={''}
                     onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                 />
-                <a
-                    onClick={() => {
-                        console.log('hola')
-                    }}
-                    style={{ marginTop: 16, marginLeft: 0, padding: 4, fontWeight: 800, color: '#4ab7c6', width: 200 }}
-                    className="btn  btn-social mr-1 ml-1">
-                    <Image
-                        width={16}
-                        height={16}
-                        className="mr-2"
-                        src="/assets/img/iconos/cruz_blue.svg"
-                        alt="Boton de agregar credito"
-                    />
-                    Agregar otra
-                </a>
+                <AddButton text='Agregar otra' onClick={() => { console.log('hola'); }} />
             </Grid>
 
             <Grid my={4} item xs={12}>
