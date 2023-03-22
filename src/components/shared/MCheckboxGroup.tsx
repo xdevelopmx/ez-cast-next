@@ -18,7 +18,7 @@ interface Props {
     direction?: 'vertical' | 'horizontal'
 }
 
-export const MCheckboxGroup: FC<Props> = ({direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle, style, options }) => {
+export const MCheckboxGroup: FC<Props> = ({ direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle, style, options }) => {
     return (
         <div>
             {title &&
@@ -26,20 +26,23 @@ export const MCheckboxGroup: FC<Props> = ({direction, title, titleStyle, onAllOp
                     {title}
                 </Typography>
             }
-            {onAllOptionChecked && 
+            {onAllOptionChecked &&
                 <FormGroup id={id}>
                     <MContainer direction='vertical'>
-                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={onAllOptionChecked} style={style}  />} label={'Seleccionar todos'} />
-                        <Divider style={{margin: 8}} />
+                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={onAllOptionChecked} style={style} />} label={'Seleccionar todos'} />
+                        <Divider style={{ margin: 8 }} />
                     </MContainer>
                 </FormGroup>
             }
             <FormGroup id={id}>
                 <MContainer direction={(direction) ? direction : 'vertical'}>
-                    
+
                     {options.map((e, i) => {
                         const value = values[i];
-                        return <FormControlLabel className={labelClassName} style={labelStyle} key={i} control={<Checkbox checked={(value && value === true) ? value : false} onChange={onChange} style={style}  />} label={e} /> 
+                        return <FormControlLabel className={labelClassName} style={labelStyle} key={i}
+                            control={
+                                <Checkbox checked={(value && value === true) ? value : false} onChange={onChange} style={style} />
+                            } label={e} />
                     })}
                 </MContainer>
             </FormGroup>
