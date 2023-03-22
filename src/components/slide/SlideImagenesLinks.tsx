@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Link } from '@mui/material'
 
 export const SlideImagenesLinks = () => {
+
   return (
     <>
         <div className="slide-contenedor">

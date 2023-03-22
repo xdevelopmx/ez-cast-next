@@ -38,7 +38,8 @@ function DragNDrop(props: Props) {
     useEffect(() => {
         files.clear();
         props.files.forEach(f => {
-            files.set(`${f.name}-${f.file.size}-${f.file.type}`, f.file);
+            console.log(f);
+            files.set(`${f.file.name}-${f.file.size}-${f.file.type}`, f.file);
         })
         setFiles(new Map(files));
     }, [props.files]);
@@ -107,7 +108,7 @@ function DragNDrop(props: Props) {
                         <div className="btn_talent_upload">
                             <div className="box_btn_upload">
                                 <p className="mb-1">{`Acepta ${props.filetypes.join(', ')}`}</p>
-                                <div className="btn btn-intro"><Image width={18} height={18} src="/assets/img/iconos/cruz_blue.svg" alt="icono" className="mr-2" /> Subir {props.label}
+                                <div className="btn btn-intro"><Image width={18} height={18} src="/assets/img/iconos/cruz_blue.svg" alt="icono" className="mr-2" /> Subir Archivo(s)
                                 </div>
                                 
 

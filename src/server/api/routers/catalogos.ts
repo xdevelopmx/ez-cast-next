@@ -1,14 +1,8 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-
-import bcrypt from 'bcrypt';
-
 import {
   createTRPCRouter,
   publicProcedure,
 } from "~/server/api/trpc";
-import type { Cazatalentos, Talentos } from "@prisma/client";
-import { TipoUsuario } from "~/enums";
 
 export const CatalogosRouter = createTRPCRouter({
     getHabilidades: publicProcedure
@@ -19,6 +13,16 @@ export const CatalogosRouter = createTRPCRouter({
 					habilidades_especificas: input.include_subcategories
 				}
 			})
+		}
+	),
+	getUniones: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoUniones.findMany();
+		}
+	),
+	getEstadosRepublica: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoEstadosRepublica.findMany();
 		}
 	),
 });

@@ -10,10 +10,32 @@ import { useReducer } from "react";
 import { EditarActivosTalento, EditarCreditosTalento, EditarFiltrosAparenciasTalento, EditarInfoBasicaTalento, EditarMediaTalento, EditarPreferenciaRolYCompensacionTalento } from "~/components/talento";
 import { Archivo } from "~/server/api/root";
 import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilidades";
+import { getSession } from "next-auth/react";
+import { GetServerSideProps } from "next/types";
+import { api } from "~/utils/api";
 
-export type TalentoFormInfoBasica = {
+export type TalentoFormInfoGral = {
 	nombre: string,
-	
+    union: {
+        id: number,
+        descripcion: string
+    },
+    id_estado_republica: number,
+    edad: number,
+    peso: number,
+    altura: number,
+    biografia: string,
+    representante?: {
+        nombre: string,
+        email: string,
+        agencia: string,
+        telefono: string
+    },
+    files: {
+        carta_responsiva?: Archivo,
+        cv?: Archivo
+    },
+    redes_sociales: {[nombre: string]: string}
 }
 
 type TalentoFormMedios = {
@@ -45,7 +67,7 @@ export type TalentoFormHabilidades = {
 }
 
 type TalentoForm = {
-    info_basica?: TalentoFormInfoBasica,
+    info_gral: TalentoFormInfoGral,
     medios?: TalentoFormMedios,
     creditos?: TalentoFormCreditos,
     habilidades?: TalentoFormHabilidades,
@@ -54,7 +76,21 @@ type TalentoForm = {
 
 
 const initialState: TalentoForm = {
-	step_active: 6,
+	step_active: 1,
+    info_gral: {
+        nombre: '',
+        union: {
+            id: 0,
+            descripcion: '',
+        }, 
+        id_estado_republica: 0,
+        edad: 18, 
+        peso: 75,
+        altura: 170,
+        biografia: '',
+        redes_sociales: {},
+        files: {}
+    },
     creditos: {
         mostrar_anio_en_perfil: false,
         tipo_proyecto: '',
@@ -74,6 +110,9 @@ function reducer(state: TalentoForm, action: {type: string, value: {[key: string
 		case 'update-form': {
 			return { ...state, ...action.value }
 		}
+        case 'update-info-gral': {
+            return {...state, info_gral: {...state.info_gral, ...action.value}} as TalentoForm;
+		}
         case 'update-medios': {
             return {...state, medios: {...state.medios, ...action.value}} as TalentoForm;
         }
@@ -90,6 +129,15 @@ function reducer(state: TalentoForm, action: {type: string, value: {[key: string
 const EditarTalentoPage: NextPage = () => {
 	
     const [state, dispatch] = useReducer(reducer, initialState);
+
+    const saveInfoGral = api.talentos.saveInfoGral.useMutation({
+		onSuccess(input) {
+			alert(`Se guardo con exito: ${JSON.stringify(input)}`);
+		},
+		onError: (error) => {
+			alert(JSON.stringify(error));
+		}
+	});
 
 	return (
 		<>
@@ -109,7 +157,23 @@ const EditarTalentoPage: NextPage = () => {
                                 //create_user.mutate({...state});
                             }}
                             current_step={state.step_active}
-                            onStepSave={(step: number) => {console.log(step, 'save')}}
+                            onStepSave={(step: number) => {
+                                switch (step) {
+                                    case 1: {
+                                        console.log(state)
+                                        saveInfoGral.mutate({
+                                            ...state.info_gral, 
+                                            redes_sociales: null,
+                                            files: {
+                                                cv: (!state.info_gral.files.cv) ? null : {base64: state.info_gral.files.cv.base64, extension: state.info_gral.files.cv.file.type},
+                                                carta_responsiva: (!state.info_gral.files.carta_responsiva) ? null : {base64: state.info_gral.files.carta_responsiva.base64, extension: state.info_gral.files.carta_responsiva.file.type}
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+                                console.log(step, 'save')
+                            }}
                             step_titles={{
                                 1: 'Información básica',
                                 2: 'Media',
@@ -121,14 +185,12 @@ const EditarTalentoPage: NextPage = () => {
                                 8: 'Finalizo'
                             }}
                         >
-                           <EditarInfoBasicaTalento state={{
-                                nombre: '',
-                                apellido: '',
-                                usuario: 'string',
-                                email: 'string',
-                                contrasenia: 'string',
-                                confirmacion_contrasenia: 'string'
-                            }} onFormChange={() => {console.log('xd')}} />
+                           <EditarInfoBasicaTalento 
+                                state={state.info_gral} 
+                                onFormChange={(input) => {
+                                    dispatch({type: 'update-info-gral', value: input});
+                                }} 
+                            />
                             <EditarMediaTalento state={{
                                 nombre: '',
                                 apellido: '',
@@ -183,5 +245,23 @@ const EditarTalentoPage: NextPage = () => {
 		</>
 	);
 };
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+	const session = await getSession(context);
+	if (session && session.user) {
+		return {
+			props: {
+                user: session.user
+			}
+		}
+	}
+	return {
+		redirect: {
+			destination: '/',
+			permanent: true,
+		},
+	}
+}
 
 export default EditarTalentoPage;

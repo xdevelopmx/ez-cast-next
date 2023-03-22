@@ -11,9 +11,10 @@ interface Props {
     style?: CSSProperties,
     labelStyle?: CSSProperties,
     labelClassName?: string,
+    disabled?: boolean
 }
 
-export const MRadioGroup: FC<Props> = ({ labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
+export const MRadioGroup: FC<Props> = ({ disabled, labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
     return (
         <FormControl>
             <FormLabel style={labelStyle} className={labelClassName} id={id}>{label}</FormLabel>
@@ -25,7 +26,7 @@ export const MRadioGroup: FC<Props> = ({ labelClassName, label, id, onChange, va
                 name="row-radio-buttons-group"
             >
                 {options.map(o => {
-                    return <FormControlLabel key={o} value={o} control={<Radio style={{color: '#4ab7c6'}} />} label={o} />
+                    return <FormControlLabel key={o} control={<Radio checked={o === value} disabled={(disabled)} style={{color: (disabled) ? 'gray' : '#4ab7c6'}} />} label={o} />
                 })}
             </RadioGroup>
         </FormControl>

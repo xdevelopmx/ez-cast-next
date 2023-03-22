@@ -7,8 +7,8 @@
     width: 200px;
 }
 
-.select {
-    max-height: 150px;
+.select-children {
+    max-height: 150px!important;
 }
 
 .link-input-label {

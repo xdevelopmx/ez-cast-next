@@ -54,30 +54,38 @@ model RepresentantesPorTalentos {
   agencia              String
   email                String
   telefono             String
-  url_carta_responsiva String
+  url_carta_responsiva String?
   id_talento           Int      @unique
   talento              Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model InfoBasicaPorTalentos {
-  id                  Int                      @id @default(autoincrement())
-  edad                Int
-  peso                Int
-  altura              Int
-  biografia           String
-  url_cv              String
-  id_talento          Int                      @unique
-  id_union            Int
-  id_estado_republica Int
-  union               CatalogoUniones          @relation(fields: [id_union], references: [id])
-  talento             Talentos                 @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  id                   Int                        @id @default(autoincrement())
+  edad                 Int
+  peso                 Int
+  altura               Int
+  biografia            String
+  url_cv               String?
+  id_talento           Int                        @unique
+  id_union_por_talento Int                        @unique
+  id_estado_republica  Int
+  union                UnionPorInfoBasicaTalento?
+  talento              Talentos                   @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  estado_republica     CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
+}
+
+model UnionPorInfoBasicaTalento {
+  id                          Int                   @id @default(autoincrement())
+  id_union                    Int
+  descripcion                 String?
+  id_info_basica_por_talentos Int                   @unique
+  info_basica_por_talentos    InfoBasicaPorTalentos @relation(fields: [id_info_basica_por_talentos], references: [id_union_por_talento], onDelete: Cascade)
 }
 
 model CatalogoUniones {
-  id                       Int                     @id @default(autoincrement())
-  nombre                   String
-  info_basica_por_talentos InfoBasicaPorTalentos[]
+  id Int    @id
+  es String
+  en String
 }
 
 model RedesSocialesPorTalentos {
@@ -346,7 +354,8 @@ model CatalogoIdiomas {
 
 model CatalogoEstadosRepublica {
   id                      Int                     @id @default(autoincrement())
-  nombre                  String
+  es                      String
+  en                      String
   info_basica_por_talento InfoBasicaPorTalentos[]
   requisitos_por_roles    RequisitosPorRoles[]
   casting_por_roles       CastingPorRoles[]
