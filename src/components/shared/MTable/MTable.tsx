@@ -10,6 +10,7 @@ type MRow = { [key: string]: number | string | boolean | JSX.Element };
 
 interface MTableProps {
 	data: MRow[],
+	style?: CSSProperties;
 	columnsHeader?: JSX.Element[],
 	headerStyles?: CSSProperties,
 	headerClassName?: string,
@@ -21,12 +22,12 @@ interface MTableProps {
 
 export const MTable: FC<MTableProps> = ({
 	data, columnsHeader, headerClassName, headerStyles, backgroundColorData = 'lightgrey',
-	backgroundColorHeader = 'lightgrey'
+	backgroundColorHeader = 'lightgrey', style = {}
 }) => {
 	return (
 		<AnimatePresence>
 
-			<TableContainer component={Paper} style={{ overflowY: 'hidden' }}>
+			<TableContainer component={Paper} style={{ ...style, overflowY: 'hidden' }}>
 				<Table sx={{ minWidth: 700 }} aria-label="customized table">
 					{
 						columnsHeader &&

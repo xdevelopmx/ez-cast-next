@@ -15,6 +15,7 @@ export const Creditos = () => {
                 <Typography fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}>8</Typography>
                 <MTable
                     backgroundColorHeader='#4ab7c6'
+                    backgroundColorData='#EBEBEB'
                     columnsHeader={[
                         <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             Título
