@@ -5,3 +5,4 @@ export * from './forms/editar-habilidades';
 export * from './forms/editar-info-basica';
 export * from './forms/editar-media';
 export * from './forms/editar-preferencia-rol-y-compensacion';
+export * from './dashboard-sections'

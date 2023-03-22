@@ -9,6 +9,7 @@ import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
 import { Button, Link, Typography } from "@mui/material";
 import { MTable } from "~/components/shared/MTable/MTable";
+import { Media } from "~/components/talento";
 
 const DashBoardTalentosPage: NextPage = () => {
 
@@ -137,6 +138,8 @@ const DashBoardTalentosPage: NextPage = () => {
 									/>
 
 								</div>
+
+								<Media />
 							</div>
 						</div>
 					</div>
