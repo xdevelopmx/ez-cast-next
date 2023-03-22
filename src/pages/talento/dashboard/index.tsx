@@ -9,7 +9,7 @@ import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
 import { Button, Link, Typography } from "@mui/material";
 import { MTable } from "~/components/shared/MTable/MTable";
-import { Creditos, Media } from "~/components/talento";
+import { Creditos, Habilidades, Media } from "~/components/talento";
 
 const DashBoardTalentosPage: NextPage = () => {
 
@@ -142,6 +142,8 @@ const DashBoardTalentosPage: NextPage = () => {
 								<Media />
 
 								<Creditos />
+
+								<Habilidades />
 							</div>
 						</div>
 					</div>
