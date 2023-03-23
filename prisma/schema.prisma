@@ -550,3 +550,21 @@ model EquipoDeportivoTalento {
   activos_por_talentos     ActivosPorTalentos           @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   tipo_equipo_deportivo    CatalogoTipoEquipoDeportivo? @relation(fields: [id_tipo_equipo_deportivo], references: [id])
 }
+
+model CatalogoTipoTrabajo {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoTipoDocumentos {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoTipoDisponibilidad {
+  id                  Int @id
+  es String
+  en String
+}

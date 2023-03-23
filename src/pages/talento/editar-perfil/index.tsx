@@ -335,38 +335,43 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({user}) => {
                     redes_sociales[red.nombre] = red.url;
                 })
             } 
-            dispatch({type: 'update-info-gral', value: {
-                nombre: talento.data.nombre,
-                union: {
-                    id: talento.data.info_basica?.union?.id_union,
-                    descripcion: talento.data.info_basica?.union?.descripcion
-                },
-                id_estado_republica: talento.data.info_basica?.id_estado_republica,
-                edad: talento.data.info_basica?.edad,
-                peso: talento.data.info_basica?.peso,
-                altura: talento.data.info_basica?.altura,
-                biografia: talento.data.info_basica?.biografia,
-                representante: (!talento.data.representante) ? null : {
-                    nombre: talento.data.representante.nombre,
-                    email: talento.data.representante.email,
-                    agencia: talento.data.representante.agencia,
-                    telefono: talento.data.representante.telefono
-                },
-                redes_sociales: redes_sociales,
-                files: {
-                    carta_responsiva: null,
-                    cv: null,
-                    urls: {
-                        carta_responsiva: (!talento.data.representante?.url_carta_responsiva) ? null : talento.data.representante.url_carta_responsiva,
-                        cv: (!talento.data.info_basica?.url_cv) ? null : talento.data.info_basica.url_cv,
-                    }
-                },
-            }});
+            if (talento.data.info_basica) {
 
-            dispatch({type: 'update-creditos', value: {
-                mostrar_anio_en_perfil: talento.data.creditos?.mostrar_anio_perfil,
-                creditos: ( talento.data.creditos &&  talento.data.creditos.creditos) ?  talento.data.creditos.creditos : []
-            }})
+                dispatch({type: 'update-info-gral', value: {
+                    nombre: talento.data.nombre,
+                    union: {
+                        id: talento.data.info_basica.union?.id_union,
+                        descripcion: talento.data.info_basica.union?.descripcion
+                    },
+                    id_estado_republica: talento.data.info_basica.id_estado_republica,
+                    edad: talento.data.info_basica.edad,
+                    peso: talento.data.info_basica.peso,
+                    altura: talento.data.info_basica.altura,
+                    biografia: talento.data.info_basica.biografia,
+                    representante: (!talento.data.representante) ? null : {
+                        nombre: talento.data.representante.nombre,
+                        email: talento.data.representante.email,
+                        agencia: talento.data.representante.agencia,
+                        telefono: talento.data.representante.telefono
+                    },
+                    redes_sociales: redes_sociales,
+                    files: {
+                        carta_responsiva: null,
+                        cv: null,
+                        urls: {
+                            carta_responsiva: (!talento.data.representante?.url_carta_responsiva) ? null : talento.data.representante.url_carta_responsiva,
+                            cv: (!talento.data.info_basica.url_cv) ? null : talento.data.info_basica.url_cv,
+                        }
+                    },
+                }});
+            }
+
+            if (talento.data.creditos) {
+                dispatch({type: 'update-creditos', value: {
+                    mostrar_anio_en_perfil: talento.data.creditos.mostrar_anio_perfil,
+                    creditos: ( talento.data.creditos.creditos) ?  talento.data.creditos.creditos : []
+                }})
+            }
             
             const habilidades = new Map<number, number[]>();
             
@@ -515,8 +520,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({user}) => {
                                 4: 'Habilidades',
                                 5: 'Activos',
                                 6: 'Preferencia de rol y compensación',
-                                7: 'Filtros de Apariencia',
-                                8: 'Finalizo'
+                                7: 'Filtros de Apariencia'
                             }}
                         >
                            <EditarInfoBasicaTalento 
@@ -563,7 +567,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({user}) => {
                                 confirmacion_contrasenia: 'string'
                             }} onFormChange={() => {console.log('xd')}} />
                         </MStepper>
-                        
                     </div>
 			</MainLayout>
 		</>
