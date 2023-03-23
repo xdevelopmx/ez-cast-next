@@ -75,7 +75,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 <MContainer direction='vertical'>
                     <MCheckboxGroup 
                         onChange={(e) => {
-                            onFormChange({ has_vehiculos: e.currentTarget.checked })
+                            onFormChange({ has_vehiculos: e })
                         }} 
                         id="mostrar-vehiculos" 
                         labelClassName={classes['label-black-lg']} 
@@ -185,7 +185,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 <MContainer direction='vertical'>
                     <MCheckboxGroup 
                         onChange={(e) => {
-                            onFormChange({ has_mascotas: e.currentTarget.checked })
+                            onFormChange({ has_mascotas: e })
                         }} 
                         id="mostrar-mascotas" 
                         labelClassName={classes['label-black-lg']} 
@@ -264,7 +264,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 <MContainer direction='vertical'>
                     <MCheckboxGroup 
                         onChange={(e) => {
-                            onFormChange({ has_vestuario: e.currentTarget.checked })
+                            onFormChange({ has_vestuario: e })
                         }} 
                         id="mostrar-vestuario" 
                         labelClassName={classes['label-black-lg']} 
@@ -341,7 +341,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 <MContainer direction='vertical'>
                     <MCheckboxGroup 
                         onChange={(e) => {
-                            onFormChange({ has_props: e.currentTarget.checked })
+                            onFormChange({ has_props: e })
                         }} 
                         id="mostrar-props" 
                         labelClassName={classes['label-black-lg']} 
@@ -413,7 +413,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 <MContainer direction='vertical'>
                     <MCheckboxGroup 
                         onChange={(e) => {
-                            onFormChange({ has_equipo_deportivo: e.currentTarget.checked })
+                            onFormChange({ has_equipo_deportivo: e })
                         }} 
                         id="mostrar-equipo-deportivo" 
                         labelClassName={classes['label-black-lg']} 

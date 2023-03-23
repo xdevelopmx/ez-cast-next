@@ -101,7 +101,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                     </Typography>
                     <MCheckboxGroup 
                         onChange={(e) => {
-                            onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
+                            onFormChange({ mostrar_anio_en_perfil: e })
                         }} 
                         id="mostrar-anio-perfil" 
                         labelClassName={classes['label-black-lg']} 
