@@ -65,8 +65,21 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoTipoEquipoDeportivo.findMany();
 		}
 	),
-	
-	
+	getTipoDeTrabajos: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoTrabajo.findMany();
+		}
+	),
+	getTipoDeDocumentos: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoDocumentos.findMany();
+		}
+	),
+	getTipoDeDisponibilidad: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoDisponibilidad.findMany();
+		}
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";
