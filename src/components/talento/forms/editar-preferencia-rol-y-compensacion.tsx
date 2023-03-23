@@ -8,13 +8,22 @@ import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import Image from 'next/image';
 import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/shared';
 import { TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
+import { api } from '~/utils/api';
+
 
 interface Props {
     state: TalentoFormPreferencias,
-    onFormChange: (input: { [id: string]: (string | number) }) => void;
+    onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
+
+    const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const is_loading = estados_republica.isFetching;
 
     return (
         <Grid container spacing={2}>
@@ -28,14 +37,21 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     direction='vertical'
                     title="Tipo de trabajo"
-                    onChange={(e) => {
-                        //onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
+                    onChange={(e, i) => {
+                        onFormChange({
+                            tipo_trabajo: state.tipo_trabajo.map((value, index) => {
+                                if (i === index) {
+                                    return e
+                                }
+                                return value
+                            })
+                        })
                     }}
-                    id="mostrar-anio-perfil"
+                    id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
                     labelClassName={classes['label-black-md']}
                     options={['Actuación', 'Danza', 'Modelaje', 'Narración', 'Trabajo de doble/alto riesgo']}
-                    values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    values={state.tipo_trabajo}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
             <Grid my={4} item xs={12}>
@@ -52,12 +68,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         Si indicas interés en trabajar como extra, aparecerás en la búsqueda de extras del Director
                     </Typography>
                     <MRadioGroup
-                        id="interesado-trabajo-extra"
+                        id="interesado-trabajo-extra-group"
                         options={['si', 'no']}
+                        disabled={false}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.nombre}
-                        onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
-                        label='' />
+                        value={state.interesado_trabajo_extra}
+                        onChange={(e) => { onFormChange({ interesado_trabajo_extra: e.currentTarget.value }) }}
+                        label=''
+                    />
                 </MContainer>
             </Grid>
             <Grid my={4} item xs={12}>
@@ -67,14 +85,21 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <MCheckboxGroup
                     direction='vertical'
                     title="Interés en proyectos"
-                    onChange={(e) => {
-                        //onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
+                    onChange={(e, i) => {
+                        onFormChange({
+                            interes_proyectos: state.interes_proyectos.map((value, index) => {
+                                if (i === index) {
+                                    return e
+                                }
+                                return value
+                            })
+                        })
                     }}
-                    id="mostrar-anio-perfil"
+                    id="interes-proyectos-checkbox"
                     labelStyle={{ marginBottom: 0 }}
                     labelClassName={classes['label-black-md']}
                     options={['Pagados', 'No pagados']}
-                    values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    values={state.interes_proyectos}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
             <Grid my={4} item xs={12}>
@@ -93,20 +118,31 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     <MContainer direction='horizontal' styles={{ gap: 40 }}>
                         <MContainer direction='vertical'>
                             <MSelect
+                                loading={is_loading}
                                 id='locacion-principal-select'
-                                options={[]}
+                                options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={state.locaciones.principal.toString()}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        locaciones: {
+                                            ...state.locaciones,
+                                            principal: parseInt(e.target.value)
+                                        }
+                                    })
+                                }}
                                 label='Principal'
                             />
                         </MContainer>
 
                         <MContainer direction='vertical'>
                             <MSelect
+                                loading={is_loading}
                                 id='locacion-principal-select'
-                                options={[]}
+                                options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={state.locaciones.adicionales.toString()}
+                                onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
                                 label='Adicional'
                             />
                             <AddButton text='Agregar otra localizacion' onClick={() => { console.log('hola') }} />
@@ -129,11 +165,18 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     </Typography>
 
                     <MRadioGroup
-                        id="agencia-representante"
+                        id="agencia-representante-radio"
                         options={['si', 'no']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.nombre}
-                        onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                        value={state.agencia_representante.tiene_agencia_representante}
+                        onChange={(e) => {
+                            onFormChange({
+                                agencia_representante: {
+                                    ...state.agencia_representante,
+                                    tiene_agencia_representante: e.currentTarget.value
+                                }
+                            })
+                        }}
                         label=''
                     />
 
@@ -141,16 +184,29 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={''}
-                            onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                            value={state.agencia_representante.nombre}
+                            onChange={(e) => {
+                                onFormChange({
+                                    agencia_representante: {
+                                        ...state.agencia_representante,
+                                        nombre: e.currentTarget.value
+                                    }
+                                })
+                            }}
                             label='Nombre'
                         />
 
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={''}
-                            onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                            value={state.agencia_representante.contacto}
+                            onChange={(e) => {
+                                onFormChange({
+                                    agencia_representante: {
+                                        contacto: e.currentTarget.value
+                                    }
+                                })
+                            }}
                             label='Contacto'
                         />
                     </MContainer>
@@ -171,17 +227,24 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     <MCheckboxGroup
                         direction='vertical'
                         title="¿Qué documentos oficiales y licencias tienes?"
-                        onChange={(e) => {
-                            //onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
+                        onChange={(e, i) => {
+                            onFormChange({
+                                documentos: state.documentos.map((value, index) => {
+                                    if (i === index) {
+                                        return e
+                                    }
+                                    return value
+                                })
+                            })
                         }}
-                        id="mostrar-anio-perfil"
+                        id="documentos-checkbox"
                         labelStyle={{ marginBottom: 0 }}
                         labelClassName={classes['label-black-md']}
                         options={[
                             'Pasaporte Vigente', 'Licencia de conducir vigente', 'Identificacion vigente',
                             'Primeros Auxilios', 'CPR (resucitación cardiopulmonar)', 'Otro'
                         ]}
-                        values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                        values={state.documentos}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
 
                 </MContainer>
@@ -200,8 +263,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     <MCheckboxGroup
                         direction='horizontal'
                         title="¿Qué documentos oficiales y licencias tienes?"
-                        onChange={(e) => {
-                            //onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
+                        onChange={(e, i) => {
+                            onFormChange({
+                                disponibilidad: state.disponibilidad.map((value, index) => {
+                                    if (i === index) {
+                                        return e
+                                    }
+                                    return value
+                                })
+                            })
                         }}
                         id="disponibilidad-para-checkboxgroup"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
@@ -212,7 +282,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             'Fumar', 'Pintar Cabello', 'Aparecer semi-desnudo', 'Situación Sexual (Escena)',
                             'Trabajar con Gatos', 'Trabajar con Perros'
                         ]}
-                        values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                        values={state.disponibilidad}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                 </MContainer>
             </Grid>
@@ -228,8 +298,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <FormGroup
                     className={classes['form-input-md']}
                     labelClassName={classes['form-input-label']}
-                    value={''}
-                    onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                    value={state.otras_profesiones}
+                    onChange={(e) => { onFormChange({ otras_profesiones: e.currentTarget.value }) }}
                 />
                 <AddButton text='Agregar otra' onClick={() => { console.log('hola'); }} />
             </Grid>
@@ -248,8 +318,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             id="embarazo-radio"
                             options={['si', 'no']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                            value={state.nombre}
-                            onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                            value={state.embarazo.tiene_embarazo}
+                            onChange={(e) => {
+                                onFormChange({
+                                    embarazo: {
+                                        ...state.embarazo,
+                                        tiene_embarazo: e.currentTarget.value
+                                    }
+                                })
+                            }}
                             label=''
                         />
 
@@ -260,8 +337,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 style={{ margin: '0px 0px 0px 10px' }}
                                 className={classes['form-input-md']}
                                 labelClassName={classes['form-input-label']}
-                                value={''}
-                                onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                                value={`${state.embarazo.meses}`}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        embarazo: {
+                                            ...state.embarazo,
+                                            meses: parseInt(e.currentTarget.value)
+                                        }
+                                    })
+                                }}
                             />
                         </MContainer>
 

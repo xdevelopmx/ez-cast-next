@@ -7,7 +7,7 @@ interface Props {
     id: string,
     label?: string,
     options: string[],
-    onChange?: ChangeEventHandler<HTMLInputElement>;
+    onChange?: (e: boolean, i: number) => void;
     values: boolean[];
     style?: CSSProperties,
     labelStyle?: CSSProperties,
@@ -41,7 +41,7 @@ export const MCheckboxGroup: FC<Props> = ({ direction, title, titleStyle, onAllO
                         const value = values[i];
                         return <FormControlLabel className={labelClassName} style={labelStyle} key={i}
                             control={
-                                <Checkbox checked={(value && value === true) ? value : false} onChange={onChange} style={style} />
+                                <Checkbox checked={(value && value === true) ? value : false} onChange={onChange ? (e) => onChange(e.target.checked, i) : () => { console.log('nothing'); }} style={style} />
                             } label={e} />
                     })}
                 </MContainer>
