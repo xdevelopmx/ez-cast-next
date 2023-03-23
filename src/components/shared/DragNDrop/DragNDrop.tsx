@@ -38,11 +38,13 @@ function DragNDrop(props: Props) {
 
     useEffect(() => {
         files.clear();
-        props.files.forEach(f => {
-            console.log(f);
-            files.set(`${f.file.name}-${f.file.size}-${f.file.type}`, f.file);
-        })
-        setFiles(new Map(files));
+        if (props.files) {
+            props.files.forEach(f => {
+                console.log(f);
+                files.set(`${f.file.name}-${f.file.size}-${f.file.type}`, f.file);
+            })
+            setFiles(new Map(files));
+        }
     }, [props.files]);
 
     const handleChange = (selected_files: File[]) => {
@@ -81,6 +83,7 @@ function DragNDrop(props: Props) {
             }
         }
         setFiles(new Map(files));
+        props.onChange(Array.from(files.values()));
     }
     return (
         <MotionDiv style={{display: 'flex', flexDirection: 'column', maxWidth: 300}} show={true} animation="fade">

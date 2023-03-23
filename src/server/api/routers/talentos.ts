@@ -19,6 +19,7 @@ function exclude<Talentos, Key extends keyof Talentos>(
 	}
 	return talento
   }
+  // /uploads/talentos/5/fotos-perfil/FOTO_PERFIL/002.png
 
 export const TalentosRouter = createTRPCRouter({
     getAll: publicProcedure
@@ -45,6 +46,11 @@ export const TalentosRouter = createTRPCRouter({
 					habilidades: true,
 					representante: true,
 					redes_sociales: true,
+					media: {
+						include: {
+							media: true
+						}
+					},
 					activos: {
 						include: {
 							vehiculos: {
@@ -76,7 +82,8 @@ export const TalentosRouter = createTRPCRouter({
 								include: {
 									tipo_equipo_deportivo: true
 								}
-							}
+							},
+							
 						}
 					}
 				}
@@ -339,24 +346,27 @@ export const TalentosRouter = createTRPCRouter({
 			fotos: z.array(
 				z.object({
 					base64: z.string(),
-					extension: z.string(),
+					nombre: z.string(),
+					identificador: z.string(),
 				}
 			)),
 			videos: z.array(
 				z.object({
 					base64: z.string(),
-					extension: z.string(),
+					nombre: z.string(),
+					identificador: z.string(),
 				}
 			)),
 			audios: z.array(
 				z.object({
 					base64: z.string(),
-					extension: z.string(),
+					nombre: z.string(),
+					identificador: z.string(),
 				}
 			)),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('INPUT: ', input)
+			console.log('INPUT SAVE MEDIOS: ', input)
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				if (input.fotos.length === 0) {
@@ -379,124 +389,144 @@ export const TalentosRouter = createTRPCRouter({
 						media: true
 					}
 				})
-				/*
+				
 				const ids_to_delete = await Promise.all(media_por_talentos_to_be_deleted.map(async (m) => {
-					const media_por_talentos = JSON.parse(JSON.stringify(m));
-					const deleted_file = await FileManager.deleteFile(media_por_talentos.Media.path);
+
+					const deleted_file = await FileManager.deleteFile(m.media.path);
 					if (deleted_file.error) {
 						console.log(deleted_file.error);
 					}
 					return m.id;
 				}));
-				/*
-				
-				
-				
-				saveMedia: async (req, res) => {
-					const { body, files } = req;
-			
-					console.log(files);
-				
-					if (!body.media) {
-						return res.status(400).json({status: 'error', msg: 'No se envio los medias en la peticion', detailed_msg: ''});
-					}
-			
-					if (!files) {
-						return res.status(400).json({status: 'error', msg: 'No se enviaron los archivos en la peticion', detailed_msg: ''});
-					}
-					
-					const tx = await db.transaction();
-			
-					const update_result = await funcHandler(async() => {
-						const media_arr = JSON.parse(body.media);
-						const referencias_to_delete = JSON.parse(body.references_to_delete);
-			
-						if (referencias_to_delete.length > 0) {
-							const media_por_talentos_to_be_deleted = await MediaPorTalentos.findAll({
-								where: {
-									referencia: {
-										[Op.in]: referencias_to_delete 
-									},
-									id_talento: parseInt(body.id_talento)
-								},
-								include: {
-									model: Media,
-									as: 'Media'
-								}
-							});
-							await Promise.all(media_por_talentos_to_be_deleted.map(async (m) => {
-								const media_por_talentos = JSON.parse(JSON.stringify(m));
-								const deleted_file = await fileManager.deleteFile(media_por_talentos.Media.path);
-								if (deleted_file.error) {
-									throw new Error(deleted_file.error.detailed_msg);
-								}
-								return await m.destroy();
-							}));
-						}
-			
-						const talento = await Talentos.findByPk(body.id_talento);
-						if (!talento) throw new Error('No se encontro el talento con ese id'); 
-						
-						const saved_medias = await Promise.all(media_arr.map(async (m) => {
-							/*
-								referencia: 'VIDEOS_TALENTO',
-								identificador: `VIDEO_${key}`,
-								nombre: file.name,
-								pathname: `talentos/${this.talento_profile?.id}/videos-perfil/`
-							*/
 
-							/*
-							if (m.identificador === 'FOTO_PERFIL') {
-								if (talento.dataValues.profile_img_url) {
-									const deleted_file = await fileManager.deleteFile(talento.dataValues.profile_img_url);
-									if (deleted_file.error) {
-										throw new Error(deleted_file.error.detailed_msg);
-									}
-								}
-							}
-							let name_exploded = m.nombre.split('.');
-							let extension = name_exploded[name_exploded.length - 1];
-							name_exploded.splice(name_exploded.length - 1)
-							let name = `${name_exploded.join('_')}.${extension}`;                    
-							const saved_file = await fileManager.saveFile(m.identificador, files[m.identificador], `${m.pathname}`);
-			
-							if (saved_file.error) {
-								throw new Error(saved_file.error.toString());
-							}
-							const file_path = `/uploads/${m.pathname}${saved_file.result}`;
-			
-							if (m.identificador === 'FOTO_PERFIL') {
-								await talento.update({profile_img_url: file_path});
-							}
-			
-							const n_media = Media.build({
-								nombre: name,
-								extension: extension,
-								path: file_path
-							});
-							const result_save = await n_media.save();
-							return {media: result_save, media_request: m};
-						}));
-			
-						return await Promise.all(saved_medias.map(async (entry) => {
-							const n_media = MediaPorTalentos.build({
-								referencia: entry.media_request.referencia,
-								identificador: entry.media_request.identificador,
-								id_media: entry.media.dataValues.id,
-								id_talento: body.id_talento
-							});
-							return await n_media.save();
-						}));
-					});
-					if (update_result.error) {
-						await tx.rollback();
-						return res.status(500).json(update_result.error);
+				await ctx.prisma.mediaPorTalentos.deleteMany({
+					where: {
+						id: {
+							in: ids_to_delete
+						}
 					}
-					await tx.commit();
-					res.json({status: 'success', msg: 'Se guardo los media con exito', detailed_msg: '', data: update_result.result});
-				},
+				});
+
+
+
+				/*
+					referencia: 'VIDEOS_TALENTO',
+					identificador: `VIDEO_${key}`,
+					nombre: file.name,
+					pathname: `talentos/${this.talento_profile?.id}/videos-perfil/`
 				*/
-				return null;
+				/*
+				if (m.identificador === 'FOTO_PERFIL') {
+					if (talento.dataValues.profile_img_url) {
+						const deleted_file = await fileManager.deleteFile(talento.dataValues.profile_img_url);
+						if (deleted_file.error) {
+							throw new Error(deleted_file.error.detailed_msg);
+						}
+					}
+				}
+				*/
+				if (input.fotos.length > 0) {
+					const uploaded_fotos_result = await Promise.all(input.fotos.map(async (foto) => {
+						const name_exploded = foto.nombre.split('.');
+						const extension = name_exploded[name_exploded.length - 1];
+						name_exploded.splice(name_exploded.length - 1);
+						if (extension) {
+
+							const name = `${name_exploded.join('_')}.${extension}`;      
+							
+							const save_result = await FileManager.saveFile(`${foto.identificador}.${extension}`, foto.base64, `talentos/${user.id}/fotos-perfil/`);
+							if (!save_result.error) {
+								const saved_media = await ctx.prisma.media.create({
+									data: {
+										nombre: name,
+										extension: extension,
+										path: save_result.result
+									}
+								})
+								const saved_media_por_talento = await ctx.prisma.mediaPorTalentos.create({
+									data: {
+										referencia: 'FOTOS_PERFIL',
+										identificador: foto.identificador,
+										id_media: saved_media.id,
+										id_talento: parseInt(user.id)
+									}
+								})
+								return (saved_media_por_talento);
+							}
+						}
+						return false;
+					}));
+					console.log('saved_fotos', uploaded_fotos_result);
+				}
+
+				if (input.audios.length > 0) {
+					const uploaded_audios_result = await Promise.all(input.fotos.map(async (audio) => {
+						const name_exploded = audio.nombre.split('.');
+						const extension = name_exploded[name_exploded.length - 1];
+						name_exploded.splice(name_exploded.length - 1);
+						if (extension) {
+
+							const name = `${name_exploded.join('_')}.${extension}`;      
+							
+							const save_result = await FileManager.saveFile(`${audio.identificador}.${extension}`, audio.base64, `talentos/${user.id}/audios-perfil/`);
+							if (!save_result.error) {
+								const saved_media = await ctx.prisma.media.create({
+									data: {
+										nombre: name,
+										extension: extension,
+										path: save_result.result
+									}
+								})
+								const saved_media_por_talento = await ctx.prisma.mediaPorTalentos.create({
+									data: {
+										referencia: 'AUDIOS_PERFIL',
+										identificador: audio.identificador,
+										id_media: saved_media.id,
+										id_talento: parseInt(user.id)
+									}
+								})
+								return (saved_media_por_talento);
+							}
+						}
+						return false;
+					}));
+					console.log('saved_audios', uploaded_audios_result);
+				}
+
+				if (input.videos.length > 0) {
+					const uploaded_videos_result = await Promise.all(input.fotos.map(async (video) => {
+						const name_exploded = video.nombre.split('.');
+						const extension = name_exploded[name_exploded.length - 1];
+						name_exploded.splice(name_exploded.length - 1);
+						if (extension) {
+
+							const name = `${name_exploded.join('_')}.${extension}`;      
+							
+							const save_result = await FileManager.saveFile(`${video.identificador}.${extension}`, video.base64, `talentos/${user.id}/videos-perfil/`);
+							if (!save_result.error) {
+								const saved_media = await ctx.prisma.media.create({
+									data: {
+										nombre: name,
+										extension: extension,
+										path: save_result.result
+									}
+								})
+								const saved_media_por_talento = await ctx.prisma.mediaPorTalentos.create({
+									data: {
+										referencia: 'VIDEOS_PERFIL',
+										identificador: video.identificador,
+										id_media: saved_media.id,
+										id_talento: parseInt(user.id)
+									}
+								})
+								return (saved_media_por_talento);
+							}
+						}
+						return false;
+					}));
+					console.log('saved_videos', uploaded_videos_result);
+				}
+				return true;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',

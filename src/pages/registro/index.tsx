@@ -11,6 +11,8 @@ import { MStepper } from "~/components/shared/MStepper";
 import { TipoCobro, TipoMembresia, TipoUsuario } from "~/enums";
 import { api } from "~/utils/api";
 import useLang from "~/hooks/useLang";
+import { useRouter } from 'next/navigation';
+import useNotify from "~/hooks/useNotify";
 
 type CreateUserForm = {
 	tipo_usuario: TipoUsuario,
@@ -67,8 +69,18 @@ const RegistroPage: NextPage = () => {
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
+	const {notify} = useNotify();
+
+	const router = useRouter();
+
 	const create_user = api.auth.createUser.useMutation({
 		onSuccess(input) {
+			switch (state.tipo_usuario) {
+				case 'talento': {
+					router.push('/talento/dashboard');
+				}
+			}
+			notify('success', 'Autenticacion Exitosa');
 			console.log('Se guardo con exito', input);
 		},
 		onError: (error) => {
@@ -126,7 +138,6 @@ const RegistroPage: NextPage = () => {
 							</svg>
 							&nbsp;&nbsp;REGRESAR A INFORMACIÓN EZ-CAST
 						</Link>
-						{JSON.stringify(texts)}
 						<Box sx={{ width: '100%' }}>
 							<br />
 							<div style={{width: '200px', margin: '0 auto'}}>

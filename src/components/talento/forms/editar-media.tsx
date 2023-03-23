@@ -12,17 +12,10 @@ import MotionDiv from '~/components/layout/MotionDiv';
 import ImageHorizontalList from '~/components/shared/ImageHorizontalList/ImageHorizontalList';
 import { DraggableContainer, Item } from '~/components/shared/DraggableList/DraggableContainer';
 import MCard from '~/components/shared/MCard/MCard';
+import { TalentoFormMedios } from '~/pages/talento/editar-perfil';
 
 interface Props {
-    state: {
-        nombre: string,
-        apellido: string,
-        usuario: string,
-        email: string,
-        contrasenia: string,
-        confirmacion_contrasenia: string,
-        fotos: Archivo[]
-    },
+    state: TalentoFormMedios,
     onFormChange: (input: { [id: string]: (string | number | number[] | Archivo[]) }) => void;
 }
 
@@ -131,12 +124,22 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-videos'
-                                files={[]}
+                                files={state.videos}
                                 filetypes={['MP4', 'MOV']}
                                 max_files={3}
                                 assign_selected_files_height
                                 onChange={(files: File[]) => {
-                                    console.log(files);
+                                    const files_converted = Promise.all(files.map(async (f) => { 
+                                        const base64 = await FileManagerFront.convertFileToBase64(f);
+                                        return {base64: base64, name: f.name, file: f};
+                                    }));
+                                    files_converted.then((files_conv) => {
+                                        console.log(files_conv)
+                                        onFormChange({videos: files_conv});
+                                    }).catch((err) => {
+                                        console.log(err);
+                                        onFormChange({videos: []});
+                                    });
                                 }}
                             />
                         </MContainer>
@@ -156,12 +159,21 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-audios'
-                                files={[]}
+                                files={state.audios}
                                 filetypes={['MP3', 'WAV']}
                                 max_files={3}
                                 assign_selected_files_height
                                 onChange={(files: File[]) => {
-                                    console.log(files);
+                                    const files_converted = Promise.all(files.map(async (f) => { 
+                                        const base64 = await FileManagerFront.convertFileToBase64(f);
+                                        return {base64: base64, name: f.name, file: f};
+                                    }));
+                                    files_converted.then((files_conv) => {
+                                        onFormChange({audios: files_conv});
+                                    }).catch((err) => {
+                                        console.log(err);
+                                        onFormChange({audios: []});
+                                    });
                                 }}
                             />
                         </MContainer>
