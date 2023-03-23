@@ -49,6 +49,7 @@ model Talentos {
   creditos        CreditosPorTalentos?
   habilidades     HabilidadesPorTalentos[]
   activos         ActivosPorTalentos?
+  preferencias    PreferenciasPorTalentos?
 }
 
 model RepresentantesPorTalentos {
@@ -251,14 +252,14 @@ model NSFWPorRoles {
 }
 
 model NSFWSeleccionadosPorRoles {
-  id              Int            @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   id_nsfw         Int
   id_nsfw_por_rol Int
-  nsfw_por_rol    NSFWPorRoles   @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
-  nsfw            CatalogoANSFW? @relation(fields: [id_nsfw], references: [id])
+  nsfw_por_rol    NSFWPorRoles  @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
+  nsfw            CatalogoNSFW? @relation(fields: [id_nsfw], references: [id])
 }
 
-model CatalogoANSFW {
+model CatalogoNSFW {
   id                        Int                         @id
   nombre                    String
   NSFWSeleccionadosPorRoles NSFWSeleccionadosPorRoles[]
@@ -395,13 +396,14 @@ model CatalogoIdiomas {
 }
 
 model CatalogoEstadosRepublica {
-  id                      Int                     @id @default(autoincrement())
+  id                      Int                               @id @default(autoincrement())
   es                      String
   en                      String
   info_basica_por_talento InfoBasicaPorTalentos[]
   requisitos_por_roles    RequisitosPorRoles[]
   casting_por_roles       CastingPorRoles[]
   filmacion_por_roles     FilmacionPorRoles[]
+  locaciones_preferencias LocacionesPrerenciasPorTalentos[]
 }
 
 model MediosMultimediaPorRoles {
@@ -489,6 +491,70 @@ model CatalogoTipoEquipoDeportivo {
   equipo_deportivo_talento EquipoDeportivoTalento[]
 }
 
+model PreferenciasPorTalentos {
+  id                              Int                               @id @default(autoincrement())
+  interesado_en_trabajos_de_extra Boolean
+  id_talento                      Int                               @unique
+  talento                         Talentos                          @relation(fields: [id_talento], references: [id])
+  nombre_agente                   String?
+  contacto_agente                 String?
+  meses_embarazo                  Int?
+  tipos_de_trabajo                TiposDeTrabajoPorTalentos[]
+  interes_en_proyectos            InteresEnProyectosPorTalentos[]
+  locaciones                      LocacionesPrerenciasPorTalentos[]
+  documentos                      DocumentosPorTalentos[]
+  disponibilidades                DisponibilidadesPorTalentos[]
+  otras_profesiones               OtrasProfesionesPorTalentos[]
+}
+
+model OtrasProfesionesPorTalentos {
+  id                           Int                     @id @default(autoincrement())
+  id_preferencias_por_talentos Int
+  descripcion                  String
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id])
+}
+
+model DisponibilidadesPorTalentos {
+  id                           Int                        @id @default(autoincrement())
+  id_preferencias_por_talentos Int
+  id_disponibilidad            Int
+  disponibilidad               CatalogoTipoDisponibilidad @relation(fields: [id_disponibilidad], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos    @relation(fields: [id_preferencias_por_talentos], references: [id])
+}
+
+model DocumentosPorTalentos {
+  id                           Int                     @id @default(autoincrement())
+  id_preferencias_por_talentos Int
+  id_documento                 Int
+  descripcion                  String
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id])
+}
+
+model LocacionesPrerenciasPorTalentos {
+  id                           Int                      @id @default(autoincrement())
+  id_preferencias_por_talentos Int
+  es_principal                 Boolean
+  id_estado_republica          Int
+  preferencias_por_talentos    PreferenciasPorTalentos  @relation(fields: [id_preferencias_por_talentos], references: [id])
+  estado_republica             CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+}
+
+model InteresEnProyectosPorTalentos {
+  id                           Int                          @id @default(autoincrement())
+  id_preferencias_por_talentos Int
+  id_interes_en_proyecto       Int
+  intereses_en_proyectos       CatalogoTipoInteresProyectos @relation(fields: [id_interes_en_proyecto], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos      @relation(fields: [id_preferencias_por_talentos], references: [id])
+}
+
+model TiposDeTrabajoPorTalentos {
+  id                           Int                     @id @default(autoincrement())
+  id_preferencias_por_talentos Int
+  id_tipo_de_trabajo           Int
+  tipos_de_trabajo             CatalogoTipoTrabajo     @relation(fields: [id_tipo_de_trabajo], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id])
+}
+
 model ActivosPorTalentos {
   id               Int                      @id @default(autoincrement())
   id_talento       Int                      @unique
@@ -552,19 +618,14 @@ model EquipoDeportivoTalento {
 }
 
 model CatalogoTipoTrabajo {
-  id                  Int @id
-  es String
-  en String
+  id                             Int                         @id
+  es                             String
+  en                             String
+  tipos_de_trabajos_por_talentos TiposDeTrabajoPorTalentos[]
 }
 
 model CatalogoTipoDocumentos {
-  id                  Int @id
-  es String
-  en String
-}
-
-model CatalogoTipoDisponibilidad {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
@@ -572,49 +633,63 @@ model CatalogoTipoDisponibilidad {
 //Catalogos de 
 
 model CatalogoInteresProyectos {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoColorCabello {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoEstiloCabello {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoVelloFacial {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoColorOjos {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoTatuajes {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoLugarPiercing {
-  id                  Int @id
+  id Int    @id
   es String
   en String
 }
 
 model CatalogoParticularidades {
-  id                  Int @id
+  id Int    @id
   es String
   en String
+}
+
+model CatalogoTipoDisponibilidad {
+  id                            Int                           @id
+  es                            String
+  en                            String
+  disponibilidades_por_talentos DisponibilidadesPorTalentos[]
+}
+
+model CatalogoTipoInteresProyectos {
+  id                       Int                             @id
+  es                       String
+  en                       String
+  tipo_intereses_proyectos InteresEnProyectosPorTalentos[]
 }

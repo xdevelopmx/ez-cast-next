@@ -45,7 +45,7 @@ export type TalentoFormInfoGral = {
     redes_sociales: { [nombre: string]: string }
 }
 
-type TalentoFormMedios = {
+export type TalentoFormMedios = {
     fotos: Archivo[],
     videos: Archivo[],
     audios: Archivo[]
@@ -191,7 +191,7 @@ export type FiltrosAparienciaForm = {
 
 type TalentoForm = {
     info_gral: TalentoFormInfoGral,
-    medios?: TalentoFormMedios,
+    medios: TalentoFormMedios,
     creditos: TalentoFormCreditos,
     habilidades: TalentoFormHabilidades,
     activos: TalentoFormActivos,
@@ -221,6 +221,11 @@ const initialState: TalentoForm = {
                 carta_responsiva: null
             }
         }
+    },
+    medios: {
+        fotos: [],
+        videos: [],
+        audios: []
     },
     creditos: {
         mostrar_anio_en_perfil: false,
@@ -378,6 +383,18 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         }
     });
 
+    const saveMedios = api.talentos.saveMedios.useMutation({
+		onSuccess(input) {
+            notify('success', 'Se guardaron los archivos con exito');
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            talento.refetch();
+		},
+		onError: (error) => {
+            console.log(error);
+            notify('error', error.message);
+		}
+	});
+
     const saveCreditos = api.talentos.saveCreditos.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo los creditos con exito');
@@ -410,7 +427,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             notify('error', error.message);
         }
     });
-
 
     useEffect(() => {
         if (talento.data) {
@@ -577,6 +593,17 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                                     });
                                     break;
                                 }
+                                    
+                                case 2: {
+                                    console.log(state.medios);
+                                    saveMedios.mutate({
+                                        fotos: state.medios.fotos.map((a, i) => { return {nombre: a.file.name, base64: a.base64, identificador: (i === 0) ? 'FOTO_PERFIL' : `FOTO_${i}`}}),
+                                        audios: state.medios.audios.map((a, i) => { return {nombre: a.file.name, base64: a.base64, identificador: `AUDIO_${i}`}}),
+                                        videos: state.medios.videos.map((a, i) => { return {nombre: a.file.name, base64: a.base64, identificador: `VIDEO_${i}`}})
+                                    })
+
+                                    break;
+                                }
 
                                 case 3: {
                                     saveCreditos.mutate({
@@ -622,21 +649,14 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                             7: 'Filtros de Apariencia'
                         }}
                     >
-                        <EditarInfoBasicaTalento
-                            state={state.info_gral}
+                        
+                       <EditarInfoBasicaTalento 
+                            state={state.info_gral} 
                             onFormChange={(input) => {
-                                dispatch({ type: 'update-info-gral', value: input });
-                            }}
+                                dispatch({type: 'update-info-gral', value: input});
+                            }} 
                         />
-                        <EditarMediaTalento state={{
-                            nombre: '',
-                            apellido: '',
-                            usuario: 'string',
-                            email: 'string',
-                            contrasenia: 'string',
-                            confirmacion_contrasenia: 'string',
-                            fotos: (state.medios) ? state.medios?.fotos : []
-                        }}
+                        <EditarMediaTalento state={state.medios}
                             onFormChange={(input) => {
                                 dispatch({ type: 'update-medios', value: input });
                             }} />

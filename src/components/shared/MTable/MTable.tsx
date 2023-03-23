@@ -22,7 +22,7 @@ interface MTableProps {
 
 export const MTable: FC<MTableProps> = ({
 	data, columnsHeader, headerClassName, headerStyles, backgroundColorData = 'lightgrey',
-	backgroundColorHeader = 'lightgrey', style = {}
+	backgroundColorHeader = '#4ab7c6', style = {}
 }) => {
 	return (
 		<AnimatePresence>
@@ -43,11 +43,12 @@ export const MTable: FC<MTableProps> = ({
 						</TableHead>
 					}
 
-					<TableBody style={{ backgroundColor: backgroundColorData }}>
+					<TableBody>
 						{data.length > 0 && data.map((row, i) => {
 							const row_values = Object.entries(row);
 							return (
 								<motion.tr
+									style={{ backgroundColor: (i % 2) ? backgroundColorData : 'white' }}
 									key={i}
 									layout
 									initial={{ opacity: 0, y: 100 }}

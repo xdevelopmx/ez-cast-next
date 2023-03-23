@@ -10,6 +10,8 @@ import { Link } from "@mui/material";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TipoUsuario } from "~/enums";
 import useLang from "~/hooks/useLang";
+import useNotify from "~/hooks/useNotify";
+import { useRouter } from 'next/navigation';
 
 type LoginForm = {
   user: string,
@@ -28,8 +30,10 @@ function reducer(state: LoginForm, action: {type: string, value: {[key: string]:
 const LoginPage: NextPage = () => {
 
     const texts = useLang('en');
+    const {notify} = useNotify();
+    const router = useRouter();
+    const [state, dispatch] = useReducer(reducer, {user: '', password: '', tipo_usuario: TipoUsuario.NO_DEFINIDO});
 
-  const [state, dispatch] = useReducer(reducer, {user: '', password: '', tipo_usuario: TipoUsuario.NO_DEFINIDO});
 
   return (
     <MotionDiv show={true} animation='down-to-up'>
@@ -66,7 +70,6 @@ const LoginPage: NextPage = () => {
                               id="password" />
                         </div>
                     </div>
-                    {JSON.stringify(texts)}
                     <p className="text-muted">Olvido contraseña? <Link href="/restablecer-contrasena" className="color_a">Restablecer</Link></p>
                     <p>Ingresar como</p>
 
@@ -109,8 +112,14 @@ const LoginPage: NextPage = () => {
                                 correo_usuario: state.user,
                                 redirect: false,
                             }).then(res => {
+                                if (res?.ok) {
+                                    notify('success', 'Autenticacion Exitosa');
+                                    router.push('/talento/dashboard');
+                                }
                                 console.log(res);
-                            }).catch(console.log);
+                            }).catch((err: Error) => {
+                                notify('error', err.message);
+                            });
                         }}>Log In</button>
                     </div>
 
