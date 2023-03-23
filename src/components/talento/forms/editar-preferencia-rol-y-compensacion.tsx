@@ -7,7 +7,7 @@ import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import Image from 'next/image';
 import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/shared';
-import { TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
+import { type TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
 
 

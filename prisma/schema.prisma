@@ -568,3 +568,53 @@ model CatalogoTipoDisponibilidad {
   es String
   en String
 }
+
+//Catalogos de 
+
+model CatalogoInteresProyectos {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoColorCabello {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoEstiloCabello {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoVelloFacial {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoColorOjos {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoTatuajes {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoLugarPiercing {
+  id                  Int @id
+  es String
+  en String
+}
+
+model CatalogoParticularidades {
+  id                  Int @id
+  es String
+  en String
+}

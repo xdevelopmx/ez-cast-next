@@ -165,6 +165,27 @@ export type TalentoFormPreferencias = {
     embarazo: {
         tiene_embarazo: string,
         meses: number
+    },
+}
+
+export type FiltrosAparienciaForm = {
+    rango_edad: {
+        rango_1: number,
+        rango_2: number
+    },
+    genero: string,
+    genero_interesado_interpretar: boolean[],
+    apariencia_etnica: string,
+
+    caracteristicas_cabello_ojos: {
+        id_color_cabello: number,
+        id_estilo_cabello: number,
+        id_vello_facial: number,
+        id_color_ojos: number,
+
+        dispuesto_cambiar_color_cabello: string,
+        dispuesto_cambiar_corte_cabello: string,
+        dispuesto_crecer_afeitar_vello_facial: string,
     }
 }
 
@@ -175,6 +196,7 @@ type TalentoForm = {
     habilidades: TalentoFormHabilidades,
     activos: TalentoFormActivos,
     preferencias: TalentoFormPreferencias,
+    filtros_apariencia: FiltrosAparienciaForm,
     step_active: number,
 }
 
@@ -263,19 +285,40 @@ const initialState: TalentoForm = {
             adicionales: []
         },
         interesado_trabajo_extra: 'no',
-        interes_proyectos: [false,false],
+        interes_proyectos: [false, false],
         agencia_representante: {
             tiene_agencia_representante: 'no',
             nombre: '',
             contacto: ''
         },
-        documentos: [false,false,false,false,false,false],
-        disponibilidad: [false,false,false,false,false,false,false,false,false,false,false,false],
+        documentos: [false, false, false, false, false, false],
+        disponibilidad: [false, false, false, false, false, false, false, false, false, false, false, false],
         otras_profesiones: '',
         embarazo: {
             tiene_embarazo: 'no',
             meses: 0
         }
+    },
+    filtros_apariencia: {
+        rango_edad: {
+            rango_1: 0,
+            rango_2: 0
+        },
+        genero: '',
+        genero_interesado_interpretar: [false, false, false, false, false],
+        apariencia_etnica: '',
+
+        caracteristicas_cabello_ojos: {
+            id_color_cabello: 0,
+            id_estilo_cabello: 0,
+            id_vello_facial: 0,
+            id_color_ojos: 0,
+
+            dispuesto_cambiar_color_cabello: 'no',
+            dispuesto_cambiar_corte_cabello: 'no',
+            dispuesto_crecer_afeitar_vello_facial: 'no',
+        }
+
     }
 }
 
@@ -301,6 +344,9 @@ function reducer(state: TalentoForm, action: { type: string, value: { [key: stri
         }
         case 'update-preferencia-rol': {
             return { ...state, preferencias: { ...state.preferencias, ...action.value } } as TalentoForm;
+        }
+        case 'update-filtros-apariencia': {
+            return { ...state, filtros_apariencia: { ...state.filtros_apariencia, ...action.value } } as TalentoForm;
         }
     }
     return { ...state };
@@ -616,14 +662,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                                 dispatch({ type: 'update-preferencia-rol', value: input });
                             }}
                         />
-                        <EditarFiltrosAparenciasTalento state={{
-                            nombre: '',
-                            apellido: '',
-                            usuario: 'string',
-                            email: 'string',
-                            contrasenia: 'string',
-                            confirmacion_contrasenia: 'string'
-                        }} onFormChange={() => { console.log('xd') }} />
+                        <EditarFiltrosAparenciasTalento
+                            state={state.filtros_apariencia}
+                            onFormChange={(input) => {
+                                console.log(input)
+                                dispatch({ type: 'update-filtros-apariencia', value: input });
+                            }}
+                        />
                     </MStepper>
                 </div>
             </MainLayout>

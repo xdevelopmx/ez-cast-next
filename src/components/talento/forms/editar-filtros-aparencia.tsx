@@ -4,21 +4,43 @@ import { AddButton, FormGroup, MCheckboxGroup, MRadioGroup, MSelect } from '~/co
 import { Alert, Divider, Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import classes from './talento-forms.module.css';
-
+import { type FiltrosAparienciaForm } from '~/pages/talento/editar-perfil';
+import { api } from '~/utils/api';
 
 interface Props {
-    state: {
-        nombre: string,
-        apellido: string,
-        usuario: string,
-        email: string,
-        contrasenia: string,
-        confirmacion_contrasenia: string
-    },
-    onFormChange: (input: { [id: string]: (string | number) }) => void;
+    state: FiltrosAparienciaForm,
+    onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
 export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state }) => {
+
+    const colores_cabello = api.catalogos.getColorCabello.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const estilos_cabello = api.catalogos.getEstiloCabello.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const vellos_facial = api.catalogos.getVelloFacial.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const colores_ojos = api.catalogos.getColorOjos.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const tatuajes = api.catalogos.getTatuajes.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const is_loading = colores_cabello.isFetching || estilos_cabello.isFetching || vellos_facial.isFetching || colores_ojos.isFetching || tatuajes.isFetching;
+
 
     return (
         <Grid container spacing={2}>
@@ -36,15 +58,29 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={''}
-                            onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                            value={`${state.rango_edad.rango_1}`}
+                            onChange={(e) => {
+                                onFormChange({
+                                    rango_edad: {
+                                        ...state.rango_edad,
+                                        rango_1: parseInt(e.currentTarget.value)
+                                    }
+                                })
+                            }}
                         />
                         <Typography>a</Typography>
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={''}
-                            onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                            value={`${state.rango_edad.rango_2}`}
+                            onChange={(e) => {
+                                onFormChange({
+                                    rango_edad: {
+                                        ...state.rango_edad,
+                                        rango_2: parseInt(e.currentTarget.value)
+                                    }
+                                })
+                            }}
                         />
                     </MContainer>
                 </MContainer>
@@ -60,8 +96,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         label='Género con el que se identifica'
                         className={classes['form-input-md']}
                         labelClassName={classes['form-input-label']}
-                        value={''}
-                        onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                        value={state.genero}
+                        onChange={(e) => { onFormChange({ genero: e.currentTarget.value }) }}
                     />
 
                     <MCheckboxGroup
@@ -69,15 +105,24 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             console.log('xd');
                         }}
                         direction='horizontal'
-                        title="Tipo de trabajo"
-                        onChange={(e) => {
-                            //onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
+                        title="Género interesado en interpretar"
+                        onChange={(e, i) => {
+                            onFormChange({
+                                genero_interesado_interpretar:
+                                    state.genero_interesado_interpretar
+                                        .map((value, index) => {
+                                            if (i === index) {
+                                                return e
+                                            }
+                                            return value
+                                        })
+                            })
                         }}
-                        id="mostrar-anio-perfil"
+                        id="genero-interesado-interpretar"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
                         labelClassName={classes['label-black-md']}
                         options={['Hombre', 'Persona no-binaria', 'Mujer trans', 'Mujer', 'Hombre trans']}
-                        values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                        values={state.genero_interesado_interpretar}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                 </MContainer>
             </Grid>
@@ -91,8 +136,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     label='Apariencia Étnica'
                     className={classes['form-input-md']}
                     labelClassName={classes['form-input-label']}
-                    value={''}
-                    onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                    value={state.apariencia_etnica}
+                    onChange={(e) => { onFormChange({ apariencia_etnica: e.currentTarget.value }) }}
                 />
             </Grid>
 
@@ -107,47 +152,65 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
                             <Typography>Color de Cabello</Typography>
                             <MSelect
+                                loading={is_loading}
                                 id='color-cabello'
-                                options={[]}
+                                options={(colores_cabello.isSuccess && colores_cabello.data) ? colores_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={`${state.caracteristicas_cabello_ojos.id_color_cabello}`}
+                                onChange={(e) => { onFormChange({ 
+                                    caracteristicas_cabello_ojos:{
+                                        ...state.caracteristicas_cabello_ojos,
+                                        id_color_cabello: parseInt(e.target.value) 
+                                    }
+                                }) }}
                             />
                         </MContainer>
 
                         <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
                             <Typography>Estilo de Cabello</Typography>
                             <MSelect
-                                id='estilo-cabello-hombre'
-                                options={[]}
+                                id='estilo-cabello'
+                                options={(estilos_cabello.isSuccess && estilos_cabello.data) ? estilos_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={`${state.caracteristicas_cabello_ojos.id_estilo_cabello}`}
+                                onChange={(e) => { onFormChange({ 
+                                    caracteristicas_cabello_ojos: {
+                                        ...state.caracteristicas_cabello_ojos,
+                                        id_estilo_cabello: parseInt(e.target.value) 
+                                    }
+                                }) }}
                             />
-                            {/**Posible condicional */}
-                            {/* <MSelect
-                                id='estilo-cabello-mujer'
-                                options={[]}
-                                style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
-                            /> */}
                         </MContainer>
 
                         <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
                             <Typography>Vello Facial</Typography>
                             <MSelect
                                 id='vello-facial'
-                                options={[]}
+                                options={(vellos_facial.isSuccess && vellos_facial.data) ? vellos_facial.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={`${state.caracteristicas_cabello_ojos.id_vello_facial}`}
+                                onChange={(e) => { onFormChange({ 
+                                    caracteristicas_cabello_ojos: {
+                                        ...state.caracteristicas_cabello_ojos,
+                                        id_vello_facial: parseInt(e.target.value) 
+                                    }
+                                }) }}
                             />
                         </MContainer>
 
                         <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
                             <Typography>Color de ojos</Typography>
                             <MSelect
-                                id='vello-facial'
-                                options={[]}
+                                id='color-ojos'
+                                options={(colores_ojos.isSuccess && colores_ojos.data) ? colores_ojos.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={`${state.caracteristicas_cabello_ojos.id_color_ojos}`}
+                                onChange={(e) => { onFormChange({ 
+                                    caracteristicas_cabello_ojos: {
+                                        ...state.caracteristicas_cabello_ojos,
+                                        id_color_ojos: parseInt(e.target.value) 
+                                    }
+                                }) }}
                             />
                         </MContainer>
 
@@ -161,7 +224,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 id="dispuesto-cambiar-color"
                                 options={['si', 'no']}
                                 labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                value={state.nombre}
+                                value={''}
                                 onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                                 label=''
                             />
@@ -173,7 +236,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 id="dispuesto-cambiar-corte"
                                 options={['si', 'no']}
                                 labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                value={state.nombre}
+                                value={''}
                                 onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                                 label=''
                             />
@@ -185,7 +248,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 id="dispuesto-cambiar-corte"
                                 options={['si', 'no']}
                                 labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                value={state.nombre}
+                                value={''}
                                 onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                                 label=''
                             />
@@ -210,7 +273,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         id="tiene-tatuajes-distintivos"
                         options={['si', 'no']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.nombre}
+                        value={''}
                         onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                         label=''
                     />
@@ -221,7 +284,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             id='visibilidad-tatuaje'
                             options={[]}
                             style={{ width: 250 }}
-                            value={state.nombre} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                            value={''} onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
                         />
                     </MContainer>
 
@@ -255,7 +318,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         id="tiene-piercing"
                         options={['si', 'no']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.nombre}
+                        value={''}
                         onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                         label=''
                     />
@@ -307,7 +370,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             id="eres-gemelo-trillizo"
                             options={['si', 'no']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                            value={state.nombre}
+                            value={''}
                             onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                             label=''
                         />
@@ -317,7 +380,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             id="especificacion-gemelo-trillizo"
                             options={['Ninguno', 'Gemelo Idéntico', 'Trillizos Idénticos', 'Otro']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                            value={state.nombre}
+                            value={''}
                             onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                             label=''
                         />

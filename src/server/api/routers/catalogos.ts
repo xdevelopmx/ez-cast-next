@@ -80,6 +80,41 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoTipoDisponibilidad.findMany();
 		}
 	),
+	getColorCabello: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoColorCabello.findMany();
+		}
+	),
+	getEstiloCabello: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoEstiloCabello.findMany();
+		}
+	),
+	getVelloFacial: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoVelloFacial.findMany();
+		}
+	),
+	getColorOjos: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoColorOjos.findMany();
+		}
+	),
+	getTatuajes: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTatuajes.findMany();
+		}
+	),
+	getLugarPiercing: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoLugarPiercing.findMany();
+		}
+	),
+	getParticularidades: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoParticularidades.findMany();
+		}
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";
