@@ -7,16 +7,10 @@ import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import Image from 'next/image';
 import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/shared';
+import { TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
 
 interface Props {
-    state: {
-        nombre: string,
-        apellido: string,
-        usuario: string,
-        email: string,
-        contrasenia: string,
-        confirmacion_contrasenia: string
-    },
+    state: TalentoFormPreferencias,
     onFormChange: (input: { [id: string]: (string | number) }) => void;
 }
 

@@ -25,6 +25,48 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoEstadosRepublica.findMany();
 		}
 	),
+	getTipoProyectos: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoProyectos.findMany();
+		}
+	),
+	getTipoVehiculos: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoVehiculos.findMany();
+		}
+	),
+	getTipoMascotas: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoMascota.findMany();
+		}
+	),
+	getTipoRazasMascotas: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoRazaMascota.findMany();
+		}
+	),
+	getTipoVestuarios: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoVestuario.findMany();
+		}
+	),
+	getTipoVestuarioEspecifico: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoVestuarioEspecifico.findMany();
+		}
+	),
+	getTipoProps: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoProps.findMany();
+		}
+	),
+	getTipoEquipoDeportivo: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoEquipoDeportivo.findMany();
+		}
+	),
+	
+	
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

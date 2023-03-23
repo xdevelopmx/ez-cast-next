@@ -18,7 +18,8 @@ interface Props {
     max_files?: number,
     hide_selected?: boolean,
     assign_selected_files_height?: boolean,
-    onChange: (files: File[]) => void
+    onChange: (files: File[]) => void,
+    show_download_url?: string
 }
 
 function DragNDrop(props: Props) {
@@ -84,6 +85,11 @@ function DragNDrop(props: Props) {
     return (
         <MotionDiv style={{display: 'flex', flexDirection: 'column', maxWidth: 300}} show={true} animation="fade">
             <>
+                {props.show_download_url &&
+                    <Button size='small' className='font-weight-bold color_a' onClick={() => {
+                        window.open(props.show_download_url)
+                    }} variant="text">Descargar Archivo</Button>
+                }
                 <FileUploader classes={`root ${props.id}`} multiple handleChange={handleChange} name="file" types={props.filetypes} >
                     <div className="form-group">
                         <MotionDiv show={error != null} animation="fade">
@@ -110,8 +116,6 @@ function DragNDrop(props: Props) {
                                 <p className="mb-1">{`Acepta ${props.filetypes.join(', ')}`}</p>
                                 <div className="btn btn-intro"><Image width={18} height={18} src="/assets/img/iconos/cruz_blue.svg" alt="icono" className="mr-2" /> Subir Archivo(s)
                                 </div>
-                                
-
                                 <p className="mb-1 txt_arrastrar">{`Arrastrar archivo(s) al recuadro ${(props.max_files) ? '(Hasta ' + props.max_files.toString() + ' archivos)' : ''}`}</p>
                             </div>
                         </div>

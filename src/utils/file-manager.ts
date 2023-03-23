@@ -10,6 +10,7 @@ export const FileManager = {
             if (name) {
                 const extension = exploded_filename[exploded_filename.length - 1];
                 if (extension) {
+                    console.log(extension)
                     if (!VALID_EXTENSIONS.includes(extension.toLowerCase())) {
                         return {result: null, error: new Error('Archivo con extension invalida')};     
                     }

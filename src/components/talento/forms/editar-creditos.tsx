@@ -9,9 +9,10 @@ import { MCheckboxGroup } from '~/components/shared/MCheckboxGroup';
 import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormCreditos } from '~/pages/talento/editar-perfil';
 import { Delete, Star } from '@mui/icons-material';
+import { api } from '~/utils/api';
 
 interface Props {
-    state?: TalentoFormCreditos,
+    state: TalentoFormCreditos,
     onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
@@ -22,7 +23,7 @@ const YEARS = Array.from({ length: 100 }).map((value: unknown, i: number) => {
 }).sort((a, b) => parseInt(b.value) - parseInt(a.value));
 
 export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
-    console.log(YEARS);
+    const tipo_proyecto = api.catalogos.getTipoProyectos.useQuery();
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} my={2}>
@@ -31,13 +32,32 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                 </Typography>
             </Grid>
             <Grid item mr={4} xs={12} md={4} lg={2}>
-                <FormGroup className={classes['form-input-md']} labelClassName={classes['form-input-label']} value={(state) ? state.tipo_proyecto : ''} onChange={(e) => { onFormChange({ tipo_proyecto: e.currentTarget.value }) }} label='Tipo de proyecto' />
+                <MSelect 
+                    id="tipo-proyecto-select"
+                    loading={tipo_proyecto.isFetching}
+                    options={(tipo_proyecto.data) ? tipo_proyecto.data.map(tipo => { return {value: tipo.id.toString(), label: tipo.es} }) : []}
+                    style={{ width: '200px' }} 
+                    value={state.tipo_proyecto.toString()}
+                    onChange={(e) => { 
+                        onFormChange({ tipo_proyecto: parseInt(e.target.value)}) 
+                    }} 
+                    label='Tipo Proyecto' 
+                />
             </Grid>
             <Grid item mr={4} xs={12} md={4} lg={2}>
                 <FormGroup className={classes['form-input-md']} labelClassName={classes['form-input-label']} value={(state) ? state.titulo : ''} onChange={(e) => { onFormChange({ titulo: e.currentTarget.value }) }} label='Título' />
             </Grid>
             <Grid item mr={4} xs={12} md={4} lg={2}>
-                <FormGroup className={classes['form-input-md']} labelClassName={classes['form-input-label']} value={(state) ? state.rol : ''} onChange={(e) => { onFormChange({ rol: e.currentTarget.value }) }} label='Rol' />
+                <MSelect 
+                    id="tipo-rol-select"
+                    options={[{value: 'PRINCIPAL', label: 'PRINCIPAL'}, {value: 'EXTRA', label: 'EXTRA'}]}
+                    style={{ width: '200px' }} 
+                    value={state.rol}
+                    onChange={(e) => { 
+                        onFormChange({ rol: e.target.value}) 
+                    }} 
+                    label='Rol' 
+                />
             </Grid>
             <Grid item mr={4} xs={12} md={4} lg={2}>
                 <FormGroup className={classes['form-input-md']} labelClassName={classes['form-input-label']} value={(state) ? state.director : ''} onChange={(e) => { onFormChange({ director: e.currentTarget.value }) }} label='Director' />
@@ -55,15 +75,16 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                     />
                     <a onClick={() => {
                         if (state) {
-                            if (state.tipo_proyecto.length > 0 && state.titulo.length > 0 && state.rol.length > 0 && state.director.length > 0 && state.anio > 0 ) {
+                            if (state.tipo_proyecto > 0 && state.titulo.length > 0 && state.rol.length > 0 && state.director.length > 0 && state.anio > 0 ) {
                                 onFormChange({ creditos: state.creditos.concat([{
                                     id: state.creditos.length + 1,
+                                    id_catalogo_proyecto: state.tipo_proyecto,
                                     titulo: state.titulo,
                                     rol: state.rol,
                                     director: state.director,
                                     anio: state.anio,
-                                    credito_destacado: false,
-                                    clip: ''
+                                    destacado: false,
+                                    clip_url: ''
                                 }]) })
                             } else {
                                 console.error('NO SE HAN LLENADO LOS CAMPOS');
@@ -122,12 +143,12 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             director: credito.director, 
                             anio: credito.anio, 
                             credito: <IconButton 
-                                style={{color: (credito.credito_destacado) ? 'gold' : 'gray'}} 
+                                style={{color: (credito.destacado) ? 'gold' : 'gray'}} 
                                 aria-label="marcar como"
                                 onClick={() => {
                                     onFormChange({ creditos: state.creditos.map(c => {
                                         if (c.id === credito.id) {
-                                            c.credito_destacado = !credito.credito_destacado;
+                                            c.destacado = !credito.destacado;
                                         }
                                         return c;
                                     })})

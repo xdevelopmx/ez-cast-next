@@ -8,7 +8,7 @@ import { type TalentoFormHabilidades } from '~/pages/talento/editar-perfil';
 import { MContainer } from '~/components/layout/MContainer';
 
 interface EditarHabilidadesTalentoPageProps {
-    state?: TalentoFormHabilidades,
+    state: TalentoFormHabilidades,
     onFormChange: (input: {[id: string]: unknown}) => void;
 }
 

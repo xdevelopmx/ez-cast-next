@@ -49,7 +49,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
             }
         }
         return {id: 0, descripcion: ''};
-    }, [state?.union, uniones.data]);
+    }, [state.union, uniones.data]);
 
     return (
         <Grid container spacing={2}>
@@ -83,7 +83,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                             labelClassName={classes['form-input-label']} 
                             value={union_selected.descripcion} 
                             onChange={(e) => { 
-                                onFormChange({ union: {...state?.union, descripcion: e.currentTarget.value }}) 
+                                onFormChange({ union: {...state.union, descripcion: e.currentTarget.value }}) 
                             }} 
                             label='Nombre Unión' 
                         />
@@ -176,8 +176,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                 <MotionDiv show={(state) ? state.edad < 18 : false} animation='fade'>
                     <DragNDrop
                         id='id-drag-n-drop-carta-responsiva'
+                        show_download_url={(state.files.urls.carta_responsiva) ? state.files.urls.carta_responsiva : undefined}
                         label='Carta Responsiva'
-                        files={(state && state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
+                        files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => { 
@@ -185,10 +186,11 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 return {base64: base64, name: f.name, file: f};
                             }));
                             files_converted.then((files_conv) => {
-                                onFormChange({ files: {...state?.files, carta_responsiva: files_conv[0]} }) 
+                                console.log(files_conv)
+                                onFormChange({ files: {...state.files, carta_responsiva: files_conv[0]} }) 
                             }).catch((err) => {
                                 console.log(err);
-                                onFormChange({ files: {...state?.files, carta_responsiva: undefined} }) 
+                                onFormChange({ files: {...state.files, carta_responsiva: undefined} }) 
                             });
                         }}
                     />
@@ -207,7 +209,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                             <p>Peso</p>
                             <FormGroup 
                                 style={{ marginLeft: 8, width: 64 }} 
-                                value={(state) ? state.edad.toString() : ''} 
+                                value={state.peso.toString()} 
                                 onChange={(e) => { 
                                     onFormChange({ peso: parseInt(e.currentTarget.value) }) 
                                 }} 
@@ -220,7 +222,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                             <p>Altura</p>
                             <FormGroup 
                                 style={{ marginLeft: 8, width: 64 }} 
-                                value={(state) ? state.altura.toString() : ''}
+                                value={state.altura.toString()}
                                 onChange={(e) => { 
                                     onFormChange({ altura: parseInt(e.currentTarget.value) }) 
                                 }} 
@@ -251,8 +253,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
             <Grid item xs={12} md={4} className='mt-4' justifyContent={'end'}>
                 <DragNDrop
                     id='id-drag-n-drop-cv'
+                    show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
                     label='CV'
-                    files={(state && state.files && state.files.cv) ? [state.files.cv] : []}
+                    files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
                     onChange={(files: File[]) => {
                         const files_converted = Promise.all(files.map(async (f) => { 
@@ -260,10 +263,10 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                             return {base64: base64, name: f.name, file: f};
                         }));
                         files_converted.then((files_conv) => {
-                            onFormChange({ files: {...state?.files, cv: files_conv[0]} }) 
+                            onFormChange({ files: {...state.files, cv: files_conv[0]} }) 
                         }).catch((err) => {
                             console.log(err);
-                            onFormChange({ files: {...state?.files, cv: undefined} }) 
+                            onFormChange({ files: {...state.files, cv: undefined} }) 
                         });
                     }}
                 />
@@ -278,9 +281,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
                     </MContainer>
                     <FormGroup 
                         className={classes['form-input-md']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.pagina_web : ''} 
+                        value={(state.redes_sociales) ? state.redes_sociales.pagina_web : ''} 
                         onChange={(e) => { 
-                           onFormChange({ redes_sociales: {...state?.redes_sociales, pagina_web: e.target.value }}) 
+                           onFormChange({ redes_sociales: {...state.redes_sociales, pagina_web: e.target.value }}) 
                         }} 
                     />
                 </MContainer>
