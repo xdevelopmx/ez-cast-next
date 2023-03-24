@@ -147,18 +147,22 @@ export type TalentoFormActivos = {
 }
 
 export type TalentoFormPreferencias = {
-    tipo_trabajo: boolean[],
+
+    preferencias: {
+        interesado_en_trabajos_de_extra: boolean,
+        nombre_agente: string,
+        contacto_agente: string,
+        meses_embarazo: number,
+    },
+
+    tipo_trabajo: number[],
+    interes_en_proyectos: number[],
+
     locaciones: {
         principal: number;
         adicionales: number[];
     },
-    interesado_trabajo_extra: string,
-    interes_proyectos: boolean[],
-    agencia_representante: {
-        tiene_agencia_representante: string,
-        nombre: string,
-        contacto: string
-    },
+
     documentos: boolean[],
     disponibilidad: boolean[],
     otras_profesiones: string,
@@ -284,18 +288,23 @@ const initialState: TalentoForm = {
         equipos_deportivos: []
     },
     preferencias: {
-        tipo_trabajo: [false, false, false, false, false],
+
+        preferencias: {
+            interesado_en_trabajos_de_extra: false,
+            nombre_agente: '',
+            contacto_agente: '',
+            meses_embarazo: 0
+        },
+        tipo_trabajo: [],
+        interes_en_proyectos: [],
+
+
         locaciones: {
             principal: 0,
             adicionales: []
         },
-        interesado_trabajo_extra: 'no',
-        interes_proyectos: [false, false],
-        agencia_representante: {
-            tiene_agencia_representante: 'no',
-            nombre: '',
-            contacto: ''
-        },
+
+
         documentos: [false, false, false, false, false, false],
         disponibilidad: [false, false, false, false, false, false, false, false, false, false, false, false],
         otras_profesiones: '',
