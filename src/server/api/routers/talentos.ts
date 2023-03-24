@@ -876,7 +876,7 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 			documentos: z.array(z.object({
 				id_documento: z.number(),
-				descripcion: z.string()
+				descripcion: z.string().nullish()
 			})),
 			disponibilidad: z.array(z.number()), 
 			otras_profesiones: z.array(z.string().min(3)),
@@ -1038,7 +1038,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.disponibilidad.length > 0) {
 					const saved_disponibilidad = await ctx.prisma.disponibilidadesPorTalentos.createMany({
-						data: input.documentos.map(e => { return { id_disponibilidad: e.id_documento, descripcion: e.descripcion, id_preferencias_por_talentos: preferencias.id } })
+						data: input.disponibilidad.map(e => { return { id_disponibilidad: e, id_preferencias_por_talentos: preferencias.id } })
 					})
 
 					if (!saved_disponibilidad) {
