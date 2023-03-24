@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { useEffect, useState, type FC } from 'react'
 import { motion } from 'framer-motion'
 import { FormGroup } from '~/components';
 import { Alert, Divider, Grid, Typography } from '@mui/material';
@@ -18,12 +18,52 @@ interface Props {
 
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
 
+    const [tipos_trabajo_selected, setTipoTrabajosSelected] = useState<boolean[]>([]);
+    const [tipos_interes_proyectos_selected, setTiposInteresProyectosSelected] = useState<boolean[]>([]);
+
+    const [tieneAgenciaRepresentante, setTieneAgenciaRepresentante] = useState<boolean>(false)
+
+    const [tipos_documentos_selected, setTipoDocumentosSelected] = useState<boolean[]>([]);
+
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
     });
 
-    const is_loading = estados_republica.isFetching;
+    const tipos_trabajo = api.catalogos.getTipoDeTrabajos.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const tipos_interes_proyectos = api.catalogos.getTiposInteresesEnProyectos.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const tipos_documentos = api.catalogos.getTipoDeDocumentos.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    useEffect(() => {
+        if (tipos_trabajo.data) {
+            setTipoTrabajosSelected(tipos_trabajo.data.map(_ => false))
+        }
+    }, [tipos_trabajo.data]);
+
+    useEffect(() => {
+        if (tipos_interes_proyectos.data) {
+            setTiposInteresProyectosSelected(tipos_interes_proyectos.data.map(_ => false))
+        }
+    }, [tipos_interes_proyectos.data]);
+
+    useEffect(() => {
+        if (tipos_documentos.data) {
+            setTipoDocumentosSelected(tipos_documentos.data.map(_ => false))
+        }
+    }, [tipos_documentos.data]);
+
+    const is_loading = estados_republica.isFetching || tipos_trabajo.isFetching || tipos_documentos.isFetching;
 
     return (
         <Grid container spacing={2}>
@@ -33,25 +73,35 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             <Grid item xs={12}>
                 <MCheckboxGroup
                     onAllOptionChecked={() => {
-                        console.log('xd');
+                        setTipoTrabajosSelected(v => v.map(() => true))
+                        onFormChange({
+                            tipo_trabajo: tipos_trabajo.data ? tipos_trabajo.data.map((v) => v.id) : []
+                        })
                     }}
                     direction='vertical'
                     title="Tipo de trabajo"
                     onChange={(e, i) => {
-                        onFormChange({
-                            tipo_trabajo: state.tipo_trabajo.map((value, index) => {
-                                if (i === index) {
-                                    return e
+                        setTipoTrabajosSelected(v => v.map((activo, index) => i === index ? e : activo))
+                        if (tipos_trabajo.data) {
+                            const tipo_trabajo = tipos_trabajo.data[i]
+                            if (tipo_trabajo) {
+                                let nuevosTipos = []
+                                if (state.tipo_trabajo.includes(tipo_trabajo?.id)) {
+                                    nuevosTipos = state.tipo_trabajo.filter((id) => id !== tipo_trabajo.id)
+                                } else {
+                                    nuevosTipos = [...state.tipo_trabajo, tipo_trabajo.id]
                                 }
-                                return value
-                            })
-                        })
+                                onFormChange({
+                                    tipo_trabajo: nuevosTipos
+                                })
+                            }
+                        }
                     }}
                     id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
                     labelClassName={classes['label-black-md']}
-                    options={['Actuación', 'Danza', 'Modelaje', 'Narración', 'Trabajo de doble/alto riesgo']}
-                    values={state.tipo_trabajo}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
+                    values={tipos_trabajo_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
             <Grid my={4} item xs={12}>
@@ -72,8 +122,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         options={['si', 'no']}
                         disabled={false}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.interesado_trabajo_extra}
-                        onChange={(e) => { onFormChange({ interesado_trabajo_extra: e.currentTarget.value }) }}
+                        value={state.preferencias.interesado_en_trabajos_de_extra ? 'si' : 'no'}
+                        onChange={(e) => {
+                            onFormChange({
+                                preferencias: {
+                                    interesado_en_trabajos_de_extra: e.currentTarget.value === 'si'
+                                }
+                            })
+                        }}
                         label=''
                     />
                 </MContainer>
@@ -86,20 +142,27 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     direction='vertical'
                     title="Interés en proyectos"
                     onChange={(e, i) => {
-                        onFormChange({
-                            interes_proyectos: state.interes_proyectos.map((value, index) => {
-                                if (i === index) {
-                                    return e
+                        setTiposInteresProyectosSelected(v => v.map((activo, index) => i === index ? e : activo))
+                        if (tipos_interes_proyectos.data) {
+                            const tipo_interes_proyecto = tipos_interes_proyectos.data[i]
+                            if (tipo_interes_proyecto) {
+                                let nuevosTipos = []
+                                if (state.interes_en_proyectos.includes(tipo_interes_proyecto?.id)) {
+                                    nuevosTipos = state.interes_en_proyectos.filter((id) => id !== tipo_interes_proyecto.id)
+                                } else {
+                                    nuevosTipos = [...state.interes_en_proyectos, tipo_interes_proyecto.id]
                                 }
-                                return value
-                            })
-                        })
+                                onFormChange({
+                                    interes_en_proyectos: nuevosTipos
+                                })
+                            }
+                        }
                     }}
                     id="interes-proyectos-checkbox"
                     labelStyle={{ marginBottom: 0 }}
                     labelClassName={classes['label-black-md']}
-                    options={['Pagados', 'No pagados']}
-                    values={state.interes_proyectos}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    options={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(t => t.es) : []}
+                    values={tipos_interes_proyectos_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
             <Grid my={4} item xs={12}>
@@ -168,14 +231,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         id="agencia-representante-radio"
                         options={['si', 'no']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.agencia_representante.tiene_agencia_representante}
+                        value={tieneAgenciaRepresentante ? 'si' : 'no'}
                         onChange={(e) => {
-                            onFormChange({
-                                agencia_representante: {
-                                    ...state.agencia_representante,
-                                    tiene_agencia_representante: e.currentTarget.value
-                                }
-                            })
+                            setTieneAgenciaRepresentante(e.currentTarget.value === 'si')
                         }}
                         label=''
                     />
@@ -184,12 +242,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={state.agencia_representante.nombre}
+                            value={ state.preferencias.nombre_agente }
                             onChange={(e) => {
                                 onFormChange({
-                                    agencia_representante: {
-                                        ...state.agencia_representante,
-                                        nombre: e.currentTarget.value
+                                    preferencias: {
+                                        ...state.preferencias,
+                                        nombre_agente: e.currentTarget.value
                                     }
                                 })
                             }}
@@ -199,11 +257,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={state.agencia_representante.contacto}
+                            value={state.preferencias.contacto_agente}
                             onChange={(e) => {
                                 onFormChange({
-                                    agencia_representante: {
-                                        contacto: e.currentTarget.value
+                                    preferencias: {
+                                        ...state.preferencias,
+                                        contacto_agente: e.currentTarget.value
                                     }
                                 })
                             }}
