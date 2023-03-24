@@ -33,23 +33,24 @@ model Cazatalentos {
 }
 
 model Talentos {
-  id              Int                        @id @default(autoincrement())
-  usuario         String
-  email           String
-  contrasenia     String
-  nombre          String
-  apellido        String
-  tipo_membresia  String
-  cobro_membresia String
-  profile_img_url String?
-  redes_sociales  RedesSocialesPorTalentos[]
-  representante   RepresentantesPorTalentos?
-  info_basica     InfoBasicaPorTalentos?
-  media           MediaPorTalentos[]
-  creditos        CreditosPorTalentos?
-  habilidades     HabilidadesPorTalentos[]
-  activos         ActivosPorTalentos?
-  preferencias    PreferenciasPorTalentos?
+  id                 Int                           @id @default(autoincrement())
+  usuario            String
+  email              String
+  contrasenia        String
+  nombre             String
+  apellido           String
+  tipo_membresia     String
+  cobro_membresia    String
+  profile_img_url    String?
+  redes_sociales     RedesSocialesPorTalentos[]
+  representante      RepresentantesPorTalentos?
+  info_basica        InfoBasicaPorTalentos?
+  media              MediaPorTalentos[]
+  creditos           CreditosPorTalentos?
+  habilidades        HabilidadesPorTalentos[]
+  activos            ActivosPorTalentos?
+  preferencias       PreferenciasPorTalentos?
+  filtros_aparencias FiltrosAparenciasPorTalentos?
 }
 
 model RepresentantesPorTalentos {
@@ -304,9 +305,10 @@ model AparenciasEtnicasPorRoles {
 }
 
 model CatalogoAparenciasEtnicas {
-  id                           Int                         @id
-  nombre                       String
-  aparencias_etnicas_por_roles AparenciasEtnicasPorRoles[]
+  id                              Int                            @id
+  nombre                          String
+  aparencias_etnicas_por_roles    AparenciasEtnicasPorRoles[]
+  filtros_apariencia_por_talentos FiltrosAparenciasPorTalentos[]
 }
 
 model GenerosPorRoles {
@@ -318,9 +320,11 @@ model GenerosPorRoles {
 }
 
 model CatalogoGeneros {
-  id               Int               @id
-  nombre           String
-  genero_por_roles GenerosPorRoles[]
+  id                                             Int                                          @id
+  nombre                                         String
+  genero_por_roles                               GenerosPorRoles[]
+  generos_interesados_en_interpetrar_por_talento GenerosInteresadosEnInterpretarPorTalentos[]
+  filtros_aparencias_por_talento                 FiltrosAparenciasPorTalentos[]
 }
 
 model CatalogoPaises {
@@ -491,6 +495,88 @@ model CatalogoTipoEquipoDeportivo {
   equipo_deportivo_talento EquipoDeportivoTalento[]
 }
 
+model FiltrosAparenciasPorTalentos {
+  id                                        Int                                          @id @default(autoincrement())
+  id_talento                                Int                                          @unique
+  rango_inicial_edad                        Int
+  rango_final_edad                          Int
+  id_genero                                 Int
+  id_apariencia_etnica                      Int
+  id_color_cabello                          Int
+  disposicion_cambio_color_cabello          Boolean
+  id_estilo_cabello                         Int
+  disposicion_corte_cabello                 Boolean
+  id_vello_facial                           Int
+  disposicion_afeitar_o_crecer_vello_facial Boolean
+  id_color_ojos                             Int
+  color_ojos                                CatalogoColorOjos                            @relation(fields: [id_color_ojos], references: [id])
+  vello_facial                              CatalogoVelloFacial                          @relation(fields: [id_vello_facial], references: [id])
+  estilo_cabello                            CatalogoEstiloCabello                        @relation(fields: [id_estilo_cabello], references: [id])
+  color_cabello                             CatalogoColorCabello                         @relation(fields: [id_color_cabello], references: [id])
+  generos_interesados_en_interpretar        GenerosInteresadosEnInterpretarPorTalentos[]
+  apariencia_etnica                         CatalogoAparenciasEtnicas                    @relation(fields: [id_apariencia_etnica], references: [id])
+  genero                                    CatalogoGeneros                              @relation(fields: [id_genero], references: [id])
+  tatuajes                                  TatuajesPorTalentos[]
+  piercings                                 PiercingsPorTalentos[]
+  hermanos                                  TipoHermanosPorTalento?
+  particularidades                          ParticularidadesPorTalentos[]
+  talento                                   Talentos                                     @relation(fields: [id_talento], references: [id])
+}
+
+model ParticularidadesPorTalentos {
+  id                                  Int                          @id @default(autoincrement())
+  id_filtros_apariencias_por_talentos Int
+  id_particularidad                   Int
+  descripcion                         String
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
+}
+
+model PiercingsPorTalentos {
+  id                                  Int                          @id @default(autoincrement())
+  id_filtros_apariencias_por_talentos Int
+  id_tipo_piercing                    Int
+  descripcion                         String
+  piercing                            CatalogoTiposPiercings       @relation(fields: [id_tipo_piercing], references: [id])
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
+}
+
+model TipoHermanosPorTalento {
+  id                                  Int                          @id @default(autoincrement())
+  id_filtros_apariencias_por_talentos Int                          @unique
+  id_tipo_hermanos                    Int
+  descripcion                         String
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
+}
+
+model CatalogoTiposHermanos {
+  id Int    @id
+  es String
+  en String
+}
+
+model CatalogoTiposPiercings {
+  id                     Int                    @id
+  es                     String
+  en                     String
+  piercings_por_talentos PiercingsPorTalentos[]
+}
+
+model TatuajesPorTalentos {
+  id                                  Int                          @id @default(autoincrement())
+  id_filtros_apariencias_por_talentos Int
+  visibilidad                         String
+  descripcion                         String
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
+}
+
+model GenerosInteresadosEnInterpretarPorTalentos {
+  id                                  Int                          @id @default(autoincrement())
+  id_filtros_apariencias_por_talentos Int
+  id_genero                           Int
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
+  genero                              CatalogoGeneros              @relation(fields: [id_genero], references: [id])
+}
+
 model PreferenciasPorTalentos {
   id                              Int                               @id @default(autoincrement())
   interesado_en_trabajos_de_extra Boolean
@@ -511,7 +597,7 @@ model OtrasProfesionesPorTalentos {
   id                           Int                     @id @default(autoincrement())
   id_preferencias_por_talentos Int
   descripcion                  String
-  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model DisponibilidadesPorTalentos {
@@ -519,7 +605,7 @@ model DisponibilidadesPorTalentos {
   id_preferencias_por_talentos Int
   id_disponibilidad            Int
   disponibilidad               CatalogoTipoDisponibilidad @relation(fields: [id_disponibilidad], references: [id])
-  preferencias_por_talentos    PreferenciasPorTalentos    @relation(fields: [id_preferencias_por_talentos], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos    @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model DocumentosPorTalentos {
@@ -527,7 +613,7 @@ model DocumentosPorTalentos {
   id_preferencias_por_talentos Int
   id_documento                 Int
   descripcion                  String
-  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model LocacionesPrerenciasPorTalentos {
@@ -535,7 +621,7 @@ model LocacionesPrerenciasPorTalentos {
   id_preferencias_por_talentos Int
   es_principal                 Boolean
   id_estado_republica          Int
-  preferencias_por_talentos    PreferenciasPorTalentos  @relation(fields: [id_preferencias_por_talentos], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos  @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
   estado_republica             CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
 }
 
@@ -544,7 +630,7 @@ model InteresEnProyectosPorTalentos {
   id_preferencias_por_talentos Int
   id_interes_en_proyecto       Int
   intereses_en_proyectos       CatalogoTipoInteresProyectos @relation(fields: [id_interes_en_proyecto], references: [id])
-  preferencias_por_talentos    PreferenciasPorTalentos      @relation(fields: [id_preferencias_por_talentos], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos      @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model TiposDeTrabajoPorTalentos {
@@ -552,7 +638,7 @@ model TiposDeTrabajoPorTalentos {
   id_preferencias_por_talentos Int
   id_tipo_de_trabajo           Int
   tipos_de_trabajo             CatalogoTipoTrabajo     @relation(fields: [id_tipo_de_trabajo], references: [id])
-  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model ActivosPorTalentos {
@@ -632,46 +718,32 @@ model CatalogoTipoDocumentos {
 
 //Catalogos de 
 
-model CatalogoInteresProyectos {
-  id Int    @id
-  es String
-  en String
-}
-
 model CatalogoColorCabello {
-  id Int    @id
-  es String
-  en String
+  id                               Int                            @id
+  es                               String
+  en                               String
+  filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
 }
 
 model CatalogoEstiloCabello {
-  id Int    @id
-  es String
-  en String
+  id                               Int                            @id
+  es                               String
+  en                               String
+  filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
 }
 
 model CatalogoVelloFacial {
-  id Int    @id
-  es String
-  en String
+  id                               Int                            @id
+  es                               String
+  en                               String
+  filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
 }
 
 model CatalogoColorOjos {
-  id Int    @id
-  es String
-  en String
-}
-
-model CatalogoTatuajes {
-  id Int    @id
-  es String
-  en String
-}
-
-model CatalogoLugarPiercing {
-  id Int    @id
-  es String
-  en String
+  id                               Int                            @id
+  es                               String
+  en                               String
+  filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
 }
 
 model CatalogoParticularidades {
