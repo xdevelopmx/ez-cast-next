@@ -173,24 +173,46 @@ export type TalentoFormPreferencias = {
 }
 
 export type FiltrosAparienciaForm = {
-    rango_edad: {
-        rango_1: number,
-        rango_2: number
-    },
-    genero: string,
-    genero_interesado_interpretar: boolean[],
-    apariencia_etnica: string,
-
-    caracteristicas_cabello_ojos: {
+    has_tatoos: boolean,
+    id_tipo_tatuaje: number,
+    descripcion_tatoo: string,
+    has_piercings: boolean,
+    id_tipo_piercing: number,
+    descripcion_piercing: string,
+    has_hermanos: boolean,
+    id_tipo_hermanos: number,
+    descripcion_tipo_hermanos: string,
+    descripcion_otra_particularidad?: string,
+    apariencia: {
+        rango_inicial_edad: number,
+        rango_final_edad: number,
+        id_genero: number,
+        id_apariencia_etnica: number,
         id_color_cabello: number,
+        disposicion_cambio_color_cabello: boolean,
         id_estilo_cabello: number,
+        disposicion_corte_cabello: boolean,
         id_vello_facial: number,
-        id_color_ojos: number,
-
-        dispuesto_cambiar_color_cabello: string,
-        dispuesto_cambiar_corte_cabello: string,
-        dispuesto_crecer_afeitar_vello_facial: string,
-    }
+        disposicion_afeitar_o_crecer_vello_facial: boolean,
+        id_color_ojos: number
+    },
+    generos_interesado_en_interpretar: number[],
+    tatuajes: {
+        id_tipo_tatuaje: number,
+        descripcion: string 
+    }[],
+    piercings: {
+        id_tipo_piercing: number,
+        descripcion: string
+    }[],
+    hermanos?: {
+        id_tipo_hermanos: number,
+        descripcion: string
+    },
+    particularidades: {
+        id_particularidad: number,
+        descripcion: string
+    }[]
 }
 
 type TalentoForm = {
@@ -314,25 +336,32 @@ const initialState: TalentoForm = {
         }
     },
     filtros_apariencia: {
-        rango_edad: {
-            rango_1: 0,
-            rango_2: 0
-        },
-        genero: '',
-        genero_interesado_interpretar: [false, false, false, false, false],
-        apariencia_etnica: '',
-
-        caracteristicas_cabello_ojos: {
+        has_tatoos: false,
+        id_tipo_tatuaje: 0,
+        descripcion_tatoo: '',
+        has_piercings: false,
+        id_tipo_piercing: 0,
+        descripcion_piercing: '',
+        has_hermanos: false,
+        id_tipo_hermanos: 0,
+        descripcion_tipo_hermanos: '',
+        apariencia: {
+            rango_inicial_edad: 18,
+            rango_final_edad: 50,
+            id_genero: 0,
+            id_apariencia_etnica: 0,
             id_color_cabello: 0,
+            disposicion_cambio_color_cabello: false,
             id_estilo_cabello: 0,
+            disposicion_corte_cabello: false,
             id_vello_facial: 0,
-            id_color_ojos: 0,
-
-            dispuesto_cambiar_color_cabello: 'no',
-            dispuesto_cambiar_corte_cabello: 'no',
-            dispuesto_crecer_afeitar_vello_facial: 'no',
-        }
-
+            disposicion_afeitar_o_crecer_vello_facial: false,
+            id_color_ojos: 0
+        },
+        generos_interesado_en_interpretar: [],
+        tatuajes: [],
+        piercings: [],
+        particularidades: []
     }
 }
 
