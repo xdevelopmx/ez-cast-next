@@ -315,7 +315,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                     if (state.documentos.map(obj => obj.id_documento).includes(tipo_documento?.id)) {
                                         nuevosTipos = state.documentos.filter((obj) => obj.id_documento !== tipo_documento.id)
                                     } else {
-                                        nuevosTipos = [...state.documentos, { id_documento: tipo_documento.id, descripcion: '' }]
+                                        nuevosTipos = [...state.documentos, { id_documento: tipo_documento.id, descripcion: 'descripcion' }]
                                     }
                                     onFormChange({
                                         documentos: nuevosTipos

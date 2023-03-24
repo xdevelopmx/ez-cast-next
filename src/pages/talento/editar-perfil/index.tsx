@@ -153,7 +153,7 @@ type documento = {
 
 type locacion = {
     es_principal: boolean,
-  	id_estado_republica: number,
+    id_estado_republica: number,
 }
 
 export type TalentoFormPreferencias = {
@@ -171,7 +171,7 @@ export type TalentoFormPreferencias = {
     locaciones: locacion[],
 
     documentos: documento[],
-    
+
     disponibilidad: number[],
     otras_profesiones: string[],
 }
@@ -386,16 +386,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
     });
 
     const saveMedios = api.talentos.saveMedios.useMutation({
-		onSuccess(input) {
+        onSuccess(input) {
             notify('success', 'Se guardaron los archivos con exito');
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
-		},
-		onError: (error) => {
+        },
+        onError: (error) => {
             console.log(error);
             notify('error', error.message);
-		}
-	});
+        }
+    });
 
     const saveCreditos = api.talentos.saveCreditos.useMutation({
         onSuccess(input) {
@@ -420,6 +420,17 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
     });
 
     const saveActivos = api.talentos.saveActivos.useMutation({
+        onSuccess(input) {
+            notify('success', 'Se guardaron los activos con exito');
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            talento.refetch();
+        },
+        onError: (error) => {
+            notify('error', error.message);
+        }
+    });
+
+    const savePreferencias = api.talentos.savePreferencias.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardaron los activos con exito');
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -595,13 +606,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                                     });
                                     break;
                                 }
-                                    
+
                                 case 2: {
                                     console.log(state.medios);
                                     saveMedios.mutate({
-                                        fotos: state.medios.fotos.map((a, i) => { return {nombre: a.file.name, base64: a.base64, identificador: (i === 0) ? 'FOTO_PERFIL' : `FOTO_${i}`}}),
-                                        audios: state.medios.audios.map((a, i) => { return {nombre: a.file.name, base64: a.base64, identificador: `AUDIO_${i}`}}),
-                                        videos: state.medios.videos.map((a, i) => { return {nombre: a.file.name, base64: a.base64, identificador: `VIDEO_${i}`}})
+                                        fotos: state.medios.fotos.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: (i === 0) ? 'FOTO_PERFIL' : `FOTO_${i}` } }),
+                                        audios: state.medios.audios.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: `AUDIO_${i}` } }),
+                                        videos: state.medios.videos.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: `VIDEO_${i}` } })
                                     })
 
                                     break;
@@ -637,7 +648,25 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                                     break;
                                 }
                                 case 6: {
+                                    console.log({
+                                        disponibilidad: state.preferencias.disponibilidad,
+                                        documentos: state.preferencias.documentos,
+                                        interes_en_proyectos: state.preferencias.interes_en_proyectos,
+                                        locaciones: state.preferencias.locaciones,
+                                        otras_profesiones: state.preferencias.otras_profesiones,
+                                        preferencias: state.preferencias.preferencias,
+                                        tipos_trabajo: state.preferencias.tipo_trabajo
+                                    });
 
+                                    savePreferencias.mutate({
+                                        preferencias: state.preferencias.preferencias,
+                                        tipos_trabajo: state.preferencias.tipo_trabajo,
+                                        interes_en_proyectos: state.preferencias.interes_en_proyectos,
+                                        locaciones: state.preferencias.locaciones,
+                                        documentos: state.preferencias.documentos,
+                                        disponibilidad: state.preferencias.disponibilidad,
+                                        otras_profesiones: state.preferencias.otras_profesiones,
+                                    })
                                 }
                             }
                         }}
@@ -651,12 +680,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                             7: 'Filtros de Apariencia'
                         }}
                     >
-                        
-                       <EditarInfoBasicaTalento 
-                            state={state.info_gral} 
+
+                        <EditarInfoBasicaTalento
+                            state={state.info_gral}
                             onFormChange={(input) => {
-                                dispatch({type: 'update-info-gral', value: input});
-                            }} 
+                                dispatch({ type: 'update-info-gral', value: input });
+                            }}
                         />
                         <EditarMediaTalento state={state.medios}
                             onFormChange={(input) => {
