@@ -15,6 +15,16 @@ export const CatalogosRouter = createTRPCRouter({
 			})
 		}
 	),
+	getGeneros: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoGeneros.findMany();
+		}
+	),
+	getAparienciasEtnicas: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoAparenciasEtnicas.findMany();
+		}
+	),
 	getUniones: publicProcedure
 		.query(async ({ ctx }) => {
 			return await ctx.prisma.catalogoUniones.findMany();
@@ -70,6 +80,11 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoTipoTrabajo.findMany();
 		}
 	),
+	getTiposInteresesEnProyectos: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoInteresProyectos.findMany();
+		}
+	),
 	getTipoDeDocumentos: publicProcedure
 		.query(async ({ ctx }) => {
 			return await ctx.prisma.catalogoTipoDocumentos.findMany();
@@ -100,14 +115,14 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoColorOjos.findMany();
 		}
 	),
-	getTatuajes: publicProcedure
+	getTiposPiercings: publicProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.catalogoTatuajes.findMany();
+			return await ctx.prisma.catalogoTiposPiercings.findMany();
 		}
 	),
-	getLugarPiercing: publicProcedure
+	getTipoHermanos: publicProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.catalogoLugarPiercing.findMany();
+			return await ctx.prisma.catalogoTiposHermanos.findMany();
 		}
 	),
 	getParticularidades: publicProcedure

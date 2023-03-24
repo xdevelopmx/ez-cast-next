@@ -1090,5 +1090,32 @@ export const TalentosRouter = createTRPCRouter({
 			});
 		}
 	),
-	
+	saveFiltrosApariencias: protectedProcedure
+		.input(z.object({ 
+			aparencia: z.object({
+				rango_inicial_edad: z.number(),
+				rango_final_edad: z.number(),
+				id_genero: z.number(),
+				id_apariencia_etnica: z.number(),
+				id_color_cabello: z.number(),
+				disposicion_cambio_color_cabello: z.boolean(),
+				id_estilo_cabello: z.number(),
+				disposicion_corte_cabello: z.boolean(),
+				id_vello_facial: z.number(),
+				disposicion_afeitar_o_crecer_vello_facial: z.boolean(),
+				id_color_ojos: z.number()
+			}),
+			tipos_trabajo: z.array(z.number()),
+			interes_en_proyectos: z.array(z.number()),
+			locaciones: z.array(z.object({
+				es_principal: z.boolean(),
+  				id_estado_republica: z.number()
+			})),
+			documentos: z.array(z.object({
+				id_documento: z.number(),
+				descripcion: z.string()
+			})),
+			disponibilidad: z.array(z.number()), 
+			otras_profesiones: z.array(z.string()),
+		}))
 });

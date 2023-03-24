@@ -513,9 +513,9 @@ model FiltrosAparenciasPorTalentos {
   vello_facial                              CatalogoVelloFacial                          @relation(fields: [id_vello_facial], references: [id])
   estilo_cabello                            CatalogoEstiloCabello                        @relation(fields: [id_estilo_cabello], references: [id])
   color_cabello                             CatalogoColorCabello                         @relation(fields: [id_color_cabello], references: [id])
-  generos_interesados_en_interpretar        GenerosInteresadosEnInterpretarPorTalentos[]
   apariencia_etnica                         CatalogoAparenciasEtnicas                    @relation(fields: [id_apariencia_etnica], references: [id])
   genero                                    CatalogoGeneros                              @relation(fields: [id_genero], references: [id])
+  generos_interesados_en_interpretar        GenerosInteresadosEnInterpretarPorTalentos[]
   tatuajes                                  TatuajesPorTalentos[]
   piercings                                 PiercingsPorTalentos[]
   hermanos                                  TipoHermanosPorTalento?
