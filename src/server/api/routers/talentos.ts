@@ -879,7 +879,7 @@ export const TalentosRouter = createTRPCRouter({
 				descripcion: z.string()
 			})),
 			disponibilidad: z.array(z.number()), 
-			otras_profesiones: z.array(z.string()),
+			otras_profesiones: z.array(z.string().min(3)),
 		}))
 		.mutation(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
@@ -1105,17 +1105,200 @@ export const TalentosRouter = createTRPCRouter({
 				disposicion_afeitar_o_crecer_vello_facial: z.boolean(),
 				id_color_ojos: z.number()
 			}),
-			tipos_trabajo: z.array(z.number()),
-			interes_en_proyectos: z.array(z.number()),
-			locaciones: z.array(z.object({
-				es_principal: z.boolean(),
-  				id_estado_republica: z.number()
-			})),
-			documentos: z.array(z.object({
-				id_documento: z.number(),
+			generos_interesado_en_interpretar: z.array(z.number()),
+			tatuajes: z.array(z.object({
+				visibilidad: z.string(),
 				descripcion: z.string()
 			})),
-			disponibilidad: z.array(z.number()), 
-			otras_profesiones: z.array(z.string()),
+			piercings: z.array(z.object({
+				id_tipo_piercing: z.number(),
+  				descripcion: z.string()
+			})),
+			hermanos: z.object({
+				id_tipo_hermanos: z.number(),
+  				descripcion: z.string()
+			}).nullish(),
+			particularidades: z.array(z.object({
+				id_particularidad: z.number(),
+  				descripcion: z.string()
+			}))
 		}))
-});
+		.mutation(async ({ input, ctx }) => {
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+				const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
+					where: {id_talento: parseInt(user.id)},
+					update: {...input.aparencia},
+					create: {
+						...input.aparencia,
+						id_talento: parseInt(user.id)
+					}
+				})
+
+				const deleted_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.deleteMany({
+					where: {
+						id_filtros_apariencias_por_talentos: filtros.id
+					}
+				});
+
+				if (!deleted_intereses_en_interpretar) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar los intereses en generos por interpretar por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				} 
+
+				if (input.generos_interesado_en_interpretar.length > 0) {
+					const saved_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.createMany({
+						data: input.generos_interesado_en_interpretar.map(g => { return {id_genero: g, id_filtros_apariencias_por_talentos: filtros.id }})
+					})
+
+					if (!saved_intereses_en_interpretar) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					} 
+				}
+
+				const deleted_tatuajes = await ctx.prisma.tatuajesPorTalentos.deleteMany({
+					where: {
+						id_filtros_apariencias_por_talentos: filtros.id
+					}
+				})
+
+				if (!deleted_tatuajes) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar los tatuajes por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				if (input.tatuajes.length > 0) {
+					const saved_tatuajes = await ctx.prisma.tatuajesPorTalentos.createMany({
+						data: input.tatuajes.map(e => { return {descripcion: e.descripcion, visibilidad: e.visibilidad, id_filtros_apariencias_por_talentos: filtros.id }})
+					})
+	
+					if (!saved_tatuajes) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar los tatuajes por talentos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+
+				const deleted_piercings = await ctx.prisma.piercingsPorTalentos.deleteMany({
+					where: {
+						id_filtros_apariencias_por_talentos: filtros.id
+					}
+				})
+
+				if (!deleted_piercings) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar los piercings por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				if (input.piercings.length > 0) {
+					const saved_piercings = await ctx.prisma.piercingsPorTalentos.createMany({
+						data: input.piercings.map(e => { return {id_tipo_piercing: e.id_tipo_piercing, descripcion: e.descripcion, id_filtros_apariencias_por_talentos: filtros.id }})
+					})
+	
+					if (!saved_piercings) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar los piercings por talentos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+
+				if (input.hermanos) {
+					const saved_hermanos = await ctx.prisma.tipoHermanosPorTalento.upsert({
+						where: {id_filtros_apariencias_por_talentos: filtros.id},
+						update: input.hermanos,
+						create: {
+							...input.hermanos,
+							id_filtros_apariencias_por_talentos: filtros.id
+						}
+					});
+
+					if (!saved_hermanos) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar el tipo de hermanos por talentos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				} else {
+					const deleted_hermanos = await ctx.prisma.tipoHermanosPorTalento.delete({
+						where: {
+							id_filtros_apariencias_por_talentos: filtros.id
+						}
+					})
+	
+					if (!deleted_hermanos) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de eliminar el tipo de hermano por talentos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+
+
+				const deleted_particularidades = await ctx.prisma.particularidadesPorTalentos.deleteMany({
+					where: {
+						id_filtros_apariencias_por_talentos: filtros.id
+					}
+				})
+
+				if (!deleted_particularidades) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar las particularidades por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				if (input.particularidades.length > 0) {
+					const saved_particularidades = await ctx.prisma.particularidadesPorTalentos.createMany({
+						data: input.particularidades.map(e => { return {descripcion: e.descripcion, id_particularidad: e.id_particularidad, id_filtros_apariencias_por_talentos: filtros.id }})
+					})
+	
+					if (!saved_particularidades) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar las particularidades por talentos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+				
+				return filtros;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de talento puede modificar las habilidades',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		})
+	},
+);
