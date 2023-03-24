@@ -130,6 +130,11 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoParticularidades.findMany();
 		}
 	),
+	getTiposTatuajes: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTiposTatuajes.findMany();
+		}
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

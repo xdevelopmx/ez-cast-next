@@ -321,7 +321,8 @@ model GenerosPorRoles {
 
 model CatalogoGeneros {
   id                                             Int                                          @id
-  nombre                                         String
+  es                                             String
+  en                                             String
   genero_por_roles                               GenerosPorRoles[]
   generos_interesados_en_interpetrar_por_talento GenerosInteresadosEnInterpretarPorTalentos[]
   filtros_aparencias_por_talento                 FiltrosAparenciasPorTalentos[]
@@ -564,8 +565,9 @@ model CatalogoTiposPiercings {
 model TatuajesPorTalentos {
   id                                  Int                          @id @default(autoincrement())
   id_filtros_apariencias_por_talentos Int
-  visibilidad                         String
+  id_tipo_tatuaje                     Int
   descripcion                         String
+  tipo_tatuaje                        CatalogoTiposTatuajes        @relation(fields: [id_tipo_tatuaje], references: [id])
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
 }
 
@@ -701,6 +703,13 @@ model EquipoDeportivoTalento {
   descripcion              String
   activos_por_talentos     ActivosPorTalentos           @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   tipo_equipo_deportivo    CatalogoTipoEquipoDeportivo? @relation(fields: [id_tipo_equipo_deportivo], references: [id])
+}
+
+model CatalogoTiposTatuajes {
+  id                   Int                   @id
+  es                   String
+  en                   String
+  tatuajes_por_talento TatuajesPorTalentos[]
 }
 
 model CatalogoTipoTrabajo {

@@ -1092,7 +1092,7 @@ export const TalentosRouter = createTRPCRouter({
 	),
 	saveFiltrosApariencias: protectedProcedure
 		.input(z.object({ 
-			aparencia: z.object({
+			apariencia: z.object({
 				rango_inicial_edad: z.number(),
 				rango_final_edad: z.number(),
 				id_genero: z.number(),
@@ -1107,7 +1107,7 @@ export const TalentosRouter = createTRPCRouter({
 			}),
 			generos_interesado_en_interpretar: z.array(z.number()),
 			tatuajes: z.array(z.object({
-				visibilidad: z.string(),
+				id_tipo_tatuaje: z.number(),
 				descripcion: z.string()
 			})),
 			piercings: z.array(z.object({
@@ -1128,9 +1128,9 @@ export const TalentosRouter = createTRPCRouter({
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
 					where: {id_talento: parseInt(user.id)},
-					update: {...input.aparencia},
+					update: {...input.apariencia},
 					create: {
-						...input.aparencia,
+						...input.apariencia,
 						id_talento: parseInt(user.id)
 					}
 				})
@@ -1182,7 +1182,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.tatuajes.length > 0) {
 					const saved_tatuajes = await ctx.prisma.tatuajesPorTalentos.createMany({
-						data: input.tatuajes.map(e => { return {descripcion: e.descripcion, visibilidad: e.visibilidad, id_filtros_apariencias_por_talentos: filtros.id }})
+						data: input.tatuajes.map(e => { return {descripcion: e.descripcion, id_tipo_tatuaje: e.id_tipo_tatuaje, id_filtros_apariencias_por_talentos: filtros.id }})
 					})
 	
 					if (!saved_tatuajes) {
