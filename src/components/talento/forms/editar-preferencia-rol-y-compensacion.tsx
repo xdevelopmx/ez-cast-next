@@ -19,6 +19,8 @@ interface Props {
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
 
     const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
+    const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
+    const [locacionPrincipalSelect, setLocacionPrincipalSelect] = useState<string>('0')
 
     const [tipos_documentos_selected, setTipoDocumentosSelected] = useState<boolean[]>([]);
 
@@ -175,14 +177,21 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 id='locacion-principal-select'
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.locaciones.principal.toString()}
+                                value={locacionPrincipalSelect}
                                 onChange={(e) => {
-                                    onFormChange({
-                                        locaciones: {
-                                            ...state.locaciones,
-                                            principal: parseInt(e.target.value)
-                                        }
-                                    })
+                                    setLocacionPrincipalSelect(e.target.value)
+                                    if (state.locaciones.some(locacion => locacion.es_principal)) {
+                                        onFormChange({
+                                            locaciones: state.locaciones.map(locacion => {
+                                                if (locacion.es_principal) return { es_principal: true, id_estado_republica: parseInt(e.target.value) };
+                                                return locacion;
+                                            })
+                                        })
+                                    } else {
+                                        onFormChange({
+                                            locaciones: [{ es_principal: true, id_estado_republica: parseInt(e.target.value) }, ...state.locaciones]
+                                        })
+                                    }
                                 }}
                                 label='Principal'
                             />
@@ -194,11 +203,32 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 id='locacion-principal-select'
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.locaciones.adicionales.toString()}
-                                onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={locacionesAdicionalesSelect}
+                                onChange={(e) => { setLocacionesAdicionalesSelect(e.target.value) }}
                                 label='Adicional'
                             />
-                            <AddButton text='Agregar otra localizacion' onClick={() => { console.log('hola') }} />
+                            <AddButton
+                                text='Agregar otra localizacion'
+                                onClick={() => {
+                                    if (state.locaciones.some(locacion => locacion.id_estado_republica === parseInt(locacionesAdicionalesSelect))) return;
+                                    onFormChange({
+                                        locaciones: [...state.locaciones, { es_principal: false, id_estado_republica: parseInt(locacionesAdicionalesSelect) }]
+                                    })
+                                }}
+                            />
+
+                            <MContainer direction='horizontal' styles={{ gap: 10, marginTop: 20 }}>
+                                {
+                                    state.locaciones.map(locacion => (
+                                        <span
+                                            key={locacion.id_estado_republica}
+                                            style={{ backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9', padding: '5px 10px' }}
+                                        >
+                                            {estados_republica.data?.filter(estado => estado.id === locacion.id_estado_republica).map(estado => estado.es)}
+                                        </span>
+                                    ))
+                                }
+                            </MContainer>
                         </MContainer>
                     </MContainer>
 

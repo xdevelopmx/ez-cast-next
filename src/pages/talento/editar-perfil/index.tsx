@@ -151,6 +151,11 @@ type documento = {
     descripcion: string;
 }
 
+type locacion = {
+    es_principal: boolean,
+  	id_estado_republica: number,
+}
+
 export type TalentoFormPreferencias = {
 
     preferencias: {
@@ -163,10 +168,7 @@ export type TalentoFormPreferencias = {
     tipo_trabajo: number[],
     interes_en_proyectos: number[],
 
-    locaciones: {
-        principal: number;
-        adicionales: number[];
-    },
+    locaciones: locacion[],
 
     documentos: documento[],
     
@@ -300,10 +302,7 @@ const initialState: TalentoForm = {
         tipo_trabajo: [],
         interes_en_proyectos: [],
         documentos: [],
-        locaciones: {
-            principal: 0,
-            adicionales: []
-        },
+        locaciones: [],
         disponibilidad: [],
         otras_profesiones: [],
     },
