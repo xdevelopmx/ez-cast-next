@@ -146,6 +146,16 @@ export type TalentoFormActivos = {
     }[]
 }
 
+type documento = {
+    id_documento: number;
+    descripcion: string;
+}
+
+type locacion = {
+    es_principal: boolean,
+  	id_estado_republica: number,
+}
+
 export type TalentoFormPreferencias = {
 
     preferencias: {
@@ -158,18 +168,12 @@ export type TalentoFormPreferencias = {
     tipo_trabajo: number[],
     interes_en_proyectos: number[],
 
-    locaciones: {
-        principal: number;
-        adicionales: number[];
-    },
+    locaciones: locacion[],
 
-    documentos: boolean[],
-    disponibilidad: boolean[],
-    otras_profesiones: string,
-    embarazo: {
-        tiene_embarazo: string,
-        meses: number
-    },
+    documentos: documento[],
+    
+    disponibilidad: number[],
+    otras_profesiones: string[],
 }
 
 export type FiltrosAparienciaForm = {
@@ -319,21 +323,10 @@ const initialState: TalentoForm = {
         },
         tipo_trabajo: [],
         interes_en_proyectos: [],
-
-
-        locaciones: {
-            principal: 0,
-            adicionales: []
-        },
-
-
-        documentos: [false, false, false, false, false, false],
-        disponibilidad: [false, false, false, false, false, false, false, false, false, false, false, false],
-        otras_profesiones: '',
-        embarazo: {
-            tiene_embarazo: 'no',
-            meses: 0
-        }
+        documentos: [],
+        locaciones: [],
+        disponibilidad: [],
+        otras_profesiones: [],
     },
     filtros_apariencia: {
         has_tatoos: false,

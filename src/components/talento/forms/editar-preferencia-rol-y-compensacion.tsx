@@ -18,12 +18,14 @@ interface Props {
 
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
 
-    const [tipos_trabajo_selected, setTipoTrabajosSelected] = useState<boolean[]>([]);
-    const [tipos_interes_proyectos_selected, setTiposInteresProyectosSelected] = useState<boolean[]>([]);
-
-    const [tieneAgenciaRepresentante, setTieneAgenciaRepresentante] = useState<boolean>(false)
+    const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
+    const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
+    const [locacionPrincipalSelect, setLocacionPrincipalSelect] = useState<string>('0')
 
     const [tipos_documentos_selected, setTipoDocumentosSelected] = useState<boolean[]>([]);
+
+    const [tieneAgenciaRepresentante, setTieneAgenciaRepresentante] = useState<boolean>(false)
+    const [estaEmbarazada, setEstaEmbarazada] = useState<boolean>(false)
 
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnMount: false,
@@ -45,17 +47,10 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
         refetchOnWindowFocus: false,
     });
 
-    useEffect(() => {
-        if (tipos_trabajo.data) {
-            setTipoTrabajosSelected(tipos_trabajo.data.map(_ => false))
-        }
-    }, [tipos_trabajo.data]);
-
-    useEffect(() => {
-        if (tipos_interes_proyectos.data) {
-            setTiposInteresProyectosSelected(tipos_interes_proyectos.data.map(_ => false))
-        }
-    }, [tipos_interes_proyectos.data]);
+    const tipos_disponibilidad = api.catalogos.getTipoDeDisponibilidad.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
 
     useEffect(() => {
         if (tipos_documentos.data) {
@@ -63,7 +58,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
         }
     }, [tipos_documentos.data]);
 
-    const is_loading = estados_republica.isFetching || tipos_trabajo.isFetching || tipos_documentos.isFetching;
+    const is_loading = estados_republica.isFetching || tipos_trabajo.isFetching || tipos_documentos.isFetching || tipos_interes_proyectos.isFetching || tipos_disponibilidad.isFetching;
 
     return (
         <Grid container spacing={2}>
@@ -73,7 +68,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             <Grid item xs={12}>
                 <MCheckboxGroup
                     onAllOptionChecked={() => {
-                        setTipoTrabajosSelected(v => v.map(() => true))
                         onFormChange({
                             tipo_trabajo: tipos_trabajo.data ? tipos_trabajo.data.map((v) => v.id) : []
                         })
@@ -81,7 +75,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     direction='vertical'
                     title="Tipo de trabajo"
                     onChange={(e, i) => {
-                        setTipoTrabajosSelected(v => v.map((activo, index) => i === index ? e : activo))
                         if (tipos_trabajo.data) {
                             const tipo_trabajo = tipos_trabajo.data[i]
                             if (tipo_trabajo) {
@@ -101,7 +94,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     labelStyle={{ marginBottom: 0 }}
                     labelClassName={classes['label-black-md']}
                     options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
-                    values={tipos_trabajo_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
             </Grid>
             <Grid my={4} item xs={12}>
@@ -142,7 +135,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     direction='vertical'
                     title="Interés en proyectos"
                     onChange={(e, i) => {
-                        setTiposInteresProyectosSelected(v => v.map((activo, index) => i === index ? e : activo))
                         if (tipos_interes_proyectos.data) {
                             const tipo_interes_proyecto = tipos_interes_proyectos.data[i]
                             if (tipo_interes_proyecto) {
@@ -162,7 +154,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     labelStyle={{ marginBottom: 0 }}
                     labelClassName={classes['label-black-md']}
                     options={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(t => t.es) : []}
-                    values={tipos_interes_proyectos_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    values={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(v => state.interes_en_proyectos.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
             <Grid my={4} item xs={12}>
@@ -185,14 +177,21 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 id='locacion-principal-select'
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.locaciones.principal.toString()}
+                                value={locacionPrincipalSelect}
                                 onChange={(e) => {
-                                    onFormChange({
-                                        locaciones: {
-                                            ...state.locaciones,
-                                            principal: parseInt(e.target.value)
-                                        }
-                                    })
+                                    setLocacionPrincipalSelect(e.target.value)
+                                    if (state.locaciones.some(locacion => locacion.es_principal)) {
+                                        onFormChange({
+                                            locaciones: state.locaciones.map(locacion => {
+                                                if (locacion.es_principal) return { es_principal: true, id_estado_republica: parseInt(e.target.value) };
+                                                return locacion;
+                                            })
+                                        })
+                                    } else {
+                                        onFormChange({
+                                            locaciones: [{ es_principal: true, id_estado_republica: parseInt(e.target.value) }, ...state.locaciones]
+                                        })
+                                    }
                                 }}
                                 label='Principal'
                             />
@@ -204,11 +203,32 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 id='locacion-principal-select'
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
-                                value={state.locaciones.adicionales.toString()}
-                                onChange={(e) => { onFormChange({ nombre: e.target.value }) }}
+                                value={locacionesAdicionalesSelect}
+                                onChange={(e) => { setLocacionesAdicionalesSelect(e.target.value) }}
                                 label='Adicional'
                             />
-                            <AddButton text='Agregar otra localizacion' onClick={() => { console.log('hola') }} />
+                            <AddButton
+                                text='Agregar otra localizacion'
+                                onClick={() => {
+                                    if (state.locaciones.some(locacion => locacion.id_estado_republica === parseInt(locacionesAdicionalesSelect))) return;
+                                    onFormChange({
+                                        locaciones: [...state.locaciones, { es_principal: false, id_estado_republica: parseInt(locacionesAdicionalesSelect) }]
+                                    })
+                                }}
+                            />
+
+                            <MContainer direction='horizontal' styles={{ gap: 10, marginTop: 20 }}>
+                                {
+                                    state.locaciones.map(locacion => (
+                                        <span
+                                            key={locacion.id_estado_republica}
+                                            style={{ backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9', padding: '5px 10px' }}
+                                        >
+                                            {estados_republica.data?.filter(estado => estado.id === locacion.id_estado_republica).map(estado => estado.es)}
+                                        </span>
+                                    ))
+                                }
+                            </MContainer>
                         </MContainer>
                     </MContainer>
 
@@ -242,7 +262,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <FormGroup
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
-                            value={ state.preferencias.nombre_agente }
+                            value={state.preferencias.nombre_agente}
                             onChange={(e) => {
                                 onFormChange({
                                     preferencias: {
@@ -287,23 +307,27 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         direction='vertical'
                         title="¿Qué documentos oficiales y licencias tienes?"
                         onChange={(e, i) => {
-                            onFormChange({
-                                documentos: state.documentos.map((value, index) => {
-                                    if (i === index) {
-                                        return e
+                            setTipoDocumentosSelected(v => v.map((activo, index) => i === index ? e : activo))
+                            if (tipos_documentos.data) {
+                                const tipo_documento = tipos_documentos.data[i]
+                                if (tipo_documento) {
+                                    let nuevosTipos = []
+                                    if (state.documentos.map(obj => obj.id_documento).includes(tipo_documento?.id)) {
+                                        nuevosTipos = state.documentos.filter((obj) => obj.id_documento !== tipo_documento.id)
+                                    } else {
+                                        nuevosTipos = [...state.documentos, { id_documento: tipo_documento.id, descripcion: '' }]
                                     }
-                                    return value
-                                })
-                            })
+                                    onFormChange({
+                                        documentos: nuevosTipos
+                                    })
+                                }
+                            }
                         }}
                         id="documentos-checkbox"
                         labelStyle={{ marginBottom: 0 }}
                         labelClassName={classes['label-black-md']}
-                        options={[
-                            'Pasaporte Vigente', 'Licencia de conducir vigente', 'Identificacion vigente',
-                            'Primeros Auxilios', 'CPR (resucitación cardiopulmonar)', 'Otro'
-                        ]}
-                        values={state.documentos}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                        options={(tipos_documentos.data) ? tipos_documentos.data.map(t => t.es) : []}
+                        values={tipos_documentos_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
 
                 </MContainer>
@@ -321,27 +345,28 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
                     <MCheckboxGroup
                         direction='horizontal'
-                        title="¿Qué documentos oficiales y licencias tienes?"
+                        title="Algunos directores solicitan actividades específicas, déjales saber si estás dispuesto a realizarlas"
                         onChange={(e, i) => {
-                            onFormChange({
-                                disponibilidad: state.disponibilidad.map((value, index) => {
-                                    if (i === index) {
-                                        return e
+                            if (tipos_disponibilidad.data) {
+                                const tipo_disponibilidad = tipos_disponibilidad.data[i]
+                                if (tipo_disponibilidad) {
+                                    let nuevosTipos = []
+                                    if (state.disponibilidad.includes(tipo_disponibilidad?.id)) {
+                                        nuevosTipos = state.disponibilidad.filter((id) => id !== tipo_disponibilidad.id)
+                                    } else {
+                                        nuevosTipos = [...state.disponibilidad, tipo_disponibilidad.id]
                                     }
-                                    return value
-                                })
-                            })
+                                    onFormChange({
+                                        disponibilidad: nuevosTipos
+                                    })
+                                }
+                            }
                         }}
                         id="disponibilidad-para-checkboxgroup"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
                         labelClassName={classes['label-black-md']}
-                        options={[
-                            'Aparecer en Ropa Interior/Traje de Baño', 'Comer Carne', 'Cortarse el cabello',
-                            'Dejarse crecer o afeitar vello facial', 'Aparecer desnudo', 'Escena de Beso',
-                            'Fumar', 'Pintar Cabello', 'Aparecer semi-desnudo', 'Situación Sexual (Escena)',
-                            'Trabajar con Gatos', 'Trabajar con Perros'
-                        ]}
-                        values={state.disponibilidad}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                        options={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(t => t.es) : []}
+                        values={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(v => state.disponibilidad.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                 </MContainer>
             </Grid>
@@ -357,10 +382,26 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <FormGroup
                     className={classes['form-input-md']}
                     labelClassName={classes['form-input-label']}
-                    value={state.otras_profesiones}
-                    onChange={(e) => { onFormChange({ otras_profesiones: e.currentTarget.value }) }}
+                    value={otrasProfesionesInput}
+                    onChange={(e) => {
+                        setOtrasProfesionesInput(e.currentTarget.value)
+                    }}
                 />
-                <AddButton text='Agregar otra' onClick={() => { console.log('hola'); }} />
+                <AddButton text='Agregar otra' onClick={() => {
+                    if (!otrasProfesionesInput) return;
+                    onFormChange({
+                        otras_profesiones: [...state.otras_profesiones, otrasProfesionesInput]
+                    })
+                    setOtrasProfesionesInput('')
+                }} />
+
+                <MContainer direction='horizontal' styles={{ gap: 10, marginTop: 20 }}>
+                    {
+                        state.otras_profesiones.map(profesion => (
+                            <span key={profesion} style={{ backgroundColor: '#AAE2E9', padding: '5px 10px' }}>{profesion}</span>
+                        ))
+                    }
+                </MContainer>
             </Grid>
 
             <Grid my={4} item xs={12}>
@@ -377,14 +418,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             id="embarazo-radio"
                             options={['si', 'no']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                            value={state.embarazo.tiene_embarazo}
+                            value={estaEmbarazada ? 'si' : 'no'}
                             onChange={(e) => {
-                                onFormChange({
-                                    embarazo: {
-                                        ...state.embarazo,
-                                        tiene_embarazo: e.currentTarget.value
-                                    }
-                                })
+                                setEstaEmbarazada(e.currentTarget.value === 'si')
                             }}
                             label=''
                         />
@@ -396,12 +432,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 style={{ margin: '0px 0px 0px 10px' }}
                                 className={classes['form-input-md']}
                                 labelClassName={classes['form-input-label']}
-                                value={`${state.embarazo.meses}`}
+                                value={`${state.preferencias.meses_embarazo}`}
                                 onChange={(e) => {
                                     onFormChange({
-                                        embarazo: {
-                                            ...state.embarazo,
-                                            meses: parseInt(e.currentTarget.value)
+                                        preferencias: {
+                                            ...state.preferencias,
+                                            meses_embarazo: e.currentTarget.value === '' ? 0 : parseInt(e.currentTarget.value)
                                         }
                                     })
                                 }}
