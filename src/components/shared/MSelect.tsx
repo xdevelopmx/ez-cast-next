@@ -27,7 +27,6 @@ export const MSelect: FC<Props> = ({ loading, className, icon, labelClassName, l
         }
     }
     const select_class = classes['select-form-control'];
-    console.log(select_class)
     return (
         <FormControl>
             {label_element}

@@ -15,13 +15,14 @@ import MotionDiv from '~/components/layout/MotionDiv';
 
 interface Props {
     state: TalentoFormInfoGral,
+    talento_fetching: boolean,
     onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
 const REDES_SOCIALES = ['pagina_web', 'vimeo', 'instagram', 'youtube', 'twitter', 'imdb', 'linkedin'];
 const URL_PATTERN = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 
-export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
+export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
 
     const uniones = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnMount: false,
@@ -55,6 +56,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state }) => {
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={4}>
                 <FormGroup 
+                    loading={talento_fetching}
                     className={classes['form-input-md']} 
                     labelClassName={classes['form-input-label']} 
                     value={(state) ? state.nombre : ''} 

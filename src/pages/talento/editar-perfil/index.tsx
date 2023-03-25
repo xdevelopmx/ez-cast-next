@@ -16,6 +16,7 @@ import { api } from "~/utils/api";
 import { Button } from "@mui/material";
 import { User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
+import { string } from "zod";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -184,8 +185,7 @@ export type FiltrosAparienciaForm = {
     id_tipo_piercing: number,
     descripcion_piercing: string,
     has_hermanos: boolean,
-    id_tipo_hermanos: number,
-    descripcion_tipo_hermanos: string,
+    tipo_hermano_selected: string,
     descripcion_otra_particularidad?: string,
     apariencia: {
         rango_inicial_edad: number,
@@ -336,8 +336,7 @@ const initialState: TalentoForm = {
         id_tipo_piercing: 0,
         descripcion_piercing: '',
         has_hermanos: false,
-        id_tipo_hermanos: 0,
-        descripcion_tipo_hermanos: '',
+        tipo_hermano_selected: '',
         apariencia: {
             rango_inicial_edad: 18,
             rango_final_edad: 50,
@@ -470,6 +469,17 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         }
     });
 
+    const saveFiltrosApariencias = api.talentos.saveFiltrosApariencias.useMutation({
+        onSuccess(input) {
+            notify('success', 'Se guardaron los filtros de apariencias con exito');
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            talento.refetch();
+        },
+        onError: (error) => {
+            notify('error', error.message);
+        }
+    });
+
     useEffect(() => {
         if (talento.data) {
             const redes_sociales: { [nombre: string]: string } = {};
@@ -574,11 +584,50 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                     }
                 })
             }
+
+            if (talento.data && talento.data.filtros_aparencias) {
+                const hermanos_option_default = (talento.data.filtros_aparencias.hermanos) ? (talento.data.filtros_aparencias.hermanos.id_tipo_hermanos === 99) ? 'Otro' : talento.data.filtros_aparencias.hermanos.descripcion : '';
+                let field_other_particularidad = '';
+                if (talento.data.filtros_aparencias.particularidades.some(e => e.id_particularidad === 99)) {
+                    const particularidad_filtered = talento.data.filtros_aparencias.particularidades.filter(e => e.id_particularidad === 99)[0];
+                    if (particularidad_filtered) {
+                        field_other_particularidad = particularidad_filtered.descripcion;
+                    }
+                }
+                dispatch({
+                    type: 'update-filtros-apariencia', value: {
+                        has_tatoos: talento.data.filtros_aparencias.tatuajes.length > 0,
+                        id_tipo_tatuaje: 0,
+                        descripcion_tatoo: '',
+                        has_piercings: talento.data.filtros_aparencias.piercings.length > 0,
+                        id_tipo_piercing: 0,
+                        descripcion_piercing: '',
+                        has_hermanos: (talento.data.filtros_aparencias.hermanos !== null),
+                        descripcion_otra_particularidad: field_other_particularidad,
+                        tipo_hermano_selected: hermanos_option_default,
+                        apariencia: {
+                            rango_inicial_edad: talento.data.filtros_aparencias.rango_inicial_edad,
+                            rango_final_edad: talento.data.filtros_aparencias.rango_final_edad,
+                            id_genero: talento.data.filtros_aparencias.id_genero,
+                            id_apariencia_etnica: talento.data.filtros_aparencias.id_apariencia_etnica,
+                            id_color_cabello: talento.data.filtros_aparencias.id_color_cabello,
+                            disposicion_cambio_color_cabello: talento.data.filtros_aparencias.disposicion_cambio_color_cabello,
+                            id_estilo_cabello: talento.data.filtros_aparencias.id_estilo_cabello,
+                            disposicion_corte_cabello: talento.data.filtros_aparencias.disposicion_corte_cabello,
+                            id_vello_facial: talento.data.filtros_aparencias.id_vello_facial,
+                            disposicion_afeitar_o_crecer_vello_facial: talento.data.filtros_aparencias.disposicion_afeitar_o_crecer_vello_facial,
+                            id_color_ojos: talento.data.filtros_aparencias.id_color_ojos
+                        },
+                        generos_interesado_en_interpretar: talento.data.filtros_aparencias.generos_interesados_en_interpretar.map(e => e.id_genero),
+                        tatuajes: talento.data.filtros_aparencias.tatuajes,
+                        piercings: talento.data.filtros_aparencias.piercings,
+                        hermanos: (talento.data.filtros_aparencias.hermanos) ? { ...talento.data.filtros_aparencias.hermanos } : undefined,
+                        particularidades: talento.data.filtros_aparencias.particularidades
+                    }
+                })
+            }
         }
     }, [talento.data]);
-
-    console.log('state', state)
-    console.log('talento', talento)
 
     return (
         <>
@@ -594,7 +643,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                             dispatch({ type: 'update-form', value: { step_active: step } });
                         }}
                         onFinish={() => {
-                            //create_user.mutate({...state});
+                            saveFiltrosApariencias.mutate({...state.filtros_apariencia});
                         }}
                         current_step={state.step_active}
                         onStepSave={(step: number) => {
@@ -712,6 +761,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
 
                         <EditarInfoBasicaTalento
                             state={state.info_gral}
+                            talento_fetching={talento.isFetching}
                             onFormChange={(input) => {
                                 dispatch({ type: 'update-info-gral', value: input });
                             }}

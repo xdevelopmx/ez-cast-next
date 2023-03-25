@@ -1,5 +1,5 @@
 
-import { TextField } from '@mui/material';
+import { Skeleton, TextField } from '@mui/material';
 import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
 import type Image from 'next/image';
 import { MContainer } from '../layout/MContainer';
@@ -16,12 +16,13 @@ interface Props {
     labelClassName?: string,
     rootStyle?: CSSProperties,
     icon?: JSX.Element,
+    loading?: boolean
 }
 
-export const FormGroup: FC<Props> = ({ icon, rootStyle, className, labelClassName, label, id, type = 'text', onChange, value, labelStyle, style }) => {
-    let input: JSX.Element = <input style={{...style}} value={value} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`}  id={id} />;
+export const FormGroup: FC<Props> = ({ loading, icon, rootStyle, className, labelClassName, label, id, type = 'text', onChange, value, labelStyle, style }) => {
+    let input: JSX.Element = <input style={{...style}} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`}  id={id} />;
     if (type === 'text-area') {
-        input = <TextField id={id} className={className} style={{...style}} value={value} onChange={onChange}  multiline rows={3} maxRows={3}/>;
+        input = <TextField id={id} className={className} style={{...style}} value={(value) ? value : ''} onChange={onChange}  multiline rows={3}/>;
     }
     let label_element: JSX.Element | null = null; 
     if (label) {
@@ -34,7 +35,14 @@ export const FormGroup: FC<Props> = ({ icon, rootStyle, className, labelClassNam
     return (
         <div className="form-group" style={rootStyle}>
             {label_element}
-            {input}
+            {loading &&
+                <Skeleton 
+                    className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} 
+                    style={style} 
+                    variant="rectangular"   
+                />
+            }
+            {!loading && input}
         </div>
     )
 }

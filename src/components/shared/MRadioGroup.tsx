@@ -1,5 +1,5 @@
 
-import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Skeleton } from '@mui/material';
 import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
 
 interface Props {
@@ -11,36 +11,44 @@ interface Props {
     style?: CSSProperties,
     labelStyle?: CSSProperties,
     labelClassName?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    loading?: boolean
 }
 
-export const MRadioGroup: FC<Props> = ({ disabled, labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
+export const MRadioGroup: FC<Props> = ({ loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
     return (
-        <FormControl>
-            <FormLabel style={labelStyle} className={labelClassName} id={id}>{label}</FormLabel>
-            <RadioGroup
-                style={style}
-                id={id}
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-            >
-                {options.map(o => {
-                    return <FormControlLabel
-                        key={o}
-                        control={
-                            <Radio
-                                value={o}
-                                checked={o === value}
-                                disabled={(disabled)}
-                                style={{ color: (disabled) ? 'gray' : '#4ab7c6' }}
-                                onChange={onChange}
+        <>
+            {loading &&
+                Array.from({ length: 10 }).map((n, i) => { return <Skeleton style={{margin: 8}} key={i} variant="rectangular"  height={56} />})
+            }
+            {!loading && 
+                <FormControl>
+                    <FormLabel style={labelStyle} className={labelClassName} id={id}>{label}</FormLabel>
+                    <RadioGroup
+                        style={style}
+                        id={id}
+                        row
+                        aria-labelledby="demo-row-radio-buttons-group-label"
+                        name="row-radio-buttons-group"
+                    >
+                        {options.map(o => {
+                            return <FormControlLabel
+                                key={o}
+                                control={
+                                    <Radio
+                                        value={o}
+                                        checked={o === value}
+                                        disabled={(disabled)}
+                                        style={{ color: (disabled) ? 'gray' : '#4ab7c6' }}
+                                        onChange={onChange}
+                                    />
+                                }
+                                label={o}
                             />
-                        }
-                        label={o}
-                    />
-                })}
-            </RadioGroup>
-        </FormControl>
+                        })}
+                    </RadioGroup>
+                </FormControl>
+            }
+        </>
     )
 }

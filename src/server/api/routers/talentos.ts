@@ -85,6 +85,29 @@ export const TalentosRouter = createTRPCRouter({
 							},
 							
 						}
+					},
+					filtros_aparencias: {
+						include: {
+							genero: true,
+							generos_interesados_en_interpretar: {
+								include: {
+									genero: true
+								}
+							},
+							apariencia_etnica: true,
+							color_cabello: true,
+							estilo_cabello: true,
+							vello_facial: true,
+							color_ojos: true,
+							tatuajes: {
+								include: {
+									tipo_tatuaje: true,
+								}
+							},
+							piercings: true,
+							hermanos: true,
+							particularidades: true
+						}
 					}
 				}
 			});
@@ -876,7 +899,7 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 			documentos: z.array(z.object({
 				id_documento: z.number(),
-				descripcion: z.string().nullish()
+				descripcion: z.string()
 			})),
 			disponibilidad: z.array(z.number()), 
 			otras_profesiones: z.array(z.string().min(3)),

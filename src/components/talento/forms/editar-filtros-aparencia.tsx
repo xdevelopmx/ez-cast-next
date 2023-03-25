@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { useEffect, useState, type FC } from 'react'
 import { motion } from 'framer-motion'
 import { AddButton, FormGroup, MCheckboxGroup, MRadioGroup, MSelect } from '~/components';
 import { Alert, Chip, Divider, Grid, Typography } from '@mui/material';
@@ -63,8 +63,12 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
         refetchOnWindowFocus: false,
     });
 
-    const is_loading = tipos_piercings.isFetching || tipos_tatuajes.isFetching || apariencias_etnicas.isFetching || colores_cabello.isFetching || estilos_cabello.isFetching || vellos_facial.isFetching || colores_ojos.isFetching;
+    const tipos_particularidades = api.catalogos.getParticularidades.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
 
+    const is_loading = tipos_piercings.isFetching || tipos_tatuajes.isFetching || apariencias_etnicas.isFetching || colores_cabello.isFetching || estilos_cabello.isFetching || vellos_facial.isFetching || colores_ojos.isFetching;
 
     return (
         <Grid container spacing={2}>
@@ -505,46 +509,37 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <MotionDiv show={state.has_hermanos} animation='fade'>
                         <>
                             <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <MCheckboxGroup
-                                    onAllOptionChecked={() => {
-                                        console.log('xd');
-                                    }}
-                                    direction='horizontal'
-                                    onChange={(e, i) => {
-                                        const genero = generos.data?.filter((_, index) =>  index === i)[0];
-                                        if (genero) {
+                                <MRadioGroup 
+                                    style={{ }} 
+                                    id="tienes-hermanos" 
+                                    options={(tipos_hermanos.data) ? tipos_hermanos.data.map(h => { return h.es}) : []} 
+                                    value={state.tipo_hermano_selected} 
+                                    onChange={(e) => { 
+                                        const _tipo_hermanos = tipos_hermanos.data?.filter((h) => {
+                                            return e.target.value === h.es
+                                        })[0];
+                                        if (_tipo_hermanos) {
                                             onFormChange({
-                                                generos_interesado_en_interpretar: 
-                                                    (state.generos_interesado_en_interpretar.includes(genero.id)) ?
-                                                    state.generos_interesado_en_interpretar.filter(e => e !== genero.id) :
-                                                    state.generos_interesado_en_interpretar.concat([genero.id])   
+                                                hermanos: { 
+                                                    ...state.hermanos,
+                                                    id_tipo_hermanos: _tipo_hermanos.id, 
+                                                },
+                                                tipo_hermano_selected: e.target.value,  
                                             })
                                         }
-                                    }}
-                                    id="especificacion-gemelo-trillizo"
-                                    options={(tipos_hermanos.data) ? tipos_hermanos.data.map(h => { return h.es}) : []}
-                                    values={(tipos_hermanos.data) ? tipos_hermanos.data.map(h => {
-                                        return (state.hermanos && state.hermanos.id_tipo_hermanos === h.id);
-                                    }): [false]}
+                                    }} 
                                 />
-                                <MRadioGroup
-                                    id="especificacion-gemelo-trillizo"
-                                    labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                    value={''}
-                                    onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
-                                    label=''
-                                />
-                                <MotionDiv show={state.id_tipo_hermanos === 99} animation={'fade'}>
+                                <MotionDiv show={state.hermanos?.id_tipo_hermanos === 99} animation={'fade'}>
                                     <FormGroup
                                         label=''
                                         className={classes['form-input-md']}
                                         labelClassName={classes['form-input-label']}
-                                        value={`${state.apariencia.rango_final_edad}`}
+                                        value={state.hermanos?.descripcion}
                                         onChange={(e) => {
                                             onFormChange({
-                                                apariencia: {
-                                                    ...state.apariencia,
-                                                    rango_final_edad: parseInt(e.currentTarget.value)
+                                                hermanos: {
+                                                    ...state.hermanos,
+                                                    descripcion: e.currentTarget.value
                                                 }
                                             })
                                         }}
@@ -568,30 +563,51 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <Typography>
                         Algunas veces los directores buscan atributos específicos, déjales saber si tienes alguno de los siguientes
                     </Typography>
-                    <MCheckboxGroup
-                        direction='horizontal'
+                    <MContainer direction='vertical'>
+                        <MCheckboxGroup
+                            direction='horizontal'
 
-                        onChange={(e) => {
-                            //onFormChange({ mostrar_anio_en_perfil: e.currentTarget.checked })
-                        }}
-                        id="particularidades-checkboxgroup"
-                        labelStyle={{ marginBottom: 0, width: '32%' }}
-                        labelClassName={classes['label-black-md']}
-                        options={[
-                            'Amputación', 'Dentadura Postiza', 'Paraplégico', 'Sordo/a', 'Brackets', 'Discapacidad auditiva',
-                            'Parálisis cerebral', 'Síndrome de down', 'Brazo Protésico', 'Mano Protésica', 'Pie Protésico',
-                            'Tetrapléjia', 'Cicatriz en el rostro', 'Mudo', 'Pierna Protésica', 'Masectomía Bilateral',
-                            'Ciego/a', 'Ojo de vidrio', 'Silla de ruedas', 'Masectomía única', 'Otro'
-                        ]}
-                        values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
-                    />
-                    <FormGroup
-                        className={classes['form-input-md']}
-                        labelClassName={classes['form-input-label']}
-                        value={''}
-                        rootStyle={{ margin: 0 }}
-                        onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
-                    />
+                            onChange={(e, i) => {
+                                const particularidad = tipos_particularidades.data?.filter((_, index) =>  index === i)[0];
+                                if (particularidad) {
+                                    onFormChange({
+                                        particularidades: 
+                                            (state.particularidades.map(e => e.id_particularidad).includes(particularidad.id)) ?
+                                            state.particularidades.filter(e => e.id_particularidad !== particularidad.id) :
+                                            state.particularidades.concat([{id_particularidad: particularidad.id, descripcion: (particularidad.id === 99) ? `${(state.descripcion_otra_particularidad) ? state.descripcion_otra_particularidad : ''}` : ''}])   
+                                    })
+                                }
+                            }}
+                            values={(tipos_particularidades.data) ? tipos_particularidades.data.map(g => {
+                                return state.particularidades.map(e => e.id_particularidad).includes(g.id);
+                            }): [false]}
+                            id="particularidades-checkboxgroup"
+                            labelStyle={{ marginBottom: 0, width: '32%' }}
+                            labelClassName={classes['label-black-md']}
+                            options={(tipos_particularidades.data) ? tipos_particularidades.data.map(tp => tp.es) : []}
+                        />
+                        <MotionDiv show={state.particularidades.some(e => e.id_particularidad === 99)} animation={'fade'}>
+                            <FormGroup
+                                label='Descripcion otro tipo de particularidad'
+                                className={classes['form-input-md']}
+                                labelClassName={classes['form-input-label']}
+                                value={state.descripcion_otra_particularidad}
+                                rootStyle={{ margin: 0 }}
+                                onChange={(e) => { 
+                                    
+                                    onFormChange({ 
+                                        descripcion_otra_particularidad: e.currentTarget.value,
+                                        particularidades: state.particularidades.map((p) => {
+                                            if (p.id_particularidad === 99) {
+                                                p.descripcion = e.target.value;
+                                            }
+                                            return p;
+                                        })
+                                    }) 
+                                }}
+                            />
+                        </MotionDiv>
+                    </MContainer>
                 </MContainer>
             </Grid>
         </Grid>
