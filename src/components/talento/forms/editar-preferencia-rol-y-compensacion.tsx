@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/shared';
 import { type TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
+import MotionDiv from '~/components/layout/MotionDiv';
 
 
 interface Props {
@@ -315,7 +316,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                     if (state.documentos.map(obj => obj.id_documento).includes(tipo_documento?.id)) {
                                         nuevosTipos = state.documentos.filter((obj) => obj.id_documento !== tipo_documento.id)
                                     } else {
-                                        nuevosTipos = [...state.documentos, { id_documento: tipo_documento.id, descripcion: 'descripcion' }]
+                                        nuevosTipos = [...state.documentos, { id_documento: tipo_documento.id, descripcion: '' }]
                                     }
                                     onFormChange({
                                         documentos: nuevosTipos
@@ -329,6 +330,28 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         options={(tipos_documentos.data) ? tipos_documentos.data.map(t => t.es) : []}
                         values={tipos_documentos_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
+
+                    {
+                        <MotionDiv show={state.documentos.some(documento => documento?.id_documento === 99)} animation='fade'>
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelClassName={classes['form-input-label']}
+                                value={state.documentos.filter(documento => documento?.id_documento === 99)[0]?.descripcion}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        documentos: state.documentos.map( documento => {
+                                            if(documento?.id_documento === 99){
+                                                return {
+                                                    id_documento: 99,
+                                                    descripcion: e.target.value || ''
+                                                }
+                                            }
+                                        } )
+                                    })
+                                }}
+                            />
+                        </MotionDiv>
+                    }
 
                 </MContainer>
             </Grid>
