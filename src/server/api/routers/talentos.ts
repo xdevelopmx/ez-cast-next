@@ -27,7 +27,132 @@ export const TalentosRouter = createTRPCRouter({
 			return await ctx.prisma.talentos.findMany();
 		}
 	),
-	getById: publicProcedure
+	getInfoBasicaByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			const info_basica = await ctx.prisma.infoBasicaPorTalentos.findFirst({
+				where: {
+					id_talento: input.id,
+				},
+				include: {
+					union: true
+				}
+			})
+			return info_basica;
+		}
+	),
+	getMediaByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			const media = await ctx.prisma.mediaPorTalentos.findMany({
+				where: {id_talento: input.id},
+				include: {
+					media: true
+				}
+			});
+
+			return media;
+		}
+	),
+	getCreditosByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			const creditos = await ctx.prisma.creditosPorTalentos.findMany({
+				where: {id_talento: input.id},
+				include: {
+					creditos: true
+				}
+			});
+			return creditos;
+		}
+	),
+	getHabilidadesByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			const habilidades = await ctx.prisma.habilidadesPorTalentos.findMany({
+				where: {id_talento: input.id},
+				include: {
+					habilidad_especifica: true,
+					habilidad: true
+				}
+			});
+
+			return habilidades;
+		}
+	),
+	getActivosByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			const activos = await ctx.prisma.activosPorTalentos.findMany({
+				where: {id_talento: input.id},
+				include: {
+					vehiculos: {
+						include: {
+							tipo_vehiculo: true,
+						}
+					},
+					mascotas: {
+						include: {
+							tipo_mascota: true,
+							raza_mascota: true
+						}
+					},
+					vestuario: {
+						include: {
+							tipo_vestuario_especifico: {
+								include: {
+									tipo_vestuario: true
+								}
+							}
+						}
+					},
+					props: {
+						include: {
+							tipo_props: true,
+						}
+					},
+					equipo_deportivo: {
+						include: {
+							tipo_equipo_deportivo: true
+						}
+					},
+				}
+			});
+			return activos;
+		}
+	),
+	getFiltrosAparienciaByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.findFirst({
+				where: {id_talento: input.id},
+				include: {
+					genero: true,
+					generos_interesados_en_interpretar: {
+						include: {
+							genero: true
+						}
+					},
+					apariencia_etnica: true,
+					color_cabello: true,
+					estilo_cabello: true,
+					vello_facial: true,
+					color_ojos: true,
+					tatuajes: {
+						include: {
+							tipo_tatuaje: true,
+						}
+					},
+					piercings: true,
+					hermanos: true,
+					particularidades: true
+				}
+			});
+
+			return filtros;
+		}
+	),
+	getCompleteById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			const talento = await ctx.prisma.talentos.findUnique({

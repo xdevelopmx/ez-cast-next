@@ -21,7 +21,7 @@ interface MTableProps {
 
 
 export const MTable: FC<MTableProps> = ({
-	data, columnsHeader, headerClassName, headerStyles, backgroundColorData = 'lightgrey',
+	data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
 	backgroundColorHeader = '#4ab7c6', style = {}
 }) => {
 	return (

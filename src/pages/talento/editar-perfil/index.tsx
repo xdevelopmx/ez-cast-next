@@ -397,7 +397,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
 
     const { notify } = useNotify();
 
-    const talento = api.talentos.getById.useQuery({ id: parseInt(user.id) }, {
+    const talento = api.talentos.getCompleteById.useQuery({ id: parseInt(user.id) }, {
         refetchOnMount: false,
         refetchOnWindowFocus: false
     });

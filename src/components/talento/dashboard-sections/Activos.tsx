@@ -1,7 +1,6 @@
 import { Grid, Typography } from '@mui/material'
 import { MContainer } from '~/components/layout/MContainer';
 import { SectionTitle } from '~/components/shared';
-import { MTable } from '~/components/shared/MTable/MTable';
 
 export const Activos = () => {
     return (
@@ -10,51 +9,15 @@ export const Activos = () => {
                 <SectionTitle title='Activos' onClickButton={() => { console.log('click'); }} />
             </Grid>
             <Grid item xs={12}>
-                <MTable
-                    style={{ marginTop: 20 }}
-                    backgroundColorData='#EBEBEB'
-                    data={[
-                        {
-                            tipo_activo: <Typography sx={{ color: '#4ab7c6' }} fontWeight={600}>Mascota</Typography>,
-                            mascota: <Typography fontWeight={600}>Perro</Typography>,
-                            razas: <MContainer direction='horizontal' styles={{ gap: 20 }}>
-                                <Typography>Maltese</Typography>
-                                <Typography>Chico</Typography>
-                            </MContainer>
-                        }
-                    ]}
-                />
+                <MContainer className="my-2 p-3" direction="horizontal" justify='space-between' styles={{ backgroundColor: '#ededed '}}>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Vehiculo</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400}>Actuación, modelado</Typography>  
+                </MContainer>
 
-                <MTable
-                    style={{ marginTop: 20 }}
-                    backgroundColorData='#EBEBEB'
-                    data={[
-                        {
-                            tipo_activo: <Typography sx={{ color: '#4ab7c6' }} fontWeight={600}>Vehículo</Typography>,
-                            mascota: <Typography fontWeight={600}>Automóvil</Typography>,
-                            razas: <MContainer direction='horizontal' styles={{ gap: 20 }}>
-                                <Typography>Jeep</Typography>
-                                <Typography>Wrangler</Typography>
-                                <Typography>Verde</Typography>
-                                <Typography>1960</Typography>
-                            </MContainer>
-                        }
-                    ]}
-                />
-
-                <MTable
-                    style={{ marginTop: 20 }}
-                    backgroundColorData='#EBEBEB'
-                    data={[
-                        {
-                            tipo_activo: <Typography sx={{ color: '#4ab7c6' }} fontWeight={600}>Props</Typography>,
-                            mascota: <Typography fontWeight={600}>Arco y flecha</Typography>,
-                            razas: <MContainer direction='horizontal' styles={{ gap: 20 }}>
-                                <Typography>Pequeña descripción</Typography>
-                            </MContainer>
-                        }
-                    ]}
-                />
+                <MContainer className="my-2 p-3" direction="horizontal" justify='space-between' styles={{backgroundColor: '#ededed '}}>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Vehiculo</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400}>Actuación, modelado</Typography>  
+                </MContainer>                
             </Grid>
         </Grid>
     )
