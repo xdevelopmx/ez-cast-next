@@ -12,7 +12,7 @@ import { Archivo } from "~/server/api/root";
 import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilidades";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next/types";
-import { api } from "~/utils/api";
+import { api, parseErrorBody } from "~/utils/api";
 import { Button } from "@mui/material";
 import { User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
