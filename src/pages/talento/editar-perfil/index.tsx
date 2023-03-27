@@ -203,7 +203,7 @@ export type FiltrosAparienciaForm = {
     generos_interesado_en_interpretar: number[],
     tatuajes: {
         id_tipo_tatuaje: number,
-        descripcion: string 
+        descripcion: string
     }[],
     piercings: {
         id_tipo_piercing: number,
@@ -402,6 +402,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         refetchOnWindowFocus: false
     });
 
+    console.log({ talento: talento.data });
+
     const saveInfoGral = api.talentos.saveInfoGral.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo la informacion general con exito');
@@ -460,7 +462,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
 
     const savePreferencias = api.talentos.savePreferencias.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardaron los activos con exito');
+            notify('success', 'Se guardaron las preferencias con exito');
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -643,7 +645,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                             dispatch({ type: 'update-form', value: { step_active: step } });
                         }}
                         onFinish={() => {
-                            saveFiltrosApariencias.mutate({...state.filtros_apariencia});
+                            saveFiltrosApariencias.mutate({ ...state.filtros_apariencia });
                         }}
                         current_step={state.step_active}
                         onStepSave={(step: number) => {
@@ -726,16 +728,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                                     break;
                                 }
                                 case 6: {
-                                    console.log({
-                                        disponibilidad: state.preferencias.disponibilidad,
-                                        documentos: state.preferencias.documentos,
-                                        interes_en_proyectos: state.preferencias.interes_en_proyectos,
-                                        locaciones: state.preferencias.locaciones,
-                                        otras_profesiones: state.preferencias.otras_profesiones,
-                                        preferencias: state.preferencias.preferencias,
-                                        tipos_trabajo: state.preferencias.tipo_trabajo
-                                    });
-
                                     savePreferencias.mutate({
                                         preferencias: state.preferencias.preferencias,
                                         tipos_trabajo: state.preferencias.tipo_trabajo,
