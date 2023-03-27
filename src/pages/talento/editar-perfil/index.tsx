@@ -413,9 +413,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -429,9 +429,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -445,9 +445,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -461,9 +461,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -477,9 +477,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -493,9 +493,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -509,9 +509,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         onError: (error) => {
             let _error = error.message;
             try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                const parsed_error = JSON.parse(_error) as { [key: string]: string };
                 _error = parsed_error.message as string;
-            } catch (e) {}
+            } catch (e) { }
             notify('error', _error);
         }
     });
@@ -617,6 +617,33 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                         equipos_deportivos: (talento.data.activos.equipo_deportivo) ? talento.data.activos.equipo_deportivo.map(ed => {
                             return { tipo: ed.tipo_equipo_deportivo?.es, id_tipo_equipo_deportivo: ed.id_tipo_equipo_deportivo, descripcion: ed.descripcion }
                         }) : [],
+                    }
+                })
+            }
+
+            if (talento.data && talento.data.preferencias) {
+                const preferencias = talento.data.preferencias
+                dispatch({
+                    type: 'update-preferencia-rol',
+                    value: {
+                        preferencias: {
+                            interesado_en_trabajos_de_extra: preferencias.interesado_en_trabajos_de_extra || false,
+                            nombre_agente: preferencias.nombre_agente || '',
+                            contacto_agente: preferencias.contacto_agente || '',
+                            meses_embarazo: preferencias.meses_embarazo || 0
+                        },
+                        tipo_trabajo: preferencias.tipos_de_trabajo.map(tipo => tipo.id_tipo_de_trabajo),
+                        interes_en_proyectos: preferencias.interes_en_proyectos.map(interes => interes.id_interes_en_proyecto),
+                        documentos: preferencias.documentos.map(documento => ({
+                            id_documento: documento.id_documento,
+                            descripcion: documento.descripcion
+                        })),
+                        locaciones: preferencias.locaciones.map(locacion => ({
+                            es_principal: locacion.es_principal,
+                            id_estado_republica: locacion.id_estado_republica,
+                        })),
+                        disponibilidad: preferencias.disponibilidades.map(disponibilidad => disponibilidad.id_disponibilidad),
+                        otras_profesiones: preferencias.otras_profesiones.map(profesion => profesion.descripcion),
                     }
                 })
             }
