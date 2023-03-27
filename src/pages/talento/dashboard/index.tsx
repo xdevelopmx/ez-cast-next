@@ -12,9 +12,10 @@ import { MTable } from "~/components/shared/MTable/MTable";
 import { Activos, Creditos, FiltrosApariencias, Habilidades, Media, Preferencias } from "~/components/talento";
 import { InfoGeneral } from "~/components/talento/dashboard-sections/InfoGeneral";
 import { api } from "~/utils/api";
+import { useSession } from "next-auth/react";
 
 const DashBoardTalentosPage: NextPage = () => {
-
+	const session = useSession();
 	return (
 		<>
 			<Head>
@@ -56,7 +57,7 @@ const DashBoardTalentosPage: NextPage = () => {
 
 							<Activos />
 							<FiltrosApariencias/>
-							<Preferencias/>
+							<Preferencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
 						</div>
 					</div>
 				</div>

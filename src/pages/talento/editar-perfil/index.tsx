@@ -409,7 +409,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
@@ -420,8 +425,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            console.log(error);
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
@@ -432,7 +441,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
@@ -443,7 +457,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
@@ -454,7 +473,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
@@ -465,7 +489,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
@@ -476,7 +505,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            notify('error', error.message);
+            let _error = error.message;
+            try {
+                const parsed_error = JSON.parse(_error) as {[key: string]: string};
+                _error = parsed_error.message as string;
+            } catch (e) {}
+            notify('error', _error);
         }
     });
 
