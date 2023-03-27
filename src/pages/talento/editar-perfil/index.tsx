@@ -12,7 +12,7 @@ import { Archivo } from "~/server/api/root";
 import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilidades";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next/types";
-import { api } from "~/utils/api";
+import { api, parseErrorBody } from "~/utils/api";
 import { Button } from "@mui/material";
 import { User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
@@ -409,12 +409,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -425,12 +420,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -441,12 +431,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -457,12 +442,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -473,12 +453,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -489,12 +464,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -505,12 +475,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as {[key: string]: string};
-                _error = parsed_error.message as string;
-            } catch (e) {}
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 

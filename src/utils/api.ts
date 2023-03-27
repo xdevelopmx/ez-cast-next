@@ -17,6 +17,17 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
+export const parseErrorBody = (error: string) => {
+  let _error = error;
+  try {
+    const parsed_error = JSON.parse(_error) as {[key: string]: string}[];
+    const e = parsed_error[0];
+    if (e != null)
+    _error = e['message'] as string;
+  } catch (e) {}
+  return _error;
+}
+
 /** A set of type-safe react-query hooks for your tRPC API. */
 export const api = createTRPCNext<AppRouter>({
   config() {
