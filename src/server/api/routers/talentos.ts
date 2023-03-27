@@ -30,6 +30,7 @@ export const TalentosRouter = createTRPCRouter({
 	getInfoBasicaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
 			const info_basica = await ctx.prisma.infoBasicaPorTalentos.findFirst({
 				where: {
 					id_talento: input.id,
@@ -44,6 +45,7 @@ export const TalentosRouter = createTRPCRouter({
 	getMediaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
 			const media = await ctx.prisma.mediaPorTalentos.findMany({
 				where: {id_talento: input.id},
 				include: {
@@ -57,18 +59,20 @@ export const TalentosRouter = createTRPCRouter({
 	getCreditosByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
-			const creditos = await ctx.prisma.creditosPorTalentos.findMany({
+			if (input.id <= 0) return null;
+			const creditos_por_talento = await ctx.prisma.creditosPorTalentos.findMany({
 				where: {id_talento: input.id},
 				include: {
 					creditos: true
 				}
 			});
-			return creditos;
+			return creditos_por_talento;
 		}
 	),
 	getHabilidadesByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
 			const habilidades = await ctx.prisma.habilidadesPorTalentos.findMany({
 				where: {id_talento: input.id},
 				include: {
@@ -83,6 +87,7 @@ export const TalentosRouter = createTRPCRouter({
 	getActivosByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
 			const activos = await ctx.prisma.activosPorTalentos.findMany({
 				where: {id_talento: input.id},
 				include: {
@@ -121,9 +126,32 @@ export const TalentosRouter = createTRPCRouter({
 			return activos;
 		}
 	),
+	getPreferenciasRolByIdTalento: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
+			const preferencias = await ctx.prisma.preferenciasPorTalentos.findFirst({
+				where: {id_talento: input.id},
+				include: {
+					tipos_de_trabajo: true,
+					interes_en_proyectos: true,
+					locaciones: {
+						include: {
+							estado_republica: true
+						}
+					},
+					documentos: true,
+					disponibilidades: true,
+					otras_profesiones: true,
+				}
+			});
+			return preferencias;
+		}
+	),
 	getFiltrosAparienciaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
 			const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.findFirst({
 				where: {id_talento: input.id},
 				include: {
@@ -155,6 +183,7 @@ export const TalentosRouter = createTRPCRouter({
 	getCompleteById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
 			const talento = await ctx.prisma.talentos.findUnique({
 				where: {id: input.id},
 				include: {
@@ -466,17 +495,22 @@ export const TalentosRouter = createTRPCRouter({
 						}
 					}
 				} else {
-					// si es mayor de edad eliminamos al representante
-					const deleted_representante = await ctx.prisma.representantesPorTalentos.delete({
+					const representante_exist = await ctx.prisma.representantesPorTalentos.findFirst({
 						where: {id_talento: parseInt(user.id)}
-					})
-					if (!deleted_representante) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un problema al tratar de eliminar el representante',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
+					});
+					if (representante_exist) {
+						// si es mayor de edad eliminamos al representante
+						const deleted_representante = await ctx.prisma.representantesPorTalentos.delete({
+							where: {id_talento: parseInt(user.id)}
+						})
+						if (!deleted_representante) {
+							throw new TRPCError({
+								code: 'INTERNAL_SERVER_ERROR',
+								message: 'Ocurrio un problema al tratar de eliminar el representante',
+								// optional: pass the original error to retain stack trace
+								//cause: theError,
+							});
+						}
 					}
 				}
 				return info_gral;
@@ -1021,7 +1055,16 @@ export const TalentosRouter = createTRPCRouter({
 			locaciones: z.array(z.object({
 				es_principal: z.boolean(),
   				id_estado_republica: z.number()
-			})),
+			}), {
+				errorMap: (issue, _ctx) => {
+					switch (issue.code) {
+					case 'too_small':
+						return { message: 'Se debe enviar al menos una locacion en la peticion' };
+					default:
+						return { message: 'Formato de locacion invalido' };
+					}
+				},
+			}).min(1),
 			documentos: z.array(z.object({
 				id_documento: z.number(),
 				descripcion: z.string()
@@ -1032,6 +1075,17 @@ export const TalentosRouter = createTRPCRouter({
 		.mutation(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+
+				if (input.locaciones.length === 0 || !input.locaciones.some(l => l.es_principal)) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: 'Se debe enviar al menos una locacion principal',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+
 				const preferencias = await ctx.prisma.preferenciasPorTalentos.upsert({
 					where: {id_talento: parseInt(user.id)},
 					update: {
