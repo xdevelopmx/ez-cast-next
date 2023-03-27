@@ -36,10 +36,20 @@ export const TalentosRouter = createTRPCRouter({
 					id_talento: input.id,
 				},
 				include: {
-					union: true
+					union: {
+						include: {
+							union: true
+						}
+					},
+					estado_republica: true,
 				}
 			})
-			return info_basica;
+
+			const redes_sociales = await ctx.prisma.redesSocialesPorTalentos.findMany({
+				where: {id_talento: input.id},
+			});
+
+			return {info_basica: info_basica, redes_sociales: redes_sociales};
 		}
 	),
 	getMediaByIdTalento: publicProcedure
@@ -60,7 +70,7 @@ export const TalentosRouter = createTRPCRouter({
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
-			const creditos_por_talento = await ctx.prisma.creditosPorTalentos.findMany({
+			const creditos_por_talento = await ctx.prisma.creditosPorTalentos.findFirst({
 				where: {id_talento: input.id},
 				include: {
 					creditos: true
@@ -78,7 +88,15 @@ export const TalentosRouter = createTRPCRouter({
 				include: {
 					habilidad_especifica: true,
 					habilidad: true
-				}
+				},
+				orderBy: [
+					{
+						id_habilidad: 'asc',
+					},
+					{
+						id_habilidad_especifica: 'asc',
+					}
+				],
 			});
 
 			return habilidades;
@@ -88,7 +106,7 @@ export const TalentosRouter = createTRPCRouter({
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
-			const activos = await ctx.prisma.activosPorTalentos.findMany({
+			const activos = await ctx.prisma.activosPorTalentos.findFirst({
 				where: {id_talento: input.id},
 				include: {
 					vehiculos: {
@@ -133,15 +151,31 @@ export const TalentosRouter = createTRPCRouter({
 			const preferencias = await ctx.prisma.preferenciasPorTalentos.findFirst({
 				where: {id_talento: input.id},
 				include: {
-					tipos_de_trabajo: true,
-					interes_en_proyectos: true,
+					tipos_de_trabajo: {
+						include: {
+							tipos_de_trabajo: true
+						}
+					},
+					interes_en_proyectos: {
+						include: {
+							intereses_en_proyectos: true
+						}
+					},
 					locaciones: {
 						include: {
 							estado_republica: true
 						}
 					},
-					documentos: true,
-					disponibilidades: true,
+					documentos: {
+						include: {
+							documento: true
+						}
+					},
+					disponibilidades: {
+						include: {
+							disponibilidad: true
+						}
+					},
 					otras_profesiones: true,
 				}
 			});
@@ -171,9 +205,17 @@ export const TalentosRouter = createTRPCRouter({
 							tipo_tatuaje: true,
 						}
 					},
-					piercings: true,
+					piercings: {
+						include: {
+							piercing: true
+						}
+					},
 					hermanos: true,
-					particularidades: true
+					particularidades: {
+						include: {
+							particularidad: true
+						}
+					}
 				}
 			});
 

@@ -523,6 +523,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                                 hermanos: { 
                                                     ...state.hermanos,
                                                     id_tipo_hermanos: _tipo_hermanos.id, 
+                                                    descripcion: (_tipo_hermanos.id === 99) ? '' : (state.hermanos) ? state.hermanos.descripcion : ''
                                                 },
                                                 tipo_hermano_selected: e.target.value,  
                                             })

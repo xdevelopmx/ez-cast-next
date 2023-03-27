@@ -46,17 +46,17 @@ const DashBoardTalentosPage: NextPage = () => {
 									}}
 									labels={['Informacion basica', 'Media', 'Creditos', 'Habilidades', 'Medidas', 'Activos', 'Preferencia de roles']}
 								/>
-								<InfoGeneral/>
+								<InfoGeneral id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
 							</MContainer>
 							
 							<Media />
 
-							<Creditos />
+							<Creditos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
 
-							<Habilidades />
+							<Habilidades id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
 
-							<Activos />
-							<FiltrosApariencias/>
+							<Activos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
+							<FiltrosApariencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
 							<Preferencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
 						</div>
 					</div>

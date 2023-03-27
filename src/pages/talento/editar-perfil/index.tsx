@@ -644,7 +644,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                             dispatch({ type: 'update-form', value: { step_active: step } });
                         }}
                         onFinish={() => {
-                            saveFiltrosApariencias.mutate({ ...state.filtros_apariencia });
+                            saveFiltrosApariencias.mutate({ 
+                                ...state.filtros_apariencia, 
+                                hermanos: {
+                                    id_tipo_hermanos: (state.filtros_apariencia.hermanos) ? state.filtros_apariencia.hermanos.id_tipo_hermanos : 0,
+                                    descripcion: (state.filtros_apariencia.hermanos && state.filtros_apariencia.hermanos.id_tipo_hermanos === 99) ? state.filtros_apariencia.hermanos.descripcion : state.filtros_apariencia.tipo_hermano_selected
+                                } 
+                            });
                         }}
                         current_step={state.step_active}
                         onStepSave={(step: number) => {

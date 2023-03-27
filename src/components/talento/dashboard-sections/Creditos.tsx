@@ -4,8 +4,21 @@ import React from 'react'
 import { MContainer } from '~/components/layout/MContainer';
 import { SectionTitle } from '~/components/shared';
 import { MTable } from '~/components/shared/MTable/MTable';
+import { api } from '~/utils/api';
+import { useMemo } from 'react';
 
-export const Creditos = () => {
+export const Creditos = (props: {id_talento: number}) => {
+
+    const creditos = api.talentos.getCreditosByIdTalento.useQuery({id: props.id_talento});
+    const loading = creditos.isFetching;
+    const data = useMemo(() => {
+        if (creditos.data) {
+            console.log('creditos_data', creditos.data)
+            return creditos.data;
+        }
+        return null;
+    }, [creditos.data]);
+
     return (
         <Grid container sx={{ mt: 10 }}>
             <Grid item xs={12}>
@@ -32,78 +45,19 @@ export const Creditos = () => {
                             Clip
                         </Typography>,
                     ]}
-                    data={[
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
+                    data={(data) ? data.creditos.map(credito => {
+                        const es_destacado = (credito.destacado) ? <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" /> : <></>;
+                        return {
+                            titulo: credito.titulo,
+                            rol: credito.rol,
+                            director: credito.director,
+                            anio: credito.anio,
                             clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
                                 <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
+                                {es_destacado}
                             </MContainer>
-                        },
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
-                            clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
-                            </MContainer>
-                        },
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
-                            clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
-                            </MContainer>
-                        },
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
-                            clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
-                            </MContainer>
-                        },
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
-                            clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
-                            </MContainer>
-                        },
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
-                            clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
-                            </MContainer>
-                        },
-                        {
-                            titulo: 'Corto Talent Corner',
-                            rol: 'Protagonista',
-                            director: 'Bernardo Gómez',
-                            anio: '2020',
-                            clip: <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>Reproducir</Typography>
-                                <Image src="/assets/img/iconos/icon_estrella_dorada.svg" width={30} height={30} alt="" />
-                            </MContainer>
-                        },
-                    ]}
+                        }
+                    }) : []}
                 />
             </Grid>
         </Grid>

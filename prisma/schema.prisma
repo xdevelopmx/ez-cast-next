@@ -114,6 +114,7 @@ model UnionPorInfoBasicaTalento {
   id_union                    Int
   descripcion                 String?
   id_info_basica_por_talentos Int                   @unique
+  union CatalogoUniones @relation(fields: [id_union], references: [id])
   info_basica_por_talentos    InfoBasicaPorTalentos @relation(fields: [id_info_basica_por_talentos], references: [id], onDelete: Cascade)
 }
 
@@ -121,6 +122,7 @@ model CatalogoUniones {
   id Int    @id
   es String
   en String
+  union_por_info_basica_talento UnionPorInfoBasicaTalento[]
 }
 
 model RedesSocialesPorTalentos {
@@ -529,6 +531,7 @@ model ParticularidadesPorTalentos {
   id_filtros_apariencias_por_talentos Int
   id_particularidad                   Int
   descripcion                         String
+  particularidad CatalogoParticularidades @relation(fields: [id_particularidad], references: [id])
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
 }
 
@@ -615,6 +618,7 @@ model DocumentosPorTalentos {
   id_preferencias_por_talentos Int
   id_documento                 Int
   descripcion                  String
+  documento CatalogoTipoDocumentos @relation(fields: [id_documento], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
@@ -723,6 +727,7 @@ model CatalogoTipoDocumentos {
   id Int    @id
   es String
   en String
+  documentos_por_talentos DocumentosPorTalentos[]
 }
 
 //Catalogos de 
@@ -759,6 +764,7 @@ model CatalogoParticularidades {
   id Int    @id
   es String
   en String
+  particularidades_por_talentos ParticularidadesPorTalentos[]
 }
 
 model CatalogoTipoDisponibilidad {
