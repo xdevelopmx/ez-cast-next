@@ -23,8 +23,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
     const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
     const [locacionPrincipalSelect, setLocacionPrincipalSelect] = useState<string>('0')
 
-    const [tipos_documentos_selected, setTipoDocumentosSelected] = useState<boolean[]>([]);
-
     const [tieneAgenciaRepresentante, setTieneAgenciaRepresentante] = useState<boolean>(false)
     const [estaEmbarazada, setEstaEmbarazada] = useState<boolean>(false)
 
@@ -52,12 +50,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
         refetchOnMount: false,
         refetchOnWindowFocus: false,
     });
-
-    useEffect(() => {
-        if (tipos_documentos.data) {
-            setTipoDocumentosSelected(tipos_documentos.data.map(_ => false))
-        }
-    }, [tipos_documentos.data]);
 
     const is_loading = estados_republica.isFetching || tipos_trabajo.isFetching || tipos_documentos.isFetching || tipos_interes_proyectos.isFetching || tipos_disponibilidad.isFetching;
 
@@ -308,7 +300,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         direction='vertical'
                         title="¿Qué documentos oficiales y licencias tienes?"
                         onChange={(e, i) => {
-                            setTipoDocumentosSelected(v => v.map((activo, index) => i === index ? e : activo))
                             if (tipos_documentos.data) {
                                 const tipo_documento = tipos_documentos.data[i]
                                 if (tipo_documento) {
@@ -328,7 +319,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         labelStyle={{ marginBottom: 0 }}
                         labelClassName={classes['label-black-md']}
                         options={(tipos_documentos.data) ? tipos_documentos.data.map(t => t.es) : []}
-                        values={tipos_documentos_selected}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                        values={(tipos_documentos.data) ? tipos_documentos.data.map(v => state.documentos.map(documento => documento.id_documento).includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
 
                     {
@@ -346,6 +337,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                                     descripcion: e.target.value || ''
                                                 }
                                             }
+                                            return documento
                                         } )
                                     })
                                 }}
