@@ -1,9 +1,8 @@
 import { useMemo, type FC } from 'react'
-import { motion } from 'framer-motion'
 import Image from 'next/image';
 import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
-import { Grid, TextField, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { MRadioGroup } from '~/components/shared/MRadioGroup';
 import classes from './talento-forms.module.css';
 import { MSelect } from '~/components/shared/MSelect';
@@ -19,8 +18,8 @@ interface Props {
     onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
-const REDES_SOCIALES = ['pagina_web', 'vimeo', 'instagram', 'youtube', 'twitter', 'imdb', 'linkedin'];
-const URL_PATTERN = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+//const REDES_SOCIALES = ['pagina_web', 'vimeo', 'instagram', 'youtube', 'twitter', 'imdb', 'linkedin'];
+//const URL_PATTERN = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 
 export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
 
