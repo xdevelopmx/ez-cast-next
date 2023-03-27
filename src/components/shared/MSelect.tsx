@@ -1,13 +1,13 @@
 
 import { FormControl, FormControlLabel, FormLabel, InputLabel, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton } from '@mui/material';
-import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute, ReactNode } from 'react';
+import type { CSSProperties, FC, ReactNode } from 'react';
 import classes from '../talento/forms/talento-forms.module.css';
 import { MContainer } from '../layout/MContainer';
 
 interface Props {
     id: string,
     label?: string,
-    options: {value: string, label: string}[],
+    options: { value: string, label: string }[],
     onChange?: ((event: SelectChangeEvent<string>, child: ReactNode) => void) | undefined;
     value?: string;
     style?: CSSProperties,
@@ -15,30 +15,33 @@ interface Props {
     labelStyle?: CSSProperties,
     labelClassName?: string,
     icon?: JSX.Element,
-    loading?: boolean
+    loading?: boolean,
+    styleRoot?: CSSProperties,
 }
 
-export const MSelect: FC<Props> = ({ loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
-    let label_element: JSX.Element | null = null; 
+export const MSelect: FC<Props> = ({
+    loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options, styleRoot = {}
+}) => {
+    let label_element: JSX.Element | null = null;
     if (label) {
-        label_element = <label style={{fontWeight: 800,...labelStyle}} className={labelClassName} htmlFor={id}>{label}</label>;
+        label_element = <label style={{ fontWeight: 800, ...labelStyle }} className={labelClassName} htmlFor={id}>{label}</label>;
         if (icon) {
             label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
         }
     }
     const select_class = classes['select-form-control'];
     return (
-        <FormControl>
+        <FormControl sx={styleRoot}>
             {label_element}
             {loading &&
-                <Skeleton 
+                <Skeleton
                     className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
-                    style={style} 
-                    variant="rectangular"   
+                    style={style}
+                    variant="rectangular"
                 />
             }
             {!loading &&
-            
+
                 <Select
                     sx={{
                         '&ul': {
@@ -48,12 +51,12 @@ export const MSelect: FC<Props> = ({ loading, className, icon, labelClassName, l
                     labelId={id}
                     id={id}
                     value={value}
-                    style={{...style}}
+                    style={{ ...style }}
                     className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
                     onChange={onChange}
                     MenuProps={{ classes: { paper: classes['select-children'] } }}
                 >
-                    {[{value: '0', label: 'Selecciona una opcion'}].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
+                    {[{ value: '0', label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
                 </Select>
             }
         </FormControl>
