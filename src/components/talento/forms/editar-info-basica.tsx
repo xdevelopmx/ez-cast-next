@@ -2,7 +2,7 @@ import { useMemo, type FC } from 'react'
 import Image from 'next/image';
 import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, useTheme } from '@mui/material';
 import { MRadioGroup } from '~/components/shared/MRadioGroup';
 import classes from './talento-forms.module.css';
 import { MSelect } from '~/components/shared/MSelect';
@@ -23,6 +23,8 @@ interface Props {
 
 export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
 
+    const theme = useTheme()
+
     const uniones = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
@@ -35,8 +37,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
 
     const is_loading = uniones.isFetching || estados_republica.isFetching;
 
-    const union_selected: {id: number, descripcion: string} = useMemo(() => {
-        
+    const union_selected: { id: number, descripcion: string } = useMemo(() => {
+
         if (uniones.data) {
             if (state.union.id === 99) {
                 // es opcion otro 
@@ -44,89 +46,89 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             } else {
                 const union_filtered = uniones.data.filter(u => u.id === state.union.id)[0];
                 if (union_filtered) {
-                    return {id: union_filtered.id, descripcion: union_filtered.es };
+                    return { id: union_filtered.id, descripcion: union_filtered.es };
                 }
             }
         }
-        return {id: 0, descripcion: ''};
+        return { id: 0, descripcion: '' };
     }, [state.union, uniones.data]);
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={4}>
-                <FormGroup 
+                <FormGroup
                     loading={talento_fetching}
-                    className={classes['form-input-md']} 
-                    labelClassName={classes['form-input-label']} 
-                    value={(state) ? state.nombre : ''} 
-                    onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }} 
-                    label='Nombre*' 
+                    className={classes['form-input-md']}
+                    labelClassName={classes['form-input-label']}
+                    value={(state) ? state.nombre : ''}
+                    onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
+                    label='Nombre*'
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
                 <MContainer direction='vertical'>
-                    <MSelect 
+                    <MSelect
                         loading={is_loading}
                         id="union-select"
-                        options={(uniones.isSuccess && uniones.data) ? uniones.data.map(u => { return { value: u.id.toString(), label: u.es }}) : []}
+                        options={(uniones.isSuccess && uniones.data) ? uniones.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                         className={classes['form-input-md']}
-                        value={union_selected.id.toString()} 
-                        onChange={(e) => { 
+                        value={union_selected.id.toString()}
+                        onChange={(e) => {
                             const id = parseInt(e.target.value);
-                            onFormChange({ union: {id: id }}) 
-                        }} 
-                        label='Union*' 
+                            onFormChange({ union: { id: id } })
+                        }}
+                        label='Union*'
                     />
                     <MotionDiv show={union_selected.id === 99} animation='fade'>
-                        <FormGroup 
-                            rootStyle={{marginTop: 16}}
-                            className={classes['form-input-md']} 
-                            labelClassName={classes['form-input-label']} 
-                            value={union_selected.descripcion} 
-                            onChange={(e) => { 
-                                onFormChange({ union: {...state.union, descripcion: e.currentTarget.value }}) 
-                            }} 
-                            label='Nombre Unión' 
+                        <FormGroup
+                            rootStyle={{ marginTop: 16 }}
+                            className={classes['form-input-md']}
+                            labelClassName={classes['form-input-label']}
+                            value={union_selected.descripcion}
+                            onChange={(e) => {
+                                onFormChange({ union: { ...state.union, descripcion: e.currentTarget.value } })
+                            }}
+                            label='Nombre Unión'
                         />
                     </MotionDiv>
                 </MContainer>
             </Grid>
             <Grid item xs={12} md={4}>
-                <MSelect 
+                <MSelect
                     loading={is_loading}
                     id="ubicacion-select"
-                    options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(e => { return {value: e.id.toString(), label: e.es} }) : []}
+                    options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(e => { return { value: e.id.toString(), label: e.es } }) : []}
                     className={classes['form-input-md']}
-                    value={(state) ? state.id_estado_republica.toString() : '0'} 
-                    onChange={(e) => { onFormChange({ id_estado_republica: parseInt(e.target.value)}) }} 
+                    value={(state) ? state.id_estado_republica.toString() : '0'}
+                    onChange={(e) => { onFormChange({ id_estado_republica: parseInt(e.target.value) }) }}
                     label='Ubicacion*'
                     icon={<span className="badge"><Image width={24} height={24} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>}
                 />
             </Grid>
             <Grid item xs={12} className='mt-5 mb-3' md={12}>
                 <MContainer direction='horizontal'>
-                    <MSelect 
+                    <MSelect
                         id="edad-select"
-                        options={Array.from({ length: 100 }).map((value: unknown, i: number) => { return {value: (i + 1).toString(), label: (i + 1).toString()}})}
-                        style={{ width: 100 }} 
-                        value={(state) ? state.edad.toString() : '0'} 
-                        onChange={(e) => { 
-                            onFormChange({ edad: parseInt(e.target.value)}) 
-                        }} 
-                        label='Edad*' 
+                        options={Array.from({ length: 100 }).map((value: unknown, i: number) => { return { value: (i + 1).toString(), label: (i + 1).toString() } })}
+                        style={{ width: 100 }}
+                        value={(state) ? state.edad.toString() : '0'}
+                        onChange={(e) => {
+                            onFormChange({ edad: parseInt(e.target.value) })
+                        }}
+                        label='Edad*'
                     />
-                    <MRadioGroup 
+                    <MRadioGroup
                         disabled={(state) ? state.edad >= 18 : false}
-                        style={{ marginLeft: 128 }} 
-                        id="eres-mayor-de-edad" 
-                        options={['si', 'no']} 
-                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }} 
-                        value={(state) ? (state.edad >= 18) ? 'no' : 'si' : 'si'} 
-                        onChange={(e) => { 
-                           console.log(e);
+                        style={{ marginLeft: 128 }}
+                        id="eres-mayor-de-edad"
+                        options={['si', 'no']}
+                        labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#4ab7c6' }}
+                        value={(state) ? (state.edad >= 18) ? 'no' : 'si' : 'si'}
+                        onChange={(e) => {
+                            console.log(e);
                             //onFormChange({ nombre: e.currentTarget.value }) 
-                        }} 
-                        label='¿Eres menor de edad?' 
+                        }}
+                        label='¿Eres menor de edad?'
                     />
                 </MContainer>
             </Grid>
@@ -136,38 +138,40 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <Typography className='my-2' fontWeight={700} variant="body1" component="p">
                             Datos de representante o tutor legal*
                         </Typography>
-                        <MContainer direction='horizontal'>
-                            <FormGroup 
-                                className={classes['form-input-md']} 
-                                labelClassName={classes['form-input-label']} 
-                                value={(state && state.representante) ? state.representante.nombre : ''} 
-                                onChange={(e) => { onFormChange({ representante: {...state?.representante, nombre: e.currentTarget.value }}) }} 
-                                label='Nombre*' 
+                        <MContainer direction='horizontal' styles={{ gap: 40 }}>
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelClassName={classes['form-input-label']}
+                                labelStyle={{ fontWeight: 400 }}
+                                value={(state && state.representante) ? state.representante.nombre : ''}
+                                onChange={(e) => { onFormChange({ representante: { ...state?.representante, nombre: e.currentTarget.value } }) }}
+                                label='Nombre*'
                             />
-                            <FormGroup 
-                                className={classes['form-input-md']} 
-                                rootStyle={{ marginLeft: 64 }} 
-                                labelClassName={classes['form-input-label']} 
-                                value={(state && state.representante) ? state.representante.email : ''} 
-                                onChange={(e) => { onFormChange({ representante: {...state?.representante, email: e.currentTarget.value }}) }} 
-                                label='Correo electrónico*' 
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelStyle={{ fontWeight: 400 }}
+                                labelClassName={classes['form-input-label']}
+                                value={(state && state.representante) ? state.representante.email : ''}
+                                onChange={(e) => { onFormChange({ representante: { ...state?.representante, email: e.currentTarget.value } }) }}
+                                label='Correo electrónico*'
                             />
                         </MContainer>
-                        <MContainer direction='horizontal'>
-                            <FormGroup 
-                                className={classes['form-input-md']} 
-                                labelClassName={classes['form-input-label']} 
-                                value={(state && state.representante) ? state.representante.agencia : ''} 
-                                onChange={(e) => { onFormChange({ representante: {...state?.representante, agencia: e.currentTarget.value }}) }} 
-                                label='Agencia' 
+                        <MContainer direction='horizontal' styles={{ gap: 40 }}>
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelStyle={{ fontWeight: 400 }}
+                                labelClassName={classes['form-input-label']}
+                                value={(state && state.representante) ? state.representante.agencia : ''}
+                                onChange={(e) => { onFormChange({ representante: { ...state?.representante, agencia: e.currentTarget.value } }) }}
+                                label='Agencia'
                             />
-                            <FormGroup 
-                                className={classes['form-input-md']} 
-                                rootStyle={{ marginLeft: 64 }} 
-                                labelClassName={classes['form-input-label']} 
-                                value={(state && state.representante) ? state.representante.telefono : ''} 
-                                onChange={(e) => { onFormChange({ representante: {...state?.representante, telefono: e.currentTarget.value }}) }} 
-                                label='Teléfono*' 
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelStyle={{ fontWeight: 400 }}
+                                labelClassName={classes['form-input-label']}
+                                value={(state && state.representante) ? state.representante.telefono : ''}
+                                onChange={(e) => { onFormChange({ representante: { ...state?.representante, telefono: e.currentTarget.value } }) }}
+                                label='Teléfono*'
                             />
                         </MContainer>
                     </MContainer>
@@ -182,16 +186,16 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
                         onChange={(files: File[]) => {
-                            const files_converted = Promise.all(files.map(async (f) => { 
+                            const files_converted = Promise.all(files.map(async (f) => {
                                 const base64 = await FileManagerFront.convertFileToBase64(f);
-                                return {base64: base64, name: f.name, file: f};
+                                return { base64: base64, name: f.name, file: f };
                             }));
                             files_converted.then((files_conv) => {
                                 console.log(files_conv)
-                                onFormChange({ files: {...state.files, carta_responsiva: files_conv[0]} }) 
+                                onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
                             }).catch((err) => {
                                 console.log(err);
-                                onFormChange({ files: {...state.files, carta_responsiva: undefined} }) 
+                                onFormChange({ files: { ...state.files, carta_responsiva: undefined } })
                             });
                         }}
                     />
@@ -205,35 +209,35 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             Medidas*
                         </Typography>
                     </MContainer>
-                    <MContainer className='mt-2' styles={{ width: '60%' }} direction='horizontal'>
-                        <MContainer className='mt-2' styles={{ width: '40%' }} direction='horizontal'>
-                            <p>Peso</p>
-                            <FormGroup 
-                                style={{ marginLeft: 8, width: 64 }} 
-                                value={state.peso.toString()} 
-                                onChange={(e) => { 
-                                    onFormChange({ peso: parseInt(e.currentTarget.value) }) 
-                                }} 
+                    <MContainer className='mt-2' styles={{ gap: 40 }} direction='horizontal'>
+                        <MContainer className='mt-2' direction='horizontal' styles={{ gap: 10 }}>
+                            <Typography sx={{ color: '#069CB1' }}>Peso</Typography>
+                            <FormGroup
+                                style={{ width: 64 }}
+                                value={state.peso.toString()}
+                                onChange={(e) => {
+                                    onFormChange({ peso: parseInt(e.currentTarget.value) })
+                                }}
                             />
-                            <Typography className='ml-2' fontWeight={700} variant="body1" component="p">
-                                KG
+                            <Typography variant="body1" component="p">
+                                kg
                             </Typography>
                         </MContainer>
-                        <MContainer className='mt-2 mb-4' styles={{ width: '40%' }} direction='horizontal'>
-                            <p>Altura</p>
-                            <FormGroup 
-                                style={{ marginLeft: 8, width: 64 }} 
+                        <MContainer className='mt-2 mb-4' direction='horizontal' styles={{ gap: 10 }}>
+                            <Typography sx={{ color: '#069CB1' }}>Altura</Typography>
+                            <FormGroup
+                                style={{ width: 64 }}
                                 value={state.altura.toString()}
-                                onChange={(e) => { 
-                                    onFormChange({ altura: parseInt(e.currentTarget.value) }) 
-                                }} 
+                                onChange={(e) => {
+                                    onFormChange({ altura: parseInt(e.currentTarget.value) })
+                                }}
                             />
-                            <Typography className='ml-2' fontWeight={700} variant="body1" component="p">
-                                CM
+                            <Typography variant="body1" component="p">
+                                cm
                             </Typography>
                         </MContainer>
                     </MContainer>
-                    <p>Más adelante, puedes agregar medidas para vestuario en la vista final de tu perfil</p>
+                    <Typography sx={{ color: '#069CB1' }}>Más adelante, puedes agregar medidas para vestuario en la vista final de tu perfil</Typography>
                 </MContainer>
             </Grid>
             <Grid item xs={12} className='my-4' md={7}>
@@ -241,13 +245,13 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     <Typography fontWeight={700} variant="body1" component="p">
                         Acerca de
                     </Typography>
-                    <FormGroup 
-                        type="text-area" 
-                        style={{ width: 450}} 
+                    <FormGroup
+                        type="text-area"
+                        style={{ width: 450 }}
                         value={(state) ? state.biografia : ''}
-                        onChange={(e) => { 
-                            onFormChange({ biografia: e.currentTarget.value }) 
-                        }} 
+                        onChange={(e) => {
+                            onFormChange({ biografia: e.currentTarget.value })
+                        }}
                     />
                 </MContainer>
             </Grid>
@@ -259,20 +263,20 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
                     onChange={(files: File[]) => {
-                        const files_converted = Promise.all(files.map(async (f) => { 
+                        const files_converted = Promise.all(files.map(async (f) => {
                             const base64 = await FileManagerFront.convertFileToBase64(f);
-                            return {base64: base64, name: f.name, file: f};
+                            return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {
-                            onFormChange({ files: {...state.files, cv: files_conv[0]} }) 
+                            onFormChange({ files: { ...state.files, cv: files_conv[0] } })
                         }).catch((err) => {
                             console.log(err);
-                            onFormChange({ files: {...state.files, cv: undefined} }) 
+                            onFormChange({ files: { ...state.files, cv: undefined } })
                         });
                     }}
                 />
             </Grid>
-            <Grid item xs={12}  md={12}>
+            <Grid item xs={12} md={12}>
                 <MContainer className='mt-2 mb-4' styles={{ width: '50%' }} direction='vertical'>
                     <MContainer className='my-2' styles={{ width: '50%' }} direction='horizontal'>
                         <span className={'badge'}> <Image className='mr-2' width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="" /> </span>
@@ -280,12 +284,12 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             Página web
                         </Typography>
                     </MContainer>
-                    <FormGroup 
-                        className={classes['form-input-md']} 
-                        value={(state.redes_sociales) ? state.redes_sociales.pagina_web : ''} 
-                        onChange={(e) => { 
-                           onFormChange({ redes_sociales: {...state.redes_sociales, pagina_web: e.target.value }}) 
-                        }} 
+                    <FormGroup
+                        className={classes['form-input-md']}
+                        value={(state.redes_sociales) ? state.redes_sociales.pagina_web : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state.redes_sociales, pagina_web: e.target.value } })
+                        }}
                     />
                 </MContainer>
             </Grid>
@@ -297,77 +301,77 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             <Grid item xs={4} className='my-4' md={2}>
                 <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
-                    <FormGroup 
-                        className={classes['form-input-sm']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.vimeo : ''} 
-                        onChange={(e) => { 
-                            onFormChange({ redes_sociales: {...state?.redes_sociales, vimeo: e.target.value }}) 
+                    <FormGroup
+                        className={classes['form-input-sm']}
+                        value={(state && state.redes_sociales) ? state.redes_sociales.vimeo : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state?.redes_sociales, vimeo: e.target.value } })
                         }}
-                    /> 
+                    />
                 </MContainer>
             </Grid>
             <Grid item xs={4} className='my-4' md={2}>
                 <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
-                    <FormGroup 
-                        className={classes['form-input-sm']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.instagram : ''} 
-                        onChange={(e) => { 
-                            onFormChange({ redes_sociales: {...state?.redes_sociales, instagram: e.target.value }}) 
-                        }}    
+                    <FormGroup
+                        className={classes['form-input-sm']}
+                        value={(state && state.redes_sociales) ? state.redes_sociales.instagram : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state?.redes_sociales, instagram: e.target.value } })
+                        }}
                     />
                 </MContainer>
             </Grid>
             <Grid item xs={4} className='my-4' md={2}>
                 <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
-                    <FormGroup 
-                        className={classes['form-input-sm']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.youtube : ''} 
-                        onChange={(e) => { 
-                            onFormChange({ redes_sociales: {...state?.redes_sociales, youtube: e.target.value }}) 
+                    <FormGroup
+                        className={classes['form-input-sm']}
+                        value={(state && state.redes_sociales) ? state.redes_sociales.youtube : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state?.redes_sociales, youtube: e.target.value } })
                         }}
-                    /> 
+                    />
                 </MContainer>
             </Grid>
             <Grid item xs={4} className='my-4' md={2}>
                 <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
-                    <FormGroup 
-                        className={classes['form-input-sm']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.twitter : ''} 
-                        onChange={(e) => { 
-                            onFormChange({ redes_sociales: {...state?.redes_sociales, twitter: e.target.value }}) 
+                    <FormGroup
+                        className={classes['form-input-sm']}
+                        value={(state && state.redes_sociales) ? state.redes_sociales.twitter : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state?.redes_sociales, twitter: e.target.value } })
                         }}
-                    /> 
+                    />
                 </MContainer>
             </Grid>
             <Grid item xs={4} className='my-4' md={2}>
                 <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
                     <span className={classes['link-input-label']}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
-                    <FormGroup 
-                        className={classes['form-input-sm']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.imdb : ''} 
-                        onChange={(e) => { 
-                            onFormChange({ redes_sociales: {...state?.redes_sociales, imdb: e.target.value }}) 
+                    <FormGroup
+                        className={classes['form-input-sm']}
+                        value={(state && state.redes_sociales) ? state.redes_sociales.imdb : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state?.redes_sociales, imdb: e.target.value } })
                         }}
-                    /> 
+                    />
                 </MContainer>
             </Grid>
             <Grid item xs={4} className='my-4' md={2}>
                 <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
-                    <FormGroup 
-                        className={classes['form-input-sm']} 
-                        value={(state && state.redes_sociales) ? state.redes_sociales.linkedin : ''} 
-                        onChange={(e) => { 
-                            onFormChange({ redes_sociales: {...state?.redes_sociales, linkedin: e.target.value }}) 
+                    <FormGroup
+                        className={classes['form-input-sm']}
+                        value={(state && state.redes_sociales) ? state.redes_sociales.linkedin : ''}
+                        onChange={(e) => {
+                            onFormChange({ redes_sociales: { ...state?.redes_sociales, linkedin: e.target.value } })
                         }}
                     />
                 </MContainer>
             </Grid>
-            
-            
+
+
         </Grid>
     )
 }

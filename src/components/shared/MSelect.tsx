@@ -21,7 +21,7 @@ interface Props {
 export const MSelect: FC<Props> = ({ loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
     let label_element: JSX.Element | null = null; 
     if (label) {
-        label_element = <label style={labelStyle} className={labelClassName} htmlFor={id}>{label}</label>;
+        label_element = <label style={{fontWeight: 800,...labelStyle}} className={labelClassName} htmlFor={id}>{label}</label>;
         if (icon) {
             label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
         }
@@ -43,7 +43,7 @@ export const MSelect: FC<Props> = ({ loading, className, icon, labelClassName, l
                     sx={{
                         '&ul': {
                             maxHeight: 100
-                        }
+                        },
                     }}
                     labelId={id}
                     id={id}
