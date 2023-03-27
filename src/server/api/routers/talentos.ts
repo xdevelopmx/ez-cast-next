@@ -282,6 +282,20 @@ export const TalentosRouter = createTRPCRouter({
 							
 						}
 					},
+					preferencias:{
+						include: {
+							tipos_de_trabajo: true,
+							interes_en_proyectos: true,
+							locaciones: {
+								include: {
+									estado_republica: true
+								}
+							},
+							documentos: true,
+							disponibilidades: true,
+							otras_profesiones: true,
+						}
+					},
 					filtros_aparencias: {
 						include: {
 							genero: true,

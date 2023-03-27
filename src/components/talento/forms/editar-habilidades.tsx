@@ -1,6 +1,4 @@
 import { useMemo, type FC } from 'react'
-import { motion } from 'framer-motion'
-import { FormGroup } from '~/components';
 import { Accordion, AccordionSummary, Typography, AccordionDetails, Skeleton, Chip } from '@mui/material';
 import { Add, ExpandMore, Remove } from '@mui/icons-material';
 import { api } from '~/utils/api';

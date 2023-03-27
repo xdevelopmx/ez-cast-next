@@ -19,11 +19,11 @@ export const MRadioGroup: FC<Props> = ({ loading, disabled, labelClassName, labe
     return (
         <>
             {loading &&
-                Array.from({ length: 10 }).map((n, i) => { return <Skeleton style={{margin: 8}} key={i} variant="rectangular"  height={56} />})
+                Array.from({ length: 10 }).map((n, i) => { return <Skeleton style={{ margin: 8 }} key={i} variant="rectangular" height={56} /> })
             }
-            {!loading && 
+            {!loading &&
                 <FormControl>
-                    <FormLabel style={labelStyle} className={labelClassName} id={id}>{label}</FormLabel>
+                    <FormLabel style={{ fontSize: 16, ...labelStyle }} className={labelClassName} id={id}>{label}</FormLabel>
                     <RadioGroup
                         style={style}
                         id={id}
@@ -39,7 +39,7 @@ export const MRadioGroup: FC<Props> = ({ loading, disabled, labelClassName, labe
                                         value={o}
                                         checked={o === value}
                                         disabled={(disabled)}
-                                        style={{ color: (disabled) ? 'gray' : '#4ab7c6' }}
+                                        style={{ fontSize: 16, color: (disabled) ? 'gray' : '#4ab7c6' }}
                                         onChange={onChange}
                                     />
                                 }

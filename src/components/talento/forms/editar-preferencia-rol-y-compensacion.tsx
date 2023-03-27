@@ -53,6 +53,22 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
     const is_loading = estados_republica.isFetching || tipos_trabajo.isFetching || tipos_documentos.isFetching || tipos_interes_proyectos.isFetching || tipos_disponibilidad.isFetching;
 
+    useEffect(() => {
+        if (state.preferencias.meses_embarazo > 0) {
+            setEstaEmbarazada(true)
+        } else {
+            setEstaEmbarazada(false)
+        }
+    }, [state.preferencias.meses_embarazo])
+
+    useEffect(() => {
+        if (state.preferencias.nombre_agente !== '' || state.preferencias.contacto_agente !== '') {
+            setTieneAgenciaRepresentante(true)
+        } else {
+            setTieneAgenciaRepresentante(false)
+        }
+    }, [state.preferencias.nombre_agente, state.preferencias.contacto_agente])
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -330,15 +346,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 value={state.documentos.filter(documento => documento?.id_documento === 99)[0]?.descripcion}
                                 onChange={(e) => {
                                     onFormChange({
-                                        documentos: state.documentos.map( documento => {
-                                            if(documento?.id_documento === 99){
+                                        documentos: state.documentos.map(documento => {
+                                            if (documento?.id_documento === 99) {
                                                 return {
                                                     id_documento: 99,
                                                     descripcion: e.target.value || ''
                                                 }
                                             }
                                             return documento
-                                        } )
+                                        })
                                     })
                                 }}
                             />
@@ -444,6 +460,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             <Typography>Meses</Typography>
                             <FormGroup
                                 rootStyle={{ margin: 0 }}
+                                type={'number'}
                                 style={{ margin: '0px 0px 0px 10px' }}
                                 className={classes['form-input-md']}
                                 labelClassName={classes['form-input-label']}

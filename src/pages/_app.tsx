@@ -8,8 +8,10 @@ import "~/styles/globals.css";
 import { AnimatePresence } from "framer-motion";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import AppContext, { AppAlert } from "~/context/app";
+import AppContext, { type AppAlert } from "~/context/app";
 import { useState } from "react";
+import { CustomThemeProvider } from "~/theme";
+import { CssBaseline } from "@mui/material";
 
 
 
@@ -20,23 +22,26 @@ const MyApp: AppType<{ session: Session | null }> = ({
   const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
   return (
     <SessionProvider session={session}>
-        <DndProvider backend={HTML5Backend}>
-          <AppContext.Provider value={{
-            alerts: app_alerts,
-            setAlerts: (alerts: Map<string, AppAlert>) => {
-              setAppAlerts(new Map(alerts));
-            }
-          }}>
+      <DndProvider backend={HTML5Backend}>
+        <AppContext.Provider value={{
+          alerts: app_alerts,
+          setAlerts: (alerts: Map<string, AppAlert>) => {
+            setAppAlerts(new Map(alerts));
+          }
+        }}>
+          <CustomThemeProvider>
+            <CssBaseline />
             <AnimatePresence
               mode="wait"
               initial={true}
               onExitComplete={() => { window.scrollTo(0, 0) }}
-              >
+            >
               <Component {...pageProps} />
             </AnimatePresence>
+          </CustomThemeProvider>
 
-          </AppContext.Provider>
-        </DndProvider>
+        </AppContext.Provider>
+      </DndProvider>
     </SessionProvider>
   );
 };
