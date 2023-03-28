@@ -5,6 +5,7 @@ import { Alert, Button, Chip } from "@mui/material";
 import classes from './DragNDrop.module.css';
 import MotionDiv from "../../layout/MotionDiv";
 import { Archivo } from "~/server/api/root";
+import { Tag } from "../Tag";
 
 const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
@@ -24,7 +25,7 @@ interface Props {
 
 function DragNDrop(props: Props) {
     const [files, setFiles] = useState<Map<string, File>>(new Map());
-    const [error, setError] = useState<{type: 'MAX_FILES_REACHED', message: string} | null>(null);
+    const [error, setError] = useState<{ type: 'MAX_FILES_REACHED', message: string } | null>(null);
     const hide_error_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
     useEffect(() => {
         if (hide_error_time_ref.current) {
@@ -33,7 +34,7 @@ function DragNDrop(props: Props) {
         hide_error_time_ref.current = setTimeout(() => {
             setError(null);
         }, 2500);
-	}, [error]);
+    }, [error]);
 
 
     useEffect(() => {
@@ -60,7 +61,7 @@ function DragNDrop(props: Props) {
             })
             props.onChange(Array.from(files.values()));
         } else {
-            setError({type: 'MAX_FILES_REACHED', message: `El maximo de archivos permitido es ${max_files}`});
+            setError({ type: 'MAX_FILES_REACHED', message: `El maximo de archivos permitido es ${max_files}` });
         }
         // reiniciamos el input de archivos ya que lo estamos manejando con estado y se quita para permitir el caso donde el usuario elimine un archivo y quiera
         // volver a seleccionarlo
@@ -73,7 +74,7 @@ function DragNDrop(props: Props) {
             // @ts-ignore
             child.value = null;
         }
-        
+
     };
     const handleRemove = (id: string) => {
         files.delete(id);
@@ -86,7 +87,7 @@ function DragNDrop(props: Props) {
         props.onChange(Array.from(files.values()));
     }
     return (
-        <MotionDiv style={{display: 'flex', flexDirection: 'column', maxWidth: 300}} show={true} animation="fade">
+        <MotionDiv style={{ display: 'flex', flexDirection: 'column', maxWidth: 300 }} show={true} animation="fade">
             <>
                 {props.show_download_url &&
                     <Button size='small' className='font-weight-bold color_a' onClick={() => {
@@ -96,10 +97,10 @@ function DragNDrop(props: Props) {
                 <FileUploader classes={`root ${props.id}`} multiple handleChange={handleChange} name="file" types={props.filetypes} >
                     <div className="form-group">
                         <MotionDiv show={error != null} animation="fade">
-                            <Alert 
-                                className={classes['alert']} 
-                                icon={false} 
-                                variant='filled' 
+                            <Alert
+                                className={classes['alert']}
+                                icon={false}
+                                variant='filled'
                                 color='error'>{(error) ? error.message : ''}
                             </Alert>
                         </MotionDiv>
@@ -111,7 +112,7 @@ function DragNDrop(props: Props) {
                                 </>
                             }
                             {props.tooltip &&
-                                <div style={{marginLeft: 8}} className="contToolTip blue_tootip mt-0" data-toggle="tooltip" data-html="true" data-placement="bottom" title={props.tooltip}>?</div> 
+                                <div style={{ marginLeft: 8 }} className="contToolTip blue_tootip mt-0" data-toggle="tooltip" data-html="true" data-placement="bottom" title={props.tooltip}>?</div>
                             }
                         </div>
                         <div className="btn_talent_upload">
@@ -124,9 +125,13 @@ function DragNDrop(props: Props) {
                         </div>
                     </div>
                 </FileUploader>
-                <div style={(!props.hide_selected && props.assign_selected_files_height) ? {height: (props.max_files) ? (props.max_files * 24) : 24} : {}}>
+                <div style={(!props.hide_selected && props.assign_selected_files_height) ? { height: (props.max_files) ? (props.max_files * 24) : 24 } : {}}>
                     {!props.hide_selected && files.size > 0 && Array.from(files).map((value: [string, File]) => {
-                        return <Chip style={{margin: 4, color: '#4ab7c6'}} size="small" key={value[1].name} label={value[1].name} variant="outlined" onDelete={() => {handleRemove(`${value[1].name}-${value[1].size}-${value[1].type}`)}} /> 
+                        return <Tag
+                            key={value[1].name}
+                            text={value[1].name}
+                            onRemove={() => { handleRemove(`${value[1].name}-${value[1].size}-${value[1].type}`) }}
+                        />
                     })}
                 </div>
             </>

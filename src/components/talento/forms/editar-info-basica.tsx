@@ -105,8 +105,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     icon={<span className="badge"><Image width={24} height={24} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>}
                 />
             </Grid>
-            <Grid item xs={12} className='mt-5 mb-3' md={12}>
-                <MContainer direction='horizontal'>
+            <Grid container item xs={12} className='mt-5 mb-3' md={12}>
+                <Grid item xs={2}>
+
                     <MSelect
                         id="edad-select"
                         options={Array.from({ length: 100 }).map((value: unknown, i: number) => { return { value: (i + 1).toString(), label: (i + 1).toString() } })}
@@ -117,6 +118,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         }}
                         label='Edad*'
                     />
+
+                </Grid>
+                <Grid item xs={9}>
                     <MRadioGroup
                         disabled={(state) ? state.edad >= 18 : false}
                         style={{ marginLeft: 128 }}
@@ -130,7 +134,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         }}
                         label='¿Eres menor de edad?'
                     />
-                </MContainer>
+
+                </Grid>
+
             </Grid>
             <Grid item xs={12} md={7} className='my-1'>
                 <MotionDiv show={(state) ? state.edad < 18 : false} animation='fade'>
