@@ -16,20 +16,25 @@ interface Props {
     title?: string,
     titleStyle?: CSSProperties,
     direction?: 'vertical' | 'horizontal'
+
+    fontWeight?: number,
 }
 
-export const MCheckboxGroup: FC<Props> = ({ direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle, style, options }) => {
+export const MCheckboxGroup: FC<Props> = ({
+    direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle,
+    style, options, fontWeight
+}) => {
     return (
         <div>
             {title &&
-                <Typography fontSize={'1.2rem'} fontWeight={600} style={titleStyle} component={'p'}>
+                <Typography fontSize={'1.2rem'} fontWeight={fontWeight || 600} style={titleStyle} component={'p'}>
                     {title}
                 </Typography>
             }
             {onAllOptionChecked &&
                 <FormGroup id={id}>
                     <MContainer direction='vertical'>
-                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={(e) => {onAllOptionChecked(e.target.checked)}} style={style} />} label={'Seleccionar todos'} />
+                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={(e) => { onAllOptionChecked(e.target.checked) }} style={style} />} label={'Seleccionar todos'} />
                         <Divider style={{ margin: 8 }} />
                     </MContainer>
                 </FormGroup>
