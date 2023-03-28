@@ -105,7 +105,7 @@ export const DraggableElement: FC<Props> = ({ id, content, index, moveItem, onIt
   const opacity = isDragging ? 0 : 1
   drag(drop(ref))
   return (
-    <div ref={ref} style={{ cursor: 'move', ...style, opacity }} data-handler-id={handlerId}>
+    <div ref={ref} style={{ cursor: 'pointer', ...style, opacity }} data-handler-id={handlerId}>
       <>
         {onItemRemove &&
           <ContainerWithDeleteButton id={id} content={content} onItemRemove={onItemRemove} />
@@ -123,14 +123,17 @@ function ContainerWithDeleteButton(props: { id: number, content: JSX.Element, on
     }}>
       <div style={{
         position: 'absolute',
-        left: 6,
-        top: 30
+        left: 3,
+        top: -3
       }}>
-        <IconButton sx={{ backgroundColor: '#EBEBEB', width: 19, height: 19, padding: 1 }} onClick={() => { props.onItemRemove(props.id) }} aria-label="delete">
+        <IconButton
+          sx={{ backgroundColor: '#EBEBEB', width: 20, height: 20, padding: 1 }}
+          onClick={() => { props.onItemRemove(props.id) }} aria-label="delete"
+        >
           <Close width={'100%'} />
         </IconButton>
       </div>
-      <div style={{ left: 0, top: 0 }}>
+      <div style={{ left: 0, top: 0, aspectRatio: '16/9' }}>
         {props.content}
       </div>
 

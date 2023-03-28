@@ -36,7 +36,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                     </MContainer>
                     <DraggableContainer
                         width={600}
-                        direction={'horizontal'}       
+                        direction={'horizontal'}
                         onElementsUpdate={(elements_order: number[]) => {
                             const fotos: Archivo[] = [];
                             elements_order.forEach((id) => {
@@ -51,29 +51,18 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                             return {
                                 id: i,
                                 content:
-                                    (i === 0) ?
-                                        <>
-                                            <p className={classes['link-input-label']} style={{ margin: 0, textAlign: 'center' }}>Foto de perfil</p>
-                                            <Image
-                                                style={{ margin: 8 }}
-                                                className={classes['border-element-selected']}
-                                                alt={`Imagen ${foto.name}`}
-                                                key={foto.name}
-                                                width={128}
-                                                height={156}
-                                                src={foto.base64}
-                                            />
-                                        </>
-                                        :
+
+                                    <div style={{ border: '1px solid #069CB1', padding: '10px' }}>
                                         <Image
-                                            style={{ margin: 8, marginTop: 32 }}
-                                            className={classes['border-element']}
+                                            style={{ objectFit: 'cover' }}
+
                                             alt={`Imagen ${foto.name}`}
                                             key={foto.name}
-                                            width={128}
-                                            height={156}
+                                            width={60}
+                                            height={80}
                                             src={foto.base64}
                                         />
+                                    </div>
 
                             }
                         })}
