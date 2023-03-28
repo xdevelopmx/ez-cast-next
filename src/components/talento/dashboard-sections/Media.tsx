@@ -4,12 +4,18 @@ import React from 'react'
 import { AddButton, AudioBar, SectionTitle } from '~/components/shared'
 import { Carroucel } from '~/components/shared/Carroucel';
 import { MContainer } from '~/components/layout/MContainer';
+import { useRouter } from 'next/router';
 
 export const Media = () => {
+    const router = useRouter();
+
     return (
         <Grid container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Media' onClickButton={() => { console.log('click'); }} />
+                <SectionTitle title='Media' onClickButton={() => { 
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    router.push('/talento/editar-perfil?step=2')  
+                }} />
             </Grid>
             <Grid item xs={12}>
                 <MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px' }}>

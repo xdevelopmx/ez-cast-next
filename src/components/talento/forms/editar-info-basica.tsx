@@ -21,6 +21,8 @@ interface Props {
 //const REDES_SOCIALES = ['pagina_web', 'vimeo', 'instagram', 'youtube', 'twitter', 'imdb', 'linkedin'];
 //const URL_PATTERN = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
 
+const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
 export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
 
     const theme = useTheme()
@@ -113,20 +115,18 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         style={{ width: 100 }}
                         value={(state) ? state.edad.toString() : '0'}
                         onChange={(e) => {
-                            onFormChange({ edad: parseInt(e.target.value) })
+                            onFormChange({ edad: parseInt(e.target.value), es_menor_de_edad: (parseInt(e.target.value) >= 18) ? 'no' : 'si' })
                         }}
                         label='Edad*'
                     />
                     <MRadioGroup
-                        disabled={(state) ? state.edad >= 18 : false}
                         style={{ marginLeft: 128 }}
                         id="eres-mayor-de-edad"
                         options={['si', 'no']}
                         labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#4ab7c6' }}
-                        value={(state) ? (state.edad >= 18) ? 'no' : 'si' : 'si'}
+                        value={state.es_menor_de_edad}
                         onChange={(e) => {
-                            console.log(e);
-                            //onFormChange({ nombre: e.currentTarget.value }) 
+                            onFormChange({ es_menor_de_edad: e.target.value , edad: (e.target.value === 'no') ? 18 : 17 }) 
                         }}
                         label='¿Eres menor de edad?'
                     />
@@ -140,6 +140,14 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         </Typography>
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
                             <FormGroup
+                                error={(() => {
+                                    if (state.representante) {
+                                        if (state.representante.nombre.length === 0) {
+                                            return 'El nombre no debe estar vacio';
+                                        } 
+                                    }
+                                    return undefined;
+                                })()}
                                 className={classes['form-input-md']}
                                 labelClassName={classes['form-input-label']}
                                 labelStyle={{ fontWeight: 400 }}
@@ -148,6 +156,14 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 label='Nombre*'
                             />
                             <FormGroup
+                                error={(() => {
+                                    if (state.representante) {
+                                        if (!EMAIL_PATTERN.test(state.representante.email)) {
+                                            return 'El email es invalido';
+                                        } 
+                                    }
+                                    return undefined;
+                                })()}
                                 className={classes['form-input-md']}
                                 labelStyle={{ fontWeight: 400 }}
                                 labelClassName={classes['form-input-label']}
@@ -166,6 +182,14 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 label='Agencia'
                             />
                             <FormGroup
+                                error={(() => {
+                                    if (state.representante) {
+                                        if (state.representante.telefono.length < 10 || state.representante.telefono.length > 12) {
+                                            return 'El telefono es invalido';
+                                        } 
+                                    }
+                                    return undefined;
+                                })()}
                                 className={classes['form-input-md']}
                                 labelStyle={{ fontWeight: 400 }}
                                 labelClassName={classes['form-input-label']}

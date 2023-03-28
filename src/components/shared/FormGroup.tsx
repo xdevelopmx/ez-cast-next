@@ -1,8 +1,9 @@
 
-import { Skeleton, TextField } from '@mui/material';
+import { Alert, Skeleton, TextField, Typography } from '@mui/material';
 import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
 import type Image from 'next/image';
 import { MContainer } from '../layout/MContainer';
+import MotionDiv from '../layout/MotionDiv';
 
 interface Props {
     label?: string;
@@ -16,11 +17,12 @@ interface Props {
     labelClassName?: string,
     rootStyle?: CSSProperties,
     icon?: JSX.Element,
-    loading?: boolean
+    loading?: boolean,
+    error?: string
 }
 
-export const FormGroup: FC<Props> = ({ loading, icon, rootStyle, className, labelClassName, label, id, type = 'text', onChange, value, labelStyle, style }) => {
-    let input: JSX.Element = <input style={{ fontSize: 16, ...style }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
+export const FormGroup: FC<Props> = ({ error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text', onChange, value, labelStyle, style }) => {
+    let input: JSX.Element = <input style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
     if (type === 'text-area') {
         input = <TextField id={id} className={className} style={{ ...style }} value={(value) ? value : ''} onChange={onChange} multiline rows={3} />;
     }
@@ -43,6 +45,11 @@ export const FormGroup: FC<Props> = ({ loading, icon, rootStyle, className, labe
                 />
             }
             {!loading && input}
+            <MotionDiv show={error != null} animation='down-to-up'>
+                <Typography color={'red'} variant="caption" display="block" gutterBottom>
+                    {error}
+                </Typography>
+            </MotionDiv>
         </div>
     )
 }

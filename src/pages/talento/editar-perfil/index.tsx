@@ -26,6 +26,7 @@ export type TalentoFormInfoGral = {
     },
     id_estado_republica: number,
     edad: number,
+    es_menor_de_edad: string,
     peso: number,
     altura: number,
     biografia: string,
@@ -96,7 +97,7 @@ export type TalentoFormActivos = {
         modelo: string,
         color: string,
         anio: number
-    }[],
+    }[] | null,
     mascota: {
         tipo: string,
         id_tipo_mascota: number,
@@ -110,7 +111,7 @@ export type TalentoFormActivos = {
         tipo_raza: string,
         id_raza: number,
         tamanio: string
-    }[],
+    }[] | null,
     vestuario: {
         tipo: string,
         id_tipo: number,
@@ -124,7 +125,7 @@ export type TalentoFormActivos = {
         tipo_especifico: string,
         id_tipo_vestuario_especifico: number,
         descripcion: string
-    }[],
+    }[] | null,
     prop: {
         tipo: string,
         id_tipo_props: number,
@@ -134,7 +135,7 @@ export type TalentoFormActivos = {
         tipo: string,
         id_tipo_props: number,
         descripcion: string
-    }[],
+    }[] | null,
     equipo_deportivo: {
         tipo: string,
         id_tipo_equipo_deportivo: number,
@@ -144,7 +145,7 @@ export type TalentoFormActivos = {
         tipo: string,
         id_tipo_equipo_deportivo: number,
         descripcion: string
-    }[]
+    }[] | null
 }
 
 type documento = {
@@ -240,6 +241,7 @@ const initialState: TalentoForm = {
             descripcion: '',
         },
         id_estado_republica: 0,
+        es_menor_de_edad: 'si',
         edad: 18,
         peso: 75,
         altura: 170,
@@ -283,7 +285,7 @@ const initialState: TalentoForm = {
             color: '',
             anio: new Date().getFullYear()
         },
-        vehiculos: [],
+        vehiculos: null,
         mascota: {
             tipo: '',
             id_raza: 0,
@@ -291,7 +293,7 @@ const initialState: TalentoForm = {
             tipo_raza: '',
             tamanio: 'Chico'
         },
-        mascotas: [],
+        mascotas: null,
         vestuario: {
             id_tipo: 0,
             id_tipo_vestuario_especifico: 0,
@@ -299,19 +301,19 @@ const initialState: TalentoForm = {
             tipo_especifico: '',
             descripcion: ''
         },
-        vestuarios: [],
+        vestuarios: null,
         prop: {
             id_tipo_props: 0,
             tipo: '',
             descripcion: ''
         },
-        props: [],
+        props: null,
         equipo_deportivo: {
             id_tipo_equipo_deportivo: 0,
             tipo: '',
             descripcion: ''
         },
-        equipos_deportivos: []
+        equipos_deportivos: null
     },
     preferencias: {
 
@@ -388,12 +390,13 @@ function reducer(state: TalentoForm, action: { type: string, value: { [key: stri
 }
 
 type EditarTalentoPageProps = {
-    user: User
+    user: User,
+    step: number
 }
 
-const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
+const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => {
 
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [state, dispatch] = useReducer(reducer, {...initialState, step_active: step});
 
     const { notify } = useNotify();
 
@@ -401,8 +404,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
         refetchOnMount: false,
         refetchOnWindowFocus: false
     });
-
-    console.log({ talento: talento.data });
 
     const saveInfoGral = api.talentos.saveInfoGral.useMutation({
         onSuccess(input) {
@@ -535,6 +536,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
                         },
                         id_estado_republica: talento.data.info_basica.id_estado_republica,
                         edad: talento.data.info_basica.edad,
+                        es_menor_de_edad: (talento.data.info_basica.edad >= 18) ? 'no' : 'si',
                         peso: talento.data.info_basica.peso,
                         altura: talento.data.info_basica.altura,
                         biografia: talento.data.info_basica.biografia,
@@ -786,11 +788,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
 
                                 case 5: {
                                     saveActivos.mutate({
-                                        vehiculos: state.activos.vehiculos,
-                                        mascotas: state.activos.mascotas,
-                                        vestuarios: state.activos.vestuarios,
-                                        props: state.activos.props,
-                                        equipos_deportivos: state.activos.equipos_deportivos
+                                        vehiculos: (state.activos.vehiculos) ? state.activos.vehiculos : [],
+                                        mascotas: (state.activos.mascotas) ? state.activos.mascotas : [],
+                                        vestuarios: (state.activos.vestuarios) ? state.activos.vestuarios : [],
+                                        props: (state.activos.props) ? state.activos.props : [],
+                                        equipos_deportivos: (state.activos.equipos_deportivos) ? state.activos.equipos_deportivos : []
                                     });
                                     break;
                                 }
@@ -869,9 +871,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
     if (session && session.user) {
+        const {step} = context.query;
         return {
             props: {
-                user: session.user
+                user: session.user,
+                step: (step) ? step : 1
             }
         }
     }

@@ -4,10 +4,12 @@ import Image from 'next/image';
 import { MTable } from "~/components/shared/MTable/MTable";
 import { api } from '~/utils/api';
 import { useMemo } from 'react';
+import { useRouter } from "next/router";
 
 export const InfoGeneral = (props: {id_talento: number}) => {
     const info = api.talentos.getInfoBasicaByIdTalento.useQuery({id: props.id_talento});
     const creditos = api.talentos.getCreditosByIdTalento.useQuery({id: props.id_talento});
+    const router = useRouter();
 
     const loading = info.isFetching || creditos.isFetching;
     const data = useMemo(() => {
@@ -31,65 +33,69 @@ export const InfoGeneral = (props: {id_talento: number}) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={5}>
-                <Image width={400} height={512} src="/assets/img/no-image.png" alt="" /> 
+                <Image width={400} height={456} src="/assets/img/no-image.png" alt="" /> 
             </Grid>
             <Grid item xs={12} md={7}>
-                <MContainer className="ml-5 mt-5" direction="vertical">
+                <MContainer className="ml-5 mt-4" direction="vertical">
                     <MContainer styles={{ alignItems: 'baseline' }} className={`m-1`} direction="horizontal">
-                        <p style={{ fontSize: 22 }} className="bold">Información básica</p>
+                        <p style={{ fontSize: 32, fontWeight: 'bolder' }} className="bold">Información básica</p>
                         <Link href="/talento/editar-perfil" variant="button">
-                            <Button size='small' className='ml-2 font-weight-bold color_a' variant="text">Editar</Button>
+                            <Button onClick={() => { 
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                router.push('/talento/editar-perfil?step=1') 
+                            }} size='small' className='ml-2 font-weight-bold color_a' variant="text">Editar</Button>
                         </Link>
 
                     </MContainer>
                     <MContainer className={`m-1`} direction="horizontal">
-                        <p style={{ fontSize: '1.1rem', fontWeight: 100 }}>Unión: </p>
-                        <Typography fontSize={'0.9rem'} fontWeight={300} variant="body1" className="ml-2">{loading ? <Skeleton width={150} /> : (data && data.info_basica && data.info_basica.union) ? (data.info_basica.union.id_union === 99) ? data.info_basica.union.descripcion : data.info_basica.union.union.es : 'N/A' }</Typography>
+                       <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1" className="ml-2">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica && data.info_basica.union) ? (data.info_basica.union.id_union === 99) ? data.info_basica.union.descripcion : data.info_basica.union.union.es : 'N/A' }</Typography>
                     </MContainer>
                     <MContainer className={`m-1`} direction="horizontal">
-                        <p style={{ fontSize: '1.1rem', fontWeight: 100 }}><span className="badge"><Image width={16} height={16} src="/assets/img/iconos/chair_dir_blue.svg" alt="" /> </span> Ubicación </p>
-                        <Typography fontSize={'0.9rem'} fontWeight={300} variant="body1" className="ml-2">{loading ? <Skeleton width={150} /> : (data && data.info_basica) ? data.info_basica.estado_republica.es : 'N/A' }</Typography>
+                        <p style={{ fontSize: '1.1rem', fontWeight: 100 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>  </p>
+                        <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1" className="ml-2 mt-2">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica) ? data.info_basica.estado_republica.es : 'N/A' }</Typography>
                     </MContainer>
 
                     <MContainer className={`m-1`} direction="horizontal">
-                        <p style={{ fontSize: '1.1rem', fontWeight: 100 }}><span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icono_web_site_blue.svg" alt="" /> </span> Pagina Web </p>
-                        <Typography fontSize={'0.9rem'} fontWeight={300} variant="body1" className="ml-2">{loading ? <Skeleton width={150} /> : (redes_sociales['pagina_web']) ? redes_sociales['pagina_web'] : 'N/A' }</Typography>
+                        <p style={{ fontSize: '1.1rem', fontWeight: 100 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_web_site_blue.svg" alt="" /> </span>  </p>
+                        <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1" className="ml-2 mt-2">{loading ? <Skeleton className="md-skeleton" /> : (redes_sociales['pagina_web']) ? redes_sociales['pagina_web'] : 'N/A' }</Typography>
                     </MContainer>
-                    <MContainer className={`m-1`} direction='vertical'>
-                        <p style={{ fontSize: '1.1rem', fontWeight: 100 }}><span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span> Medidas </p>
-                        <MContainer direction="horizontal">
-                            <p style={{ fontSize: '1.1rem', fontWeight: 100 }}>Peso: </p>
-                            <p style={{ fontSize: '0.9rem', fontWeight: 300 }} className="ml-4">{(data && data.info_basica) ? data.info_basica.peso : 'N/A'}</p>
+                    <MContainer className={`m-1`} direction='vertical' styles={{maxHeight: 100, width: 140}}>
+                        <p className="color_a" style={{ margin: 0, padding: 0,fontSize: '1.3rem', fontWeight: 100 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span> Medidas </p>
+                        <MContainer styles={{height: 20}} direction="horizontal" justify="space-between">
+                            <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>Peso </p>
+                            <p style={{ fontSize: '1.2rem', fontWeight: 500 }} className="ml-4">{(data && data.info_basica) ? `${data.info_basica.peso} kg` : 'N/A'}</p>
                         </MContainer>
-                        <MContainer direction="horizontal">
-                            <p style={{ fontSize: '1.1rem', fontWeight: 100 }}>Altura: </p>
-                            <p style={{ fontSize: '0.9rem', fontWeight: 300 }} className="ml-4">{(data && data.info_basica) ? data.info_basica.altura : 'N/A'}</p>
+                        <MContainer direction="horizontal" justify="space-between" styles={{maxHeight: 28}}>
+                            <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>Altura </p>
+                            <p style={{ fontSize: '1.2rem', fontWeight: 500 }} className="ml-4">{(data && data.info_basica) ? `${data.info_basica.altura} m` : 'N/A'}</p>
                         </MContainer>
                     </MContainer>
-                    <MContainer className={`m-2`} direction="horizontal">
-                        <div className="bordeado-azul-pildora pen">
-                            <p className="m-1 color-azul bold ta-center m0 .pen">Descargar CV</p>
-                        </div>
+                    <MContainer className="mt-2 mb-4" direction="horizontal">
+                        <Button className="color_a" style={{
+                            borderRadius: 16,
+                            borderWidth: 3,
+                            width: 200
+                        }} variant="outlined">Descargar CV</Button>
                     </MContainer>
                     <MContainer className={`m-1`} direction="horizontal">
                         <>
                             {redes_sociales['vimeo'] != null &&
-                                <span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
+                                <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
                             }
                             {redes_sociales['twitter'] &&
-                                <span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
+                                <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
                             }
                             {redes_sociales['youtube'] &&
-                                <span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
+                                <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
                             }
                             {redes_sociales['linkedin'] &&
-                                <span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
+                                <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
                             }
                             {redes_sociales['instagram'] &&
-                                <span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
+                                <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
                             }
                             {redes_sociales['imdb'] &&
-                                <span className="badge"><Image width={16} height={16} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
+                                <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
                             }
                         </>
                     </MContainer>

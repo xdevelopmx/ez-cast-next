@@ -3224,3 +3224,13 @@ p.edo_pendiente {
   margin: 0;
   text-decoration: none;
 }
+
+.sm-skeleton {
+  width: 100px;
+  height: 12px;
+}
+
+.md-skeleton {
+  width: 200px;
+  height: 32px;
+}

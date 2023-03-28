@@ -1,6 +1,8 @@
 import { type FC, type ReactNode } from "react"
 import { ThemeProvider } from "@emotion/react"
 import { createTheme, CssBaseline } from "@mui/material";
+import * as locales from '@mui/material/locale';
+import { esES } from '@mui/material/locale';
 
 interface Props {
     children: ReactNode;
@@ -31,7 +33,9 @@ const theme = createTheme({
           `,
         },
     },
-});
+}, 
+    locales['esES']
+);
 
 export const CustomThemeProvider: FC<Props> = ({ children }) => {
     return (
