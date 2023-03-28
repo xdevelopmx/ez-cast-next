@@ -28,7 +28,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         <Typography fontWeight={300} fontSize={'1.3rem'} variant="body2" component="p">
                             (Headshots)
                         </Typography>
-                        <Typography style={{ marginTop: 4 }} fontWeight={700} fontSize={'1rem'} variant="body1" component="p">
+                        <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                             JPG o PNG
                         </Typography>
                         <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
@@ -36,7 +36,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                     </MContainer>
                     <DraggableContainer
                         width={600}
-                        direction={'horizontal'}
+                        direction={'horizontal'}       
                         onElementsUpdate={(elements_order: number[]) => {
                             const fotos: Archivo[] = [];
                             elements_order.forEach((id) => {
@@ -82,8 +82,11 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         id='id-drag-n-drop-fotos'
                         filetypes={['PNG', 'JPG']}
                         max_files={5}
+                        maxWidth={'80%'}
                         files={state.fotos}
+                        height={'130px'}
                         hide_selected
+                        text_button='Añadir foto'
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
                                 const base64 = await FileManagerFront.convertFileToBase64(f);
@@ -111,7 +114,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography fontWeight={300} fontSize={'1.3rem'} variant="body2" component="p">
                                     (Reel)
                                 </Typography>
-                                <Typography style={{ marginTop: 4 }} fontWeight={700} fontSize={'1rem'} variant="body1" component="p">
+                                <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP4 o MOV
                                 </Typography>
                                 <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
@@ -123,6 +126,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 filetypes={['MP4', 'MOV']}
                                 max_files={3}
                                 assign_selected_files_height
+                                text_button='Añadir Video'
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
                                         const base64 = await FileManagerFront.convertFileToBase64(f);
@@ -146,7 +150,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
                                     Audios
                                 </Typography>
-                                <Typography style={{ marginTop: 4 }} fontWeight={700} fontSize={'1rem'} variant="body1" component="p">
+                                <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP3 o WAV
                                 </Typography>
                                 <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
@@ -158,6 +162,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 filetypes={['MP3', 'WAV']}
                                 max_files={3}
                                 assign_selected_files_height
+                                text_button='Añadir Audio Clip'
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
                                         const base64 = await FileManagerFront.convertFileToBase64(f);

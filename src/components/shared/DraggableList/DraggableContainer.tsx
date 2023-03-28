@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import update, { extend } from 'immutability-helper'
-import { CSSProperties, FC, useEffect } from 'react'
+import { type CSSProperties, type FC, useEffect } from 'react'
 import { useCallback, useState } from 'react'
 import MotionDiv from '~/components/layout/MotionDiv';
 
@@ -72,7 +72,7 @@ export const DraggableContainer: FC<Props> = (props: Props) => {
 		}
 	}, [ordered_elements_id]);
 
-	
+
 	const moveImage = useCallback((dragIndex: number, hoverIndex: number) => {
 		setElements((prev: Item[]) =>
 
@@ -109,14 +109,18 @@ export const DraggableContainer: FC<Props> = (props: Props) => {
 		[ordered_elements_id],
 	)
 	return (
-		<MotionDiv style={{ width: (props.width) ? props.width : 400, ...props.style, display: (props.direction === 'vertical') ? 'block' : 'flex', flexWrap: 'wrap' }} show={true} animation='left-to-right'>
+		<MotionDiv
+			style={{ width: (props.width) ? props.width : 400, ...props.style, display: (props.direction === 'vertical') ? 'block' : 'flex', flexWrap: 'wrap' }}
+			show={true}
+			animation='left-to-right'
+		>
 			<>
 				{elements.map((element, i) => renderImage(element, i))}
-				{elements.length === 0 &&
+				{/* {elements.length === 0 &&
 					<Typography fontSize={14}>
 						No se ha agregado ningun elemento
 					</Typography>
-				}
+				} */}
 			</>
 		</MotionDiv>
 	)

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import Image from 'next/image';
-import { Alert, Button } from "@mui/material";
+import { Alert, Typography } from "@mui/material";
 import classes from './DragNDrop.module.css';
 import MotionDiv from "../../layout/MotionDiv";
 import { type Archivo } from "~/server/api/root";
@@ -23,6 +23,10 @@ interface Props {
     show_download_url?: string,
 
     text_label_download?: string,
+    maxWidth?: string | number,
+    height?: string | number,
+
+    text_button?: string,
 }
 
 function DragNDrop(props: Props) {
@@ -90,7 +94,11 @@ function DragNDrop(props: Props) {
         props.onChange(Array.from(files.values()));
     }
     return (
-        <MotionDiv style={{ display: 'flex', flexDirection: 'column', maxWidth: 300 }} show={true} animation="fade">
+        <MotionDiv
+            style={{ display: 'flex', flexDirection: 'column', maxWidth: props.maxWidth || 300 }}
+            show={true}
+            animation="fade"
+        >
             <>
                 {/* {props.show_download_url &&
                     <Button
@@ -125,9 +133,30 @@ function DragNDrop(props: Props) {
                             }
                         </div>
                         <div className="btn_talent_upload">
-                            <div className="box_btn_upload">
-                                <p className="mb-1">{`Acepta ${props.filetypes.join(', ')}`}</p>
-                                <div className="btn btn-intro"><Image width={18} height={18} src="/assets/img/iconos/cruz_blue.svg" alt="icono" className="mr-2" /> Subir Archivo(s)
+                            <div className="box_btn_upload"
+                                style={{
+                                    display: 'flex',
+                                    flexFlow: 'column wrap',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    height: props.height
+                                }}>
+                                {/* <p className="mb-1">{`Acepta ${props.filetypes.join(', ')}`}</p> */}
+                                <div className="btn btn-intro"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        padding: '3px 10px',
+                                    }}>
+                                    <Image
+                                        width={14}
+                                        height={14}
+                                        src="/assets/img/iconos/cruz_blue.svg"
+                                        alt="icono"
+                                        className="mr-2"
+                                    />
+                                    <span>{props.text_button || 'Subir Archivo(s)'}</span>
                                 </div>
                                 <p className="mb-1 txt_arrastrar">{`Arrastrar archivo(s) al recuadro ${(props.max_files) ? '(Hasta ' + props.max_files.toString() + ' archivos)' : ''}`}</p>
                             </div>

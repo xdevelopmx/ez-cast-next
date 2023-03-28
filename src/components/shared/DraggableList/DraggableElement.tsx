@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Button, IconButton } from '@mui/material'
+import { IconButton } from '@mui/material'
 import type { Identifier, XYCoord } from 'dnd-core'
 import type { FC } from 'react'
 import { useRef, type CSSProperties } from 'react'
 import { useDrag, useDrop } from 'react-dnd';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Close } from '@mui/icons-material';
 
 export interface DraggableItem {
   id: number,
@@ -107,33 +107,33 @@ export const DraggableElement: FC<Props> = ({ id, content, index, moveItem, onIt
   return (
     <div ref={ref} style={{ cursor: 'move', ...style, opacity }} data-handler-id={handlerId}>
       <>
-        {onItemRemove && 
-          <ContainerWithDeleteButton id={id} content={content} onItemRemove={onItemRemove}/>
+        {onItemRemove &&
+          <ContainerWithDeleteButton id={id} content={content} onItemRemove={onItemRemove} />
         }
-        {!onItemRemove && content } 
+        {!onItemRemove && content}
       </>
     </div>
   )
 }
 
-function ContainerWithDeleteButton(props: {id: number, content: JSX.Element, onItemRemove: (id: number) => void}) {
+function ContainerWithDeleteButton(props: { id: number, content: JSX.Element, onItemRemove: (id: number) => void }) {
   return (
     <div style={{
       position: 'relative',
     }}>
       <div style={{
         position: 'absolute',
-        right: 12,
-        top: 40
+        left: 6,
+        top: 30
       }}>
-        <IconButton onClick={() => {props.onItemRemove(props.id)}} aria-label="delete">
-          <DeleteIcon />
+        <IconButton sx={{ backgroundColor: '#EBEBEB', width: 19, height: 19, padding: 1 }} onClick={() => { props.onItemRemove(props.id) }} aria-label="delete">
+          <Close width={'100%'} />
         </IconButton>
       </div>
-      <div style={{left: 0, top: 0}}>
-          {props.content}
+      <div style={{ left: 0, top: 0 }}>
+        {props.content}
       </div>
-      
+
     </div>
   )
 }

@@ -7,7 +7,7 @@ import { MContainer } from '../layout/MContainer';
 interface Props {
     onStepChange: (step: number) => void;
     current_step: number;
-    step_titles: {[step: number]: string};
+    step_titles: { [step: number]: string };
     onStepSave?: (step: number) => void;
     children: JSX.Element[];
     style?: CSSProperties,
@@ -25,11 +25,11 @@ export const MStepper: FC<Props> = ({ onStepSave, onStepChange, current_step, st
             setShowContent(true);
         }, 200);
         setShowContent(false);
-	}, [current_step]);
+    }, [current_step]);
     return (
         <MotionDiv show={showContent} animation={'fade'}>
             <>
-                
+
                 <Stepper activeStep={current_step - 1} alternativeLabel>
                     {children.map((_, i) => (
                         <Step key={`step${i}`}>
@@ -40,24 +40,24 @@ export const MStepper: FC<Props> = ({ onStepSave, onStepChange, current_step, st
                 <h3 className="paso-stepper">
                     PASO {current_step} <span> {step_titles[current_step]}</span>
                 </h3>
-                
-                
-                    
-                        {children[current_step - 1]}
-                    
-                
-            
+
+
+
+                {children[current_step - 1]}
+
+
+
                 <div className="botones ">
-                    <MContainer styles={{width: '100%'}} direction='horizontal' justify='space-between'>
+                    <MContainer styles={{ width: '100%' }} direction='horizontal' justify='space-between'>
                         <>
                             {children.length > 0 && current_step > 1 &&
                                 <button className="boton-next-step margen" type='button' onClick={() => {
                                     onStepChange(current_step - 1)
                                 }}>
-                                    Regresar Paso <motion.img src="/assets/img/iconos/arow_l_blue.svg" />
+                                    <motion.img src="/assets/img/iconos/arow_l_blue.svg" /> Regresar Paso
                                 </button>
                             }
-                            {children.length > 0 && current_step === 1 && <div/>}
+                            {children.length > 0 && current_step === 1 && <div />}
 
                             {onStepSave && children.length > 0 && current_step < children.length &&
                                 <button className="boton-next-step margen" type='button' onClick={() => {
