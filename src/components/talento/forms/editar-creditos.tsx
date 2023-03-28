@@ -10,6 +10,7 @@ import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormCreditos } from '~/pages/talento/editar-perfil';
 import { Delete, Star } from '@mui/icons-material';
 import { api } from '~/utils/api';
+import useNotify from '~/hooks/useNotify';
 
 interface Props {
     state: TalentoFormCreditos,
@@ -24,6 +25,7 @@ const YEARS = Array.from({ length: 100 }).map((value: unknown, i: number) => {
 
 export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
     const tipo_proyecto = api.catalogos.getTipoProyectos.useQuery();
+    const {notify} = useNotify();
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} my={2}>
@@ -92,7 +94,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         }])
                                     })
                                 } else {
-                                    console.error('NO SE HAN LLENADO LOS CAMPOS');
+                                    notify('warning', 'Por favor llena todos los campos antes de intentar agregar el credito');
                                 }
 
                             }

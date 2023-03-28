@@ -12,7 +12,7 @@ interface Props {
     style?: CSSProperties,
     labelStyle?: CSSProperties,
     labelClassName?: string,
-    onAllOptionChecked?: () => void,
+    onAllOptionChecked?: (cheked: boolean) => void,
     title?: string,
     titleStyle?: CSSProperties,
     direction?: 'vertical' | 'horizontal'
@@ -29,7 +29,7 @@ export const MCheckboxGroup: FC<Props> = ({ direction, title, titleStyle, onAllO
             {onAllOptionChecked &&
                 <FormGroup id={id}>
                     <MContainer direction='vertical'>
-                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={onAllOptionChecked} style={style} />} label={'Seleccionar todos'} />
+                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={(e) => {onAllOptionChecked(e.target.checked)}} style={style} />} label={'Seleccionar todos'} />
                         <Divider style={{ margin: 8 }} />
                     </MContainer>
                 </FormGroup>

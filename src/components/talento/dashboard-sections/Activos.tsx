@@ -3,8 +3,12 @@ import { MContainer } from '~/components/layout/MContainer';
 import { SectionTitle } from '~/components/shared';
 import { api } from '~/utils/api';
 import { useMemo } from 'react';
+import { MTable } from '~/components/shared/MTable/MTable';
+import { useRouter } from 'next/router';
 
 export const Activos = (props: {id_talento: number}) => {
+    const router = useRouter();
+
     const activos = api.talentos.getActivosByIdTalento.useQuery({id: props.id_talento});
     const loading = activos.isFetching;
     const data = useMemo(() => {
@@ -67,74 +71,155 @@ export const Activos = (props: {id_talento: number}) => {
     return (
         <Grid container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Activos' onClickButton={() => { console.log('click'); }} />
+                <SectionTitle title='Activos' onClickButton={() => { 
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    router.push('/talento/editar-perfil?step=5')  
+                 }} />
             </Grid>
             <Grid item xs={12}>
-                {loading &&
-                    Array.from({ length: 4 }).map((n, i) => { return <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={72} />})
-                }
-                {!loading && activos_arr && 
-                    activos_arr.mascotas.map((m, i) => {
-                        return (
-                            <MContainer key={i} className="my-2 p-3" direction="horizontal" justify='space-between' styles={{ backgroundColor: '#ededed '}}>
-                                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Mascota</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{m.tipo}</Typography>  
-                                <Typography fontSize={'1rem'} fontWeight={400}>{m.raza}</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{m.tamanio}</Typography>
-                            </MContainer>
-                        )
-                    })
-                }        
-                {!loading && activos_arr && 
-                    activos_arr.vehiculos.map((v, i) => {
-                        return (
-                            <MContainer key={i} className="my-2 p-3" direction="horizontal" justify='space-between' styles={{ backgroundColor: '#ededed '}}>
-                                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Vehículo</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.tipo}</Typography>  
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.marca}</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.modelo}</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.color}</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.anio}</Typography>
-                            </MContainer>
-                        )
-                    })
-                }      
-                {!loading && activos_arr && 
-                    activos_arr.vestuarios.map((v, i) => {
-                        return (
-                            <MContainer key={i} className="my-2 p-3" direction="horizontal" justify='space-between' styles={{ backgroundColor: '#ededed '}}>
-                                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Vestuario</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.tipo}</Typography>  
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.tipo_especifico}</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{v.descripcion}</Typography>
-                            </MContainer>
-                        )
-                    })
-                }      
-
-                {!loading && activos_arr && 
-                    activos_arr.props.map((p, i) => {
-                        return (
-                            <MContainer key={i} className="my-2 p-3" direction="horizontal" justify='space-between' styles={{ backgroundColor: '#ededed '}}>
-                                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Prop</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{p.tipo}</Typography>  
-                                <Typography fontSize={'1rem'} fontWeight={400}>{p.descripcion}</Typography>
-                            </MContainer>
-                        )
-                    })
-                }   
-
-                {!loading && activos_arr && 
-                    activos_arr.equipos_deportivos.map((e, i) => {
-                        return (
-                            <MContainer key={i} className="my-2 p-3" direction="horizontal" justify='space-between' styles={{ backgroundColor: '#ededed '}}>
-                                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Equipo Deportivo</Typography>
-                                <Typography fontSize={'1rem'} fontWeight={400}>{e.tipo}</Typography>  
-                                <Typography fontSize={'1rem'} fontWeight={400}>{e.descripcion}</Typography>
-                            </MContainer>
-                        )
-                    })
-                }     
+                {loading && <Skeleton className={'md-skeleton'}/>}
+                {!loading && <Typography my={2} fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}>Mascotas</Typography>}
+                <MTable
+                    backgroundColorHeader='#4ab7c6'
+                    columnsHeader={[
+                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tipo
+                        </Typography>,
+                        <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Raza
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tamaño
+                        </Typography>,
+                    ]}
+                    data={(!loading && activos_arr) ? 
+                        activos_arr.mascotas
+                        :
+                        Array.from({ length: 4 }).map((n, i) => { 
+                            return {
+                                tipo: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                raza: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                tamanio: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />
+                            }
+                        })
+                    }
+                />
+            </Grid>
+            <Grid item xs={12} my={2}>
+                {loading && <Skeleton className={'md-skeleton'}/>}
+                {!loading && <Typography my={2} fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}> Vehiculos</Typography>}
+                <MTable
+                    backgroundColorHeader='#4ab7c6'
+                    columnsHeader={[
+                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tipo
+                        </Typography>,
+                        <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Marca
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Modelo
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Color
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Año
+                        </Typography>,
+                    ]}
+                    data={(!loading && activos_arr) ? 
+                        activos_arr.vehiculos
+                        :
+                        Array.from({ length: 4 }).map((n, i) => { 
+                            return {
+                                tipo: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                marca: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                modelo: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                color: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                anio: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                            }
+                        })
+                    }
+                />
+            </Grid>
+            <Grid item xs={12} my={2}>
+                {loading && <Skeleton className={'md-skeleton'}/>}
+                {!loading && <Typography my={2} fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}>Vestuarios</Typography>}
+                <MTable
+                    backgroundColorHeader='#4ab7c6'
+                    columnsHeader={[
+                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tipo
+                        </Typography>,
+                        <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tipo Especifico
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Descripcion
+                        </Typography>,
+                    ]}
+                    data={(!loading && activos_arr) ? 
+                        activos_arr.vestuarios
+                        :
+                        Array.from({ length: 4 }).map((n, i) => { 
+                            return {
+                                tipo: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                tipo_especifico: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                descripcion: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                            }
+                        })
+                    }
+                />
+            </Grid>
+            <Grid item xs={12} my={2}>
+                {loading && <Skeleton className={'md-skeleton'}/>}
+                {!loading && <Typography my={2} fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}>Props</Typography>}
+                <MTable
+                    backgroundColorHeader='#4ab7c6'
+                    columnsHeader={[
+                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tipo
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Descripcion
+                        </Typography>,
+                    ]}
+                    data={(!loading && activos_arr) ? 
+                        activos_arr.props
+                        :
+                        Array.from({ length: 4 }).map((n, i) => { 
+                            return {
+                                tipo: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                descripcion: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                            }
+                        })
+                    }
+                />
+            </Grid>
+            <Grid item xs={12} my={2}>
+                {loading && <Skeleton className={'md-skeleton'}/>}
+                {!loading && <Typography my={2} fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}>Equipo Deportivo</Typography>}
+                <MTable
+                    backgroundColorHeader='#4ab7c6'
+                    columnsHeader={[
+                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Tipo
+                        </Typography>,
+                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                            Descripcion
+                        </Typography>,
+                    ]}
+                    data={(!loading && activos_arr) ? 
+                        activos_arr.equipos_deportivos
+                        :
+                        Array.from({ length: 4 }).map((n, i) => { 
+                            return {
+                                tipo: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                                descripcion: <Skeleton className="my-2 p-3" key={i} variant="rectangular"  height={32} />,
+                            }
+                        })
+                    }
+                />
             </Grid>
         </Grid>
     )

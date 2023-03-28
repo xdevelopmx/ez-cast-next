@@ -1,7 +1,7 @@
 import { useEffect, useState, type FC } from 'react'
 import { motion } from 'framer-motion'
 import { FormGroup } from '~/components';
-import { Alert, Divider, Grid, Typography } from '@mui/material';
+import { Alert, Divider, Grid, IconButton, Typography } from '@mui/material';
 import classes from './talento-forms.module.css';
 import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
@@ -10,7 +10,8 @@ import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/sh
 import { type TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
-
+import useNotify from '~/hooks/useNotify';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
     state: TalentoFormPreferencias,
@@ -18,6 +19,8 @@ interface Props {
 }
 
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
+
+    const {notify} = useNotify();
 
     const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
     const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
@@ -76,9 +79,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             </Grid>
             <Grid item xs={12}>
                 <MCheckboxGroup
-                    onAllOptionChecked={() => {
+                    onAllOptionChecked={(checked) => {
                         onFormChange({
-                            tipo_trabajo: tipos_trabajo.data ? tipos_trabajo.data.map((v) => v.id) : []
+                            tipo_trabajo: (!checked) ? [] : tipos_trabajo.data ? tipos_trabajo.data.map((v) => v.id) : []
                         })
                     }}
                     direction='vertical'
@@ -219,10 +222,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             <AddButton
                                 text='Agregar otra localizacion'
                                 onClick={() => {
-                                    if (state.locaciones.some(locacion => locacion.id_estado_republica === parseInt(locacionesAdicionalesSelect))) return;
-                                    onFormChange({
-                                        locaciones: [...state.locaciones, { es_principal: false, id_estado_republica: parseInt(locacionesAdicionalesSelect) }]
-                                    })
+                                    if (parseInt(locacionesAdicionalesSelect) > 0) {
+                                        if (state.locaciones.some(locacion => locacion.id_estado_republica === parseInt(locacionesAdicionalesSelect))) return;
+                                        onFormChange({
+                                            locaciones: [...state.locaciones, { es_principal: false, id_estado_republica: parseInt(locacionesAdicionalesSelect) }]
+                                        })
+                                    } else {
+                                        notify('warning', 'Por favor selecciona otra localizacion antes de intentar agregarla');
+                                    }
                                 }}
                             />
 
@@ -231,9 +238,32 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                     state.locaciones.map(locacion => (
                                         <span
                                             key={locacion.id_estado_republica}
-                                            style={{ backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9', padding: '5px 10px' }}
+                                            style={{ 
+                                                position: 'relative',
+                                                borderRadius: 8,
+                                                width: 200,
+                                                textAlign: 'center',
+                                                backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9', 
+                                                padding: '5px 10px',
+                                                color: 'white' 
+                                            }}
                                         >
                                             {estados_republica.data?.filter(estado => estado.id === locacion.id_estado_republica).map(estado => estado.es)}
+                                            <IconButton 
+                                                onClick={() => { 
+                                                   console.log('xd')
+                                                }} 
+                                                style={{
+                                                    position: 'absolute',
+                                                    color: 'white',
+                                                    padding: 0,
+                                                    left: 0,
+                                                    marginLeft: 8
+                                                }}
+                                                aria-label="Eliminar Equipo Deportivo" 
+                                                component="label">
+                                                <CloseIcon style={{width: 16}} />
+                                            </IconButton>
                                         </span>
                                     ))
                                 }
@@ -266,38 +296,40 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         }}
                         label=''
                     />
+                    <MotionDiv show={tieneAgenciaRepresentante} animation="fade">
 
-                    <MContainer direction='horizontal' styles={{ gap: 40 }}>
-                        <FormGroup
-                            className={classes['form-input-md']}
-                            labelClassName={classes['form-input-label']}
-                            value={state.preferencias.nombre_agente}
-                            onChange={(e) => {
-                                onFormChange({
-                                    preferencias: {
-                                        ...state.preferencias,
-                                        nombre_agente: e.currentTarget.value
-                                    }
-                                })
-                            }}
-                            label='Nombre'
-                        />
+                        <MContainer direction='horizontal' styles={{ gap: 40 }}>
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelClassName={classes['form-input-label']}
+                                value={state.preferencias.nombre_agente}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        preferencias: {
+                                            ...state.preferencias,
+                                            nombre_agente: e.currentTarget.value
+                                        }
+                                    })
+                                }}
+                                label='Nombre'
+                            />
 
-                        <FormGroup
-                            className={classes['form-input-md']}
-                            labelClassName={classes['form-input-label']}
-                            value={state.preferencias.contacto_agente}
-                            onChange={(e) => {
-                                onFormChange({
-                                    preferencias: {
-                                        ...state.preferencias,
-                                        contacto_agente: e.currentTarget.value
-                                    }
-                                })
-                            }}
-                            label='Contacto'
-                        />
-                    </MContainer>
+                            <FormGroup
+                                className={classes['form-input-md']}
+                                labelClassName={classes['form-input-label']}
+                                value={state.preferencias.contacto_agente}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        preferencias: {
+                                            ...state.preferencias,
+                                            contacto_agente: e.currentTarget.value
+                                        }
+                                    })
+                                }}
+                                label='Contacto'
+                            />
+                        </MContainer>
+                    </MotionDiv>
 
                 </MContainer>
             </Grid>
@@ -455,26 +487,28 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             }}
                             label=''
                         />
-
-                        <MContainer direction='horizontal'>
-                            <Typography>Meses</Typography>
-                            <FormGroup
-                                rootStyle={{ margin: 0 }}
-                                type={'number'}
-                                style={{ margin: '0px 0px 0px 10px' }}
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
-                                value={`${state.preferencias.meses_embarazo}`}
-                                onChange={(e) => {
-                                    onFormChange({
-                                        preferencias: {
-                                            ...state.preferencias,
-                                            meses_embarazo: e.currentTarget.value === '' ? 0 : parseInt(e.currentTarget.value)
-                                        }
-                                    })
-                                }}
-                            />
-                        </MContainer>
+                        
+                        <MotionDiv show={estaEmbarazada} animation="fade">
+                            <MContainer direction='horizontal'>
+                                <Typography>Meses</Typography>
+                                <FormGroup
+                                    rootStyle={{ margin: 0 }}
+                                    type={'number'}
+                                    style={{ margin: '0px 0px 0px 10px' }}
+                                    className={classes['form-input-md']}
+                                    labelClassName={classes['form-input-label']}
+                                    value={`${state.preferencias.meses_embarazo}`}
+                                    onChange={(e) => {
+                                        onFormChange({
+                                            preferencias: {
+                                                ...state.preferencias,
+                                                meses_embarazo: e.currentTarget.value === '' ? 0 : parseInt(e.currentTarget.value)
+                                            }
+                                        })
+                                    }}
+                                />
+                            </MContainer>
+                        </MotionDiv>
 
                     </MContainer>
 

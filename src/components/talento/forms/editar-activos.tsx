@@ -1,6 +1,6 @@
 import { useMemo, type FC } from 'react'
 import { AddButton, FormGroup } from '~/components';
-import { Divider, Grid, Typography } from '@mui/material';
+import { Divider, Grid, IconButton, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import { MSelect } from '~/components/shared/MSelect';
 import Image from 'next/image';
@@ -10,6 +10,8 @@ import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormActivos } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
+import CloseIcon from '@mui/icons-material/Close';
+import useNotify from '~/hooks/useNotify';
 
 interface Props {
     state: TalentoFormActivos,
@@ -26,6 +28,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
     const tipos_vestuarios_especificos = api.catalogos.getTipoVestuarioEspecifico.useQuery();
     const tipos_props = api.catalogos.getTipoProps.useQuery();
     const tipo_equipo_deportivo = api.catalogos.getTipoEquipoDeportivo.useQuery();
+    const {notify} = useNotify();
     const raza_select: JSX.Element | null = useMemo(() => {
         if (state.mascota) {
             if (state.mascota.id_tipo_mascota === 5) {
@@ -136,8 +139,15 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <AddButton
                                 onClick={() => {
                                     if (state.vehiculos) {
-                                        if (state.vehiculo) {
+                                        if (state.vehiculo && 
+                                            state.vehiculo.anio > 0 && 
+                                            state.vehiculo.marca.length > 0 && 
+                                            state.vehiculo.modelo.length > 0 &&
+                                            state.vehiculo.color.length > 0 &&
+                                            state.vehiculo.id_tipo_vehiculo > 0) {
                                             onFormChange({ vehiculos: state.vehiculos.concat([state.vehiculo]) });
+                                        } else {
+                                            notify('warning', 'Por favor llena todos los campos antes de intentar guardar el activo');
                                         }
                                     } else {
                                         onFormChange({ vehiculos: [state.vehiculo] })
@@ -170,9 +180,29 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Año
                                 </Typography>,
+                                <Typography key={6} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                    
+                                </Typography>,
                             ]}
-                            data={(state.vehiculos) ? state.vehiculos.map(e => {
-                                return { tipo: e.tipo, marca: e.marca, modelo: e.modelo, color: e.color, anio: e.anio };
+                            loading={!state.vehiculos}
+                            data={(state.vehiculos) ? state.vehiculos.map((e, j) => {
+                                return { 
+                                    tipo: e.tipo, 
+                                    marca: e.marca, 
+                                    modelo: e.modelo, 
+                                    color: e.color, 
+                                    anio: e.anio,
+                                    delete: <IconButton onClick={() => { 
+                                            if (state.vehiculos) {
+                                                onFormChange({ vehiculos: state.vehiculos.filter((v, i) => i !== j) }); 
+                                            }
+                                        }} 
+                                        className='color_a' 
+                                        aria-label="Eliminar Vehiculo" 
+                                        component="label">
+                                        <CloseIcon />
+                                    </IconButton>
+                                };
                             }) : []}
                         />
                     </MContainer>
@@ -224,8 +254,16 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <AddButton
                                 onClick={() => {
                                     if (state.mascotas) {
-                                        if (state.mascota) {
-                                            onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
+                                        if (state.mascota && 
+                                            state.mascota.id_tipo_mascota > 0 && 
+                                            state.mascota.tamanio.length > 0 ) {
+                                                if (state.mascota.id_tipo_mascota === 5 && state.mascota.id_raza > 0 || state.mascota.id_tipo_mascota !== 5) {
+                                                    onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
+                                                } else {
+                                                    notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                                }
+                                        } else {
+                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
                                         }
                                     } else {
                                         onFormChange({ mascotas: [state.mascota] })
@@ -251,9 +289,27 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Tamaño
                                 </Typography>,
+                                <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                    
+                                </Typography>,
                             ]}
-                            data={(state.mascotas) ? state.mascotas?.map(mascota => {
-                                return { tipo: mascota.tipo, tipo_raza: (mascota.id_tipo_mascota === 5) ? mascota.tipo_raza : 'No Aplica', tamanio: mascota.tamanio }
+                            loading={!state.mascotas}
+                            data={(state.mascotas) ? state.mascotas?.map((mascota, j) => {
+                                return { 
+                                    tipo: mascota.tipo, 
+                                    tipo_raza: (mascota.id_tipo_mascota === 5) ? mascota.tipo_raza : 'No Aplica', 
+                                    tamanio: mascota.tamanio,
+                                    delete: <IconButton onClick={() => { 
+                                            if (state.mascotas) {
+                                                onFormChange({ mascotas: state.mascotas.filter((v, i) => i !== j) }); 
+                                            }
+                                        }} 
+                                        className='color_a' 
+                                        aria-label="Eliminar Mascota" 
+                                        component="label">
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
                             }) : []}
                         />
                     </MContainer>
@@ -303,8 +359,10 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <AddButton
                                 onClick={() => {
                                     if (state.vestuarios) {
-                                        if (state.vestuario) {
+                                        if (state.vestuario && state.vestuario.id_tipo > 0 && state.vestuario.id_tipo_vestuario_especifico > 0 && state.vestuario.descripcion.length > 0) {
                                             onFormChange({ vestuarios: state.vestuarios.concat([state.vestuario]) });
+                                        } else {
+                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
                                         }
                                     } else {
                                         onFormChange({ vestuarios: [state.vestuario] })
@@ -324,15 +382,33 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Tipo Vestuario
                                 </Typography>,
-                                <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Tipo Vestuario Especifico
                                 </Typography>,
-                                <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Descripcion
                                 </Typography>,
+                                <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                    
+                                </Typography>,
                             ]}
-                            data={(state.vestuarios) ? state.vestuarios?.map(vestuario => {
-                                return { tipo: vestuario.tipo, tipo_especifico: (vestuario.id_tipo !== 3) ? vestuario.tipo_especifico : 'No Aplica', descripcion: vestuario.descripcion }
+                            loading={!state.vestuarios}
+                            data={(state.vestuarios) ? state.vestuarios?.map((vestuario, j) => {
+                                return { 
+                                    tipo: vestuario.tipo, 
+                                    tipo_especifico: (vestuario.id_tipo !== 3) ? vestuario.tipo_especifico : 'No Aplica', 
+                                    descripcion: vestuario.descripcion,
+                                    delete: <IconButton onClick={() => { 
+                                            if (state.vestuarios) {
+                                                onFormChange({ vestuarios: state.vestuarios.filter((v, i) => i !== j) }); 
+                                            }
+                                        }} 
+                                        className='color_a' 
+                                        aria-label="Eliminar Vestuario" 
+                                        component="label">
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
                             }) : []}
                         />
                     </MContainer>
@@ -379,8 +455,10 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <AddButton
                                 onClick={() => {
                                     if (state.props) {
-                                        if (state.prop) {
+                                        if (state.prop && state.prop.id_tipo_props > 0 && state.prop.descripcion.length > 0) {
                                             onFormChange({ props: state.props.concat([state.prop]) });
+                                        } else {
+                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
                                         }
                                     } else {
                                         onFormChange({ props: [state.prop] })
@@ -404,9 +482,26 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Descripcion
                                 </Typography>,
+                                <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                    
+                                </Typography>,
                             ]}
-                            data={(state.props) ? state.props?.map(prop => {
-                                return { tipo: prop.tipo, descripcion: prop.descripcion }
+                            loading={!state.props}
+                            data={(state.props) ? state.props?.map((prop, j) => {
+                                return { 
+                                    tipo: prop.tipo, 
+                                    descripcion: prop.descripcion,
+                                    delete: <IconButton onClick={() => { 
+                                            if (state.props) {
+                                                onFormChange({ props: state.props.filter((v, i) => i !== j) }); 
+                                            }
+                                        }} 
+                                        className='color_a' 
+                                        aria-label="Eliminar mascota" 
+                                        component="label">
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
                             }) : []}
                         />
                     </MContainer>
@@ -453,8 +548,10 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <AddButton
                                 onClick={() => {
                                     if (state.equipos_deportivos) {
-                                        if (state.equipo_deportivo) {
+                                        if (state.equipo_deportivo && state.equipo_deportivo.id_tipo_equipo_deportivo > 0 && state.equipo_deportivo.descripcion.length > 0) {
                                             onFormChange({ equipos_deportivos: state.equipos_deportivos.concat([state.equipo_deportivo]) });
+                                        } else {
+                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
                                         }
                                     } else {
                                         onFormChange({ equipos_deportivos: [state.equipo_deportivo] })
@@ -477,9 +574,26 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                     Descripcion
                                 </Typography>,
+                                <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                    
+                                </Typography>,
                             ]}
-                            data={(state.equipos_deportivos) ? state.equipos_deportivos?.map(ed => {
-                                return { tipo: ed.tipo, descripcion: ed.descripcion }
+                            loading={!state.equipos_deportivos}
+                            data={(state.equipos_deportivos) ? state.equipos_deportivos?.map((ed, j) => {
+                                return { 
+                                    tipo: ed.tipo, 
+                                    descripcion: ed.descripcion,
+                                    delete: <IconButton onClick={() => { 
+                                            if (state.equipos_deportivos) {
+                                                onFormChange({ equipos_deportivos: state.equipos_deportivos.filter((v, i) => i !== j) }); 
+                                            }
+                                        }} 
+                                        className='color_a' 
+                                        aria-label="Eliminar Equipo Deportivo" 
+                                        component="label">
+                                        <CloseIcon />
+                                    </IconButton>
+                                }
                             }) : []}
                         />
                     </MContainer>

@@ -5,8 +5,10 @@ import { SectionTitle } from "~/components/shared";
 import { MTable } from "~/components/shared/MTable/MTable";
 import { api } from "~/utils/api";
 import { useMemo } from "react";
+import { useRouter } from "next/router";
 
 export const Preferencias = (props: {id_talento: number}) => {
+    const router = useRouter();
 
     const preferencias = api.talentos.getPreferenciasRolByIdTalento.useQuery({id: props.id_talento});
     const loading = preferencias.isFetching;
@@ -70,73 +72,124 @@ export const Preferencias = (props: {id_talento: number}) => {
     return (
         <Grid container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Preferencia de roles' onClickButton={() => { console.log('click'); }} />
+                <SectionTitle title='Preferencia de roles' onClickButton={() => { 
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    router.push('/talento/editar-perfil?step=6')  
+                 }} />
             </Grid>
-            <Grid item xs={12}>
-            
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Tipo de trabajo</Typography>
-                    <Typography fontSize={'1rem'} ml={8} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (data && data.tipos_de_trabajo.length > 0) ? data.tipos_de_trabajo.map(t => t.tipos_de_trabajo.es).join(', ') : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Trabajo de Extra</Typography>
-                    <Typography fontSize={'1rem'} ml={8} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (data) ? (data.interesado_en_trabajos_de_extra) ? 'Si' : 'No' : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Locación de Trabajo</Typography>
-                    <MContainer direction="vertical">
-                        <MContainer direction="horizontal" justify='space-between'>
-                            <Typography fontSize={'1.2rem'} fontWeight={500} mr={16}>Principal</Typography>
-                            <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (locaciones) ? locaciones.principal : 'N/A' }</Typography>
-                        </MContainer>
-                        <MContainer direction="horizontal" justify='space-between'>
-                            <Typography fontSize={'1.2rem'} fontWeight={500} mr={16}>Adicionales</Typography>
-                            <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (locaciones) ? locaciones.adicionales : 'N/A' }</Typography>
-                        </MContainer>
-                    </MContainer>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Interés en proyectos</Typography>
-                    <MContainer direction="vertical">
-                        <MContainer direction="horizontal" justify='space-between'>
-                            <Typography fontSize={'1.2rem'} fontWeight={500} mr={16}>Pagado</Typography>
-                            <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (interes_tipo_proyectos) ? (interes_tipo_proyectos.pagado) ? 'Si' : 'No' : 'N/A' }</Typography>
-                        </MContainer>
-                        <MContainer direction="horizontal" justify='space-between'>
-                            <Typography fontSize={'1.2rem'} fontWeight={500} mr={16}>No pagado</Typography>
-                            <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (interes_tipo_proyectos) ? (interes_tipo_proyectos.no_pagado) ? 'Si' : 'No' : 'N/A' }</Typography>
-                        </MContainer>
-                    </MContainer>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>¿Representante?</Typography>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (data && data.nombre_agente) ? data.nombre_agente : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Documentos</Typography>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (documentos) ? documentos : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '100%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Disponibilidad para</Typography>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (disponibilidades) ? disponibilidades : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Otras profesiones</Typography>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (data && data.otras_profesiones.length > 0) ? data.otras_profesiones.map(o => o.descripcion).join(', ') : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
-                <MContainer className="my-4" direction="horizontal" justify='space-between' styles={{maxWidth: '75%'}}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}> Meses de embarazo</Typography>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton width={150} /> : (data && data.meses_embarazo) ? `${data.meses_embarazo} Meses` : 'N/A' }</Typography>
-                </MContainer>
-                <Divider className="my-2" />
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Tipo de trabajo</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.tipos_de_trabajo.length > 0) ? data.tipos_de_trabajo.map(t => t.tipos_de_trabajo.es).join(', ') : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Trabajo de Extra</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (data.interesado_en_trabajos_de_extra) ? 'Si' : 'No' : 'N/A' }</Typography>    
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Locación de Trabajo Principal</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (locaciones) ? locaciones.principal : 'N/A' }</Typography>  
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Locaciónes de Trabajo Adicionales</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (locaciones) ? locaciones.adicionales : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Interés en proyectos pagados</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (interes_tipo_proyectos) ? (interes_tipo_proyectos.pagado) ? 'Si' : 'No' : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Interés en proyectos no pagados</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (interes_tipo_proyectos) ? (interes_tipo_proyectos.no_pagado) ? 'Si' : 'No' : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>¿Representante?</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.nombre_agente) ? 'Si' : 'No' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Nombre de Representante</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.nombre_agente) ? data.nombre_agente : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Documentos</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (documentos) ? documentos : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Disponibilidad para</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (disponibilidades) ? disponibilidades : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Otras profesiones</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.otras_profesiones.length > 0) ? data.otras_profesiones.map(o => o.descripcion).join(', ') : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
+            </Grid>
+
+            <Grid item xs={4} mt={4}>
+                <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Meses de embarazo</Typography>
+            </Grid>
+            <Grid item alignItems={'self-start'} xs={8} mt={4}>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.meses_embarazo) ? `${data.meses_embarazo} Meses` : 'N/A' }</Typography>
+            </Grid>
+            <Grid item my={2} xs={12}>
+                <Divider />
             </Grid>
         </Grid>
     )
