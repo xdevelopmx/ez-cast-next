@@ -23,9 +23,9 @@ export const MRadioGroup: FC<Props> = ({ loading, disabled, labelClassName, labe
             }
             {!loading &&
                 <FormControl>
-                    <FormLabel style={{ gap: 20,fontSize: 16, ...labelStyle }} className={labelClassName} id={id}>{label}</FormLabel>
+                    <FormLabel style={{ gap: 20, fontSize: 16, ...labelStyle }} className={labelClassName} id={id}>{label}</FormLabel>
                     <RadioGroup
-                        style={style}
+                        style={{ gap: 30,...style }}
                         id={id}
                         row
                         aria-labelledby="demo-row-radio-buttons-group-label"

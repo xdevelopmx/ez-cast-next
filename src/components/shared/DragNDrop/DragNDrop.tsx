@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import Image from 'next/image';
-import { Alert, Button, Chip } from "@mui/material";
+import { Alert, Button } from "@mui/material";
 import classes from './DragNDrop.module.css';
 import MotionDiv from "../../layout/MotionDiv";
-import { Archivo } from "~/server/api/root";
+import { type Archivo } from "~/server/api/root";
 import { Tag } from "../Tag";
 
 const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
@@ -20,7 +20,9 @@ interface Props {
     hide_selected?: boolean,
     assign_selected_files_height?: boolean,
     onChange: (files: File[]) => void,
-    show_download_url?: string
+    show_download_url?: string,
+
+    text_label_download?: string,
 }
 
 function DragNDrop(props: Props) {
@@ -46,6 +48,7 @@ function DragNDrop(props: Props) {
             })
             setFiles(new Map(files));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.files]);
 
     const handleChange = (selected_files: File[]) => {
@@ -89,11 +92,17 @@ function DragNDrop(props: Props) {
     return (
         <MotionDiv style={{ display: 'flex', flexDirection: 'column', maxWidth: 300 }} show={true} animation="fade">
             <>
-                {props.show_download_url &&
-                    <Button size='small' className='font-weight-bold color_a' onClick={() => {
-                        window.open(props.show_download_url)
-                    }} variant="text">Descargar Archivo</Button>
-                }
+                {/* {props.show_download_url &&
+                    <Button
+                        size='small'
+                        className='font-weight-bold color_a'
+                        onClick={() => {
+                            window.open(props.show_download_url)
+                        }} variant="text"
+                        sx={{ textTransform: 'capitalize', textDecoration: 'underline', '&:hover': { textDecoration: 'underline' } }}>
+                        {props.text_label_download || 'Descargar Archivo'}
+                    </Button>
+                } */}
                 <FileUploader classes={`root ${props.id}`} multiple handleChange={handleChange} name="file" types={props.filetypes} >
                     <div className="form-group">
                         <MotionDiv show={error != null} animation="fade">

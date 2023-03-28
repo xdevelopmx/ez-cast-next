@@ -125,7 +125,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         disabled={(state) ? state.edad >= 18 : false}
                         style={{ marginLeft: 128 }}
                         id="eres-mayor-de-edad"
-                        options={['si', 'no']}
+                        options={['Sí', 'No']}
                         labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#4ab7c6' }}
                         value={(state) ? (state.edad >= 18) ? 'no' : 'si' : 'si'}
                         onChange={(e) => {
@@ -189,6 +189,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         id='id-drag-n-drop-carta-responsiva'
                         show_download_url={(state.files.urls.carta_responsiva) ? state.files.urls.carta_responsiva : undefined}
                         label='Carta Responsiva'
+                        text_label_download='Descargar carta responsiva'
                         files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
                         onChange={(files: File[]) => {
@@ -265,7 +266,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                 <DragNDrop
                     id='id-drag-n-drop-cv'
                     show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
-                    label='CV'
+                    label='Subir CV'
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
                     onChange={(files: File[]) => {
@@ -304,8 +305,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     Link a redes sociales:
                 </Typography>
             </Grid>
-            <Grid item xs={4} className='my-4' md={2}>
-                <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
+            <Grid item xs={4} md={2}>
+                <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={classes['form-input-sm']}
@@ -316,8 +317,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={4} className='my-4' md={2}>
-                <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
+            <Grid item xs={4} md={2}>
+                <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={classes['form-input-sm']}
@@ -328,8 +329,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={4} className='my-4' md={2}>
-                <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
+            <Grid item xs={4} md={2}>
+                <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={classes['form-input-sm']}
@@ -340,8 +341,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={4} className='my-4' md={2}>
-                <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
+            <Grid item xs={4} md={2}>
+                <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={classes['form-input-sm']}
@@ -352,8 +353,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={4} className='my-4' md={2}>
-                <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
+            <Grid item xs={4} md={2}>
+                <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
                     <span className={classes['link-input-label']}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={classes['form-input-sm']}
@@ -364,8 +365,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={4} className='my-4' md={2}>
-                <MContainer className='mt-2 mb-4' styles={{ maxWidth: 150 }} direction='vertical'>
+            <Grid item xs={4} md={2}>
+                <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
                     <span className={classes['link-input-label']}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={classes['form-input-sm']}
