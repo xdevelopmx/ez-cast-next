@@ -18,17 +18,33 @@ interface Props {
     rootStyle?: CSSProperties,
     icon?: JSX.Element,
     loading?: boolean,
-    error?: string
+    error?: string,
+
+    textBlueLabel?: string,
 }
 
-export const FormGroup: FC<Props> = ({ error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text', onChange, value, labelStyle, style }) => {
+export const FormGroup: FC<Props> = ({
+    error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
+    onChange, value, labelStyle, style, textBlueLabel
+}) => {
     let input: JSX.Element = <input style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
     if (type === 'text-area') {
-        input = <TextField id={id} className={className} style={{ ...style }} value={(value) ? value : ''} onChange={onChange} multiline rows={3} />;
+        input = <TextField
+            id={id}
+            className={className}
+            style={{ ...style }}
+            value={(value) ? value : ''}
+            onChange={onChange}
+            multiline
+            rows={3}
+        />;
     }
     let label_element: JSX.Element | null = null;
     if (label) {
-        label_element = <label style={labelStyle} className={labelClassName} htmlFor={id}>{label}</label>;
+        label_element = <label
+            style={labelStyle}
+            className={labelClassName}
+            htmlFor={id}>{label} {textBlueLabel && <span style={{ color: '#069CB1', paddingLeft: 2 }}>{textBlueLabel}</span>}</label>;
         if (icon) {
             label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
         }

@@ -34,7 +34,22 @@ export const MCheckboxGroup: FC<Props> = ({
             {onAllOptionChecked &&
                 <FormGroup id={id}>
                     <MContainer direction='vertical'>
-                        <FormControlLabel className={labelClassName} style={labelStyle} control={<Checkbox onChange={(e) => { onAllOptionChecked(e.target.checked) }} style={style} />} label={'Seleccionar todos'} />
+                        <FormControlLabel
+                            className={labelClassName}
+                            style={labelStyle}
+                            control={
+                                <Checkbox
+                                    onChange={(e) => { onAllOptionChecked(e.target.checked) }}
+                                    style={style}
+                                    sx={{
+                                        color: '#069CB1',
+                                        '&.Mui-checked': {
+                                            color: '#069CB1',
+                                        },
+                                    }}
+                                />
+                            }
+                            label={'Seleccionar todos'} />
                         <Divider style={{ margin: 8 }} />
                     </MContainer>
                 </FormGroup>
@@ -46,7 +61,17 @@ export const MCheckboxGroup: FC<Props> = ({
                         const value = values[i];
                         return <FormControlLabel className={labelClassName} style={labelStyle} key={i}
                             control={
-                                <Checkbox checked={(value && value === true) ? value : false} onChange={onChange ? (e) => onChange(e.target.checked, i) : () => { console.log('nothing'); }} style={style} />
+                                <Checkbox
+                                    checked={(value && value === true) ? value : false}
+                                    onChange={onChange ? (e) => onChange(e.target.checked, i) : () => { console.log('nothing'); }}
+                                    style={style}
+                                    sx={{
+                                        color: '#069CB1',
+                                        '&.Mui-checked': {
+                                            color: '#069CB1',
+                                        },
+                                    }}
+                                />
                             } label={e} />
                     })}
                 </MContainer>

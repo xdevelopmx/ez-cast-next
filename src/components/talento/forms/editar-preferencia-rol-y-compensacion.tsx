@@ -20,7 +20,7 @@ interface Props {
 
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
 
-    const {notify} = useNotify();
+    const { notify } = useNotify();
 
     const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
     const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
@@ -75,7 +75,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Alert severity="info">Te recomendamos no cerrarte a un solo tipo de rol para tener más oportunidades de ser seleccionado.</Alert>
+                <Alert severity="info" icon={false} sx={{ textAlign: 'center', justifyContent: 'center' }}>
+                    Te recomendamos no cerrarte a un solo tipo de rol para tener más oportunidades de ser seleccionado.
+                </Alert>
             </Grid>
             <Grid item xs={12}>
                 <MCheckboxGroup
@@ -104,7 +106,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
-                    labelClassName={classes['label-black-md']}
+                    //labelClassName={classes['label-black-md']}
                     options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
                     values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
@@ -164,7 +166,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="interes-proyectos-checkbox"
                     labelStyle={{ marginBottom: 0 }}
-                    labelClassName={classes['label-black-md']}
+                    //labelClassName={classes['label-black-md']}
                     options={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(t => t.es) : []}
                     values={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(v => state.interes_en_proyectos.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
@@ -238,21 +240,21 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                     state.locaciones.map(locacion => (
                                         <span
                                             key={locacion.id_estado_republica}
-                                            style={{ 
+                                            style={{
                                                 position: 'relative',
                                                 borderRadius: 8,
                                                 width: 200,
                                                 textAlign: 'center',
-                                                backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9', 
+                                                backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9',
                                                 padding: '5px 10px',
-                                                color: 'white' 
+                                                color: 'white'
                                             }}
                                         >
                                             {estados_republica.data?.filter(estado => estado.id === locacion.id_estado_republica).map(estado => estado.es)}
-                                            <IconButton 
-                                                onClick={() => { 
-                                                   console.log('xd')
-                                                }} 
+                                            <IconButton
+                                                onClick={() => {
+                                                    console.log('xd')
+                                                }}
                                                 style={{
                                                     position: 'absolute',
                                                     color: 'white',
@@ -260,9 +262,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                                     left: 0,
                                                     marginLeft: 8
                                                 }}
-                                                aria-label="Eliminar Equipo Deportivo" 
+                                                aria-label="Eliminar Equipo Deportivo"
                                                 component="label">
-                                                <CloseIcon style={{width: 16}} />
+                                                <CloseIcon style={{ width: 16 }} />
                                             </IconButton>
                                         </span>
                                     ))
@@ -288,11 +290,11 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
                     <MRadioGroup
                         id="agencia-representante-radio"
-                        options={['si', 'no']}
+                        options={['Sí', 'No']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={tieneAgenciaRepresentante ? 'si' : 'no'}
+                        value={tieneAgenciaRepresentante ? 'Sí' : 'No'}
                         onChange={(e) => {
-                            setTieneAgenciaRepresentante(e.currentTarget.value === 'si')
+                            setTieneAgenciaRepresentante(e.currentTarget.value === 'Sí')
                         }}
                         label=''
                     />
@@ -301,7 +303,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
                             <FormGroup
                                 className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                //labelClassName={classes['form-input-label']}
                                 value={state.preferencias.nombre_agente}
                                 onChange={(e) => {
                                     onFormChange({
@@ -316,7 +318,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
                             <FormGroup
                                 className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                //labelClassName={classes['form-input-label']}
+                                type='email'
+                                textBlueLabel={'Correo electrónico'}
                                 value={state.preferencias.contacto_agente}
                                 onChange={(e) => {
                                     onFormChange({
@@ -365,7 +369,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         }}
                         id="documentos-checkbox"
                         labelStyle={{ marginBottom: 0 }}
-                        labelClassName={classes['label-black-md']}
+                        fontWeight={400}
+                        //labelClassName={classes['label-black-md']}
                         options={(tipos_documentos.data) ? tipos_documentos.data.map(t => t.es) : []}
                         values={(tipos_documentos.data) ? tipos_documentos.data.map(v => state.documentos.map(documento => documento.id_documento).includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -427,7 +432,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         }}
                         id="disponibilidad-para-checkboxgroup"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
-                        labelClassName={classes['label-black-md']}
+                        //labelClassName={classes['label-black-md']}
                         options={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(t => t.es) : []}
                         values={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(v => state.disponibilidad.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -487,7 +492,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             }}
                             label=''
                         />
-                        
+
                         <MotionDiv show={estaEmbarazada} animation="fade">
                             <MContainer direction='horizontal'>
                                 <Typography>Meses</Typography>
