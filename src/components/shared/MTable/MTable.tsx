@@ -116,9 +116,9 @@ export const MTable: FC<MTableProps> = ({
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<MotionDiv show={_data.length > 5} animation={'fade'} style={{ backgroundColor: '#F9B233', width: '100%' }}>
+			<MotionDiv show={_data.length > 5} animation={'fade'} style={{ backgroundColor: '#4ab7c6', width: '100%' }}>
 				<TablePagination
-					sx={{ backgroundColor: '#F9B233' }}
+					sx={{ backgroundColor: '#4ab7c6' }}
 					labelRowsPerPage={'Registros por pagina'}
 					component="div"
 					count={_data.length}
