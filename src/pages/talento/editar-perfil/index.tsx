@@ -771,6 +771,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                         disponibilidad: state.preferencias.disponibilidad,
                                         otras_profesiones: state.preferencias.otras_profesiones,
                                     })
+                                    break;
                                 }
                             }
                         }}

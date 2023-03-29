@@ -18,12 +18,13 @@ interface MTableProps {
 	headerClassName?: string,
 	backgroundColorHeader?: string,
 	backgroundColorData?: string,
+	disable_animation?: boolean
 }
 
 
 
 export const MTable: FC<MTableProps> = ({
-	loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
+	disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
 	backgroundColorHeader = '#4ab7c6', style = {}
 }) => {
 	const [pagination, setPagination] = useState<{page: number, page_size: number}>({page: 0, page_size: 5});
@@ -74,34 +75,60 @@ export const MTable: FC<MTableProps> = ({
 							
 							const row_values = Object.entries(row);
 							return (
-								<motion.tr
-									style={{ backgroundColor: (i % 2) ? backgroundColorData : 'white' }}
-									key={i}
-									layout
-									initial={{ opacity: 0, y: 100 }}
-									animate={{ opacity: 1, y: 0 }}
-									exit={{ opacity: 0, y: 15 }}
-									transition={{ opacity: 0.2, y: 0.3 }}
-								>
-									<>
-										{row_values.map((val, i) => {
-											if (i === 0) {
-												return (
-													<TableCell
-														style={{padding: 8}}
-														key={i}
-														align='center'
-														component="th"
-														scope="row"
-													>
-														{val[1]}
-													</TableCell>
-												)
-											}
-											return <TableCell key={i} align='center'>{val[1]}</TableCell>
-										})}
-									</>
-								</motion.tr>
+								<>
+								
+									{!disable_animation &&
+									
+										<motion.tr
+											style={{ backgroundColor: (i % 2) ? backgroundColorData : 'white' }}
+											key={i}
+											layout={true}
+											initial={{ opacity: 0, y: 100 }}
+											animate={{ opacity: 1, y: 0 }}
+											exit={{ opacity: 0, y: 15 }}
+											transition={{ opacity: 0.2, y: 0.3 }}
+										>
+											<>
+												{row_values.map((val, i) => {
+													if (i === 0) {
+														return (
+															<TableCell
+																style={{padding: 8}}
+																key={i}
+																align='center'
+																component="th"
+																scope="row"
+															>
+																{val[1]}
+															</TableCell>
+														)
+													}
+													return <TableCell key={i} align='center'>{val[1]}</TableCell>
+												})}
+											</>
+										</motion.tr>
+									}
+									{disable_animation &&
+										<TableRow>
+											{row_values.map((val, i) => {
+												if (i === 0) {
+													return (
+														<TableCell
+															style={{padding: 8}}
+															key={i}
+															align='center'
+															component="th"
+															scope="row"
+														>
+															{val[1]}
+														</TableCell>
+													)
+												}
+												return <TableCell key={i} align='center'>{val[1]}</TableCell>
+											})}
+										</TableRow>
+									}
+								</>
 							)
 						})}
 						{_data.length === 0 &&

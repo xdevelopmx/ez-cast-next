@@ -11,6 +11,7 @@ import { type TalentoFormInfoGral } from '~/pages/talento/editar-perfil';
 import { FileManagerFront } from '~/utils/file-manager-front';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
+import { MTooltip } from '~/components/shared/MTooltip';
 
 interface Props {
     state: TalentoFormInfoGral,
@@ -291,6 +292,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     id='id-drag-n-drop-cv'
                     show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
                     label='Subir CV'
+                    tooltip={{text: 'prueba', color: 'blue', placement: 'top'}}
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
                     onChange={(files: File[]) => {
@@ -314,6 +316,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
                             Página web
                         </Typography>
+                        <MTooltip sx={{mt: 1}} text='prueba' color='orange' placement='right' />
                     </MContainer>
                     <FormGroup
                         className={classes['form-input-md']}
