@@ -12,6 +12,7 @@ import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
 import useNotify from '~/hooks/useNotify';
 import CloseIcon from '@mui/icons-material/Close';
+import { MTooltip } from '~/components/shared/MTooltip';
 
 interface Props {
     state: TalentoFormPreferencias,
@@ -79,7 +80,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     Te recomendamos no cerrarte a un solo tipo de rol para tener más oportunidades de ser seleccionado.
                 </Alert>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
                 <MCheckboxGroup
                     onAllOptionChecked={(checked) => {
                         onFormChange({
@@ -111,6 +112,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
             </Grid>
+            <Grid item xs={6}>
+                <MTooltip
+                    sx={{ mt: 7 }}
+                    text='Selecciona aquellas opciones que vayan de acuerdo a tus habilidades'
+                    color='orange'
+                    placement='right'
+                />
+            </Grid>
             <Grid my={4} item xs={12}>
                 <Divider />
             </Grid>
@@ -119,9 +128,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     <MContainer direction='horizontal'>
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             ¿Estás interesado en trabajo de extra?
+                            <MTooltip
+                                text='Prueba'
+                                color='orange'
+                                placement='right'
+                            />
                         </Typography>
                     </MContainer>
-                    <Typography fontSize={'0.9rem'} fontWeight={700} style={{ color: '#4ab7c6' }} component={'p'}>
+                    <Typography fontSize={'.9rem'} fontWeight={700} style={{ color: '#4ab7c6' }} component={'p'}>
                         Si indicas interés en trabajar como extra, aparecerás en la búsqueda de extras del Director
                     </Typography>
                     <MRadioGroup
@@ -148,6 +162,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <MCheckboxGroup
                     direction='vertical'
                     title="Interés en proyectos"
+                    textTooltip='Te recomendamos seleccionar ambas opciones, para aumentar tus posibilidades de ser reclutado. No te limites y genera contactos, experiencia, y nuevos créditos profesionales.'
                     onChange={(e, i) => {
                         if (tipos_interes_proyectos.data) {
                             const tipo_interes_proyecto = tipos_interes_proyectos.data[i]
@@ -181,6 +196,11 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     <MContainer direction='horizontal'>
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             Locación de Trabajo Principal + Adicionales
+                            <MTooltip
+                                text='Agrega el Estado que habites o frecuentes más como Locación Principal, también incluye una locación adicional y amplía tus posibilidades de trabajo.'
+                                color='orange'
+                                placement='right'
+                            />
                         </Typography>
                     </MContainer>
 
@@ -192,6 +212,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
                                 value={locacionPrincipalSelect}
+                                labelStyle={{fontWeight: 400}}
                                 onChange={(e) => {
                                     setLocacionPrincipalSelect(e.target.value)
                                     if (state.locaciones.some(locacion => locacion.es_principal)) {
@@ -215,6 +236,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             <MSelect
                                 loading={is_loading}
                                 id='locacion-principal-select'
+                                labelStyle={{fontWeight: 400}}
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
                                 value={locacionesAdicionalesSelect}
@@ -444,8 +466,13 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             </Grid>
 
             <Grid item xs={12}>
-                <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'} sx={{marginBottom: 1}}>
                     Otras profesiones
+                    <MTooltip 
+                        text='Añade algún trabajo que hayas tenido o tengas fuera del medio ¡Tu habilidad podría estar siendo buscada ahora mismo para el rol de un proyecto!' 
+                        color='orange' 
+                        placement='right' 
+                    />
                 </Typography>
                 <FormGroup
                     className={classes['form-input-md']}

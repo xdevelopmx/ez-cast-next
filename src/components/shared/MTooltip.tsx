@@ -5,7 +5,7 @@ import { styled, SxProps, Theme } from '@mui/material/styles';
 import { QuestionMark } from '@mui/icons-material';
 
 interface Props {
-    color: 'blue' | 'orange', 
+    color: 'blue' | 'orange' | 'white', 
     text: string, 
     placement: 'top-start' | 'top' | 'top-end' | 'left-start' | 'left' | 'left-end'| 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom' | 'bottom-end'
     sx?: SxProps<Theme>
