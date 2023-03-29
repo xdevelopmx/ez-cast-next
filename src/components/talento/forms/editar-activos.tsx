@@ -182,7 +182,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Año
                                 </Typography>,
                                 <Typography key={6} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-
+                                    Acciones
                                 </Typography>,
                             ]}
                             loading={!state.vehiculos}
@@ -293,7 +293,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Tamaño
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-
+                                    Acciones
                                 </Typography>,
                             ]}
                             loading={!state.mascotas}
@@ -302,16 +302,18 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     tipo: mascota.tipo,
                                     tipo_raza: (mascota.id_tipo_mascota === 5) ? mascota.tipo_raza : 'No Aplica',
                                     tamanio: mascota.tamanio,
-                                    delete: <IconButton onClick={() => {
-                                        if (state.mascotas) {
-                                            onFormChange({ mascotas: state.mascotas.filter((v, i) => i !== j) });
-                                        }
-                                    }}
-                                        className='color_a'
-                                        aria-label="Eliminar Mascota"
-                                        component="label">
-                                        <CloseIcon />
-                                    </IconButton>
+                                    delete: <Button
+                                        style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }}
+                                        onClick={() => {
+                                            if (state.mascotas) {
+                                                onFormChange({ mascotas: state.mascotas.filter((v, i) => i !== j) });
+                                            }
+                                        }}
+                                        variant="outlined"
+                                        startIcon={<Close />}>
+                                        Eliminar
+                                    </Button>
+
                                 }
                             }) : []}
                         />
@@ -393,7 +395,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Descripcion
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-
+                                    Acciones
                                 </Typography>,
                             ]}
                             loading={!state.vestuarios}
@@ -402,16 +404,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     tipo: vestuario.tipo,
                                     tipo_especifico: (vestuario.id_tipo !== 3) ? vestuario.tipo_especifico : 'No Aplica',
                                     descripcion: vestuario.descripcion,
-                                    delete: <IconButton onClick={() => {
-                                        if (state.vestuarios) {
-                                            onFormChange({ vestuarios: state.vestuarios.filter((v, i) => i !== j) });
-                                        }
-                                    }}
-                                        className='color_a'
-                                        aria-label="Eliminar Vestuario"
-                                        component="label">
-                                        <CloseIcon />
-                                    </IconButton>
+                                    delete: <Button
+                                        style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }}
+                                        onClick={() => {
+                                            if (state.vestuarios) {
+                                                onFormChange({ vestuarios: state.vestuarios.filter((v, i) => i !== j) });
+                                            }
+                                        }}
+                                        variant="outlined"
+                                        startIcon={<Close />}>
+                                        Eliminar
+                                    </Button>
                                 }
                             }) : []}
                         />
@@ -488,7 +491,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Descripcion
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-
+                                    Acciones
                                 </Typography>,
                             ]}
                             loading={!state.props}
@@ -496,16 +499,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 return {
                                     tipo: prop.tipo,
                                     descripcion: prop.descripcion,
-                                    delete: <IconButton onClick={() => {
-                                        if (state.props) {
-                                            onFormChange({ props: state.props.filter((v, i) => i !== j) });
-                                        }
-                                    }}
-                                        className='color_a'
-                                        aria-label="Eliminar mascota"
-                                        component="label">
-                                        <CloseIcon />
-                                    </IconButton>
+                                    delete: <Button
+                                        style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }}
+                                        onClick={() => {
+                                            if (state.props) {
+                                                onFormChange({ props: state.props.filter((v, i) => i !== j) });
+                                            }
+                                        }}
+                                        variant="outlined"
+                                        startIcon={<Close />}>
+                                        Eliminar
+                                    </Button>
                                 }
                             }) : []}
                         />
@@ -589,16 +593,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 return {
                                     tipo: ed.tipo,
                                     descripcion: ed.descripcion,
-                                    delete: <IconButton onClick={() => {
-                                        if (state.equipos_deportivos) {
-                                            onFormChange({ equipos_deportivos: state.equipos_deportivos.filter((v, i) => i !== j) });
-                                        }
-                                    }}
-                                        className='color_a'
-                                        aria-label="Eliminar Equipo Deportivo"
-                                        component="label">
-                                        <CloseIcon />
-                                    </IconButton>
+                                    delete: <Button
+                                        style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }}
+                                        onClick={() => {
+                                            if (state.equipos_deportivos) {
+                                                onFormChange({ equipos_deportivos: state.equipos_deportivos.filter((v, i) => i !== j) });
+                                            }
+                                        }}
+                                        variant="outlined"
+                                        startIcon={<Close />}>
+                                        Eliminar
+                                    </Button>
                                 }
                             }) : []}
                         />
