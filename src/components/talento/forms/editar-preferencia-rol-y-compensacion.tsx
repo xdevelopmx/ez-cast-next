@@ -126,14 +126,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     </Typography>
                     <MRadioGroup
                         id="interesado-trabajo-extra-group"
-                        options={['si', 'no']}
+                        options={['Sí', 'No']}
                         disabled={false}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.preferencias.interesado_en_trabajos_de_extra ? 'si' : 'no'}
+                        value={state.preferencias.interesado_en_trabajos_de_extra ? 'Sí' : 'No'}
                         onChange={(e) => {
                             onFormChange({
                                 preferencias: {
-                                    interesado_en_trabajos_de_extra: e.currentTarget.value === 'si'
+                                    interesado_en_trabajos_de_extra: e.currentTarget.value === 'Sí'
                                 }
                             })
                         }}
@@ -484,11 +484,11 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         </Typography>
                         <MRadioGroup
                             id="embarazo-radio"
-                            options={['si', 'no']}
+                            options={['Sí', 'No']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                            value={estaEmbarazada ? 'si' : 'no'}
+                            value={estaEmbarazada ? 'Sí' : 'No'}
                             onChange={(e) => {
-                                setEstaEmbarazada(e.currentTarget.value === 'si')
+                                setEstaEmbarazada(e.currentTarget.value === 'Sí')
                             }}
                             label=''
                         />
