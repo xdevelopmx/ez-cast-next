@@ -1,9 +1,8 @@
 import { useMemo, type FC } from 'react'
 import { AddButton, FormGroup } from '~/components';
-import { Divider, Grid, IconButton, Typography } from '@mui/material';
+import { Button, Divider, Grid, IconButton, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import { MSelect } from '~/components/shared/MSelect';
-import Image from 'next/image';
 import classes from './talento-forms.module.css';
 import { MCheckboxGroup } from '~/components/shared/MCheckboxGroup';
 import { MTable } from '~/components/shared/MTable/MTable';
@@ -12,6 +11,7 @@ import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
 import CloseIcon from '@mui/icons-material/Close';
 import useNotify from '~/hooks/useNotify';
+import { Close } from '@mui/icons-material';
 
 interface Props {
     state: TalentoFormActivos,
@@ -193,16 +193,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     modelo: e.modelo,
                                     color: e.color,
                                     anio: e.anio,
-                                    delete: <IconButton onClick={() => {
-                                        if (state.vehiculos) {
-                                            onFormChange({ vehiculos: state.vehiculos.filter((v, i) => i !== j) });
-                                        }
-                                    }}
-                                        className='color_a'
-                                        aria-label="Eliminar Vehiculo"
-                                        component="label">
-                                        <CloseIcon />
-                                    </IconButton>
+                                    delete: <Button
+                                        style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }}
+                                        onClick={() => {
+                                            if (state.vehiculos) {
+                                                onFormChange({ vehiculos: state.vehiculos.filter((v, i) => i !== j) });
+                                            }
+                                        }}
+                                        variant="outlined"
+                                        startIcon={<Close />}>
+                                        Eliminar
+                                    </Button>
                                 };
                             }) : []}
                         />

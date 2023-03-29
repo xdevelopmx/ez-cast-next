@@ -216,6 +216,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         text_label_download='Descargar carta responsiva'
                         files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
+                        height={100}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
                                 const base64 = await FileManagerFront.convertFileToBase64(f);
@@ -272,13 +273,13 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                 </MContainer>
             </Grid>
             <Grid item xs={12} className='my-4' md={7}>
-                <MContainer className='mt-2 mb-4' styles={{ width: '25%' }} direction='vertical'>
-                    <Typography fontWeight={700} variant="body1" component="p">
+                <MContainer className='mt-2 mb-4' styles={{ width: '100%' }} direction='vertical'>
+                    <Typography fontWeight={700} variant="body1" component="p" style={{marginBottom: 5}}>
                         Acerca de
                     </Typography>
                     <FormGroup
                         type="text-area"
-                        style={{ width: 450 }}
+                        style={{ width: '70%' }}
                         value={(state) ? state.biografia : ''}
                         onChange={(e) => {
                             onFormChange({ biografia: e.currentTarget.value })
@@ -286,11 +287,13 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     />
                 </MContainer>
             </Grid>
+            {/* <Grid item xs={12} md={1}></Grid> */}
             <Grid item xs={12} md={4} className='mt-4' justifyContent={'end'}>
                 <DragNDrop
                     id='id-drag-n-drop-cv'
                     show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
                     label='Subir CV'
+                    height={100}
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
                     onChange={(files: File[]) => {

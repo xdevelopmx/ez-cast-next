@@ -1983,7 +1983,7 @@ body .tooltip>.tooltip-inner,
   text-align: center;
   border-radius: 5px;
   border: solid 1px #000;
-  padding: 10px 10px 0;
+  padding: 10px 10px;
 
 }
 
