@@ -34,7 +34,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                 </Typography>
             </Grid>
 
-            <Grid item container xs={21} columns={22} gap={2}>
+            <Grid item container xs={21} columns={22} gap={2} justifyContent={'space-between'}>
                 <Grid item xs={20} md={4} lg={4}>
                     <MSelect
                         styleRoot={{ width: '100%' }}
@@ -78,28 +78,36 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onChange={(e) => { onFormChange({ anio: parseInt(e.target.value) }) }}
                             label='Año'
                         />
-                        <a onClick={() => {
-                            if (state) {
-                                if (state.tipo_proyecto > 0 && state.titulo.length > 0 && state.rol.length > 0 && state.director.length > 0 && state.anio > 0) {
-                                    onFormChange({
-                                        creditos: state.creditos.concat([{
-                                            id: state.creditos.length + 1,
-                                            id_catalogo_proyecto: state.tipo_proyecto,
-                                            titulo: state.titulo,
-                                            rol: state.rol,
-                                            director: state.director,
-                                            anio: state.anio,
-                                            destacado: false,
-                                            clip_url: ''
-                                        }])
-                                    })
-                                } else {
-                                    notify('warning', 'Por favor llena todos los campos antes de intentar agregar el credito');
-                                }
-
-                            }
-                        }} style={{ padding: '2px 4px', fontWeight: 800, color: '#4ab7c6' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Guardar crédito</a>
                     </MContainer>
+                </Grid>
+                <Grid item xs={22} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <a onClick={() => {
+                        if (state) {
+                            if (state.tipo_proyecto > 0 && state.titulo.length > 0 && state.rol.length > 0 && state.director.length > 0 && state.anio > 0) {
+                                onFormChange({
+                                    creditos: state.creditos.concat([{
+                                        id: state.creditos.length + 1,
+                                        id_catalogo_proyecto: state.tipo_proyecto,
+                                        titulo: state.titulo,
+                                        rol: state.rol,
+                                        director: state.director,
+                                        anio: state.anio,
+                                        destacado: false,
+                                        clip_url: ''
+                                    }])
+                                })
+                            } else {
+                                notify('warning', 'Por favor llena todos los campos antes de intentar agregar el credito');
+                            }
+
+                        }
+                    }}
+                        style={{ padding: '4px 6px', fontWeight: 800, color: '#4ab7c6' }}
+                        className="btn  btn-social">
+                        <Image width={16} height={16} style={{ marginRight: 7 }} src="/assets/img/iconos/cruz_blue.svg"
+                            alt="Boton de agregar credito" />
+                        Guardar crédito
+                    </a>
                 </Grid>
             </Grid>
 
@@ -171,9 +179,9 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Star />
                             </IconButton>,
                             clip:
-                                <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 6, fontWeight: 800, color: '#4ab7c6' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir clip</a>,
+                                <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 6, fontWeight: 800, color: '#4ab7c6' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir</a>,
                             acciones:
-                                <Button style={{textTransform: 'capitalize', fontWeight: 800, color: '#069CB1'}} onClick={() => {
+                                <Button style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }} onClick={() => {
                                     onFormChange({ creditos: state.creditos.filter(c => c.id !== credito.id) })
                                 }} variant="outlined" startIcon={<Close />}> Eliminar </Button>
                         }

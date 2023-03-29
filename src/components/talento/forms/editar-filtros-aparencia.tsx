@@ -86,6 +86,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
                             value={`${state.apariencia.rango_inicial_edad}`}
+                            style={{ width: 60 }}
+                            type='number'
                             onChange={(e) => {
                                 onFormChange({
                                     apariencia: {
@@ -100,6 +102,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             className={classes['form-input-md']}
                             labelClassName={classes['form-input-label']}
                             value={`${state.apariencia.rango_final_edad}`}
+                            style={{ width: 60 }}
+                            type='number'
                             onChange={(e) => {
                                 onFormChange({
                                     apariencia: {
@@ -191,149 +195,171 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 <Divider />
             </Grid>
 
-            <Grid item xs={12}>
-                <MContainer direction='horizontal'>
-                    <Grid xs={6}>
-                        <MContainer direction='vertical' styles={{ gap: 20 }}>
-
-                            <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
-                                <Typography>Color de Cabello</Typography>
-                                <MSelect
-                                    loading={is_loading}
-                                    id='color-cabello'
-                                    options={(colores_cabello.isSuccess && colores_cabello.data) ? colores_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                    style={{ width: 250 }}
-                                    value={`${state.apariencia.id_color_cabello}`}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                id_color_cabello: parseInt(e.target.value)
-                                            }
-                                        })
-                                    }}
-                                />
-                            </MContainer>
-
-                            <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
-                                <Typography>Estilo de Cabello</Typography>
-                                <MSelect
-                                    id='estilo-cabello'
-                                    options={(estilos_cabello.isSuccess && estilos_cabello.data) ? estilos_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                    style={{ width: 250 }}
-                                    value={`${state.apariencia.id_estilo_cabello}`}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                id_estilo_cabello: parseInt(e.target.value)
-                                            }
-                                        })
-                                    }}
-                                />
-                            </MContainer>
-
-                            <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
-                                <Typography>Vello Facial</Typography>
-                                <MSelect
-                                    id='vello-facial'
-                                    options={(vellos_facial.isSuccess && vellos_facial.data) ? vellos_facial.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                    style={{ width: 250 }}
-                                    value={`${state.apariencia.id_vello_facial}`}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                id_vello_facial: parseInt(e.target.value)
-                                            }
-                                        })
-                                    }}
-                                />
-                            </MContainer>
-
-                            <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
-                                <Typography>Color de ojos</Typography>
-                                <MSelect
-                                    id='color-ojos'
-                                    options={(colores_ojos.isSuccess && colores_ojos.data) ? colores_ojos.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                    style={{ width: 250 }}
-                                    value={`${state.apariencia.id_color_ojos}`}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                id_color_ojos: parseInt(e.target.value)
-                                            }
-                                        })
-                                    }}
-                                />
-                            </MContainer>
-
-
-                        </MContainer>
+            <Grid container item xs={12}>
+                <Grid container item xs={5}>
+                    <Grid container item xs={12} >
+                        <Grid item xs={6}>
+                            <Typography>Color de Cabello</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MSelect
+                                loading={is_loading}
+                                id='color-cabello'
+                                options={(colores_cabello.isSuccess && colores_cabello.data) ? colores_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
+                                style={{ width: '100%' }}
+                                value={`${state.apariencia.id_color_cabello}`}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            id_color_cabello: parseInt(e.target.value)
+                                        }
+                                    })
+                                }}
+                            />
+                        </Grid>
                     </Grid>
 
-                    <Grid xs={6}>
-                        <MContainer direction='vertical'>
-                            <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>¿Dispuesto a cambiar de color?</Typography>
-                                <MRadioGroup
-                                    id="dispuesto-cambiar-color"
-                                    options={['si', 'no']}
-                                    labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                    value={state.apariencia.disposicion_cambio_color_cabello ? 'si' : 'no'}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                disposicion_cambio_color_cabello: (e.target.value === 'si')
-                                            }
-                                        })
-                                    }}
-                                    label=''
-                                />
-                            </MContainer>
-
-                            <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>¿Dispuesto a cambiar corte?</Typography>
-                                <MRadioGroup
-                                    id="dispuesto-cambiar-corte"
-                                    options={['si', 'no']}
-                                    labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                    value={state.apariencia.disposicion_corte_cabello ? 'si' : 'no'}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                disposicion_corte_cabello: (e.target.value === 'si')
-                                            }
-                                        })
-                                    }}
-                                    label=''
-                                />
-                            </MContainer>
-
-                            <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                <Typography>¿Dispuesto a crecer o afeitar?</Typography>
-                                <MRadioGroup
-                                    id="dispuesto-cambiar-corte"
-                                    options={['si', 'no']}
-                                    labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                                    value={state.apariencia.disposicion_afeitar_o_crecer_vello_facial ? 'si' : 'no'}
-                                    onChange={(e) => {
-                                        onFormChange({
-                                            apariencia: {
-                                                ...state.apariencia,
-                                                disposicion_afeitar_o_crecer_vello_facial: (e.target.value === 'si')
-                                            }
-                                        })
-                                    }}
-                                    label=''
-                                />
-                            </MContainer>
-                        </MContainer>
+                    <Grid container item xs={12} >
+                        <Grid item xs={6}>
+                            <Typography>Estilo de Cabello</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MSelect
+                                id='estilo-cabello'
+                                options={(estilos_cabello.isSuccess && estilos_cabello.data) ? estilos_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
+                                style={{ width: '100%' }}
+                                value={`${state.apariencia.id_estilo_cabello}`}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            id_estilo_cabello: parseInt(e.target.value)
+                                        }
+                                    })
+                                }}
+                            />
+                        </Grid>
                     </Grid>
-                </MContainer>
+
+                    <Grid container item xs={12} >
+                        <Grid item xs={6}>
+                            <Typography>Vello Facial</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MSelect
+                                id='vello-facial'
+                                options={(vellos_facial.isSuccess && vellos_facial.data) ? vellos_facial.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
+                                style={{ width: '100%' }}
+                                value={`${state.apariencia.id_vello_facial}`}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            id_vello_facial: parseInt(e.target.value)
+                                        }
+                                    })
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12} >
+                        <Grid item xs={6}>
+                            <Typography>Color de ojos</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MSelect
+                                id='color-ojos'
+                                options={(colores_ojos.isSuccess && colores_ojos.data) ? colores_ojos.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
+                                style={{ width: '100%' }}
+                                value={`${state.apariencia.id_color_ojos}`}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            id_color_ojos: parseInt(e.target.value)
+                                        }
+                                    })
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+
+                </Grid>
+
+                <Grid container item xs={7}>
+                    <Grid container item xs={12}>
+                        <Grid item xs={6}>
+                            <Typography>¿Dispuesto a cambiar de color?</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MRadioGroup
+                                id="dispuesto-cambiar-color"
+                                options={['Sí', 'No']}
+                                labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                value={state.apariencia.disposicion_cambio_color_cabello ? 'Sí' : 'No'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            disposicion_cambio_color_cabello: (e.target.value === 'Sí')
+                                        }
+                                    })
+                                }}
+                                label=''
+                            />
+                        </Grid>
+
+                    </Grid>
+
+                    <Grid container item xs={12}>
+                        <Grid item xs={6}>
+                            <Typography>¿Dispuesto a cambiar corte?</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MRadioGroup
+                                id="dispuesto-cambiar-corte"
+                                options={['Sí', 'No']}
+                                labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                value={state.apariencia.disposicion_corte_cabello ? 'Sí' : 'No'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            disposicion_corte_cabello: (e.target.value === 'Sí')
+                                        }
+                                    })
+                                }}
+                                label=''
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Grid container item xs={12}>
+                        <Grid item xs={6}>
+                            <Typography>¿Dispuesto a crecer o afeitar?</Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <MRadioGroup
+                                id="dispuesto-cambiar-corte"
+                                options={['Sí', 'No']}
+                                labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                value={state.apariencia.disposicion_afeitar_o_crecer_vello_facial ? 'Sí' : 'No'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        apariencia: {
+                                            ...state.apariencia,
+                                            disposicion_afeitar_o_crecer_vello_facial: (e.target.value === 'Sí')
+                                        }
+                                    })
+                                }}
+                                label=''
+                            />
+                        </Grid>
+                    </Grid>
+
+                </Grid>
             </Grid>
 
 

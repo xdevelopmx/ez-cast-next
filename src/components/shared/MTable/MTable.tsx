@@ -1,6 +1,4 @@
-import { useTheme } from "@emotion/react";
-import styled from "@emotion/styled";
-import { TableCell, tableCellClasses, TableRow, TableContainer, Paper, Table, TableHead, TableBody, Typography, TablePagination, createTheme, Skeleton } from "@mui/material";
+import { TableCell, TableRow, TableContainer, Paper, Table, TableHead, TableBody, Typography, TablePagination, Skeleton, TableFooter } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState, type CSSProperties, type FC } from "react";
 import MotionDiv from "~/components/layout/MotionDiv";
@@ -27,18 +25,19 @@ export const MTable: FC<MTableProps> = ({
 	disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
 	backgroundColorHeader = '#4ab7c6', style = {}
 }) => {
-	const [pagination, setPagination] = useState<{page: number, page_size: number}>({page: 0, page_size: 5});
+	const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
 
 	const _data = useMemo(() => {
 		if (loading && columnsHeader) {
-			return Array.from({ length: 5 }).map((n, i) => { 
+			return Array.from({ length: 5 }).map((n, i) => {
 				return columnsHeader.map((c, j) => {
-					return <Skeleton key={j} className="my-2 p-3" variant="rectangular"  height={32} />
+					return <Skeleton key={j} className="my-2 p-3" variant="rectangular" height={32} />
 				})
 			})
 		} else {
 			return data;
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [data, loading]);
 
 	const paginated_data = useMemo(() => {
@@ -46,7 +45,7 @@ export const MTable: FC<MTableProps> = ({
 		const end = (pagination.page * pagination.page_size) + pagination.page_size;
 		const sliced_data = _data.slice(start, end);
 		if (sliced_data.length === 0 && pagination.page > 0) {
-			setPagination(v => { return { ...v, page: v.page - 1 }});
+			setPagination(v => { return { ...v, page: v.page - 1 } });
 		}
 		return sliced_data;
 	}, [pagination, _data]);
@@ -70,9 +69,9 @@ export const MTable: FC<MTableProps> = ({
 					}
 
 					<TableBody>
-						
+
 						{_data.length > 0 && paginated_data.map((row, i) => {
-							
+
 							const row_values = Object.entries(row);
 							return (
 								<>
@@ -143,19 +142,20 @@ export const MTable: FC<MTableProps> = ({
 						}
 					</TableBody>
 				</Table>
-				<MotionDiv show={_data.length > 5} animation={'fade'}>
-					<TablePagination
-						labelRowsPerPage={'Registros por pagina'}
-						component="div"
-						count={_data.length}
-						page={pagination.page}
-						rowsPerPageOptions={[1, 3, 5, 10, 15, 20]}
-						onPageChange={(e, page) => { setPagination({...pagination, page: page})}}
-						rowsPerPage={pagination.page_size}
-						onRowsPerPageChange={(e) => { setPagination({...pagination, page_size: parseInt(e.target.value)})}}
-					/>
-				</MotionDiv>
 			</TableContainer>
+			<MotionDiv show={_data.length > 5} animation={'fade'} style={{ backgroundColor: '#4ab7c6', width: '100%' }}>
+				<TablePagination
+					sx={{ backgroundColor: '#4ab7c6' }}
+					labelRowsPerPage={'Registros por pagina'}
+					component="div"
+					count={_data.length}
+					page={pagination.page}
+					rowsPerPageOptions={[1, 3, 5, 10, 15, 20]}
+					onPageChange={(e, page) => { setPagination({ ...pagination, page: page }) }}
+					rowsPerPage={pagination.page_size}
+					onRowsPerPageChange={(e) => { setPagination({ ...pagination, page_size: parseInt(e.target.value) }) }}
+				/>
+			</MotionDiv>
 		</AnimatePresence>
 	)
 }
