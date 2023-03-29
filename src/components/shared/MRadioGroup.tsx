@@ -1,6 +1,6 @@
 
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Skeleton } from '@mui/material';
-import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
+import type { ChangeEventHandler, CSSProperties, FC } from 'react'
 
 interface Props {
     id: string,
@@ -12,20 +12,23 @@ interface Props {
     labelStyle?: CSSProperties,
     labelClassName?: string,
     disabled?: boolean,
-    loading?: boolean
+    loading?: boolean,
+    styleRoot?: CSSProperties,
 }
 
-export const MRadioGroup: FC<Props> = ({ loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options }) => {
+export const MRadioGroup: FC<Props> = ({
+    loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options, styleRoot = {}
+}) => {
     return (
         <>
             {loading &&
                 Array.from({ length: 10 }).map((n, i) => { return <Skeleton style={{ margin: 8 }} key={i} variant="rectangular" height={56} /> })
             }
             {!loading &&
-                <FormControl>
+                <FormControl sx={styleRoot}>
                     <FormLabel style={{ gap: 20, fontSize: 16, ...labelStyle }} className={labelClassName} id={id}>{label}</FormLabel>
                     <RadioGroup
-                        style={{ gap: 30,...style }}
+                        style={{ gap: 30, ...style }}
                         id={id}
                         row
                         aria-labelledby="demo-row-radio-buttons-group-label"

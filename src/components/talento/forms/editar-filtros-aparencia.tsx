@@ -196,8 +196,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
             </Grid>
 
             <Grid container item xs={12}>
-                <Grid container item xs={5}>
-                    <Grid container item xs={12} >
+                <Grid container item xs={5} gap={3}>
+                    <Grid container item xs={12} alignItems={'center'} >
                         <Grid item xs={6}>
                             <Typography>Color de Cabello</Typography>
                         </Grid>
@@ -206,7 +206,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 loading={is_loading}
                                 id='color-cabello'
                                 options={(colores_cabello.isSuccess && colores_cabello.data) ? colores_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                style={{ width: '100%' }}
+                                style={{ width: '140px' }}
                                 value={`${state.apariencia.id_color_cabello}`}
                                 onChange={(e) => {
                                     onFormChange({
@@ -220,7 +220,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} >
+                    <Grid container item xs={12} alignItems={'center'} >
                         <Grid item xs={6}>
                             <Typography>Estilo de Cabello</Typography>
                         </Grid>
@@ -228,7 +228,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             <MSelect
                                 id='estilo-cabello'
                                 options={(estilos_cabello.isSuccess && estilos_cabello.data) ? estilos_cabello.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                style={{ width: '100%' }}
+                                style={{ width: '140px' }}
                                 value={`${state.apariencia.id_estilo_cabello}`}
                                 onChange={(e) => {
                                     onFormChange({
@@ -242,7 +242,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} >
+                    <Grid container item xs={12} alignItems={'center'} >
                         <Grid item xs={6}>
                             <Typography>Vello Facial</Typography>
                         </Grid>
@@ -250,7 +250,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             <MSelect
                                 id='vello-facial'
                                 options={(vellos_facial.isSuccess && vellos_facial.data) ? vellos_facial.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                style={{ width: '100%' }}
+                                style={{ width: '140px' }}
                                 value={`${state.apariencia.id_vello_facial}`}
                                 onChange={(e) => {
                                     onFormChange({
@@ -264,7 +264,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12} >
+                    <Grid container item xs={12} alignItems={'center'} >
                         <Grid item xs={6}>
                             <Typography>Color de ojos</Typography>
                         </Grid>
@@ -272,7 +272,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             <MSelect
                                 id='color-ojos'
                                 options={(colores_ojos.isSuccess && colores_ojos.data) ? colores_ojos.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                                style={{ width: '100%' }}
+                                style={{ width: '140px' }}
                                 value={`${state.apariencia.id_color_ojos}`}
                                 onChange={(e) => {
                                     onFormChange({
@@ -288,16 +288,17 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
 
                 </Grid>
 
-                <Grid container item xs={7}>
-                    <Grid container item xs={12}>
-                        <Grid item xs={6}>
+                <Grid container item xs={7} gap={3}>
+                    <Grid container item xs={12} alignItems={'center'}>
+                        <Grid item xs={7}>
                             <Typography>¿Dispuesto a cambiar de color?</Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={5}>
                             <MRadioGroup
                                 id="dispuesto-cambiar-color"
                                 options={['Sí', 'No']}
-                                labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                styleRoot={{ height: 37 }}
+                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
                                 value={state.apariencia.disposicion_cambio_color_cabello ? 'Sí' : 'No'}
                                 onChange={(e) => {
                                     onFormChange({
@@ -313,15 +314,16 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
 
                     </Grid>
 
-                    <Grid container item xs={12}>
-                        <Grid item xs={6}>
+                    <Grid container item xs={12} alignItems={'center'}>
+                        <Grid item xs={7}>
                             <Typography>¿Dispuesto a cambiar corte?</Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={5}>
                             <MRadioGroup
                                 id="dispuesto-cambiar-corte"
                                 options={['Sí', 'No']}
-                                labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                styleRoot={{ height: 37 }}
+                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
                                 value={state.apariencia.disposicion_corte_cabello ? 'Sí' : 'No'}
                                 onChange={(e) => {
                                     onFormChange({
@@ -336,15 +338,16 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={12}>
-                        <Grid item xs={6}>
+                    <Grid container item xs={12} alignItems={'center'}>
+                        <Grid item xs={7}>
                             <Typography>¿Dispuesto a crecer o afeitar?</Typography>
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={5}>
                             <MRadioGroup
                                 id="dispuesto-cambiar-corte"
                                 options={['Sí', 'No']}
-                                labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                styleRoot={{ height: 37 }}
+                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
                                 value={state.apariencia.disposicion_afeitar_o_crecer_vello_facial ? 'Sí' : 'No'}
                                 onChange={(e) => {
                                     onFormChange({
@@ -358,7 +361,14 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             />
                         </Grid>
                     </Grid>
-
+                    <Grid container item xs={12} alignItems={'center'}>
+                        <Grid item xs={7}>
+                        <div style={{height: 37.42, width: 10}}></div>
+                        </Grid>
+                        <Grid item xs={5}>
+                            <div style={{height: 37.42, width: 10}}></div>
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
 
@@ -377,10 +387,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     </Typography>
                     <MRadioGroup
                         id="tiene-tatuajes-distintivos"
-                        options={['si', 'no']}
+                        options={['Sí', 'No']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={state.has_tatoos ? 'si' : 'no'}
-                        onChange={(e) => { onFormChange({ has_tatoos: (e.currentTarget.value === 'si') }) }}
+                        value={state.has_tatoos ? 'Sí' : 'No'}
+                        onChange={(e) => { onFormChange({ has_tatoos: (e.currentTarget.value === 'Sí') }) }}
                         label=''
                     />
                     <MotionDiv show={state.has_tatoos} animation='fade'>
@@ -453,10 +463,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     </Typography>
                     <MRadioGroup
                         id="tiene-piercing"
-                        options={['si', 'no']}
+                        options={['Sí', 'No']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                        value={(state.has_piercings) ? 'si' : 'no'}
-                        onChange={(e) => { onFormChange({ has_piercings: (e.currentTarget.value === 'si') }) }}
+                        value={(state.has_piercings) ? 'Sí' : 'No'}
+                        onChange={(e) => { onFormChange({ has_piercings: (e.currentTarget.value === 'Sí') }) }}
                         label=''
                     />
                     <MotionDiv show={state.has_piercings} animation='fade'>
@@ -530,10 +540,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <Typography>¿Eres gemelo o trillizo idéntico?</Typography>
                         <MRadioGroup
                             id="eres-gemelo-trillizo"
-                            options={['si', 'no']}
+                            options={['Sí', 'No']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
-                            value={(state.has_hermanos) ? 'si' : 'no'}
-                            onChange={(e) => { onFormChange({ has_hermanos: (e.currentTarget.value === 'si') }) }}
+                            value={(state.has_hermanos) ? 'Sí' : 'No'}
+                            onChange={(e) => { onFormChange({ has_hermanos: (e.currentTarget.value === 'Sí') }) }}
                             label=''
                         />
                     </MContainer>
