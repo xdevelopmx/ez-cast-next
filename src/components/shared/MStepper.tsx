@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useRef, useState, type FC } from 'react'
+import { type CSSProperties, useEffect, useRef, useState, type FC, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import MotionDiv from '../layout/MotionDiv';
 import { Grid, Step, StepLabel, Stepper } from '@mui/material';
@@ -11,10 +11,15 @@ interface Props {
     onStepSave?: (step: number) => void;
     children: JSX.Element[];
     style?: CSSProperties,
-    onFinish?: () => void
+    onFinish?: () => void,
+
+    tooltipArr?: {[step: number]: ReactNode},
 }
 
-export const MStepper: FC<Props> = ({ onStepSave, onStepChange, current_step, step_titles, children, onFinish }) => {
+export const MStepper: FC<Props> = ({ 
+    onStepSave, onStepChange, current_step, step_titles, children, onFinish, tooltipArr = {}
+}) => {
+
     const animation_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [showContent, setShowContent] = useState(false);
     useEffect(() => {
@@ -39,6 +44,7 @@ export const MStepper: FC<Props> = ({ onStepSave, onStepChange, current_step, st
                 </Stepper>
                 <h3 className="paso-stepper">
                     PASO {current_step} <span> {step_titles[current_step]}</span>
+                    {}
                 </h3>
 
 
