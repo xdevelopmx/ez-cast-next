@@ -113,12 +113,18 @@ export const InfoGeneral = (props: {id_talento: number}) => {
                     <Typography>
                         {data?.info_basica?.biografia}
                     </Typography>
-                    <>
-                    
-                        {creditos.data && creditos.data.creditos.filter(c => c.destacado).length > 0 &&
+                    <div style={{marginTop: 32}}>
+                        {creditos.isFetching && <Skeleton className="md-skeleton"/>}
+                        {!creditos.isFetching && creditos.data?.creditos.length === 0 &&
+                            <Typography fontSize={'1rem'} sx={{color: '#F9B233'}} fontWeight={400}>No haz capturado aun ningun credito</Typography>  
+                        }
+                        {!creditos.isFetching && creditos.data && creditos.data.creditos.length > 0 && creditos.data.creditos.filter(c => c.destacado).length === 0 &&
+                            <Typography fontSize={'1.5rem'} sx={{color: '#F9B233'}} fontWeight={400}>Todavia no tienes creditos destacados</Typography>  
+                        }
+                        {!creditos.isFetching && creditos.data && creditos.data.creditos.filter(c => c.destacado).length > 0 &&
                             <>
                             
-                                <MContainer direction="horizontal" styles={{ alignItems: 'center', marginTop: 20 }}>
+                                <MContainer direction="horizontal" styles={{ alignItems: 'center', marginTop: 16, marginBottom: 16 }}>
                                     <Image
                                         src="/assets/img/iconos/icon_estrella_dorada.svg"
                                         width={20}
@@ -143,7 +149,7 @@ export const InfoGeneral = (props: {id_talento: number}) => {
                                 />
                             </>
                         }
-                    </>
+                    </div>
 
                 </MContainer>
             </Grid>

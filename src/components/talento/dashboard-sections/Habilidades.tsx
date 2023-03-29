@@ -54,7 +54,7 @@ export const Habilidades = (props: {id_talento: number}) => {
                     <>
                         {Array.from({ length: 4 }).map((n, i) => { 
                             return <MContainer key={i} direction="vertical">
-                                <Skeleton className="my-2 md-skeleton"  variant="rectangular" />
+                                <Skeleton className="my-2 sm-skeleton"  variant="rectangular" />
                                 <MContainer direction="horizontal">
                                     {Array.from({ length: 4 }).map((m, j) => { 
                                         return  <Skeleton key={j} className="my-2 p-3" variant="rectangular" width={150}  sx={{ marginRight: 16, padding: '0px 30px', borderRadius: 10, border: '2px solid #4ab7c6' }} />

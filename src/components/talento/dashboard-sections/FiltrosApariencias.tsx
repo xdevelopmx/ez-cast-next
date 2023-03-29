@@ -11,7 +11,7 @@ import { MedidasDialog } from "../dialogs/MedidasDialog";
 
 export const FiltrosApariencias = (props: {id_talento: number}) => {
     const router = useRouter();
-    const [dialog, setDialog] = useState<{opened: boolean, data: Map<string, unknown>}>({opened: true, data: new Map()})
+    const [dialog, setDialog] = useState<{opened: boolean, data: Map<string, unknown>}>({opened: false, data: new Map()})
     
     const filtros = api.talentos.getFiltrosAparienciaByIdTalento.useQuery({id: props.id_talento}, {
         refetchOnWindowFocus: false,
@@ -77,9 +77,14 @@ export const FiltrosApariencias = (props: {id_talento: number}) => {
                     ]
                 }
             ]
-            return _medidas.filter((entry) => {
-                return entry.childrens.filter(child => (child.value))
-            })
+            const _medidas_filtered = _medidas.filter((entry) => {
+                return entry.childrens.filter(child => (child.value)).length > 0
+            }).map(entry => {
+                entry.childrens = entry.childrens.filter(child => (child.value))
+                return entry;
+            });
+            console.log('medidas', _medidas_filtered);
+            return _medidas_filtered;
         }
         return null;
     }, [medidas.data]);
@@ -300,25 +305,42 @@ export const FiltrosApariencias = (props: {id_talento: number}) => {
                         setDialog(prev => { return { ...prev, opened: true }})
                      }} />
                 </Grid>
-                
-                <Grid item xs={4} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Cadera (cm)</Typography>
-                </Grid>
-                <Grid item alignItems={'self-start'} xs={8} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.hermanos) ? data.hermanos.descripcion : 'N/D' }</Typography>
-                </Grid>
-                <Grid item my={2} xs={12}>
-                    <Divider />
-                </Grid>
+                <Grid item alignItems={'self-start'} xs={12}>
+                    {!medidas_grouped && <Skeleton className="md-skeleton" />}
+                    {medidas_grouped && medidas_grouped.length === 0 && <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{'No se han capturado las medidas'}</Typography>}
+                    {medidas_grouped && medidas_grouped.length > 0 &&
+                        <Grid container>
+                            {medidas_grouped.map((medida, j) => {
+                                return (
+                                    <>
+                                        <Grid item xs={4}>
+                                            <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>{medida.parent}</Typography>
+                                        </Grid>
+                                        <Grid item xs={8}>
+                                            {medida.childrens.map((child, i) => {
+                                                return (
+                                                    <div key={i}>
+                                                        <Typography fontSize={'1.2rem'} fontWeight={400}>{child.name}</Typography>  
+                                                        <Typography fontSize={'1rem'} fontWeight={400}>{child.value}</Typography>  
+                                                        {i < medida.childrens.length - 1 && <Divider className="my-2"/>}
+                                                    </div>
 
-                <Grid item xs={4} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#4ab7c6' }} fontWeight={600}>Entrepierna (cm)</Typography>
-                </Grid>
-                <Grid item alignItems={'self-start'} xs={8} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.hermanos) ? data.hermanos.descripcion : 'N/D' }</Typography>
-                </Grid>
-                <Grid item my={2} xs={12}>
-                    <Divider />
+                                                )
+                                            })}
+                                        </Grid>
+                                        {j < medidas_grouped.length - 1 && 
+                                            <Grid item xs={12}>
+                                                <Divider style={{borderWidth: 2}} className="my-2"/>
+                                            </Grid>
+                                        }
+                                        
+                                    </>
+                                )
+                            })}
+                           
+                            
+                        </Grid>
+                    }
                 </Grid>
                 
             </Grid>

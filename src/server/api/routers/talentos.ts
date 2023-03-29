@@ -844,6 +844,43 @@ export const TalentosRouter = createTRPCRouter({
 			});
 		}
 	),
+	updateCreditoDestacado: protectedProcedure
+		.input(z.object({ 
+			id_credito: z.number(),
+			destacado: z.boolean()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+				const credito_saved = await ctx.prisma.creditoTalento.update({
+					where: {
+						id: input.id_credito
+					},
+					data: {
+						destacado: input.destacado
+					}
+				});
+
+				if (!credito_saved) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de actualizar el credito',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				return credito_saved;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de talento puede modificar los creditos',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
+
 	saveCreditos: protectedProcedure
 		.input(z.object({ 
 			mostrar_anio_en_perfil: z.boolean(),

@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import Image from 'next/image';
-import { Alert, Typography } from "@mui/material";
+import { Alert, Button, IconButton, Typography } from "@mui/material";
+import { styled } from '@mui/material/styles';
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import classes from './DragNDrop.module.css';
 import MotionDiv from "../../layout/MotionDiv";
 import { type Archivo } from "~/server/api/root";
 import { Tag } from "../Tag";
+import { QuestionMark } from "@mui/icons-material";
+import { MTooltip } from "../MTooltip";
 
 const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
@@ -14,7 +18,7 @@ interface Props {
     multiple_files?: boolean,
     files: Archivo[],
     label?: string,
-    tooltip?: string,
+    tooltip?: {color: 'blue' | 'orange', text: string, placement: 'top-start' | 'top' | 'top-end' | 'left-start' | 'left' | 'left-end'| 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom' | 'bottom-end'},
     filetypes: string[],
     max_files?: number,
     hide_selected?: boolean,
@@ -129,7 +133,7 @@ function DragNDrop(props: Props) {
                                 </>
                             }
                             {props.tooltip &&
-                                <div style={{ marginLeft: 8 }} className="contToolTip blue_tootip mt-0" data-toggle="tooltip" data-html="true" data-placement="bottom" title={props.tooltip}>?</div>
+                                <MTooltip text={props.tooltip.text} color={props.tooltip.color} placement={props.tooltip.placement}/>
                             }
                         </div>
                         <div className="btn_talent_upload">
