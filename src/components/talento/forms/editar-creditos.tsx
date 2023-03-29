@@ -8,7 +8,7 @@ import { MSelect } from '~/components/shared/MSelect';
 import { MCheckboxGroup } from '~/components/shared/MCheckboxGroup';
 import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormCreditos } from '~/pages/talento/editar-perfil';
-import { Delete, Star } from '@mui/icons-material';
+import { Close, Delete, Star } from '@mui/icons-material';
 import { api } from '~/utils/api';
 import useNotify from '~/hooks/useNotify';
 
@@ -25,7 +25,7 @@ const YEARS = Array.from({ length: 100 }).map((value: unknown, i: number) => {
 
 export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
     const tipo_proyecto = api.catalogos.getTipoProyectos.useQuery();
-    const {notify} = useNotify();
+    const { notify } = useNotify();
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} my={2}>
@@ -73,7 +73,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             id="edad-select"
                             //className={classes['form-input-md']}
                             options={YEARS}
-                            style={{  marginBottom: 8 }}
+                            style={{ marginBottom: 8 }}
                             value={(state) ? state.anio.toString() : ''}
                             onChange={(e) => { onFormChange({ anio: parseInt(e.target.value) }) }}
                             label='Año'
@@ -116,7 +116,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onFormChange({ mostrar_anio_en_perfil: e })
                         }}
                         id="mostrar-anio-perfil"
-                        labelClassName={classes['label-black-lg']}
+                        labelStyle={{ fontWeight: '400', fontSize: '1.1rem' }}
                         options={['Mostrar Año en Perfil']}
                         values={[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -170,10 +170,12 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             >
                                 <Star />
                             </IconButton>,
-                            clip: <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 4, fontWeight: 800, color: '#4ab7c6' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir clip</a>,
-                            acciones: <Button onClick={() => {
-                                onFormChange({ creditos: state.creditos.filter(c => c.id !== credito.id) })
-                            }} variant="outlined" startIcon={<Delete />}> Quitar </Button>
+                            clip:
+                                <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 6, fontWeight: 800, color: '#4ab7c6' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir clip</a>,
+                            acciones:
+                                <Button style={{textTransform: 'capitalize', fontWeight: 800, color: '#069CB1'}} onClick={() => {
+                                    onFormChange({ creditos: state.creditos.filter(c => c.id !== credito.id) })
+                                }} variant="outlined" startIcon={<Close />}> Eliminar </Button>
                         }
                     }) : []}
                 />

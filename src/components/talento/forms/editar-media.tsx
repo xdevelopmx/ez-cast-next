@@ -20,7 +20,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
         <Grid container justifyContent={'space-between'} spacing={2} mb={8}>
             <Grid item xs={12} md={8}>
                 <MContainer direction='vertical'>
-                    <MContainer direction='horizontal' styles={{ gap: 10 }}>
+                    <MContainer direction='horizontal' styles={{ gap: 10, marginBottom: 5 }}>
                         <span className={'badge'}> <Image width={24} height={24} src="/assets/img/iconos/icono_camara_cart_blue.svg" alt="" /> </span>
                         <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
                             Fotos
@@ -34,9 +34,10 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
                             Para obtener más orientación, consulta nuestra documentación de ayuda y tutoriales.<br>">?</div>
                     </MContainer>
+                    <Typography sx={{ color: '#069CB1', margin: '5px' }}>Elegir foto de perfil</Typography>
                     <DraggableContainer
                         width={600}
-                        direction={'horizontal'}       
+                        direction={'horizontal'}
                         onElementsUpdate={(elements_order: number[]) => {
                             const fotos: Archivo[] = [];
                             elements_order.forEach((id) => {
@@ -51,29 +52,18 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                             return {
                                 id: i,
                                 content:
-                                    (i === 0) ?
-                                        <>
-                                            <p className={classes['link-input-label']} style={{ margin: 0, textAlign: 'center' }}>Foto de perfil</p>
-                                            <Image
-                                                style={{ margin: 8 }}
-                                                className={classes['border-element-selected']}
-                                                alt={`Imagen ${foto.name}`}
-                                                key={foto.name}
-                                                width={128}
-                                                height={156}
-                                                src={foto.base64}
-                                            />
-                                        </>
-                                        :
+
+                                    <div style={{ border: i === 0 ? '1px solid #069CB1' : 'none', padding: '10px' }}>
                                         <Image
-                                            style={{ margin: 8, marginTop: 32 }}
-                                            className={classes['border-element']}
+                                            style={{ objectFit: 'cover' }}
+
                                             alt={`Imagen ${foto.name}`}
                                             key={foto.name}
-                                            width={128}
-                                            height={156}
+                                            width={60}
+                                            height={80}
                                             src={foto.base64}
                                         />
+                                    </div>
 
                             }
                         })}

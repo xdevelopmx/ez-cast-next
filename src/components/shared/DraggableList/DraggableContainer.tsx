@@ -110,7 +110,7 @@ export const DraggableContainer: FC<Props> = (props: Props) => {
 	)
 	return (
 		<MotionDiv
-			style={{ width: (props.width) ? props.width : 400, ...props.style, display: (props.direction === 'vertical') ? 'block' : 'flex', flexWrap: 'wrap' }}
+			style={{ width: (props.width) ? props.width : 400, ...props.style, display: (props.direction === 'vertical') ? 'block' : 'flex', flexWrap: 'wrap', gap: 10 }}
 			show={true}
 			animation='left-to-right'
 		>

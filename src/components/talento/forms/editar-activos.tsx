@@ -28,7 +28,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
     const tipos_vestuarios_especificos = api.catalogos.getTipoVestuarioEspecifico.useQuery();
     const tipos_props = api.catalogos.getTipoProps.useQuery();
     const tipo_equipo_deportivo = api.catalogos.getTipoEquipoDeportivo.useQuery();
-    const {notify} = useNotify();
+    const { notify } = useNotify();
     const raza_select: JSX.Element | null = useMemo(() => {
         if (state.mascota) {
             if (state.mascota.id_tipo_mascota === 5) {
@@ -137,11 +137,12 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Año'
                             />
                             <AddButton
+                                aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.vehiculos) {
-                                        if (state.vehiculo && 
-                                            state.vehiculo.anio > 0 && 
-                                            state.vehiculo.marca.length > 0 && 
+                                        if (state.vehiculo &&
+                                            state.vehiculo.anio > 0 &&
+                                            state.vehiculo.marca.length > 0 &&
                                             state.vehiculo.modelo.length > 0 &&
                                             state.vehiculo.color.length > 0 &&
                                             state.vehiculo.id_tipo_vehiculo > 0) {
@@ -181,24 +182,24 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Año
                                 </Typography>,
                                 <Typography key={6} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    
+
                                 </Typography>,
                             ]}
                             loading={!state.vehiculos}
                             data={(state.vehiculos) ? state.vehiculos.map((e, j) => {
-                                return { 
-                                    tipo: e.tipo, 
-                                    marca: e.marca, 
-                                    modelo: e.modelo, 
-                                    color: e.color, 
+                                return {
+                                    tipo: e.tipo,
+                                    marca: e.marca,
+                                    modelo: e.modelo,
+                                    color: e.color,
                                     anio: e.anio,
-                                    delete: <IconButton onClick={() => { 
-                                            if (state.vehiculos) {
-                                                onFormChange({ vehiculos: state.vehiculos.filter((v, i) => i !== j) }); 
-                                            }
-                                        }} 
-                                        className='color_a' 
-                                        aria-label="Eliminar Vehiculo" 
+                                    delete: <IconButton onClick={() => {
+                                        if (state.vehiculos) {
+                                            onFormChange({ vehiculos: state.vehiculos.filter((v, i) => i !== j) });
+                                        }
+                                    }}
+                                        className='color_a'
+                                        aria-label="Eliminar Vehiculo"
                                         component="label">
                                         <CloseIcon />
                                     </IconButton>
@@ -252,16 +253,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Tamaño'
                             />
                             <AddButton
+                                aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.mascotas) {
-                                        if (state.mascota && 
-                                            state.mascota.id_tipo_mascota > 0 && 
-                                            state.mascota.tamanio.length > 0 ) {
-                                                if (state.mascota.id_tipo_mascota === 5 && state.mascota.id_raza > 0 || state.mascota.id_tipo_mascota !== 5) {
-                                                    onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
-                                                } else {
-                                                    notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
-                                                }
+                                        if (state.mascota &&
+                                            state.mascota.id_tipo_mascota > 0 &&
+                                            state.mascota.tamanio.length > 0) {
+                                            if (state.mascota.id_tipo_mascota === 5 && state.mascota.id_raza > 0 || state.mascota.id_tipo_mascota !== 5) {
+                                                onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
+                                            } else {
+                                                notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                            }
                                         } else {
                                             notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
                                         }
@@ -290,22 +292,22 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Tamaño
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    
+
                                 </Typography>,
                             ]}
                             loading={!state.mascotas}
                             data={(state.mascotas) ? state.mascotas?.map((mascota, j) => {
-                                return { 
-                                    tipo: mascota.tipo, 
-                                    tipo_raza: (mascota.id_tipo_mascota === 5) ? mascota.tipo_raza : 'No Aplica', 
+                                return {
+                                    tipo: mascota.tipo,
+                                    tipo_raza: (mascota.id_tipo_mascota === 5) ? mascota.tipo_raza : 'No Aplica',
                                     tamanio: mascota.tamanio,
-                                    delete: <IconButton onClick={() => { 
-                                            if (state.mascotas) {
-                                                onFormChange({ mascotas: state.mascotas.filter((v, i) => i !== j) }); 
-                                            }
-                                        }} 
-                                        className='color_a' 
-                                        aria-label="Eliminar Mascota" 
+                                    delete: <IconButton onClick={() => {
+                                        if (state.mascotas) {
+                                            onFormChange({ mascotas: state.mascotas.filter((v, i) => i !== j) });
+                                        }
+                                    }}
+                                        className='color_a'
+                                        aria-label="Eliminar Mascota"
                                         component="label">
                                         <CloseIcon />
                                     </IconButton>
@@ -357,6 +359,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Descripcion'
                             />
                             <AddButton
+                                aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.vestuarios) {
                                         if (state.vestuario && state.vestuario.id_tipo > 0 && state.vestuario.id_tipo_vestuario_especifico > 0 && state.vestuario.descripcion.length > 0) {
@@ -389,22 +392,22 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Descripcion
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    
+
                                 </Typography>,
                             ]}
                             loading={!state.vestuarios}
                             data={(state.vestuarios) ? state.vestuarios?.map((vestuario, j) => {
-                                return { 
-                                    tipo: vestuario.tipo, 
-                                    tipo_especifico: (vestuario.id_tipo !== 3) ? vestuario.tipo_especifico : 'No Aplica', 
+                                return {
+                                    tipo: vestuario.tipo,
+                                    tipo_especifico: (vestuario.id_tipo !== 3) ? vestuario.tipo_especifico : 'No Aplica',
                                     descripcion: vestuario.descripcion,
-                                    delete: <IconButton onClick={() => { 
-                                            if (state.vestuarios) {
-                                                onFormChange({ vestuarios: state.vestuarios.filter((v, i) => i !== j) }); 
-                                            }
-                                        }} 
-                                        className='color_a' 
-                                        aria-label="Eliminar Vestuario" 
+                                    delete: <IconButton onClick={() => {
+                                        if (state.vestuarios) {
+                                            onFormChange({ vestuarios: state.vestuarios.filter((v, i) => i !== j) });
+                                        }
+                                    }}
+                                        className='color_a'
+                                        aria-label="Eliminar Vestuario"
                                         component="label">
                                         <CloseIcon />
                                     </IconButton>
@@ -453,6 +456,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Descripcion'
                             />
                             <AddButton
+                                aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.props) {
                                         if (state.prop && state.prop.id_tipo_props > 0 && state.prop.descripcion.length > 0) {
@@ -483,21 +487,21 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Descripcion
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    
+
                                 </Typography>,
                             ]}
                             loading={!state.props}
                             data={(state.props) ? state.props?.map((prop, j) => {
-                                return { 
-                                    tipo: prop.tipo, 
+                                return {
+                                    tipo: prop.tipo,
                                     descripcion: prop.descripcion,
-                                    delete: <IconButton onClick={() => { 
-                                            if (state.props) {
-                                                onFormChange({ props: state.props.filter((v, i) => i !== j) }); 
-                                            }
-                                        }} 
-                                        className='color_a' 
-                                        aria-label="Eliminar mascota" 
+                                    delete: <IconButton onClick={() => {
+                                        if (state.props) {
+                                            onFormChange({ props: state.props.filter((v, i) => i !== j) });
+                                        }
+                                    }}
+                                        className='color_a'
+                                        aria-label="Eliminar mascota"
                                         component="label">
                                         <CloseIcon />
                                     </IconButton>
@@ -546,6 +550,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Descripcion'
                             />
                             <AddButton
+                                aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.equipos_deportivos) {
                                         if (state.equipo_deportivo && state.equipo_deportivo.id_tipo_equipo_deportivo > 0 && state.equipo_deportivo.descripcion.length > 0) {
@@ -575,21 +580,21 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Descripcion
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    
+
                                 </Typography>,
                             ]}
                             loading={!state.equipos_deportivos}
                             data={(state.equipos_deportivos) ? state.equipos_deportivos?.map((ed, j) => {
-                                return { 
-                                    tipo: ed.tipo, 
+                                return {
+                                    tipo: ed.tipo,
                                     descripcion: ed.descripcion,
-                                    delete: <IconButton onClick={() => { 
-                                            if (state.equipos_deportivos) {
-                                                onFormChange({ equipos_deportivos: state.equipos_deportivos.filter((v, i) => i !== j) }); 
-                                            }
-                                        }} 
-                                        className='color_a' 
-                                        aria-label="Eliminar Equipo Deportivo" 
+                                    delete: <IconButton onClick={() => {
+                                        if (state.equipos_deportivos) {
+                                            onFormChange({ equipos_deportivos: state.equipos_deportivos.filter((v, i) => i !== j) });
+                                        }
+                                    }}
+                                        className='color_a'
+                                        aria-label="Eliminar Equipo Deportivo"
                                         component="label">
                                         <CloseIcon />
                                     </IconButton>

@@ -7,16 +7,16 @@ import { MContainer } from '~/components/layout/MContainer';
 
 interface EditarHabilidadesTalentoPageProps {
     state: TalentoFormHabilidades,
-    onFormChange: (input: {[id: string]: unknown}) => void;
+    onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
 const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFormChange, state }) => {
-    const habilidades = api.catalogos.getHabilidades.useQuery({include_subcategories: true}, {
+    const habilidades = api.catalogos.getHabilidades.useQuery({ include_subcategories: true }, {
         refetchOnWindowFocus: false
     });
     const accordions = useMemo(() => {
         if (!habilidades.isSuccess || habilidades.isFetching) {
-            return Array.from({ length: 10 }).map((n, i) => { console.log(i); return <Skeleton style={{margin: 8}} key={i} variant="rectangular"  height={56} />});
+            return Array.from({ length: 10 }).map((n, i) => { console.log(i); return <Skeleton style={{ margin: 8 }} key={i} variant="rectangular" height={56} /> });
         }
         if (habilidades.data) {
             return habilidades.data.map((habilidad, i) => {
@@ -36,44 +36,44 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                     <AccordionSummary
                         style={{
                             color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? 'white' : 'black',
-                            backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#4ab7c6' : 'white'
+                            backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#4ab7c6' : 'white',
                         }}
                         expandIcon={<ExpandMore />}
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <Typography fontSize={'1.3rem'} fontWeight={600}>{habilidad.es}</Typography>
+                        <Typography sx={{ margin: 0 }} fontSize={'1.3rem'} fontWeight={500}>{habilidad.es}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         {habilidad.habilidades_especificas.map((he, j) => {
-                            return <Chip 
+                            return <Chip
                                 onClick={() => {
                                     console.log(state);
                                     if (state) {
                                         if (habilidades_especificas_seleccionadas_by_id) {
-                                            if (habilidades_especificas_seleccionadas_by_id.includes(he.id)) { 
+                                            if (habilidades_especificas_seleccionadas_by_id.includes(he.id)) {
                                                 state.habilidades_seleccionadas.set(habilidad.id, habilidades_especificas_seleccionadas_by_id.filter(h => h !== he.id));
                                             } else {
                                                 // si no esta lo insertamos
                                                 state.habilidades_seleccionadas.set(habilidad.id, habilidades_especificas_seleccionadas_by_id.concat([he.id]));
                                             }
                                         } else {
-                                                state.habilidades_seleccionadas.set(habilidad.id, [he.id]);
+                                            state.habilidades_seleccionadas.set(habilidad.id, [he.id]);
                                         }
-                                        onFormChange({habilidades_seleccionadas: new Map(state.habilidades_seleccionadas)});
+                                        onFormChange({ habilidades_seleccionadas: new Map(state.habilidades_seleccionadas) });
                                     }
                                 }}
-                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{color: 'white'}} /> : <Add style={{color: '#4ab7c6'}} />} 
-                                key={j} 
-                                label={he.es} 
+                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: 'white' }} /> : <Add style={{ color: '#4ab7c6' }} />}
+                                key={j}
+                                label={he.es}
                                 style={{
-                                    margin: 4, 
-                                    fontWeight: 800, 
+                                    margin: 4,
+                                    fontWeight: 800,
                                     color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'white' : '#4ab7c6',
                                     borderColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'black' : '#4ab7c6',
                                     backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#4ab7c6' : 'white'
                                 }}
-                                variant="outlined" 
+                                variant="outlined"
                             />
                         })}
                     </AccordionDetails>
@@ -81,15 +81,15 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
             })
         }
         return [<Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                No hay registros en el catalogo de habilidades
-            </Typography>]
-    
+            No hay registros en el catalogo de habilidades
+        </Typography>]
+
 
     }, [habilidades.isSuccess, habilidades.isFetching, habilidades.data, state]);
     return (
         <MContainer direction='vertical'>
             {accordions.map(a => a)}
-        </MContainer> 
+        </MContainer>
     );
 }
 
