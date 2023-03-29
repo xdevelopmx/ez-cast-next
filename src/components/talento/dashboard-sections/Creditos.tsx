@@ -11,7 +11,9 @@ import { useRouter } from 'next/router';
 export const Creditos = (props: {id_talento: number}) => {
     const router = useRouter();
 
-    const creditos = api.talentos.getCreditosByIdTalento.useQuery({id: props.id_talento});
+    const creditos = api.talentos.getCreditosByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false,
+    });
     const loading = creditos.isFetching;
     const data = useMemo(() => {
         if (creditos.data) {

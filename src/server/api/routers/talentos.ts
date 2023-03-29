@@ -222,6 +222,18 @@ export const TalentosRouter = createTRPCRouter({
 			return filtros;
 		}
 	),
+	getMedidasByIdTalento: publicProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			const medidas = await ctx.prisma.medidasPorTalentos.findFirst({
+				where: {
+					id_talento: input
+				}
+			})
+			return medidas;
+		}
+	),
 	getCompleteById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
@@ -327,6 +339,55 @@ export const TalentosRouter = createTRPCRouter({
 			//return exclude(talento, ['contrasenia'])
 		}
 	),
+	saveMedidas: protectedProcedure
+		.input(z.object({ 
+			general_cadera: z.number().nullish(),
+			general_entrepiernas: z.number().nullish(),
+			general_guantes: z.number().nullish(),
+			general_sombrero: z.number().nullish(),
+			hombre_pecho: z.number().nullish(),
+			hombre_cuello: z.number().nullish(),
+			hombre_mangas: z.number().nullish(),
+			hombre_saco: z.string().nullish(),
+			hombre_playera: z.string().nullish(),
+			hombre_calzado: z.number().nullish(),
+			mujer_vestido: z.number().nullish(),
+			mujer_busto: z.number().nullish(),
+			mujer_copa: z.string().nullish(),
+			mujer_cadera: z.number().nullish(),
+			mujer_playera: z.string().nullish(),
+			mujer_pants: z.number().nullish(),
+			mujer_calzado: z.number().nullish(),
+			nino_4_18_anios: z.string().nullish(),
+			nina_4_18_anios: z.string().nullish(),
+			toddler: z.string().nullish(),
+			bebe_meses: z.string().nullish(),
+			calzado_ninos: z.string().nullish()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+				const saved_medidas = await ctx.prisma.medidasPorTalentos.upsert({
+					where: {
+						id_talento: parseInt(user.id)
+					},
+					update: input,
+					create: {
+						...input,
+						id_talento: parseInt(user.id)
+					}
+				})
+				
+				return saved_medidas;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de talento puede modificar la informacion general',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
   	saveInfoGral: protectedProcedure
     	.input(z.object({ 
 			nombre: z.string(),
@@ -338,7 +399,16 @@ export const TalentosRouter = createTRPCRouter({
 			edad: z.number(),
 			peso: z.number(),
 			altura: z.number(),
-			biografia: z.string(),
+			biografia: z.string({
+				errorMap: (issue, _ctx) => {
+					switch (issue.code) {
+					case 'too_big':
+						return { message: 'El maximo de caracteres permitido es 500' };
+					default:
+						return { message: 'Formato de biografia invalido' };
+					}
+				},
+			}).max(500),
 			files: z.object({
 				carta_responsiva: z.object({
 					base64: z.string(),

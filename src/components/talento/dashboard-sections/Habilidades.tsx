@@ -9,7 +9,9 @@ import { useRouter } from "next/router";
 export const Habilidades = (props: {id_talento: number}) => {
     const router = useRouter();
 
-    const habilidades = api.talentos.getHabilidadesByIdTalento.useQuery({id: props.id_talento});
+    const habilidades = api.talentos.getHabilidadesByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false,
+    });
     const loading = habilidades.isFetching;
     const data = useMemo(() => {
         if (habilidades.data) {

@@ -116,7 +116,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         style={{ width: 100 }}
                         value={(state) ? state.edad.toString() : '0'}
                         onChange={(e) => {
-                            onFormChange({ edad: parseInt(e.target.value), es_menor_de_edad: (parseInt(e.target.value) >= 18) ? 'no' : 'si' })
+                            onFormChange({ edad: parseInt(e.target.value), es_menor_de_edad: (parseInt(e.target.value) >= 18) ? 'No' : 'Sí' })
                         }}
                         label='Edad*'
                     />
@@ -130,7 +130,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#4ab7c6' }}
                         value={state.es_menor_de_edad}
                         onChange={(e) => {
-                            onFormChange({ es_menor_de_edad: e.target.value , edad: (e.target.value === 'no') ? 18 : 17 }) 
+                            onFormChange({ es_menor_de_edad: e.target.value , edad: (e.target.value === 'No') ? 18 : 17 }) 
                         }}
                         label='¿Eres menor de edad?'
                     />

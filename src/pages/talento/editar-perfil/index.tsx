@@ -412,12 +412,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -428,12 +423,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -444,12 +434,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -460,12 +445,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -476,12 +456,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -492,12 +467,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -508,12 +478,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             talento.refetch();
         },
         onError: (error) => {
-            let _error = error.message;
-            try {
-                const parsed_error = JSON.parse(_error) as { [key: string]: string };
-                _error = parsed_error.message as string;
-            } catch (e) { }
-            notify('error', _error);
+            notify('error', parseErrorBody(error.message));
         }
     });
 
@@ -536,7 +501,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         },
                         id_estado_republica: talento.data.info_basica.id_estado_republica,
                         edad: talento.data.info_basica.edad,
-                        es_menor_de_edad: (talento.data.info_basica.edad >= 18) ? 'no' : 'si',
+                        es_menor_de_edad: (talento.data.info_basica.edad >= 18) ? 'No' : 'Sí',
                         peso: talento.data.info_basica.peso,
                         altura: talento.data.info_basica.altura,
                         biografia: talento.data.info_basica.biografia,

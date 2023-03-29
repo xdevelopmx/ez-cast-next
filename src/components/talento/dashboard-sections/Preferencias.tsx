@@ -10,7 +10,9 @@ import { useRouter } from "next/router";
 export const Preferencias = (props: {id_talento: number}) => {
     const router = useRouter();
 
-    const preferencias = api.talentos.getPreferenciasRolByIdTalento.useQuery({id: props.id_talento});
+    const preferencias = api.talentos.getPreferenciasRolByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false,
+    });
     const loading = preferencias.isFetching;
     const data = useMemo(() => {
         if (preferencias.data) {

@@ -30,6 +30,18 @@ export const MSelect: FC<Props> = ({
         }
     }
     const select_class = classes['select-form-control'];
+    let default_value = '';
+    if (options.length > 0) {
+        const option = options[0];
+        if (option) {
+            if (isNaN(parseInt(option.value)) || option.value.length !== parseInt(option.value).toString().length) {
+                default_value = ' ';
+            } else {
+                default_value = '0';
+            }
+        }
+    }
+    console.log(id, default_value)
     return (
         <FormControl sx={styleRoot}>
             {label_element}
@@ -56,7 +68,7 @@ export const MSelect: FC<Props> = ({
                     onChange={onChange}
                     MenuProps={{ classes: { paper: classes['select-children'] } }}
                 >
-                    {[{ value: '0', label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
+                    {[{ value: default_value, label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
                 </Select>
             }
         </FormControl>

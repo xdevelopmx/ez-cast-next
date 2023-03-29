@@ -51,6 +51,35 @@ model Talentos {
   activos            ActivosPorTalentos?
   preferencias       PreferenciasPorTalentos?
   filtros_aparencias FiltrosAparenciasPorTalentos?
+  medidas            MedidasPorTalentos?
+}
+
+model MedidasPorTalentos {
+  id              Int      @id @default(autoincrement())
+  id_talento      Int      @unique
+  general_cadera Int?
+  general_entrepiernas Int?
+  general_guantes Int?
+  general_sombrero Int?
+  hombre_pecho    Int?
+  hombre_cuello   Int?
+  hombre_mangas   Int?
+  hombre_saco     String?
+  hombre_playera  String?
+  hombre_calzado  Int?
+  mujer_vestido   Int?
+  mujer_busto     Int?
+  mujer_copa      String?
+  mujer_cadera    Int?
+  mujer_playera   String?
+  mujer_pants     Int?
+  mujer_calzado   Int?
+  nino_4_18_anios String?
+  nina_4_18_anios String?
+  toddler         String?
+  bebe_meses      String?
+  calzado_ninos   String?
+  talento         Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model RepresentantesPorTalentos {
@@ -69,7 +98,7 @@ model InfoBasicaPorTalentos {
   edad                Int
   peso                Int
   altura              Int
-  biografia           String
+  biografia           String                     @db.VarChar(512)
   url_cv              String?
   id_talento          Int                        @unique
   id_estado_republica Int
@@ -114,14 +143,14 @@ model UnionPorInfoBasicaTalento {
   id_union                    Int
   descripcion                 String?
   id_info_basica_por_talentos Int                   @unique
-  union CatalogoUniones @relation(fields: [id_union], references: [id])
+  union                       CatalogoUniones       @relation(fields: [id_union], references: [id])
   info_basica_por_talentos    InfoBasicaPorTalentos @relation(fields: [id_info_basica_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model CatalogoUniones {
-  id Int    @id
-  es String
-  en String
+  id                            Int                         @id
+  es                            String
+  en                            String
   union_por_info_basica_talento UnionPorInfoBasicaTalento[]
 }
 
@@ -531,7 +560,7 @@ model ParticularidadesPorTalentos {
   id_filtros_apariencias_por_talentos Int
   id_particularidad                   Int
   descripcion                         String
-  particularidad CatalogoParticularidades @relation(fields: [id_particularidad], references: [id])
+  particularidad                      CatalogoParticularidades     @relation(fields: [id_particularidad], references: [id])
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
 }
 
@@ -618,7 +647,7 @@ model DocumentosPorTalentos {
   id_preferencias_por_talentos Int
   id_documento                 Int
   descripcion                  String
-  documento CatalogoTipoDocumentos @relation(fields: [id_documento], references: [id])
+  documento                    CatalogoTipoDocumentos  @relation(fields: [id_documento], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
@@ -724,9 +753,9 @@ model CatalogoTipoTrabajo {
 }
 
 model CatalogoTipoDocumentos {
-  id Int    @id
-  es String
-  en String
+  id                      Int                     @id
+  es                      String
+  en                      String
   documentos_por_talentos DocumentosPorTalentos[]
 }
 
@@ -761,9 +790,9 @@ model CatalogoColorOjos {
 }
 
 model CatalogoParticularidades {
-  id Int    @id
-  es String
-  en String
+  id                            Int                           @id
+  es                            String
+  en                            String
   particularidades_por_talentos ParticularidadesPorTalentos[]
 }
 

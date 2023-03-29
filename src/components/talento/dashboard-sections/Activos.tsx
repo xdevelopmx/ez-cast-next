@@ -9,7 +9,9 @@ import { useRouter } from 'next/router';
 export const Activos = (props: {id_talento: number}) => {
     const router = useRouter();
 
-    const activos = api.talentos.getActivosByIdTalento.useQuery({id: props.id_talento});
+    const activos = api.talentos.getActivosByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false,
+    });
     const loading = activos.isFetching;
     const data = useMemo(() => {
         if (activos.data) {

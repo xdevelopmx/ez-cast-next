@@ -7,8 +7,12 @@ import { useMemo } from 'react';
 import { useRouter } from "next/router";
 
 export const InfoGeneral = (props: {id_talento: number}) => {
-    const info = api.talentos.getInfoBasicaByIdTalento.useQuery({id: props.id_talento});
-    const creditos = api.talentos.getCreditosByIdTalento.useQuery({id: props.id_talento});
+    const info = api.talentos.getInfoBasicaByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false,
+    });
+    const creditos = api.talentos.getCreditosByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false,
+    });
     const router = useRouter();
 
     const loading = info.isFetching || creditos.isFetching;
