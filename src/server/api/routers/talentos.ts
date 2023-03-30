@@ -225,6 +225,7 @@ export const TalentosRouter = createTRPCRouter({
 	getMedidasByIdTalento: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
+			console.log(input, 'getMedidasByIdTalento input')
 			if (input <= 0) return null;
 			const medidas = await ctx.prisma.medidasPorTalentos.findFirst({
 				where: {
