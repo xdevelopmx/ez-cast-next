@@ -11,6 +11,7 @@ import { type TalentoFormCreditos } from '~/pages/talento/editar-perfil';
 import { Close, Delete, Star } from '@mui/icons-material';
 import { api } from '~/utils/api';
 import useNotify from '~/hooks/useNotify';
+import { MTooltip } from '~/components/shared/MTooltip';
 
 interface Props {
     state: TalentoFormCreditos,
@@ -147,7 +148,11 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             Año
                         </Typography>,
                         <Typography key={5} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Crédito destacado
+                            Crédito destacado 
+                            <MTooltip 
+                                text='Puedes destacar hasta 3 créditos, estos estarán a la vista del Cazatalento.' 
+                                color='orange' 
+                                placement='top' />
                         </Typography>,
                         <Typography key={6} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             Clip

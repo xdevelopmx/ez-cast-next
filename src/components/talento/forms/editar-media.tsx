@@ -8,6 +8,7 @@ import classes from './talento-forms.module.css';
 import { FileManagerFront } from '~/utils/file-manager-front';
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer';
 import { type TalentoFormMedios } from '~/pages/talento/editar-perfil';
+import { MTooltip } from '~/components/shared/MTooltip';
 
 interface Props {
     state: TalentoFormMedios,
@@ -20,7 +21,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
         <Grid container justifyContent={'space-between'} spacing={2} mb={8}>
             <Grid item xs={12} md={8}>
                 <MContainer direction='vertical'>
-                    <MContainer direction='horizontal' styles={{ gap: 10, marginBottom: 5 }}>
+                    <MContainer direction='horizontal' styles={{ gap: 10, marginBottom: 5, alignItems: 'center' }}>
                         <span className={'badge'}> <Image width={24} height={24} src="/assets/img/iconos/icono_camara_cart_blue.svg" alt="" /> </span>
                         <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
                             Fotos
@@ -31,8 +32,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                             JPG o PNG
                         </Typography>
-                        <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
-                            Para obtener más orientación, consulta nuestra documentación de ayuda y tutoriales.<br>">?</div>
+                        <MTooltip text='prueba' color='orange' placement='right' />
                     </MContainer>
                     <Typography sx={{ color: '#069CB1', margin: '5px' }}>Elegir foto de perfil</Typography>
                     <DraggableContainer
@@ -107,8 +107,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP4 o MOV
                                 </Typography>
-                                <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
-                                Para obtener más orientación, consulta nuestra documentación de ayuda y tutoriales.<br>">?</div>
+                                <MTooltip text='prueba' color='orange' placement='right' />
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-videos'
@@ -135,7 +134,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                     </Grid>
                     <Grid item xs={12}>
                         <MContainer direction='vertical'>
-                            <MContainer direction='horizontal' styles={{ gap: 10 }}>
+                            <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
                                 <span className={'badge'}> <Image width={24} height={24} src="/assets/img/iconos/micro_web_blue.svg" alt="" /> </span>
                                 <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
                                     Audios
@@ -143,8 +142,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP3 o WAV
                                 </Typography>
-                                <div className="contToolTip" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Asegúrate de seleccionar el tipo de proyecto adecuado para ti.</b><br/>Ten en cuenta que una vez que selecciones un tipo de proyecto y lo hayas creado, no podrás cambiarlo.
-                                Para obtener más orientación, consulta nuestra documentación de ayuda y tutoriales.<br>">?</div>
+                                <MTooltip text='prueba' color='orange' placement='right' />
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-audios'

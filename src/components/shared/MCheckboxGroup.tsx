@@ -2,6 +2,7 @@
 import { Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
 import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
 import { MContainer } from '../layout/MContainer';
+import { MTooltip } from './MTooltip';
 
 interface Props {
     id: string,
@@ -18,17 +19,22 @@ interface Props {
     direction?: 'vertical' | 'horizontal'
 
     fontWeight?: number,
+
+    textTooltip?: string,
+    styleTooltip?: CSSProperties,
+    colorTooltip?: 'orange' | 'blue',
 }
 
 export const MCheckboxGroup: FC<Props> = ({
     direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle,
-    style, options, fontWeight
+    style, options, fontWeight, textTooltip, styleTooltip = {}, colorTooltip = 'orange'
 }) => {
     return (
         <div>
             {title &&
                 <Typography fontSize={'1.2rem'} fontWeight={fontWeight || 600} style={titleStyle} component={'p'}>
                     {title}
+                    {textTooltip && <MTooltip sx={styleTooltip} text={textTooltip} color={colorTooltip} placement='right' />}
                 </Typography>
             }
             {onAllOptionChecked &&

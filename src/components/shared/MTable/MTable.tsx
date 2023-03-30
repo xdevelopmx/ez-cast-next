@@ -23,7 +23,7 @@ interface MTableProps {
 
 export const MTable: FC<MTableProps> = ({
 	disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
-	backgroundColorHeader = '#4ab7c6', style = {}
+	backgroundColorHeader = '#EBEBEB', style = {}
 }) => {
 	const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
 
@@ -62,7 +62,7 @@ export const MTable: FC<MTableProps> = ({
 						>
 							<TableRow>
 								{columnsHeader &&
-									columnsHeader.map((c, i) => <TableCell align="center" sx={{ color: '#fff' }} key={i}>{c}</TableCell>)
+									columnsHeader.map((c, i) => <TableCell align="center" sx={{ color: '#000' }} key={i}>{c}</TableCell>)
 								}
 							</TableRow>
 						</TableHead>

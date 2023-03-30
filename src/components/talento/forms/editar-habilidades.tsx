@@ -85,6 +85,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
         </Typography>]
 
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [habilidades.isSuccess, habilidades.isFetching, habilidades.data, state]);
     return (
         <MContainer direction='vertical'>
