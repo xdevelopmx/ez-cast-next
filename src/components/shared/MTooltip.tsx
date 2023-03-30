@@ -1,12 +1,12 @@
 import { Divider, IconButton, Tooltip, tooltipClasses, TooltipProps, Typography } from '@mui/material';
-import { type FC } from 'react'
+import { type ReactNode, type FC } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { styled, SxProps, Theme } from '@mui/material/styles';
 import { QuestionMark } from '@mui/icons-material';
 
 interface Props {
     color: 'blue' | 'orange' | 'white', 
-    text: string, 
+    text: ReactNode, 
     placement: 'top-start' | 'top' | 'top-end' | 'left-start' | 'left' | 'left-end'| 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom' | 'bottom-end'
     sx?: SxProps<Theme>
 }

@@ -129,7 +129,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             ¿Estás interesado en trabajo de extra?
                             <MTooltip
-                                text='Prueba'
+                                text='¿Tienes mucha o poca experiencia y conocimiento dentro de un set? Trabajar de extra puede abrirte muchas puertas y darte conocimiento en el campo, además de que es un rol importante y siempre útil en toda producción.'
                                 color='orange'
                                 placement='right'
                             />

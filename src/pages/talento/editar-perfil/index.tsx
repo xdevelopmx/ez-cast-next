@@ -13,7 +13,7 @@ import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilida
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next/types";
 import { api, parseErrorBody } from "~/utils/api";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
 import { string } from "zod";
@@ -792,8 +792,18 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                 placement='right'
                             />,
                             5: <MTooltip
-                                text='Prueba'
-                                color='orange'
+                                text={
+                                    <>
+                                        <Typography fontSize={14} fontWeight={600}>De tu casa al set</Typography>
+                                        <Typography fontSize={14} fontWeight={400}>
+                                            Suma al equipo de producción con los activos que cuentes,
+                                            estos pueden ser muy beneficiosos y dar un giro a la producción
+                                            como plus valía a tu talento, estos pueden ser vestuario, props,
+                                            vehículos, etc...
+                                        </Typography>
+                                    </>
+                                }
+                                color='blue'
                                 placement='right'
                             />,
                             6: <MTooltip
