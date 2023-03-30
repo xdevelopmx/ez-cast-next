@@ -13,7 +13,7 @@ export const SectionTitle: FC<Props> = ({ title, textButton = 'Editar', onClickB
     return (
         <>
             <MContainer direction='horizontal' justify='space-between'>
-                <Typography fontWeight={600}>{title}</Typography>
+                <Typography fontWeight={600} sx={{ fontSize: '30px' }}>{title}</Typography>
 
                 {
                     onClickButton
@@ -27,7 +27,7 @@ export const SectionTitle: FC<Props> = ({ title, textButton = 'Editar', onClickB
             </MContainer>
             <Divider sx={{ backgroundColor: '#069CB1' }} />
 
-            
+
         </>
     )
 }

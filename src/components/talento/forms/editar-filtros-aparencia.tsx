@@ -298,7 +298,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 id="dispuesto-cambiar-color"
                                 options={['Sí', 'No']}
                                 styleRoot={{ height: 37 }}
-                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                                 value={state.apariencia.disposicion_cambio_color_cabello ? 'Sí' : 'No'}
                                 onChange={(e) => {
                                     onFormChange({
@@ -323,7 +323,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 id="dispuesto-cambiar-corte"
                                 options={['Sí', 'No']}
                                 styleRoot={{ height: 37 }}
-                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                                 value={state.apariencia.disposicion_corte_cabello ? 'Sí' : 'No'}
                                 onChange={(e) => {
                                     onFormChange({
@@ -347,7 +347,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 id="dispuesto-cambiar-corte"
                                 options={['Sí', 'No']}
                                 styleRoot={{ height: 37 }}
-                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                                labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                                 value={state.apariencia.disposicion_afeitar_o_crecer_vello_facial ? 'Sí' : 'No'}
                                 onChange={(e) => {
                                     onFormChange({
@@ -388,7 +388,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <MRadioGroup
                         id="tiene-tatuajes-distintivos"
                         options={['Sí', 'No']}
-                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                         value={state.has_tatoos ? 'Sí' : 'No'}
                         onChange={(e) => { onFormChange({ has_tatoos: (e.currentTarget.value === 'Sí') }) }}
                         label=''
@@ -464,7 +464,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <MRadioGroup
                         id="tiene-piercing"
                         options={['Sí', 'No']}
-                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                         value={(state.has_piercings) ? 'Sí' : 'No'}
                         onChange={(e) => { onFormChange({ has_piercings: (e.currentTarget.value === 'Sí') }) }}
                         label=''
@@ -541,7 +541,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <MRadioGroup
                             id="eres-gemelo-trillizo"
                             options={['Sí', 'No']}
-                            labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                            labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                             value={(state.has_hermanos) ? 'Sí' : 'No'}
                             onChange={(e) => { onFormChange({ has_hermanos: (e.currentTarget.value === 'Sí') }) }}
                             label=''

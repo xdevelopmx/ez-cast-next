@@ -1,7 +1,7 @@
 import { type CSSProperties, type FC } from 'react'
 import Image from 'next/image'
 
-const styles: CSSProperties = { marginTop: 16, marginLeft: 0, padding: 4, fontWeight: 800, color: '#4ab7c6', width: 200 }
+const styles: CSSProperties = { marginTop: 16, marginLeft: 0, padding: 4, fontWeight: 800, color: '#069cb1', width: 200 }
 
 interface Props {
     onClick: (...args: unknown[]) => unknown;

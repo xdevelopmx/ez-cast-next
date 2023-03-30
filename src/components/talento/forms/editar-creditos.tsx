@@ -103,7 +103,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                         }
                     }}
-                        style={{ padding: '4px 6px', fontWeight: 800, color: '#4ab7c6' }}
+                        style={{ padding: '4px 6px', fontWeight: 800, color: '#069cb1' }}
                         className="btn  btn-social">
                         <Image width={16} height={16} style={{ marginRight: 7 }} src="/assets/img/iconos/cruz_blue.svg"
                             alt="Boton de agregar credito" />
@@ -184,7 +184,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Star />
                             </IconButton>,
                             clip:
-                                <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 6, fontWeight: 800, color: '#4ab7c6' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir</a>,
+                                <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 6, fontWeight: 800, color: '#069cb1' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir</a>,
                             acciones:
                                 <Button style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }} onClick={() => {
                                     onFormChange({ creditos: state.creditos.filter(c => c.id !== credito.id) })

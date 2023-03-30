@@ -36,7 +36,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                     <AccordionSummary
                         style={{
                             color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? 'white' : 'black',
-                            backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#4ab7c6' : 'white',
+                            backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#069cb1' : 'white',
                         }}
                         expandIcon={<ExpandMore />}
                         aria-controls="panel1a-content"
@@ -63,15 +63,15 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                                         onFormChange({ habilidades_seleccionadas: new Map(state.habilidades_seleccionadas) });
                                     }
                                 }}
-                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: 'white' }} /> : <Add style={{ color: '#4ab7c6' }} />}
+                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: 'white' }} /> : <Add style={{ color: '#069cb1' }} />}
                                 key={j}
                                 label={he.es}
                                 style={{
                                     margin: 4,
                                     fontWeight: 800,
-                                    color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'white' : '#4ab7c6',
-                                    borderColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'black' : '#4ab7c6',
-                                    backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#4ab7c6' : 'white'
+                                    color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'white' : '#069cb1',
+                                    borderColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'black' : '#069cb1',
+                                    backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#069cb1' : 'white'
                                 }}
                                 variant="outlined"
                             />

@@ -42,7 +42,7 @@ export const MRadioGroup: FC<Props> = ({
                                         value={o}
                                         checked={o === value}
                                         disabled={(disabled)}
-                                        style={{ fontSize: 16, color: (disabled) ? 'gray' : '#4ab7c6' }}
+                                        style={{ fontSize: 16, color: (disabled) ? 'gray' : '#069cb1' }}
                                         onChange={onChange}
                                     />
                                 }

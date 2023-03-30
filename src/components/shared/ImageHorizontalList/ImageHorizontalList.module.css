@@ -1,7 +1,7 @@
 .border-element-selected {
     border: 2px;
     border-style: solid;
-    border-color: #4ab7c6;
+    border-color: #069cb1;
     border-radius: 8px;
 }
 
@@ -18,6 +18,6 @@
     margin: 0;
     text-align: center;
     font-size: 1.1rem;
-    color: #4ab7c6;
+    color: #069cb1;
     max-width: 128px;
 }

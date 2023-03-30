@@ -128,7 +128,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         style={{ marginLeft: 128 }}
                         id="eres-mayor-de-edad"
                         options={['Sí', 'No']}
-                        labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#4ab7c6' }}
+                        labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#069cb1' }}
                         value={state.es_menor_de_edad}
                         onChange={(e) => {
                             onFormChange({ es_menor_de_edad: e.target.value , edad: (e.target.value === 'No') ? 18 : 17 }) 

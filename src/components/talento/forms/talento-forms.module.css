@@ -14,13 +14,13 @@
 .link-input-label {
     font-weight: 800; 
     font-size: 1.1rem;
-    color: #4ab7c6;
+    color: #069cb1;
 }
 
 .border-element-selected {
     border: 2px;
     border-style: solid;
-    border-color: #4ab7c6;
+    border-color: #069cb1;
     border-radius: 8px;
 }
 
@@ -35,13 +35,13 @@
 .label-blue-lg > span {
     font-weight: 600;
     font-size: 1.2rem;
-    color: #4ab7c6;
+    color: #069cb1;
 }
 
 .label-blue-lg {
     font-weight: 600;
     font-size: 1.2rem;
-    color: #4ab7c6;
+    color: #069cb1;
 }
 
 .label-black-lg > span {

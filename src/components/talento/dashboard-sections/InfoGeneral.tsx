@@ -35,16 +35,16 @@ export const InfoGeneral = (props: { id_talento: number }) => {
     }, [data]);
 
     return (
-        <Grid id="informacion-basica" container spacing={2}>
-            <Grid item xs={12} md={5}>
+        <Grid id="informacion-basica" container>
+            <Grid item xs={12} md={5} sx={{ paddingTop: 3 }}>
                 <div style={{ position: 'relative', width: 500, aspectRatio: '500/720', maxWidth: '100%' }}>
-                    <Image fill src="/assets/img/no-image.png" style={{ objectFit: 'cover' }} alt="" />
+                    <Image fill src="/assets/img/slider_modelo_01.png" style={{ objectFit: 'cover' }} alt="" />
                 </div>
             </Grid>
-            <Grid item xs={12} md={7}>
-                <MContainer className="ml-5 mt-4" direction="vertical">
+            <Grid item xs={12} md={7} sx={{ paddingTop: 8 }}>
+                <MContainer className="ml-5" direction="vertical">
                     <MContainer styles={{ alignItems: 'baseline' }} className={`m-1`} direction="horizontal">
-                        <p style={{ fontSize: 32, fontWeight: 'bolder' }} className="bold">Información básica</p>
+                        <p style={{ fontSize: 30, fontWeight: 900 }}>Información básica</p>
                         <Link href="/talento/editar-perfil" variant="button">
                             <Button onClick={() => {
                                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -89,7 +89,7 @@ export const InfoGeneral = (props: { id_talento: number }) => {
                             color: '#000',
                             fontWeight: 600,
                         }} variant="outlined">
-                            <Image style={{marginRight: 10}} width={20} height={20} src="/assets/img/iconos/documento.svg" alt="" />
+                            <Image style={{ marginRight: 10 }} width={20} height={20} src="/assets/img/iconos/documento.svg" alt="" />
                             Descargar CV
                         </Button>
                     </MContainer>
@@ -149,6 +149,7 @@ export const InfoGeneral = (props: { id_talento: number }) => {
                                 </MContainer>
                                 <MTable
                                     backgroundColorData="#EBEBEB"
+                                    alternate_colors={true}
                                     data={(creditos.data) ? creditos.data.creditos.filter(c => c.destacado).map(c => {
                                         return {
                                             tipo_video: c.titulo,

@@ -16,10 +16,10 @@ const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
   ))(({ theme, color }) => {
     return ({
         [`& .${tooltipClasses.arrow}`]: {
-          color: (color === 'blue') ? '#4ab7c6' : 'orange',
+          color: (color === 'blue') ? '#069cb1' : 'orange',
         },
         [`& .${tooltipClasses.tooltip}`]: {
-          backgroundColor: (color === 'blue') ? '#4ab7c6' : 'orange',
+          backgroundColor: (color === 'blue') ? '#069cb1' : 'orange',
           color: (color === 'blue') ? 'white' : 'black',
         },
       }) 
@@ -28,7 +28,7 @@ const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
 export const MTooltip: FC<Props> = ({ sx, text, placement, color }) => {
     return (
         <BootstrapTooltip color={color} placement={placement} title={text}>
-            <IconButton sx={sx} style={{ marginLeft: 16, border: 'solid', color: '#4ab7c6', width: 16, height: 16}}>
+            <IconButton sx={sx} style={{ marginLeft: 16, border: 'solid', color: '#069cb1', width: 16, height: 16}}>
                 <QuestionMark sx={{width: 16, heigth: 16}} />
             </IconButton>
         </BootstrapTooltip>
