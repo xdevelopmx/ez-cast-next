@@ -46,6 +46,15 @@ const DashBoardTalentosPage: NextPage = () => {
 							<br />
 							<MContainer direction="vertical">
 								<OptionsGroup
+									styleContainer={{
+										display: 'flex',
+										justifyContent: 'space-between',
+										marginBottom: 0,
+									}}
+									styleButton={{
+										textTransform: 'none',
+										fontSize: '1.1rem'
+									}}
 									id="opciones-usuario"
 									onOptionClick={(id: string, label: string) => {
 										const id_section = label.toLowerCase().replace(/\s+/g, "-");
