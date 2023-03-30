@@ -35,7 +35,7 @@ export const InfoGeneral = (props: {id_talento: number}) => {
     }, [data]);
 
     return (
-        <Grid container spacing={2}>
+        <Grid id="informacion-basica" container spacing={2}>
             <Grid item xs={12} md={5}>
                 <Image  width={500} height={720} src="/assets/img/no-image.png" alt="" /> 
             </Grid>

@@ -300,7 +300,7 @@ export const FiltrosApariencias = (props: {id_talento: number}) => {
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
-                <Grid my={8} item xs={12}>
+                <Grid id="medidas" my={8} item xs={12}>
                     <SectionTitle title='Medidas' onClickButton={() => { 
                         setDialog(prev => { return { ...prev, opened: true }})
                      }} />

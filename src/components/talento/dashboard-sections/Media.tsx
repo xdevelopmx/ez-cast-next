@@ -10,7 +10,7 @@ export const Media = () => {
     const router = useRouter();
 
     return (
-        <Grid container sx={{ mt: 10 }}>
+        <Grid id="media" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
                 <SectionTitle title='Media' onClickButton={() => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises

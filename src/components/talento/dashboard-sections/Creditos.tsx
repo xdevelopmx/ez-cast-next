@@ -40,7 +40,7 @@ export const Creditos = (props: {id_talento: number}) => {
     });
 
     return (
-        <Grid container sx={{ mt: 10 }}>
+        <Grid id="creditos" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
                 <SectionTitle title='Créditos' onClickButton={() => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises

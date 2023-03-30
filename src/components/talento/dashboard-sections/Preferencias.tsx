@@ -72,7 +72,7 @@ export const Preferencias = (props: {id_talento: number}) => {
     }, [data]);
 
     return (
-        <Grid container sx={{ mt: 10 }}>
+        <Grid id="preferencia-de-roles" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
                 <SectionTitle title='Preferencia de roles' onClickButton={() => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
