@@ -16,15 +16,19 @@ interface Props {
     labelStyle?: CSSProperties;
     labelClassName?: string,
     rootStyle?: CSSProperties,
-    icon?: JSX.Element,
+    icon?: {
+        element: JSX.Element,
+        position: 'start' | 'end'
+    },
     loading?: boolean,
     error?: string,
-
+    show_error_message?: boolean,
+    rows?: number,
     textBlueLabel?: string,
 }
 
 export const FormGroup: FC<Props> = ({
-    error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
+    show_error_message, rows, error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
     onChange, value, labelStyle, style, textBlueLabel
 }) => {
     let input: JSX.Element = <input style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
@@ -36,7 +40,7 @@ export const FormGroup: FC<Props> = ({
             value={(value) ? value : ''}
             onChange={onChange}
             multiline
-            rows={3}
+            rows={(rows) ? rows : 3}
         />;
     }
     let label_element: JSX.Element | null = null;
@@ -46,7 +50,11 @@ export const FormGroup: FC<Props> = ({
             className={labelClassName}
             htmlFor={id}>{label} {textBlueLabel && <span style={{ color: '#069CB1', paddingLeft: 2 }}>{textBlueLabel}</span>}</label>;
         if (icon) {
-            label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
+            if (icon.position === 'start') {
+                label_element = <MContainer direction='horizontal'>{icon.element}{label_element}</MContainer>
+            } else {
+                label_element = <MContainer direction='horizontal'>{label_element}{icon.element}</MContainer>
+            }
         }
     }
 
@@ -63,7 +71,7 @@ export const FormGroup: FC<Props> = ({
             {!loading && input}
             <MotionDiv show={error != null} animation='down-to-up'>
                 <Typography color={'red'} variant="caption" display="block" gutterBottom>
-                    {error}
+                    {show_error_message && error}
                 </Typography>
             </MotionDiv>
         </div>

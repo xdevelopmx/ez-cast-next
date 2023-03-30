@@ -241,7 +241,7 @@ const initialState: TalentoForm = {
             descripcion: '',
         },
         id_estado_republica: 0,
-        es_menor_de_edad: 'si',
+        es_menor_de_edad: 'No',
         edad: 18,
         peso: 75,
         altura: 170,

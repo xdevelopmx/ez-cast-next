@@ -234,6 +234,18 @@ export const TalentosRouter = createTRPCRouter({
 			return medidas;
 		}
 	),
+	getById: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
+			const talento = await ctx.prisma.talentos.findUnique({
+				where: {id: input.id},
+			});
+			// hay que excluir la pass en 
+			return talento;
+			//return exclude(talento, ['contrasenia'])
+		}
+	),
 	getCompleteById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
@@ -379,6 +391,129 @@ export const TalentosRouter = createTRPCRouter({
 				})
 				
 				return saved_medidas;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de talento puede modificar la informacion general',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
+	getInfoGralById: publicProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
+			const info_gral = await ctx.prisma.infoBasicaPorTalentos.findFirst({
+				where: {
+					id_talento: input.id
+				}
+			})
+			// hay que excluir la pass en 
+			return info_gral;
+			//return exclude(talento, ['contrasenia'])
+		}
+	),
+	updatePerfil: protectedProcedure
+    	.input(z.object({ 
+			nombre: z.string(),
+			biografia: z.string({
+				errorMap: (issue, _ctx) => {
+					switch (issue.code) {
+					case 'too_big':
+						return { message: 'El maximo de caracteres permitido es 500' };
+					default:
+						return { message: 'Formato de biografia invalido' };
+					}
+				},
+			}).max(500),
+			redes_sociales: z.array(z.object({
+				nombre: z.string(),
+				url: z.string()
+			})).nullish()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+
+				
+				const talento = await ctx.prisma.talentos.update({
+					where: {id: parseInt(user.id)},
+					data: {
+						nombre: input.nombre
+					}
+				})
+
+				if (!talento) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				
+				const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
+					where: {
+						id_talento: parseInt(user.id)
+					},
+					update: {
+						biografia: input.biografia,
+					},
+					create: {
+						edad: 18,
+						peso: 75,
+						altura: 176,
+						biografia: input.biografia,
+						id_estado_republica: 1,
+						url_cv: null,
+						id_talento: parseInt(user.id)
+					},
+				});
+
+				if (!info_gral) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar la info general del talento',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
+					where: { 
+						id_talento: parseInt(user.id)
+					}
+				});
+
+				if (!deleted_redes_sociales) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				if (input.redes_sociales) {
+					if (Object.keys(input.redes_sociales).length > 0) {
+						const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
+							data: input.redes_sociales.map(red => { 
+								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id)} 
+							})
+						})
+						if (!saved_redes_sociales) {
+							throw new TRPCError({
+								code: 'INTERNAL_SERVER_ERROR',
+								message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
+								// optional: pass the original error to retain stack trace
+								//cause: theError,
+							});
+						}
+					}
+				}
+				return info_gral;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',

@@ -24,9 +24,9 @@ export const AuthRouter = createTRPCRouter({
     	.input(z.object({ 
 			tipo_usuario: z.string(),
 			user: z.object({
-				nombre: z.string().min(1).max(255), 
-				apellido: z.string().min(1).max(255), 
-				contrasenia: z.string().min(1).max(255), 
+				nombre: z.string().min(2).max(255), 
+				apellido: z.string().min(2).max(255), 
+				contrasenia: z.string().min(8).max(255), 
 				usuario: z.string().min(1).max(255), 
 				email: z.string().email(), 
 				profile_img_url: z.string().nullish(), 

@@ -37,7 +37,7 @@ export const InfoGeneral = (props: {id_talento: number}) => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={5}>
-                <Image width={400} height={456} src="/assets/img/no-image.png" alt="" /> 
+                <Image  width={500} height={720} src="/assets/img/no-image.png" alt="" /> 
             </Grid>
             <Grid item xs={12} md={7}>
                 <MContainer className="ml-5 mt-4" direction="vertical">

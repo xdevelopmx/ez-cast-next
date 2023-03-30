@@ -13,7 +13,7 @@ export const Alerts: FC = () => {
             top: 76,
             width: '100%',
             margin: 0,
-            zIndex: 1000,
+            zIndex: 9999,
             left: 0
         }}>
             {Array.from(alerts).map((v, i) => {
