@@ -17,6 +17,7 @@ import { Button } from "@mui/material";
 import { User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
 import { string } from "zod";
+import { MTooltip } from "~/components/shared/MTooltip";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -396,7 +397,7 @@ type EditarTalentoPageProps = {
 
 const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => {
 
-    const [state, dispatch] = useReducer(reducer, {...initialState, step_active: step});
+    const [state, dispatch] = useReducer(reducer, { ...initialState, step_active: step });
 
     const { notify } = useNotify();
 
@@ -673,12 +674,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             dispatch({ type: 'update-form', value: { step_active: step } });
                         }}
                         onFinish={() => {
-                            saveFiltrosApariencias.mutate({ 
-                                ...state.filtros_apariencia, 
+                            saveFiltrosApariencias.mutate({
+                                ...state.filtros_apariencia,
                                 hermanos: {
                                     id_tipo_hermanos: (state.filtros_apariencia.hermanos) ? state.filtros_apariencia.hermanos.id_tipo_hermanos : 0,
                                     descripcion: (state.filtros_apariencia.hermanos && state.filtros_apariencia.hermanos.id_tipo_hermanos === 99) ? state.filtros_apariencia.hermanos.descripcion : state.filtros_apariencia.tipo_hermano_selected
-                                } 
+                                }
                             });
                         }}
                         current_step={state.step_active}
@@ -784,6 +785,23 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             6: 'Preferencia de rol y compensación',
                             7: 'Filtros de Apariencia'
                         }}
+                        tooltips={{
+                            4: <MTooltip
+                                text='Incluye todas las habilidades que te diferencien de los demás. ¡Un Cazatalentos puede estar buscando un rol con tus habilidades!'
+                                color='orange'
+                                placement='right'
+                            />,
+                            5: <MTooltip
+                                text='Prueba'
+                                color='orange'
+                                placement='right'
+                            />,
+                            6: <MTooltip
+                                text='Un rol es un papel que una persona representa dentro de una historia, este personaje puede ser ficticio o real.'
+                                color='blue'
+                                placement='top'
+                            />
+                        }}
                     >
 
                         <EditarInfoBasicaTalento
@@ -837,7 +855,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
     if (session && session.user) {
-        const {step} = context.query;
+        const { step } = context.query;
         return {
             props: {
                 user: session.user,

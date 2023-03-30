@@ -13,11 +13,11 @@ interface Props {
     style?: CSSProperties,
     onFinish?: () => void,
 
-    tooltipArr?: {[step: number]: ReactNode},
+    tooltips?: { [step: number]: ReactNode },
 }
 
-export const MStepper: FC<Props> = ({ 
-    onStepSave, onStepChange, current_step, step_titles, children, onFinish, tooltipArr = {}
+export const MStepper: FC<Props> = ({
+    onStepSave, onStepChange, current_step, step_titles, children, onFinish, tooltips
 }) => {
 
     const animation_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -44,7 +44,7 @@ export const MStepper: FC<Props> = ({
                 </Stepper>
                 <h3 className="paso-stepper">
                     PASO {current_step} <span> {step_titles[current_step]}</span>
-                    {}
+                    {tooltips && tooltips[current_step]}
                 </h3>
 
 
