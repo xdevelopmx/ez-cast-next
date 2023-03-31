@@ -787,7 +787,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         tooltips={{
                             4: <MTooltip
                                 text='Incluye todas las habilidades que te diferencien de los demás. ¡Un Cazatalentos puede estar buscando un rol con tus habilidades!'
-                                color='orange'
+                                color='blue'
                                 placement='right'
                             />,
                             5: <MTooltip
