@@ -33,8 +33,7 @@ export const MSelect: FC<Props> = ({
                 className={labelClassName}
                 htmlFor={id}
             >
-                {label}
-                {tooltip}
+                {label} {tooltip}
             </label>
         </>
         if (icon) {
