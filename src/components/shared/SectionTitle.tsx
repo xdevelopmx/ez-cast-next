@@ -1,4 +1,4 @@
-import { Divider, SxProps, Typography } from '@mui/material';
+import { Divider, type SxProps, Typography } from '@mui/material';
 import { type FC } from 'react'
 import { MContainer } from '../layout/MContainer'
 
@@ -10,9 +10,13 @@ interface Props {
     textButton?: string;
     titleSx?: SxProps;
     subtitleSx?: SxProps;
+
+    dividerSx?: SxProps;
 }
 
-export const SectionTitle: FC<Props> = ({ title, subtitle, titleSx, subtitleSx, textButton = 'Editar', onClickButton }) => {
+export const SectionTitle: FC<Props> = ({
+    title, subtitle, titleSx, subtitleSx, textButton = 'Editar', onClickButton, dividerSx = {}
+}) => {
     return (
         <>
             <MContainer direction='horizontal' justify='space-between'>
@@ -32,7 +36,7 @@ export const SectionTitle: FC<Props> = ({ title, subtitle, titleSx, subtitleSx, 
                         : <></>
                 }
             </MContainer>
-            <Divider sx={{ backgroundColor: '#069CB1' }} />
+            <Divider sx={{ backgroundColor: '#069CB1', ...dividerSx }} />
 
 
         </>

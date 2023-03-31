@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material';
 import { type FC } from 'react'
-import { FormGroup, MSelect, SectionTitle } from '~/components'
-import { ProyectoForm } from '~/pages/cazatalentos/proyecto';
+import { MSelect, SectionTitle } from '~/components'
+import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { api } from '~/utils/api';
 
 interface Props {
