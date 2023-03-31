@@ -49,7 +49,10 @@ export const FormGroup: FC<Props> = ({
         label_element = <label
             style={labelStyle}
             className={labelClassName}
-            htmlFor={id}>{label} {textBlueLabel && <span style={{ color: '#069CB1', paddingLeft: 2 }}>{textBlueLabel}</span>} {tooltip}</label>;
+            htmlFor={id}
+        >{label} {textBlueLabel && <span style={{ color: '#069CB1', paddingLeft: 2 }}>
+            {textBlueLabel}</span>} {tooltip}
+        </label>;
         if (icon) {
             if (icon.position === 'start') {
                 label_element = <MContainer direction='horizontal'>{icon.element}{label_element}</MContainer>

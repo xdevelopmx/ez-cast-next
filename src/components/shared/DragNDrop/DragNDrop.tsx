@@ -130,7 +130,9 @@ function DragNDrop(props: Props) {
                             {props.label &&
                                 <>
                                     {!props.noIconLabel && <Image width={18} height={18} src="/assets/img/iconos/ico_pdf_blue.svg" alt="icono" />}
-                                    <p className="ml-2 mb-0">{props.label}</p>
+                                    {typeof props.label === 'string'
+                                        ? <p className="ml-2 mb-0">{props.label}</p>
+                                        : <div className="ml-2 mb-0">{props.label}</div>}
                                 </>
                             }
                             {props.tooltip &&

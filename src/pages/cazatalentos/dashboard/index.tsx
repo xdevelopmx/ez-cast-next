@@ -7,7 +7,6 @@ import { Alertas, Destacados, Flotantes, ListadoProductos, MainLayout, MenuLater
 
 const DashBoardCazaTalentos: NextPage = () => {
 
-
   return (
     <>
       <Head>

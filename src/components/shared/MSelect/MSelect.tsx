@@ -27,13 +27,16 @@ export const MSelect: FC<Props> = ({
 }) => {
     let label_element: JSX.Element | null = null;
     if (label) {
-        label_element = <label
-            style={{ fontWeight: 800, ...labelStyle }}
-            className={labelClassName}
-            htmlFor={id}
-        >
-            {label} {tooltip}
-        </label>;
+        label_element = <>
+            <label
+                style={{ fontWeight: 800, ...labelStyle }}
+                className={labelClassName}
+                htmlFor={id}
+            >
+                {label}
+                {tooltip}
+            </label>
+        </>
         if (icon) {
             label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
         }
