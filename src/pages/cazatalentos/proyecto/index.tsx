@@ -10,6 +10,7 @@ import { LocacionProyecto } from '~/components/cazatalento/proyecto/crear/Locaci
 import { PublicarProyecto } from '~/components/cazatalento/proyecto/crear/PublicarProyecto'
 import { api, parseErrorBody } from '~/utils/api'
 import useNotify from '~/hooks/useNotify'
+import { Typography } from '@mui/material'
 
 export type ProyectoForm = {
     id?: number,
@@ -191,11 +192,15 @@ const Proyecto: NextPage = () => {
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >
-                                            Guardar y terminar después
+                                            <Typography>Guardar y terminar después</Typography>
                                         </button>
                                     </div>
                                     <div>
-                                        <button className="btn btn-intro btn-price mb-2" type="submit">Guardar proyecto y agregar rol</button>
+                                        <button className="btn btn-intro btn-price mb-2" type="submit">
+                                            <Typography>
+                                                Guardar proyecto y agregar rol
+                                            </Typography>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

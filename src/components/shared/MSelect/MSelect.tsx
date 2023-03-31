@@ -1,5 +1,5 @@
 
-import { FormControl, FormControlLabel, FormLabel, InputLabel, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton } from '@mui/material';
+import { FormControl, FormControlLabel, FormLabel, InputLabel, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton, Typography } from '@mui/material';
 import type { CSSProperties, FC, ReactNode } from 'react';
 import { MContainer } from '../../layout/MContainer';
 
@@ -16,14 +16,24 @@ interface Props {
     icon?: JSX.Element,
     loading?: boolean,
     styleRoot?: CSSProperties,
+
+    tooltip?: ReactNode,
+    inferiorBlueText?: ReactNode,
 }
 
 export const MSelect: FC<Props> = ({
-    loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options, styleRoot = {}
+    loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options, tooltip,
+    inferiorBlueText, styleRoot = {},
 }) => {
     let label_element: JSX.Element | null = null;
     if (label) {
-        label_element = <label style={{ fontWeight: 800, ...labelStyle }} className={labelClassName} htmlFor={id}>{label}</label>;
+        label_element = <label
+            style={{ fontWeight: 800, ...labelStyle }}
+            className={labelClassName}
+            htmlFor={id}
+        >
+            {label} {tooltip}
+        </label>;
         if (icon) {
             label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
         }
@@ -52,23 +62,26 @@ export const MSelect: FC<Props> = ({
                 />
             }
             {!loading &&
+                <>
+                    <Select
+                        sx={{
+                            '&ul': {
+                                maxHeight: 100
+                            },
+                        }}
+                        labelId={id}
+                        id={id}
+                        value={value}
+                        style={{ ...style }}
+                        className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
+                        onChange={onChange}
+                        MenuProps={{ classes: { paper: 'select-children' } }}
+                    >
+                        {[{ value: default_value, label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
+                    </Select>
+                    {inferiorBlueText && <Typography fontSize={14} sx={{ color: '#069cb1' }}>{inferiorBlueText}</Typography>}
+                </>
 
-                <Select
-                    sx={{
-                        '&ul': {
-                            maxHeight: 100
-                        },
-                    }}
-                    labelId={id}
-                    id={id}
-                    value={value}
-                    style={{ ...style }}
-                    className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
-                    onChange={onChange}
-                    MenuProps={{ classes: { paper: 'select-children' } }}
-                >
-                    {[{ value: default_value, label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
-                </Select>
             }
         </FormControl>
     )

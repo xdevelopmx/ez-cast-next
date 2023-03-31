@@ -19,7 +19,7 @@ const DashBoardCazaTalentos: NextPage = () => {
       <MainLayout menuSiempreBlanco={true} >
         <div className="d-flex wrapper_ezc">
           <MenuLateral />
-          <div className="seccion_container col">
+          <div className="seccion_container col" style={{ paddingTop: 0 }}>
             <br /><br />
             <div className="container_box_header">
               <div className="d-flex justify-content-end align-items-start py-2">
