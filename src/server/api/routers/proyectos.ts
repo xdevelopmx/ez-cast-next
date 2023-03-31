@@ -32,20 +32,26 @@ export const ProyectosRouter = createTRPCRouter({
   	updateProyecto: protectedProcedure
     	.input(z.object({ 
 			id: z.number().nullish(),
+			sindicato: z.object({
+				id_sindicato: z.number().min(1),
+				descripcion: z.string()
+			}),
+			tipo_proyecto: z.object({
+				id_tipo_proyecto: z.number().min(1),
+				descripcion: z.string()
+			}),
 			proyecto: z.object({
-				nombre: z.string(),
-				sindicato: z.string(),
-				tipo: z.string(),
+				nombre: z.string().min(2),
 				director_casting: z.string(),
 				telefono_contacto: z.string(),
-				email_contacto: z.string(),
+				email_contacto: z.string().email(),
 				productor: z.string(),
 				casa_productora: z.string(),
 				director: z.string(),
 				agencia_publicidad: z.string(),
-				sinopsis: z.string(),
-				detalles_adicionales: z.string(),
-				locacion: z.string(),
+				sinopsis: z.string().max(500),
+				detalles_adicionales: z.string().max(500),
+				id_estado_republica: z.number().min(1),
 				compartir_nombre: z.boolean(),
 				estatus: z.string(),
 			}),
@@ -74,6 +80,38 @@ export const ProyectosRouter = createTRPCRouter({
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
 						message: 'Ocurrio un error al tratar de guardar el proyecto',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				const tipo_por_proyecto = await ctx.prisma.tipoProyectoPorProyecto.upsert({
+					where: {
+						id_proyecto: proyecto.id
+					},
+					update: {...input.tipo_proyecto},
+					create: {...input.tipo_proyecto, id_proyecto: proyecto.id},
+				});
+				if (!tipo_por_proyecto) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar el tipo de proyecto',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
+				const sindicato_por_proyecto = await ctx.prisma.sindicatoPorProyecto.upsert({
+					where: {
+						id_proyecto: proyecto.id
+					},
+					update: {...input.sindicato},
+					create: {...input.sindicato, id_proyecto: proyecto.id},
+				});
+				if (!sindicato_por_proyecto) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar el sindicato del proyecto',
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});

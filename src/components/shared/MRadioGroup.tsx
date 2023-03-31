@@ -14,10 +14,11 @@ interface Props {
     disabled?: boolean,
     loading?: boolean,
     styleRoot?: CSSProperties,
+    direction?: 'vertical' | 'horizontal'
 }
 
 export const MRadioGroup: FC<Props> = ({
-    loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options, styleRoot = {}
+    direction, loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options, styleRoot = {}
 }) => {
     return (
         <>
@@ -30,7 +31,7 @@ export const MRadioGroup: FC<Props> = ({
                     <RadioGroup
                         style={{ gap: 30, ...style }}
                         id={id}
-                        row
+                        row={((direction && direction === 'horizontal') || !direction) ? true : false}
                         aria-labelledby="demo-row-radio-buttons-group-label"
                         name="row-radio-buttons-group"
                     >

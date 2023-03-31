@@ -69,9 +69,9 @@ export const FormGroup: FC<Props> = ({
                 />
             }
             {!loading && input}
-            <MotionDiv show={error != null} animation='down-to-up'>
+            <MotionDiv show={error != null && show_error_message != null} animation='down-to-up'>
                 <Typography color={'red'} variant="caption" display="block" gutterBottom>
-                    {show_error_message && error}
+                    {error}
                 </Typography>
             </MotionDiv>
         </div>

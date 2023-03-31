@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import Image from 'next/image';
 import Head from "next/head";
 import { motion } from 'framer-motion'
-import styles from './index.module.css';
 
 import { Alertas, Destacados, Flotantes, ListadoProductos, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";

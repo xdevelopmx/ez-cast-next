@@ -3238,3 +3238,110 @@ p.edo_pendiente {
   width: 200px;
   height: 32px;
 }
+
+
+
+
+
+.select-form-control > div {
+  padding: 0;
+}
+
+.select-children {
+  max-height: 150px!important;
+}
+
+.RootContainer {
+  width: calc(100% - 30%); 
+  margin-top: 56px;
+  margin-left: 15%;
+  background-color: white;
+  border: 2px;
+  border-style: solid;
+  border-color: #4ab7c6;
+  border-radius: 8px;
+  padding-top: 48px;
+  padding-bottom: 48px;
+  padding-left: 96px;
+  padding-right: 96px;
+}
+
+@media only screen and (max-width: 600px) {
+  .RootContainer {
+      width: 100%;
+      margin-top: 16px;
+      margin-left: 8px;
+      background-color: white;
+      border: 2px;
+      border-style: solid;
+      border-color: #4ab7c6;
+      border-radius: 8px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
+  }
+}
+
+
+.form-input-label {
+  font-weight: 800; 
+  font-size: 1.1rem;
+}
+
+.form-input-md {
+  width: 200px;
+}
+
+.link-input-label {
+  font-weight: 800; 
+  font-size: 1.1rem;
+  color: #4ab7c6;
+}
+
+.border-element-selected {
+  border: 2px;
+  border-style: solid;
+  border-color: #4ab7c6;
+  border-radius: 8px;
+}
+
+.border-element {
+  border: 2px;
+  border-style: solid;
+  border-color: black;
+  border-radius: 8px;
+      
+}
+
+.label-blue-lg > span {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #4ab7c6;
+}
+
+.label-blue-lg {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: #4ab7c6;
+}
+
+.label-black-lg > span {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.label-black-lg {
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.label-black-md > span {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.label-black-md {
+  font-weight: 600;
+  font-size: 1rem;
+}

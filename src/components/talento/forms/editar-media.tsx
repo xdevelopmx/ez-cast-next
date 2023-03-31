@@ -4,7 +4,6 @@ import { Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type Archivo } from '~/server/api/root';
-import classes from './talento-forms.module.css';
 import { FileManagerFront } from '~/utils/file-manager-front';
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer';
 import { type TalentoFormMedios } from '~/pages/talento/editar-perfil';

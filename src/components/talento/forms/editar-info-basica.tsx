@@ -4,8 +4,7 @@ import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
 import { Grid, Typography, useTheme } from '@mui/material';
 import { MRadioGroup } from '~/components/shared/MRadioGroup';
-import classes from './talento-forms.module.css';
-import { MSelect } from '~/components/shared/MSelect';
+import { MSelect } from '~/components/shared/MSelect/MSelect';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type TalentoFormInfoGral } from '~/pages/talento/editar-perfil';
 import { FileManagerFront } from '~/utils/file-manager-front';
@@ -61,8 +60,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             <Grid item xs={12} md={6} lg={4}>
                 <FormGroup
                     loading={talento_fetching}
-                    className={classes['form-input-md']}
-                    labelClassName={classes['form-input-label']}
+                    className={'form-input-md'}
+                    labelClassName={'form-input-label'}
                     value={(state) ? state.nombre : ''}
                     onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
                     label='Nombre*'
@@ -74,7 +73,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         loading={is_loading}
                         id="union-select"
                         options={(uniones.isSuccess && uniones.data) ? uniones.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
-                        className={classes['form-input-md']}
+                        className={'form-input-md'}
                         value={union_selected.id.toString()}
                         onChange={(e) => {
                             const id = parseInt(e.target.value);
@@ -85,8 +84,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     <MotionDiv show={union_selected.id === 99} animation='fade'>
                         <FormGroup
                             rootStyle={{ marginTop: 16 }}
-                            className={classes['form-input-md']}
-                            labelClassName={classes['form-input-label']}
+                            className={'form-input-md'}
+                            labelClassName={'form-input-label'}
                             value={union_selected.descripcion}
                             onChange={(e) => {
                                 onFormChange({ union: { ...state.union, descripcion: e.currentTarget.value } })
@@ -101,7 +100,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     loading={is_loading}
                     id="ubicacion-select"
                     options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(e => { return { value: e.id.toString(), label: e.es } }) : []}
-                    className={classes['form-input-md']}
+                    className={'form-input-md'}
                     value={(state) ? state.id_estado_republica.toString() : '0'}
                     onChange={(e) => { onFormChange({ id_estado_republica: parseInt(e.target.value) }) }}
                     label='Ubicacion*'
@@ -155,8 +154,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     }
                                     return undefined;
                                 })()}
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 labelStyle={{ fontWeight: 400 }}
                                 value={(state && state.representante) ? state.representante.nombre : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, nombre: e.currentTarget.value } }) }}
@@ -171,9 +170,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     }
                                     return undefined;
                                 })()}
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 labelStyle={{ fontWeight: 400 }}
-                                labelClassName={classes['form-input-label']}
+                                labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.email : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, email: e.currentTarget.value } }) }}
                                 label='Correo electrónico*'
@@ -181,9 +180,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         </MContainer>
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
                             <FormGroup
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 labelStyle={{ fontWeight: 400 }}
-                                labelClassName={classes['form-input-label']}
+                                labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.agencia : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, agencia: e.currentTarget.value } }) }}
                                 label='Agencia'
@@ -197,9 +196,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     }
                                     return undefined;
                                 })()}
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 labelStyle={{ fontWeight: 400 }}
-                                labelClassName={classes['form-input-label']}
+                                labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.telefono : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, telefono: e.currentTarget.value } }) }}
                                 label='Teléfono*'
@@ -322,7 +321,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <MTooltip sx={{mt: 1}} text='prueba' color='orange' placement='right' />
                     </MContainer>
                     <FormGroup
-                        className={classes['form-input-md']}
+                        className={'form-input-md'}
                         value={(state.redes_sociales) ? state.redes_sociales.pagina_web : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state.redes_sociales, pagina_web: e.target.value } })
@@ -337,9 +336,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={classes['link-input-label']}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
                     <FormGroup
-                        className={classes['form-input-sm']}
+                        className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.vimeo : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state?.redes_sociales, vimeo: e.target.value } })
@@ -349,9 +348,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={classes['link-input-label']}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
                     <FormGroup
-                        className={classes['form-input-sm']}
+                        className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.instagram : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state?.redes_sociales, instagram: e.target.value } })
@@ -361,9 +360,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={classes['link-input-label']}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
                     <FormGroup
-                        className={classes['form-input-sm']}
+                        className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.youtube : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state?.redes_sociales, youtube: e.target.value } })
@@ -373,9 +372,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={classes['link-input-label']}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
                     <FormGroup
-                        className={classes['form-input-sm']}
+                        className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.twitter : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state?.redes_sociales, twitter: e.target.value } })
@@ -385,9 +384,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={classes['link-input-label']}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
                     <FormGroup
-                        className={classes['form-input-sm']}
+                        className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.imdb : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state?.redes_sociales, imdb: e.target.value } })
@@ -397,9 +396,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={classes['link-input-label']}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
                     <FormGroup
-                        className={classes['form-input-sm']}
+                        className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.linkedin : ''}
                         onChange={(e) => {
                             onFormChange({ redes_sociales: { ...state?.redes_sociales, linkedin: e.target.value } })

@@ -1,0 +1,112 @@
+import { Grid, Skeleton } from '@mui/material';
+import { type FC } from 'react'
+import { FormGroup, MSelect, SectionTitle } from '~/components'
+import MotionDiv from '~/components/layout/MotionDiv';
+import { ProyectoForm } from '~/pages/cazatalentos/proyecto';
+import { api } from '~/utils/api';
+
+interface Props {
+    state: ProyectoForm;
+    onFormChange: (input: { [id: string]: (string | number) }) => void;
+}
+
+export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
+
+    const tipos_sindicatos = api.catalogos.getUniones.useQuery(undefined, {
+        refetchOnWindowFocus: false
+    })
+
+    const tipos_proyectos = api.catalogos.getTipoProyectos.useQuery(undefined, {
+        refetchOnWindowFocus: false
+    })
+
+
+    return (
+        <Grid container>
+            <Grid item xs={12}>
+                <SectionTitle title='Paso 1' subtitle='Información General' subtitleSx={{ml: 4, color: '#4ab7c6'}} onClickButton={() => { 
+                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                    //router.push('/talento/editar-perfil?step=3')  
+                }} />
+            </Grid>
+            <Grid item xs={4} mt={8}>
+                <FormGroup
+                    error={state.nombre.length < 2 ? 'El nombre es demasiado corto' : undefined}
+                    show_error_message
+                    className={'form-input-md'}
+                    labelStyle={{ fontWeight: 400 }}
+                    labelClassName={'form-input-label'}
+                    value={state.nombre}
+                    onChange={(e) => { onFormChange({
+                        nombre: e.target.value
+                     }) }}
+                    label='Nombre*'
+                />
+            </Grid>
+            <Grid item xs={4} mt={8}>
+                <MSelect
+                    id="sindicato-select"
+                    loading={tipos_sindicatos.isFetching}
+                    options={(tipos_sindicatos.data) ? tipos_sindicatos.data.map(s => { return { value: s.id.toString(), label: s.es }}) : []}
+                    className={'form-input-md'}
+                    value={state.id_sindicato.toString()}
+                    onChange={(e) => {
+                        onFormChange({ 
+                            id_sindicato: parseInt(e.target.value)
+                        })
+                    }}
+                    label='Sindicato*'
+                />
+            </Grid>
+            <Grid item xs={4} mt={8}>
+                <MSelect
+                    id="tipo-proyectos-select"
+                    loading={tipos_proyectos.isFetching}
+                    options={(tipos_proyectos.data) ? tipos_proyectos.data.map(s => { return { value: s.id.toString(), label: s.es }}) : []}
+                    value={state.id_tipo.toString()}
+                    className={'form-input-md'}
+                    onChange={(e) => {
+                        onFormChange({ 
+                            id_tipo: parseInt(e.target.value)
+                        })
+                    }}
+                    label='Tipo Proyecto*'
+                />
+            </Grid>
+            <Grid item xs={4} mt={8} justifyContent='end'></Grid>
+            <Grid item xs={4} mt={8} >
+                <MotionDiv show={state.id_sindicato === 99} animation='fade'>
+                    <FormGroup
+                        className={'form-input-md'}
+                        labelStyle={{ fontWeight: 400 }}
+                        labelClassName={'form-input-label'}
+                        value={state.sindicato}
+                        onChange={(e) => { 
+                            onFormChange({
+                                sindicato: e.target.value
+                            })
+                        }}
+                        label='Nombre Sindicato'
+                    />
+                </MotionDiv>
+            </Grid>
+            <Grid item xs={4} mt={8}>
+                <MotionDiv show={state.id_tipo === 99} animation='fade'>
+                    <FormGroup
+                        className={'form-input-md'}
+                        labelStyle={{ fontWeight: 400 }}
+                        labelClassName={'form-input-label'}
+                        value={state.tipo}
+                        onChange={(e) => { 
+                            onFormChange({ 
+                                tipo: e.target.value
+                            }) 
+                        }}
+                        label='Otro'
+                    />
+                </MotionDiv>
+            </Grid>
+        
+        </Grid>
+    )
+}

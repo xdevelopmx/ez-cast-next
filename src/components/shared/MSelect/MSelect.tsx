@@ -1,8 +1,7 @@
 
 import { FormControl, FormControlLabel, FormLabel, InputLabel, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton } from '@mui/material';
 import type { CSSProperties, FC, ReactNode } from 'react';
-import classes from '../talento/forms/talento-forms.module.css';
-import { MContainer } from '../layout/MContainer';
+import { MContainer } from '../../layout/MContainer';
 
 interface Props {
     id: string,
@@ -29,7 +28,7 @@ export const MSelect: FC<Props> = ({
             label_element = <MContainer direction='horizontal'>{icon}{label_element}</MContainer>
         }
     }
-    const select_class = classes['select-form-control'];
+    const select_class = 'select-form-control';
     let default_value = '';
     if (options.length > 0) {
         const option = options[0];
@@ -47,7 +46,7 @@ export const MSelect: FC<Props> = ({
             {label_element}
             {loading &&
                 <Skeleton
-                    className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
+                    className={`form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
                     style={style}
                     variant="rectangular"
                 />
@@ -66,7 +65,7 @@ export const MSelect: FC<Props> = ({
                     style={{ ...style }}
                     className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
                     onChange={onChange}
-                    MenuProps={{ classes: { paper: classes['select-children'] } }}
+                    MenuProps={{ classes: { paper: 'select-children' } }}
                 >
                     {[{ value: default_value, label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
                 </Select>

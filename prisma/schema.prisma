@@ -152,6 +152,7 @@ model CatalogoUniones {
   es                            String
   en                            String
   union_por_info_basica_talento UnionPorInfoBasicaTalento[]
+  sindicato_por_proyecto SindicatoPorProyecto[]
 }
 
 model RedesSocialesPorTalentos {
@@ -180,8 +181,6 @@ model Administradores {
 model Proyecto {
   id                   Int          @id @default(autoincrement())
   nombre               String
-  sindicato            String
-  tipo                 String
   director_casting     String
   telefono_contacto    String
   email_contacto       String
@@ -192,19 +191,41 @@ model Proyecto {
   sinopsis             String
   url_archivo          String?
   detalles_adicionales String
-  locacion             String
+  id_estado_republica             Int
   url_foto_portada     String?
   compartir_nombre     Boolean      @default(true)
   estatus              String       @default("Por Validar")
   id_cazatalentos      Int
+  estado_republica CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   cazatalentos         Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   rol                  Roles[]
+  tipo TipoProyectoPorProyecto?
+  sindicato SindicatoPorProyecto?
+}
+
+model TipoProyectoPorProyecto {
+  id                   Int          @id @default(autoincrement())
+  id_proyecto Int @unique
+  id_tipo_proyecto Int
+  descripcion String
+  tipo_proyecto CatalogoTipoProyectos @relation(fields: [id_tipo_proyecto], references: [id])
+  proyecto Proyecto @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+}
+
+model SindicatoPorProyecto {
+  id                   Int          @id @default(autoincrement())
+  id_proyecto Int @unique
+  id_sindicato Int
+  descripcion String
+  sindicato CatalogoUniones @relation(fields: [id_sindicato], references: [id])
+  proyecto Proyecto @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTipoProyectos {
   id Int    @id @default(autoincrement())
   en String
   es String
+  tipo_proyecto_por_proyecto TipoProyectoPorProyecto[]
 }
 
 model Roles {
@@ -440,6 +461,7 @@ model CatalogoEstadosRepublica {
   casting_por_roles       CastingPorRoles[]
   filmacion_por_roles     FilmacionPorRoles[]
   locaciones_preferencias LocacionesPrerenciasPorTalentos[]
+  proyecto Proyecto[]
 }
 
 model MediosMultimediaPorRoles {

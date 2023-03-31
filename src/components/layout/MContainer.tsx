@@ -3,7 +3,7 @@ import type { CSSProperties, FC } from 'react'
 interface Props {
     direction: 'horizontal' | 'vertical',
     justify?: 'start' | 'end' | 'space-between',
-    children: JSX.Element | JSX.Element[],
+    children: (JSX.Element | null) | (JSX.Element[] | null),
     styles?: CSSProperties,
     className?: string
 }

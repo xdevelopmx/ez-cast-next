@@ -2,7 +2,6 @@ import { useEffect, useState, type FC } from 'react'
 import { motion } from 'framer-motion'
 import { FormGroup } from '~/components';
 import { Alert, Divider, Grid, IconButton, Typography } from '@mui/material';
-import classes from './talento-forms.module.css';
 import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import Image from 'next/image';
@@ -107,7 +106,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
-                    //labelClassName={classes['label-black-md']}
                     options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
                     values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
@@ -181,7 +179,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="interes-proyectos-checkbox"
                     labelStyle={{ marginBottom: 0 }}
-                    //labelClassName={classes['label-black-md']}
                     options={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(t => t.es) : []}
                     values={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(v => state.interes_en_proyectos.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
@@ -324,8 +321,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
                             <FormGroup
-                                className={classes['form-input-md']}
-                                //labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
                                 value={state.preferencias.nombre_agente}
                                 onChange={(e) => {
                                     onFormChange({
@@ -339,8 +335,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             />
 
                             <FormGroup
-                                className={classes['form-input-md']}
-                                //labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
                                 type='email'
                                 textBlueLabel={'Correo electrónico'}
                                 value={state.preferencias.contacto_agente}
@@ -392,7 +387,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         id="documentos-checkbox"
                         labelStyle={{ marginBottom: 0 }}
                         fontWeight={400}
-                        //labelClassName={classes['label-black-md']}
                         options={(tipos_documentos.data) ? tipos_documentos.data.map(t => t.es) : []}
                         values={(tipos_documentos.data) ? tipos_documentos.data.map(v => state.documentos.map(documento => documento.id_documento).includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -400,8 +394,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     {
                         <MotionDiv show={state.documentos.some(documento => documento?.id_documento === 99)} animation='fade'>
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.documentos.filter(documento => documento?.id_documento === 99)[0]?.descripcion}
                                 onChange={(e) => {
                                     onFormChange({
@@ -454,7 +448,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         }}
                         id="disponibilidad-para-checkboxgroup"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
-                        //labelClassName={classes['label-black-md']}
                         options={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(t => t.es) : []}
                         values={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(v => state.disponibilidad.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -475,8 +468,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     />
                 </Typography>
                 <FormGroup
-                    className={classes['form-input-md']}
-                    labelClassName={classes['form-input-label']}
+                    className={'form-input-md'}
+                    labelClassName={'form-input-label'}
                     value={otrasProfesionesInput}
                     onChange={(e) => {
                         setOtrasProfesionesInput(e.currentTarget.value)
@@ -527,8 +520,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                     rootStyle={{ margin: 0 }}
                                     type={'number'}
                                     style={{ margin: '0px 0px 0px 10px' }}
-                                    className={classes['form-input-md']}
-                                    labelClassName={classes['form-input-label']}
+                                    className={'form-input-md'}
+                                    labelClassName={'form-input-label'}
                                     value={`${state.preferencias.meses_embarazo}`}
                                     onChange={(e) => {
                                         onFormChange({

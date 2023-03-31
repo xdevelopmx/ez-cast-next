@@ -3,6 +3,9 @@ const Constants = {
         TALENTO: 'TALENTO',
         CAZATALENTOS: 'CAZATALENTOS',
         REPRESENTANTE: 'REPRESENTANTE'
+    },
+    PATTERNS: {
+        EMAIL: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
     }
 }
 

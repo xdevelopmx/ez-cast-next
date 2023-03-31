@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import Image from 'next/image';
 import Head from "next/head";
 import { motion } from 'framer-motion'
-import classes from './editar-perfil.module.css';
 
 import { Alertas, Destacados, Flotantes, ListadoProductos, MainLayout, MenuLateral } from "~/components";
 import { MStepper } from "~/components/shared/MStepper";
@@ -668,7 +667,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout style={{ padding: 32, backgroundColor: '#f2f2f2', marginTop: 48, minHeight: '100vh' }} menuSiempreBlanco={true} >
-                <div className={classes['RootContainer']} style={{ minHeight: ([1].includes(state.step_active)) ? 'calc(100vh - 76px)' : '100%' }}>
+                <div className={'RootContainer'} style={{ minHeight: ([1].includes(state.step_active)) ? 'calc(100vh - 76px)' : '100%' }}>
                     <MStepper
                         onStepChange={(step: number) => {
                             dispatch({ type: 'update-form', value: { step_active: step } });

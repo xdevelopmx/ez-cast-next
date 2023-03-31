@@ -1,1 +1,1 @@
-export * from './InformacionGeneral'
+export * from './crear/InformacionGeneral'

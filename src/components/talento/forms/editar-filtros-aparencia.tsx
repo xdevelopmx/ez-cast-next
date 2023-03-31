@@ -2,7 +2,6 @@ import { type FC } from 'react'
 import { AddButton, FormGroup, MCheckboxGroup, MRadioGroup, MSelect, Tag } from '~/components';
 import { Alert, Chip, Divider, Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
-import classes from './talento-forms.module.css';
 import { type FiltrosAparienciaForm } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
 import useNotify from '~/hooks/useNotify';
@@ -83,8 +82,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     </Typography>
                     <MContainer direction='horizontal' styles={{ gap: 40 }}>
                         <FormGroup
-                            className={classes['form-input-md']}
-                            labelClassName={classes['form-input-label']}
+                            className={'form-input-md'}
+                            labelClassName={'form-input-label'}
                             value={`${state.apariencia.rango_inicial_edad}`}
                             style={{ width: 60 }}
                             type='number'
@@ -99,8 +98,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         />
                         <Typography>a</Typography>
                         <FormGroup
-                            className={classes['form-input-md']}
-                            labelClassName={classes['form-input-label']}
+                            className={'form-input-md'}
+                            labelClassName={'form-input-label'}
                             value={`${state.apariencia.rango_final_edad}`}
                             style={{ width: 60 }}
                             type='number'
@@ -159,7 +158,6 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         }}
                         id="genero-interesado-interpretar"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
-                        //labelClassName={classes['label-black-md']}
                         options={(generos.data) ? generos.data.map(g => g.es) : []}
                         values={(generos.data) ? generos.data.map(g => {
                             return state.generos_interesado_en_interpretar.includes(g.id);
@@ -410,8 +408,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 <Typography>Descripción:</Typography>
                                 <FormGroup
                                     rootStyle={{ margin: 0 }}
-                                    className={classes['form-input-md']}
-                                    labelClassName={classes['form-input-label']}
+                                    className={'form-input-md'}
+                                    labelClassName={'form-input-label'}
                                     value={state.descripcion_tatoo}
                                     onChange={(e) => { onFormChange({ descripcion_tatoo: e.currentTarget.value }) }}
                                 />
@@ -486,8 +484,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             <MContainer direction='horizontal' styles={{ marginTop: 16, marginBottom: 16, gap: 40, alignItems: 'center' }}>
                                 <Typography>Descripción:</Typography>
                                 <FormGroup
-                                    className={classes['form-input-md']}
-                                    labelClassName={classes['form-input-label']}
+                                    className={'form-input-md'}
+                                    labelClassName={'form-input-label'}
                                     value={state.descripcion_piercing}
                                     rootStyle={{ margin: 0 }}
                                     onChange={(e) => { onFormChange({ descripcion_piercing: e.currentTarget.value }) }}
@@ -574,8 +572,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 <MotionDiv show={state.hermanos?.id_tipo_hermanos === 99} animation={'fade'}>
                                     <FormGroup
                                         label=''
-                                        className={classes['form-input-md']}
-                                        labelClassName={classes['form-input-label']}
+                                        className={'form-input-md'}
+                                        labelClassName={'form-input-label'}
                                         value={state.hermanos?.descripcion}
                                         onChange={(e) => {
                                             onFormChange({
@@ -625,14 +623,13 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             }) : [false]}
                             id="particularidades-checkboxgroup"
                             labelStyle={{ marginBottom: 0, width: '32%' }}
-                            //labelClassName={classes['label-black-md']}
                             options={(tipos_particularidades.data) ? tipos_particularidades.data.map(tp => tp.es) : []}
                         />
                         <MotionDiv show={state.particularidades.some(e => e.id_particularidad === 99)} animation={'fade'}>
                             <FormGroup
                                 label='Descripcion otro tipo de particularidad'
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.descripcion_otra_particularidad}
                                 rootStyle={{ margin: 0 }}
                                 onChange={(e) => {

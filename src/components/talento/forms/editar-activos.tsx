@@ -2,8 +2,7 @@ import { useMemo, type FC } from 'react'
 import { AddButton, FormGroup } from '~/components';
 import { Button, Divider, Grid, IconButton, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
-import { MSelect } from '~/components/shared/MSelect';
-import classes from './talento-forms.module.css';
+import { MSelect } from '~/components/shared/MSelect/MSelect';
 import { MCheckboxGroup } from '~/components/shared/MCheckboxGroup';
 import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormActivos } from '~/pages/talento/editar-perfil';
@@ -34,7 +33,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             if (state.mascota.id_tipo_mascota === 5) {
                 return <MSelect
                     id="tipo-raza-select"
-                    className={classes['form-input-md']}
+                    className={'form-input-md'}
                     options={(tipos_razas.data) ? tipos_razas.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
                     style={{ width: 200 }}
                     value={state.mascota.id_raza.toString()}
@@ -55,7 +54,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             if (state.vestuario.id_tipo > 0 && state.vestuario.id_tipo !== 3) {
                 return <MSelect
                     id="tipo-vestuario-especifico-select"
-                    className={classes['form-input-md']}
+                    className={'form-input-md'}
                     options={(tipos_vestuarios_especificos.data) ? tipos_vestuarios_especificos.data.filter(v => v.id_tipo_vestuario === state.vestuario?.id_tipo).map(m => { return { value: m.id.toString(), label: m.es } }) : []}
                     style={{ width: 200 }}
                     value={state.vestuario.id_tipo_vestuario_especifico.toString()}
@@ -80,7 +79,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onFormChange({ has_vehiculos: e })
                         }}
                         id="mostrar-vehiculos"
-                        labelClassName={classes['label-black-lg']}
+                        labelClassName={'label-black-lg'}
                         options={['Vehículos']}
                         values={[state.has_vehiculos]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -89,7 +88,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                             <MSelect
                                 id="tipo-vehiculo-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={(tipos_vehiculos.data) ? tipos_vehiculos.data.map(v => { return { value: v.id.toString(), label: v.es } }) : []}
                                 value={state.vehiculo.id_tipo_vehiculo.toString()}
                                 onChange={(e) => {
@@ -99,8 +98,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Tipo Vehiculo'
                             />
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.vehiculo?.marca}
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, marca: e.target.value } })
@@ -108,8 +107,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Marca'
                             />
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.vehiculo?.modelo}
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, modelo: e.target.value } })
@@ -117,8 +116,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Modelo'
                             />
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.vehiculo?.color}
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, color: e.target.value } })
@@ -127,7 +126,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             />
                             <MSelect
                                 id="anio-vehiculo-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={VEHICULO_YEARS.map(i => { return { value: (i).toString(), label: (i).toString() } })}
                                 style={{ width: 200 }}
                                 value={state.vehiculo?.anio?.toString()}
@@ -220,7 +219,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onFormChange({ has_mascotas: e })
                         }}
                         id="mostrar-mascotas"
-                        labelClassName={classes['label-black-lg']}
+                        labelClassName={'label-black-lg'}
                         options={['Mascotas']}
                         values={[state.has_mascotas]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -229,7 +228,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                             <MSelect
                                 id="tipo-mascota-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={(tipos_mascotas.data) ? tipos_mascotas.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
                                 style={{ width: 200 }}
                                 value={state.mascota.id_tipo_mascota.toString()}
@@ -244,7 +243,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             </>
                             <MSelect
                                 id="tamanio-mascota-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={[{ value: 'Chico', label: 'Chico' }, { value: 'Mediano', label: 'Mediano' }, { value: 'Grande', label: 'Grande' }]}
                                 style={{ width: 200 }}
                                 value={state.mascota.tamanio}
@@ -330,7 +329,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onFormChange({ has_vestuario: e })
                         }}
                         id="mostrar-vestuario"
-                        labelClassName={classes['label-black-lg']}
+                        labelClassName={'label-black-lg'}
                         options={['Vestuario']}
                         values={[state.has_vestuario]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -339,7 +338,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                             <MSelect
                                 id="tipo-vestuario-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={(tipos_vestuarios.data) ? tipos_vestuarios.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
                                 style={{ width: 200 }}
                                 value={state.vestuario.id_tipo.toString()}
@@ -353,8 +352,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 {vestuario_especifico_select}
                             </>
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.vestuario?.descripcion}
                                 onChange={(e) => {
                                     onFormChange({ vestuario: { ...state.vestuario, descripcion: e.target.value } })
@@ -431,7 +430,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onFormChange({ has_props: e })
                         }}
                         id="mostrar-props"
-                        labelClassName={classes['label-black-lg']}
+                        labelClassName={'label-black-lg'}
                         options={['Props']}
                         values={[state.has_props]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -440,7 +439,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                             <MSelect
                                 id="tipo-prop-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={(tipos_props.data) ? tipos_props.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
                                 style={{ width: 200 }}
                                 value={state.prop.id_tipo_props.toString()}
@@ -451,8 +450,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Tipo Prop'
                             />
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.prop?.descripcion}
                                 onChange={(e) => {
                                     onFormChange({ prop: { ...state.prop, descripcion: e.target.value } })
@@ -526,7 +525,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             onFormChange({ has_equipo_deportivo: e })
                         }}
                         id="mostrar-equipo-deportivo"
-                        labelClassName={classes['label-black-lg']}
+                        labelClassName={'label-black-lg'}
                         options={['Equipo Deportivo']}
                         values={[state.has_equipo_deportivo]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
@@ -535,7 +534,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                             <MSelect
                                 id="tipo-equipo-deportivo-select"
-                                className={classes['form-input-md']}
+                                className={'form-input-md'}
                                 options={(tipo_equipo_deportivo.data) ? tipo_equipo_deportivo.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
                                 style={{ width: 200 }}
                                 value={state.equipo_deportivo.id_tipo_equipo_deportivo.toString()}
@@ -546,8 +545,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 label='Tipo Equipo'
                             />
                             <FormGroup
-                                className={classes['form-input-md']}
-                                labelClassName={classes['form-input-label']}
+                                className={'form-input-md'}
+                                labelClassName={'form-input-label'}
                                 value={state.equipo_deportivo?.descripcion}
                                 onChange={(e) => {
                                     onFormChange({ equipo_deportivo: { ...state.equipo_deportivo, descripcion: e.target.value } })

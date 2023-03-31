@@ -1,20 +1,27 @@
-import { Divider, Typography } from '@mui/material';
+import { Divider, SxProps, Typography } from '@mui/material';
 import { type FC } from 'react'
 import { MContainer } from '../layout/MContainer'
 
 
 interface Props {
     title: string;
+    subtitle?: string;
     onClickButton?: (...args: unknown[]) => unknown;
     textButton?: string;
+    titleSx?: SxProps;
+    subtitleSx?: SxProps;
 }
 
-export const SectionTitle: FC<Props> = ({ title, textButton = 'Editar', onClickButton }) => {
+export const SectionTitle: FC<Props> = ({ title, subtitle, titleSx, subtitleSx, textButton = 'Editar', onClickButton }) => {
     return (
         <>
             <MContainer direction='horizontal' justify='space-between'>
-                <Typography fontWeight={600}>{title}</Typography>
-
+                <MContainer direction='horizontal'>
+                    <Typography sx={titleSx} fontWeight={600}>{title}</Typography>
+                    <>
+                        {subtitle && <Typography sx={subtitleSx} fontWeight={300}>{subtitle}</Typography>}
+                    </>
+                </MContainer>
                 {
                     onClickButton
                         ? (

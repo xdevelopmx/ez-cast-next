@@ -3,8 +3,7 @@ import Image from 'next/image';
 import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
 import { Button, Grid, IconButton, Typography } from '@mui/material';
-import classes from './talento-forms.module.css';
-import { MSelect } from '~/components/shared/MSelect';
+import { MSelect } from '~/components/shared/MSelect/MSelect';
 import { MCheckboxGroup } from '~/components/shared/MCheckboxGroup';
 import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormCreditos } from '~/pages/talento/editar-perfil';
@@ -50,7 +49,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                     />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
-                    <FormGroup style={{ width: '100%' }} className={classes['form-input-md']} labelClassName={classes['form-input-label']} value={(state) ? state.titulo : ''} onChange={(e) => { onFormChange({ titulo: e.currentTarget.value }) }} label='Título' />
+                    <FormGroup style={{ width: '100%' }} className={'form-input-md'} labelClassName={'form-input-label'} value={(state) ? state.titulo : ''} onChange={(e) => { onFormChange({ titulo: e.currentTarget.value }) }} label='Título' />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
                     <MSelect
@@ -65,14 +64,13 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                     />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
-                    <FormGroup style={{ width: '100%' }} className={classes['form-input-md']} labelClassName={classes['form-input-label']} value={(state) ? state.director : ''} onChange={(e) => { onFormChange({ director: e.currentTarget.value }) }} label='Director' />
+                    <FormGroup style={{ width: '100%' }} className={'form-input-md'} labelClassName={'form-input-label'} value={(state) ? state.director : ''} onChange={(e) => { onFormChange({ director: e.currentTarget.value }) }} label='Director' />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
                     <MContainer direction='vertical'>
                         <MSelect
                             styleRoot={{ width: '100%' }}
                             id="edad-select"
-                            //className={classes['form-input-md']}
                             options={YEARS}
                             style={{ marginBottom: 8 }}
                             value={(state) ? state.anio.toString() : ''}

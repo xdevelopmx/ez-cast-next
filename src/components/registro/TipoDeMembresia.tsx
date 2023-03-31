@@ -8,7 +8,7 @@ interface Props {
         tipo_membresia: TipoMembresia,
         cobro_membresia: TipoCobro
     },
-    onFormChange: (input: {[id: string]: (string | number)}) => void;
+    onFormChange: (input: {[id: string]: unknown}) => void;
 }
 
 export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {

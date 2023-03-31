@@ -111,10 +111,12 @@ export const authOptions: NextAuthOptions = {
 				}
 				if (credentials) {
 					if (credentials.password.length < 8) {
-						
+						return null;
 					}
 
-
+					if (credentials.user.length < 2) {
+						return null;
+					}
 					let tipo_usuario = TipoUsuario.NO_DEFINIDO;
 					switch (credentials.tipo_usuario) {
 						case TipoUsuario.TALENTO: tipo_usuario = TipoUsuario.TALENTO; break;
