@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { Alertas, Flotantes, MainLayout, MenuLateral } from '~/components'
 import { motion } from 'framer-motion'
 import { InformacionGeneralRol } from '~/components/cazatalento/roles'
+import { CompensacionRol } from '~/components/cazatalento/roles/agregar-rol/secciones/CompensacionRol'
 
 const AgregarRolPage: NextPage = () => {
     return (
@@ -31,6 +32,7 @@ const AgregarRolPage: NextPage = () => {
                                 </div>
                             </div>
                             <InformacionGeneralRol />
+                            <CompensacionRol/>
                         </Grid>
                     </Grid>
                 </div>
