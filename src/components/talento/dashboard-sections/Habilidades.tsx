@@ -41,7 +41,7 @@ export const Habilidades = (props: {id_talento: number}) => {
     }, [data])
 
     return (
-        <Grid container sx={{ mt: 10 }}>
+        <Grid id="habilidades" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
                 <SectionTitle title='Habilidades' onClickButton={() => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -57,7 +57,7 @@ export const Habilidades = (props: {id_talento: number}) => {
                                 <Skeleton className="my-2 sm-skeleton"  variant="rectangular" />
                                 <MContainer direction="horizontal">
                                     {Array.from({ length: 4 }).map((m, j) => { 
-                                        return  <Skeleton key={j} className="my-2 p-3" variant="rectangular" width={150}  sx={{ marginRight: 16, padding: '0px 30px', borderRadius: 10, border: '2px solid #4ab7c6' }} />
+                                        return  <Skeleton key={j} className="my-2 p-3" variant="rectangular" width={150}  sx={{ marginRight: 16, padding: '0px 30px', borderRadius: 10, border: '2px solid #069cb1' }} />
                                     })}
                                 </MContainer>
                             </MContainer>
@@ -69,7 +69,7 @@ export const Habilidades = (props: {id_talento: number}) => {
                         {habilidades_map && Array.from(habilidades_map).map((entry, i) => {
                             return (
                                 <MContainer key={i} direction="vertical" styles={{ marginTop: 20 }}>
-                                    <Typography sx={{ color: '#4ab7c6' }} fontWeight={600}>
+                                    <Typography sx={{ color: '#069cb1' }} fontWeight={600}>
                                         {entry[0]}
                                     </Typography>
                                     <MContainer direction="horizontal" styles={{ gap: 10 }}>
@@ -77,7 +77,7 @@ export const Habilidades = (props: {id_talento: number}) => {
                                             return (
                                                 <Typography
                                                     key={j}
-                                                    sx={{ textAlign: 'center', width: 200, padding: '0px 30px', borderRadius: '8px!important', border: '2px solid #4ab7c6' }}
+                                                    sx={{ textAlign: 'center', width: 200, padding: '0px 30px', borderRadius: '8px!important', border: '2px solid #069cb1' }}
                                                 >
                                                     {he}
                                                 </Typography>

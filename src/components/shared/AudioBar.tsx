@@ -17,10 +17,10 @@ export const AudioBar: FC<Props> = ({ name, onExit, onPause, onPlay, onDownload 
             direction='horizontal'
             justify='space-between'
             styles={{ backgroundColor: '#EBEBEB', padding: 5, margin: 5, width: '100%', alignItems: 'center' }}>
-            <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                <Image onClick={onPlay} style={{ marginLeft: 5, cursor: 'pointer' }} src="/assets/img/iconos/play_circle_white.png" width={30} height={30} alt="" />
-                <Image onClick={onExit} style={{ marginLeft: 5, cursor: 'pointer' }} src="/assets/img/iconos/play_circle_white.png" width={30} height={30} alt="" />
-                <Image onClick={onPause} style={{ marginLeft: 5, cursor: 'pointer' }} src="/assets/img/iconos/play_circle_white.png" width={30} height={30} alt="" />
+            <MContainer direction='horizontal' styles={{ alignItems: 'center', gap: 10 }}>
+                <Image onClick={onPlay} style={{ marginLeft: 5, cursor: 'pointer' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />
+                <Image onClick={onExit} style={{ marginLeft: 5, cursor: 'pointer' }} src="/assets/img/iconos/pausa.svg" width={20} height={20} alt="" />
+                <Image onClick={onPause} style={{ marginLeft: 5, cursor: 'pointer' }} src="/assets/img/iconos/stop.svg" width={20} height={20} alt="" />
                 <Typography style={{ paddingLeft: 10 }}>{name}</Typography>
             </MContainer>
 

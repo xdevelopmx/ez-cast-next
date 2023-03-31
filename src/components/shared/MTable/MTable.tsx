@@ -16,14 +16,18 @@ interface MTableProps {
 	headerClassName?: string,
 	backgroundColorHeader?: string,
 	backgroundColorData?: string,
-	disable_animation?: boolean
+	disable_animation?: boolean,
+
+	alternate_colors?: boolean,
+	styleHeaderRow?: CSSProperties,
+	styleHeaderTableCell?: CSSProperties,
 }
 
 
 
 export const MTable: FC<MTableProps> = ({
 	disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
-	backgroundColorHeader = '#EBEBEB', style = {}
+	backgroundColorHeader = '#EBEBEB', style = {}, alternate_colors = true, styleHeaderRow = {}, styleHeaderTableCell = {}
 }) => {
 	const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
 
@@ -60,9 +64,11 @@ export const MTable: FC<MTableProps> = ({
 							className={classes[(headerClassName) ? headerClassName : '']}
 							style={{ ...headerStyles, backgroundColor: backgroundColorHeader }}
 						>
-							<TableRow>
+							<TableRow sx={{ styleHeaderRow }}>
 								{columnsHeader &&
-									columnsHeader.map((c, i) => <TableCell align="center" sx={{ color: '#000' }} key={i}>{c}</TableCell>)
+									columnsHeader.map((c, i) => (
+										<TableCell align="center" sx={{ ...styleHeaderTableCell, color: '#000' }} key={i}>{c}</TableCell>)
+									)
 								}
 							</TableRow>
 						</TableHead>
@@ -75,11 +81,15 @@ export const MTable: FC<MTableProps> = ({
 							const row_values = Object.entries(row);
 							return (
 								<>
-								
+
 									{!disable_animation &&
-									
+
 										<motion.tr
-											style={{ backgroundColor: (i % 2) ? backgroundColorData : 'white' }}
+											style={{
+												backgroundColor: alternate_colors
+													? ((i % 2) ? backgroundColorData : 'white')
+													: backgroundColorData,
+											}}
 											key={i}
 											layout={true}
 											initial={{ opacity: 0, y: 100 }}
@@ -92,7 +102,7 @@ export const MTable: FC<MTableProps> = ({
 													if (i === 0) {
 														return (
 															<TableCell
-																style={{padding: 8}}
+																style={{ padding: 8 }}
 																key={i}
 																align='center'
 																component="th"
@@ -113,7 +123,7 @@ export const MTable: FC<MTableProps> = ({
 												if (i === 0) {
 													return (
 														<TableCell
-															style={{padding: 8}}
+															style={{ padding: 8 }}
 															key={i}
 															align='center'
 															component="th"
@@ -143,9 +153,9 @@ export const MTable: FC<MTableProps> = ({
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<MotionDiv show={_data.length > 5} animation={'fade'} style={{ backgroundColor: '#4ab7c6', width: '100%' }}>
+			<MotionDiv show={_data.length > 5} animation={'fade'} style={{ backgroundColor: '#069cb1', width: '100%' }}>
 				<TablePagination
-					sx={{ backgroundColor: '#4ab7c6' }}
+					sx={{ backgroundColor: '#069cb1' }}
 					labelRowsPerPage={'Registros por pagina'}
 					component="div"
 					count={_data.length}

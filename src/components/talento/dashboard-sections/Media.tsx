@@ -10,17 +10,27 @@ export const Media = () => {
     const router = useRouter();
 
     return (
-        <Grid container sx={{ mt: 10 }}>
+        <Grid id="media" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Media' onClickButton={() => { 
+                <SectionTitle title='Media' onClickButton={() => {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    router.push('/talento/editar-perfil?step=2')  
+                    router.push('/talento/editar-perfil?step=2')
                 }} />
             </Grid>
             <Grid item xs={12}>
-                <MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px' }}>
-                    <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
-                    <Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>GALERÍA DE IMÁGENES</Typography>
+                <MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px', justifyContent: 'space-between' }}>
+                    <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
+                        <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
+                        <Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>GALERÍA DE IMÁGENES</Typography>
+                    </MContainer>
+                    <AddButton
+                        aStyles={{ margin: 0 }}
+                        onClick={() => {
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            router.push('/talento/editar-perfil?step=2')
+                        }}
+                        text="Agregar imágenes"
+                    />
                 </MContainer>
                 <Carroucel>
                     <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
@@ -38,12 +48,15 @@ export const Media = () => {
                 <MContainer direction='horizontal' justify='space-between' styles={{ alignItems: 'center' }}>
                     <MContainer direction='vertical' styles={{ width: '28%', alignItems: 'center' }}>
                         <Image src="/assets/img/iconos/web_cam_blue.png" width={50} height={30} alt="" />
-                        <Typography sx={{ color: '#069CB1', textAlign: 'center' }} fontWeight={900}>
+                        <Typography sx={{ color: '#069CB1', textAlign: 'center', marginTop: 1 }} fontWeight={900}>
                             VIDEO <br /> REEL
                         </Typography>
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
-                        <AddButton text='Agregar videos' aStyles={{ margin: 10 }} onClick={() => { console.log('click'); }} />
+                        <AddButton text='Agregar videos' aStyles={{ margin: 10 }} onClick={() => {
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            router.push('/talento/editar-perfil?step=2')
+                        }} />
 
                         <video controls style={{ width: '100%' }}>
                             <source src="/assets/video/video1.mp4" type="video/mp4" />
@@ -57,13 +70,17 @@ export const Media = () => {
             <Grid item xs={12}>
                 <MContainer direction='horizontal' justify='space-between' styles={{ alignItems: 'center' }}>
                     <MContainer direction='vertical' styles={{ width: '28%', alignItems: 'center' }}>
-                        <Image src="/assets/img/iconos/micro_web_blue.svg" width={50} height={30} alt="" />
-                        <Typography sx={{ color: '#069CB1', textAlign: 'center' }} fontWeight={900}>
+                        <Image src="/assets/img/iconos/micro_web_blue.svg" width={60} height={40} alt="" />
+                        <Typography sx={{ color: '#069CB1', textAlign: 'center', marginTop: 1 }} fontWeight={900}>
                             AUDIO <br /> CLIPS
                         </Typography>
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
-                        <AddButton text='Agregar audios' onClick={() => console.log('click')} />
+                        <AddButton text='Agregar audios' aStyles={{ marginBottom: 10 }} onClick={() => {
+                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                            router.push('/talento/editar-perfil?step=2')
+                        }}
+                        />
                         <AudioBar
                             name='Archivo audio.mp3'
                             onPlay={() => { console.log('click'); }}

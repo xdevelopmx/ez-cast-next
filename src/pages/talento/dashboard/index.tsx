@@ -15,6 +15,12 @@ import { useSession } from "next-auth/react";
 
 const DashBoardTalentosPage: NextPage = () => {
 	const session = useSession();
+
+	const scrollToSection = (sectionId: string) => {
+		const section = document.getElementById(sectionId);
+		section?.scrollIntoView({ behavior: 'smooth' });
+	};
+
 	return (
 		<>
 			<Head>
@@ -39,24 +45,35 @@ const DashBoardTalentosPage: NextPage = () => {
 							<br />
 							<MContainer direction="vertical">
 								<OptionsGroup
+									styleContainer={{
+										display: 'flex',
+										justifyContent: 'space-between',
+										marginBottom: 0,
+									}}
+									styleButton={{
+										textTransform: 'none',
+										fontSize: '1.1rem'
+									}}
 									id="opciones-usuario"
 									onOptionClick={(id: string, label: string) => {
-										console.log(id, label);
+										const id_section = label.toLowerCase().replace(/\s+/g, "-");
+										console.log(id_section);
+										scrollToSection(id_section)
 									}}
 									labels={['Informacion basica', 'Media', 'Creditos', 'Habilidades', 'Medidas', 'Activos', 'Preferencia de roles']}
 								/>
-								<InfoGeneral id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
+								<InfoGeneral id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 							</MContainer>
-							
+
 							<Media />
 
-							<Creditos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
+							<Creditos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 
-							<Habilidades id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
+							<Habilidades id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 
-							<Activos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
-							<FiltrosApariencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
-							<Preferencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0}/>
+							<Activos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+							<FiltrosApariencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+							<Preferencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 						</div>
 					</div>
 				</div>

@@ -34,7 +34,7 @@ export const SectionTitle: FC<Props> = ({ title, subtitle, titleSx, subtitleSx, 
             </MContainer>
             <Divider sx={{ backgroundColor: '#069CB1' }} />
 
-            
+
         </>
     )
 }

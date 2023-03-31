@@ -333,7 +333,7 @@ export const MenuLateral = () => {
 						style={{ 
 							position: 'absolute',
 							right: 0,
-							color: '#4ab7c6'
+							color: '#069cb1'
 						}}
 						aria-label="Cancelar edicion usuario"
 						onClick={() => {
@@ -418,7 +418,7 @@ export const MenuLateral = () => {
 										}
 									}
 								}}	
-								style={{backgroundColor: '#4ab7c6', width: 200, color: 'white', borderRadius: 16}}
+								style={{backgroundColor: '#069cb1', width: 200, color: 'white', borderRadius: 16}}
 							>
 								Guardar Cambios
 							</Button>

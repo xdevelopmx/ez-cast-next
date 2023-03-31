@@ -127,10 +127,10 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         style={{ marginLeft: 128 }}
                         id="eres-mayor-de-edad"
                         options={['Sí', 'No']}
-                        labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#4ab7c6' }}
+                        labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#069cb1' }}
                         value={state.es_menor_de_edad}
                         onChange={(e) => {
-                            onFormChange({ es_menor_de_edad: e.target.value , edad: (e.target.value === 'No') ? 18 : 17 }) 
+                            onFormChange({ es_menor_de_edad: e.target.value, edad: (e.target.value === 'No') ? 18 : 17 })
                         }}
                         label='¿Eres menor de edad?'
                     />
@@ -150,7 +150,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     if (state.representante) {
                                         if (state.representante.nombre.length === 0) {
                                             return 'El nombre no debe estar vacio';
-                                        } 
+                                        }
                                     }
                                     return undefined;
                                 })()}
@@ -166,7 +166,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     if (state.representante) {
                                         if (!EMAIL_PATTERN.test(state.representante.email)) {
                                             return 'El email es invalido';
-                                        } 
+                                        }
                                     }
                                     return undefined;
                                 })()}
@@ -192,7 +192,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     if (state.representante) {
                                         if (state.representante.telefono.length < 10 || state.representante.telefono.length > 12) {
                                             return 'El telefono es invalido';
-                                        } 
+                                        }
                                     }
                                     return undefined;
                                 })()}
@@ -274,8 +274,20 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={12} className='my-4' md={7}>
                 <MContainer className='mt-2 mb-4' styles={{ width: '100%' }} direction='vertical'>
-                    <Typography fontWeight={700} variant="body1" component="p" style={{marginBottom: 5}}>
+                    <Typography fontWeight={700} variant="body1" component="p" style={{ marginBottom: 5 }}>
                         Acerca de
+                        <MTooltip
+                            text={
+                                <>
+                                    <Typography fontSize={14} fontWeight={600}>Cuentanos sobre ti</Typography>
+                                    <Typography fontSize={14} fontWeight={400}>
+                                        Te recomendamos escribir un texto breve que describa tu formación profesional e intereses
+                                    </Typography>
+                                </>
+                            }
+                            color='blue'
+                            placement='right'
+                        />
                     </Typography>
                     <FormGroup
                         type="text-area"
@@ -293,7 +305,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     id='id-drag-n-drop-cv'
                     show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
                     label='Subir CV'
-                    tooltip={{text: 'prueba', color: 'blue', placement: 'top'}}
+                    tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'blue', placement: 'top' }}
                     height={100}
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
@@ -318,7 +330,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
                             Página web
                         </Typography>
-                        <MTooltip sx={{mt: 1}} text='prueba' color='orange' placement='right' />
+                        <MTooltip sx={{ mt: 1 }} text='Añade aquí el link de tu página web o portafolio que mejor represente tu trabajo, recuerda que este link será visible en tu perfil para los Cazatalentos.' color='orange' placement='right' />
                     </MContainer>
                     <FormGroup
                         className={'form-input-md'}

@@ -106,7 +106,21 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP4 o MOV
                                 </Typography>
-                                <MTooltip text='prueba' color='orange' placement='right' />
+                                <MTooltip
+                                    text={
+                                        <>
+                                            <Typography fontSize={14} fontWeight={600}>Añade un videobook o Reel.</Typography>
+                                            <Typography fontSize={14} fontWeight={400}>
+                                                Un reel consiste en montar un clip editado que destaque tus
+                                                momentos en escena de trabajos posteriores, te recomendamos
+                                                ser claro y directo, buscar la mejor calidad en Audio y
+                                                Video contrastando y recopilando tus mejores trabajos
+                                            </Typography>
+                                        </>
+                                    }
+                                    color='blue'
+                                    placement='top'
+                                />
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-videos'
@@ -141,7 +155,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP3 o WAV
                                 </Typography>
-                                <MTooltip text='prueba' color='orange' placement='right' />
+                                <MTooltip text='Resalta en un breve audio tu habilidad vocal; acentos, imitaciones, voces, canto, etc..' color='orange' placement='right' />
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-audios'

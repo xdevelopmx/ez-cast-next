@@ -12,7 +12,7 @@ export const Tag: FC<Props> = ({ text, styles = {}, onRemove }) => {
     return (
         <Typography sx={{
             display: 'inline',
-            backgroundColor: '#4AB7C6',
+            backgroundColor: '#069cb1',
             borderRadius: 2,
             color: '#fff',
             fontSize: 15,

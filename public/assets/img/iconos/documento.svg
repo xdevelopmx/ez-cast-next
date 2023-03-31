@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0d9db1;
+      }
+    </style>
+  </defs>
+  <g id="Group_130" data-name="Group 130">
+    <path id="Rectangle_158_-_Outline" data-name="Rectangle 158 - Outline" class="cls-1" d="m7.07,15.56h17.87c.62,0,1.12.5,1.12,1.12s-.5,1.12-1.12,1.12H7.07c-.62,0-1.12-.5-1.12-1.12s.5-1.12,1.12-1.12Z"/>
+    <path id="Rectangle_162_-_Outline" data-name="Rectangle 162 - Outline" class="cls-1" d="m7.07,20.03h17.87c.62,0,1.12.5,1.12,1.12s-.5,1.12-1.12,1.12H7.07c-.62,0-1.12-.5-1.12-1.12s.5-1.12,1.12-1.12Z"/>
+    <path id="Rectangle_159_-_Outline" data-name="Rectangle 159 - Outline" class="cls-1" d="m7.07,11.1h17.87c.62,0,1.12.5,1.12,1.12s-.5,1.12-1.12,1.12H7.07c-.62,0-1.12-.5-1.12-1.12s.5-1.12,1.12-1.12Z"/>
+    <path id="Rectangle_161" data-name="Rectangle 161" class="cls-1" d="m7,2c-1.1,0-2,.89-2,2h0v24.01c0,1.1.89,2,2,2h18c1.1,0,2-.89,2-2V4c0-1.1-.89-2-2-2H7m0-2h18c2.21,0,4,1.79,4,4h0v24.01c0,2.21-1.79,4-4,4H7c-2.21,0-4-1.79-4-4h0V4C3,1.79,4.79,0,7,0h0Z"/>
+  </g>
+</svg>

@@ -127,20 +127,20 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             ¿Estás interesado en trabajo de extra?
                             <MTooltip
-                                text='Prueba'
+                                text='¿Tienes mucha o poca experiencia y conocimiento dentro de un set? Trabajar de extra puede abrirte muchas puertas y darte conocimiento en el campo, además de que es un rol importante y siempre útil en toda producción.'
                                 color='orange'
                                 placement='right'
                             />
                         </Typography>
                     </MContainer>
-                    <Typography fontSize={'.9rem'} fontWeight={700} style={{ color: '#4ab7c6' }} component={'p'}>
+                    <Typography fontSize={'.9rem'} fontWeight={700} style={{ color: '#069cb1' }} component={'p'}>
                         Si indicas interés en trabajar como extra, aparecerás en la búsqueda de extras del Director
                     </Typography>
                     <MRadioGroup
                         id="interesado-trabajo-extra-group"
                         options={['Sí', 'No']}
                         disabled={false}
-                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                         value={state.preferencias.interesado_en_trabajos_de_extra ? 'Sí' : 'No'}
                         onChange={(e) => {
                             onFormChange({
@@ -310,7 +310,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     <MRadioGroup
                         id="agencia-representante-radio"
                         options={['Sí', 'No']}
-                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                        labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                         value={tieneAgenciaRepresentante ? 'Sí' : 'No'}
                         onChange={(e) => {
                             setTieneAgenciaRepresentante(e.currentTarget.value === 'Sí')
@@ -505,7 +505,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         <MRadioGroup
                             id="embarazo-radio"
                             options={['Sí', 'No']}
-                            labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#4ab7c6' }}
+                            labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                             value={estaEmbarazada ? 'Sí' : 'No'}
                             onChange={(e) => {
                                 setEstaEmbarazada(e.currentTarget.value === 'Sí')

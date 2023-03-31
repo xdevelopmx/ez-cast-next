@@ -15,7 +15,7 @@
 
 body {
   --color_a: var(--ezcast);
-  --color_b: #4ab7c6;
+  --color_b: #069cb1;
 }
 
 .filtro-blanco{
@@ -76,7 +76,7 @@ a {
   --bg_color: red;
   --treehouse: #4eb106;
   --ezcast: #069cb1;
-  --ezcast_b: #4ab7c6;
+  --ezcast_b: #069cb1;
   --talent_plus: #be1622;
   --txt_grey: #212529;
   --txt_grey_v2: #7C7979;

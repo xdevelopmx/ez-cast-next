@@ -40,7 +40,7 @@ export const Creditos = (props: {id_talento: number}) => {
     });
 
     return (
-        <Grid container sx={{ mt: 10 }}>
+        <Grid id="creditos" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
                 <SectionTitle title='Créditos' onClickButton={() => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -48,11 +48,13 @@ export const Creditos = (props: {id_talento: number}) => {
                 }} />
             </Grid>
             <Grid item xs={12}>
-                <Typography my={1} fontSize={30} sx={{ color: '#4ab7c6' }} fontWeight={900}>{(creditos.data) ? creditos.data.creditos.length : ''}</Typography>
+                <Typography my={1} fontSize={30} sx={{ color: '#069cb1' }} fontWeight={900}>
+                    {(creditos.data) ? creditos.data.creditos.length : ''}
+                </Typography>
                 <MTable
                     disable_animation
                     loading={loading && !creditos.isSuccess}
-                    backgroundColorHeader='#4ab7c6'
+                    backgroundColorHeader='#069cb1'
                     columnsHeader={[
                         <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                             Título
