@@ -12,7 +12,7 @@ export const CompensacionRol = () => {
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
             </Grid>
-            <Grid container item xs={12} mt={2}>
+            <Grid container item xs={12} mt={4}>
                 <Grid item xs={3}>
                     <MRadioGroup
                         label='¿Se pagará un sueldo?'
@@ -94,8 +94,9 @@ export const CompensacionRol = () => {
                             'Agradecimientos', 'Comidas', 'Crédito en pantalla', 'Copia del proyecto', 'Hospedaje',
                             'Kit Covid', 'Seguridad', 'Transporte', 'Otro'
                         ]}
+
                         label='¿Qué compensación no monetaria recibirá el talento?'
-                        labelStyle={{ fontWeight: '400', fontSize: '1.1rem' }}
+                        labelStyle={{ fontWeight: '400', fontSize: '1.1rem', width: '45%' }}
                         values={[false, false, false, false, false, false, false, false, false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                 </Grid>

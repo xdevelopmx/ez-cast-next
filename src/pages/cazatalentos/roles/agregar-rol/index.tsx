@@ -5,6 +5,7 @@ import { Alertas, Flotantes, MainLayout, MenuLateral } from '~/components'
 import { motion } from 'framer-motion'
 import { InformacionGeneralRol } from '~/components/cazatalento/roles'
 import { CompensacionRol } from '~/components/cazatalento/roles/agregar-rol/secciones/CompensacionRol'
+import { FiltrosDemograficosRol } from '~/components/cazatalento/roles/agregar-rol/secciones/FiltrosDemograficosRol'
 
 const AgregarRolPage: NextPage = () => {
     return (
@@ -18,7 +19,7 @@ const AgregarRolPage: NextPage = () => {
             <MainLayout menuSiempreBlanco={true} >
                 <div className="d-flex wrapper_ezc">
                     <MenuLateral />
-                    <Grid container xs={12} sx={{ padding: '0rem 5rem' }}>
+                    <Grid container xs={12} sx={{ padding: '0rem 5rem 5rem 5rem' }}>
                         <Grid item xs={12}>
                             <div className="container_box_header">
                                 <div className="d-flex justify-content-end align-items-start py-2">
@@ -33,6 +34,7 @@ const AgregarRolPage: NextPage = () => {
                             </div>
                             <InformacionGeneralRol />
                             <CompensacionRol/>
+                            <FiltrosDemograficosRol />
                         </Grid>
                     </Grid>
                 </div>
