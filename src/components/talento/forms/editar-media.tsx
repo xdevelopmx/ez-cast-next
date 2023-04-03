@@ -118,7 +118,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                             </Typography>
                                         </>
                                     }
-                                    color='blue'
+                                    color='orange'
                                     placement='top'
                                 />
                             </MContainer>

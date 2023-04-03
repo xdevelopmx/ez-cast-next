@@ -3,8 +3,6 @@ import Head from 'next/head'
 import React, { useReducer } from 'react'
 import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas } from '~/components'
 import { motion } from 'framer-motion'
-import MotionDiv from '~/components/layout/MotionDiv'
-import { MContainer } from '~/components/layout/MContainer'
 import { ContactoCasting } from '~/components/cazatalento/proyecto/crear/ContactoCasting'
 import { EquipoCreativo } from '~/components/cazatalento/proyecto/crear/EquipoCreativo'
 import { DetallesAdicionales } from '~/components/cazatalento/proyecto/crear/DetallesAdicionales'
@@ -12,6 +10,7 @@ import { LocacionProyecto } from '~/components/cazatalento/proyecto/crear/Locaci
 import { PublicarProyecto } from '~/components/cazatalento/proyecto/crear/PublicarProyecto'
 import { api, parseErrorBody } from '~/utils/api'
 import useNotify from '~/hooks/useNotify'
+import { Typography } from '@mui/material'
 
 export type ProyectoForm = {
     id?: number,
@@ -90,12 +89,12 @@ const Proyecto: NextPage = () => {
 
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    const {notify} = useNotify();
+    const { notify } = useNotify();
 
     const updateProyecto = api.proyectos.updateProyecto.useMutation({
         onSuccess: (data) => {
             notify('success', 'Se guardo el proyecto con exito');
-        }, 
+        },
         onError: (error) => {
             notify('error', parseErrorBody(error.message));
         }
@@ -104,26 +103,26 @@ const Proyecto: NextPage = () => {
     return (
         <>
 
-			<Head>
-				<title>DashBoard ~ Talentos | Talent Corner</title>
-				<meta name="description" content="Talent Corner" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
+            <Head>
+                <title>DashBoard ~ Talentos | Talent Corner</title>
+                <meta name="description" content="Talent Corner" />
+                <link rel="icon" href="/favicon.ico" />
+            </Head>
 
-			<MainLayout menuSiempreBlanco={true} >
-				<div className="d-flex wrapper_ezc">
-					<MenuLateral />
-					<div className="seccion_container col">
-						<br /><br />
-						<div className="container_box_header">
-							<div className="d-flex justify-content-end align-items-start py-2">
-								<Alertas />
-							</div>
-                            <div className="d-flex" style={{marginBottom: 64}}>
+            <MainLayout menuSiempreBlanco={true} >
+                <div className="d-flex wrapper_ezc">
+                    <MenuLateral />
+                    <div className="seccion_container col" style={{ paddingTop: '0px !important' }}>
+                        <br /><br />
+                        <div className="container_box_header">
+                            <div className="d-flex justify-content-end align-items-start py-2">
+                                <Alertas />
+                            </div>
+                            <div className="d-flex" style={{ marginBottom: 64 }}>
                                 <motion.img style={{ width: 35 }} src="/assets/img/silla-ezcast.svg" alt="icono" />
                                 <div>
-                                    <p className="color_a h4 font-weight-bold mb-0 ml-2"><b>Nuevo proyecto</b></p>
-                                    <p className="ml-2 mb-0"><b>¡Comencemos!</b></p>
+                                    <p style={{ marginLeft: 20 }} className="color_a h4 font-weight-bold mb-0"><b>Nuevo proyecto</b></p>
+                                    <p style={{ marginLeft: 20 }} className="mb-0"><b>¡Comencemos!</b></p>
                                 </div>
                             </div>
 
@@ -176,7 +175,7 @@ const Proyecto: NextPage = () => {
                             <div className="row mt-lg-4">
                                 <div className="col d-flex justify-content-center" >
                                     <div className="mr-3">
-                                        <button 
+                                        <button
                                             onClick={() => {
                                                 updateProyecto.mutate({
                                                     sindicato: {
@@ -187,25 +186,29 @@ const Proyecto: NextPage = () => {
                                                         id_tipo_proyecto: state.id_tipo,
                                                         descripcion: state.tipo
                                                     },
-                                                    proyecto: {...state},
+                                                    proyecto: { ...state },
                                                 })
-                                            }} 
-                                            className="btn btn-intro btn-price btn_out_line mb-2" 
+                                            }}
+                                            className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >
-                                            Guardar y terminar después
+                                            <Typography>Guardar y terminar después</Typography>
                                         </button>
                                     </div>
                                     <div>
-                                        <button className="btn btn-intro btn-price mb-2" type="submit">Guardar proyecto y agregar rol</button>
+                                        <button className="btn btn-intro btn-price mb-2" type="submit">
+                                            <Typography>
+                                                Guardar proyecto y agregar rol
+                                            </Typography>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-						</div>
-					</div>
-				</div>
-			</MainLayout>
-			<Flotantes />
+                        </div>
+                    </div>
+                </div>
+            </MainLayout>
+            <Flotantes />
         </>
     )
 }

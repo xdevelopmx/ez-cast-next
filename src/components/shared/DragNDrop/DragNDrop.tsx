@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { type ReactNode, useEffect, useRef, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import Image from 'next/image';
 import { Alert, Button, IconButton, Typography } from "@mui/material";
@@ -17,8 +17,8 @@ interface Props {
     id: string,
     multiple_files?: boolean,
     files: Archivo[],
-    label?: string,
-    tooltip?: {color: 'blue' | 'orange', text: string, placement: 'top-start' | 'top' | 'top-end' | 'left-start' | 'left' | 'left-end'| 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom' | 'bottom-end'},
+    label?: ReactNode,
+    tooltip?: { color: 'blue' | 'orange', text: string, placement: 'top-start' | 'top' | 'top-end' | 'left-start' | 'left' | 'left-end' | 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom' | 'bottom-end' },
     filetypes: string[],
     max_files?: number,
     hide_selected?: boolean,
@@ -31,6 +31,7 @@ interface Props {
     height?: string | number,
 
     text_button?: string,
+    noIconLabel?: boolean,
 }
 
 function DragNDrop(props: Props) {
@@ -128,12 +129,14 @@ function DragNDrop(props: Props) {
                         <div className="d-flex mb-2 align-items-center">
                             {props.label &&
                                 <>
-                                    <Image width={18} height={18} src="/assets/img/iconos/ico_pdf_blue.svg" alt="icono" />
-                                    <p className="ml-2 mb-0">{props.label}</p>
+                                    {!props.noIconLabel && <Image width={18} height={18} src="/assets/img/iconos/ico_pdf_blue.svg" alt="icono" />}
+                                    {typeof props.label === 'string'
+                                        ? <p className="ml-2 mb-0">{props.label}</p>
+                                        : <div className="ml-2 mb-0">{props.label}</div>}
                                 </>
                             }
                             {props.tooltip &&
-                                <MTooltip text={props.tooltip.text} color={props.tooltip.color} placement={props.tooltip.placement}/>
+                                <MTooltip text={props.tooltip.text} color={props.tooltip.color} placement={props.tooltip.placement} />
                             }
                         </div>
                         <div className="btn_talent_upload">

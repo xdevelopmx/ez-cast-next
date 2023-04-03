@@ -285,7 +285,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     </Typography>
                                 </>
                             }
-                            color='blue'
+                            color='orange'
                             placement='right'
                         />
                     </Typography>
@@ -305,7 +305,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     id='id-drag-n-drop-cv'
                     show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
                     label='Subir CV'
-                    tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'blue', placement: 'top' }}
+                    tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'orange', placement: 'top' }}
                     height={100}
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}

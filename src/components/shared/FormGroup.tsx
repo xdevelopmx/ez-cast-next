@@ -1,7 +1,6 @@
 
-import { Alert, Skeleton, TextField, Typography } from '@mui/material';
-import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
-import type Image from 'next/image';
+import { Skeleton, TextField, Typography } from '@mui/material';
+import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute, ReactNode } from 'react'
 import { MContainer } from '../layout/MContainer';
 import MotionDiv from '../layout/MotionDiv';
 
@@ -25,11 +24,13 @@ interface Props {
     show_error_message?: boolean,
     rows?: number,
     textBlueLabel?: string,
+
+    tooltip?: ReactNode;
 }
 
 export const FormGroup: FC<Props> = ({
     show_error_message, rows, error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
-    onChange, value, labelStyle, style, textBlueLabel
+    onChange, value, labelStyle, style, textBlueLabel, tooltip
 }) => {
     let input: JSX.Element = <input style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
     if (type === 'text-area') {
@@ -48,7 +49,10 @@ export const FormGroup: FC<Props> = ({
         label_element = <label
             style={labelStyle}
             className={labelClassName}
-            htmlFor={id}>{label} {textBlueLabel && <span style={{ color: '#069CB1', paddingLeft: 2 }}>{textBlueLabel}</span>}</label>;
+            htmlFor={id}
+        >{label} {textBlueLabel && <span style={{ color: '#069CB1', paddingLeft: 2 }}>
+            {textBlueLabel}</span>} {tooltip}
+        </label>;
         if (icon) {
             if (icon.position === 'start') {
                 label_element = <MContainer direction='horizontal'>{icon.element}{label_element}</MContainer>
