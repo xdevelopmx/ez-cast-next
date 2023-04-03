@@ -50,6 +50,11 @@ export const Habilidades = (props: {id_talento: number}) => {
             </Grid>
 
             <Grid item xs={12}>
+
+                {!loading && habilidades.data?.length === 0 &&
+                    <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ninguna habilidad</Typography>
+                }
+                        
                 <MotionDiv show={loading} animation={'fade'}>
                     <>
                         {Array.from({ length: 4 }).map((n, i) => { 

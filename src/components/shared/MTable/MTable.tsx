@@ -142,7 +142,7 @@ export const MTable: FC<MTableProps> = ({
 						})}
 						{_data.length === 0 &&
 							<TableRow>
-								<TableCell align='center' component="th" scope="row">
+								<TableCell align='left' component="th" scope="row">
 									<Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
 										No hay registros
 									</Typography>

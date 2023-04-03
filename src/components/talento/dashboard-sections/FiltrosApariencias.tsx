@@ -311,7 +311,7 @@ export const FiltrosApariencias = (props: { id_talento: number }) => {
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={12}>
                     {!medidas_grouped && medidas.isFetching && <Skeleton className="md-skeleton" />}
-                    {!medidas.isFetching && !medidas_grouped && <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{'No se han capturado las medidas'}</Typography>}
+                    {!medidas.isFetching && !medidas_grouped && <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun las medidas</Typography>}
                     {medidas_grouped && medidas_grouped.length > 0 &&
                         <Grid container>
                             {medidas_grouped.map((medida, j) => {
