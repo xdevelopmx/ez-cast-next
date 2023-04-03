@@ -3,7 +3,7 @@ import { type NextPage } from 'next'
 import Head from 'next/head'
 import { Alertas, Flotantes, MainLayout, MenuLateral } from '~/components'
 import { motion } from 'framer-motion'
-import { InformacionGeneralRol } from '~/components/cazatalento/roles'
+import { DescripcionDelRol, InformacionGeneralRol } from '~/components/cazatalento/roles'
 import { CompensacionRol } from '~/components/cazatalento/roles/agregar-rol/secciones/CompensacionRol'
 import { FiltrosDemograficosRol } from '~/components/cazatalento/roles/agregar-rol/secciones/FiltrosDemograficosRol'
 
@@ -35,6 +35,7 @@ const AgregarRolPage: NextPage = () => {
                             <InformacionGeneralRol />
                             <CompensacionRol/>
                             <FiltrosDemograficosRol />
+                            <DescripcionDelRol />
                         </Grid>
                     </Grid>
                 </div>

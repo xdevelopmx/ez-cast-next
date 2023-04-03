@@ -32,6 +32,8 @@ interface Props {
 
     text_button?: string,
     noIconLabel?: boolean,
+
+    mainIcon?:ReactNode,
 }
 
 function DragNDrop(props: Props) {
@@ -149,6 +151,9 @@ function DragNDrop(props: Props) {
                                     height: props.height
                                 }}>
                                 {/* <p className="mb-1">{`Acepta ${props.filetypes.join(', ')}`}</p> */}
+
+                                {props.mainIcon}
+
                                 <div className="btn btn-intro"
                                     style={{
                                         display: 'flex',
