@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import { motion } from 'framer-motion'
-
+import { signIn } from 'next-auth/react'
 
 import { CreaTuPerfil, MainLayout, Pago, TipoDeMembresia } from "~/components";
 import MotionDiv from "~/components/layout/MotionDiv";
@@ -87,17 +87,30 @@ const RegistroPage: NextPage = () => {
 
 	const create_user = api.auth.createUser.useMutation({
 		onSuccess(input) {
-			switch (state.perfil.tipo_usuario) {
-				case 'talento': {
-					router.push('/talento/dashboard');
-					break;
+			signIn('credentials', {
+				user: state.perfil.usuario,
+				password: state.perfil.contrasenia,
+				tipo_usuario: state.perfil.tipo_usuario,
+				correo_usuario: state.perfil.email,
+				redirect: false,
+			}).then(res => {
+				if (res?.ok) {
+					notify('success', 'Autenticacion Exitosa');
+					switch (state.perfil.tipo_usuario) {
+						case 'talento': {
+							router.push('/talento/dashboard');
+							break;
+						}
+						case 'cazatalentos': {
+							router.push('/cazatalentos/dashboard');
+							break;
+						}
+					}
 				}
-				case 'cazatalentos': {
-					router.push('/cazatalentos/dashboard');
-					break;
-				}
-			}
-			notify('success', 'Autenticacion Exitosa');
+				console.log(res);
+			}).catch((err: Error) => {
+				notify('error', err.message);
+			});
 			console.log('Se guardo con exito', input);
 		},
 		onError: (error) => {

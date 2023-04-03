@@ -55,31 +55,31 @@ model Talentos {
 }
 
 model MedidasPorTalentos {
-  id              Int      @id @default(autoincrement())
-  id_talento      Int      @unique
-  general_cadera Int?
+  id                   Int      @id @default(autoincrement())
+  id_talento           Int      @unique
+  general_cadera       Int?
   general_entrepiernas Int?
-  general_guantes Int?
-  general_sombrero Int?
-  hombre_pecho    Int?
-  hombre_cuello   Int?
-  hombre_mangas   Int?
-  hombre_saco     String?
-  hombre_playera  String?
-  hombre_calzado  Float?
-  mujer_vestido   Int?
-  mujer_busto     Int?
-  mujer_copa      String?
-  mujer_cadera    Int?
-  mujer_playera   String?
-  mujer_pants     Int?
-  mujer_calzado   Float?
-  nino_4_18_anios String?
-  nina_4_18_anios String?
-  toddler         String?
-  bebe_meses      String?
-  calzado_ninos   String?
-  talento         Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  general_guantes      Int?
+  general_sombrero     Int?
+  hombre_pecho         Int?
+  hombre_cuello        Int?
+  hombre_mangas        Int?
+  hombre_saco          String?
+  hombre_playera       String?
+  hombre_calzado       Float?
+  mujer_vestido        Int?
+  mujer_busto          Int?
+  mujer_copa           String?
+  mujer_cadera         Int?
+  mujer_playera        String?
+  mujer_pants          Int?
+  mujer_calzado        Float?
+  nino_4_18_anios      String?
+  nina_4_18_anios      String?
+  toddler              String?
+  bebe_meses           String?
+  calzado_ninos        String?
+  talento              Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model RepresentantesPorTalentos {
@@ -152,7 +152,7 @@ model CatalogoUniones {
   es                            String
   en                            String
   union_por_info_basica_talento UnionPorInfoBasicaTalento[]
-  sindicato_por_proyecto SindicatoPorProyecto[]
+  sindicato_por_proyecto        SindicatoPorProyecto[]
 }
 
 model RedesSocialesPorTalentos {
@@ -179,7 +179,7 @@ model Administradores {
 }
 
 model Proyecto {
-  id                   Int          @id @default(autoincrement())
+  id                   Int                      @id @default(autoincrement())
   nombre               String
   director_casting     String
   telefono_contacto    String
@@ -191,40 +191,40 @@ model Proyecto {
   sinopsis             String
   url_archivo          String?
   detalles_adicionales String
-  id_estado_republica             Int
+  id_estado_republica  Int
   url_foto_portada     String?
-  compartir_nombre     Boolean      @default(true)
-  estatus              String       @default("Por Validar")
+  compartir_nombre     Boolean                  @default(true)
+  estatus              String                   @default("Por Validar")
   id_cazatalentos      Int
-  estado_republica CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
-  cazatalentos         Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  estado_republica     CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  cazatalentos         Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   rol                  Roles[]
-  tipo TipoProyectoPorProyecto?
-  sindicato SindicatoPorProyecto?
+  tipo                 TipoProyectoPorProyecto?
+  sindicato            SindicatoPorProyecto?
 }
 
 model TipoProyectoPorProyecto {
-  id                   Int          @id @default(autoincrement())
-  id_proyecto Int @unique
+  id               Int                   @id @default(autoincrement())
+  id_proyecto      Int                   @unique
   id_tipo_proyecto Int
-  descripcion String
-  tipo_proyecto CatalogoTipoProyectos @relation(fields: [id_tipo_proyecto], references: [id])
-  proyecto Proyecto @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  descripcion      String
+  tipo_proyecto    CatalogoTipoProyectos @relation(fields: [id_tipo_proyecto], references: [id])
+  proyecto         Proyecto              @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
 }
 
 model SindicatoPorProyecto {
-  id                   Int          @id @default(autoincrement())
-  id_proyecto Int @unique
+  id           Int             @id @default(autoincrement())
+  id_proyecto  Int             @unique
   id_sindicato Int
-  descripcion String
-  sindicato CatalogoUniones @relation(fields: [id_sindicato], references: [id])
-  proyecto Proyecto @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  descripcion  String
+  sindicato    CatalogoUniones @relation(fields: [id_sindicato], references: [id])
+  proyecto     Proyecto        @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTipoProyectos {
-  id Int    @id @default(autoincrement())
-  en String
-  es String
+  id                         Int                       @id
+  en                         String
+  es                         String
   tipo_proyecto_por_proyecto TipoProyectoPorProyecto[]
 }
 
@@ -250,15 +250,17 @@ model Roles {
 }
 
 model CatalogoTiposRoles {
-  id     Int     @id @default(autoincrement())
-  nombre String
-  tipo   String
-  rol    Roles[]
+  id   Int     @id @default(autoincrement())
+  es   String
+  en   String
+  tipo String
+  rol  Roles[]
 }
 
 model CatalogosCompNoMones {
-  id     Int    @id @default(autoincrement())
-  nombre String
+  id Int    @id
+  es String
+  en String
 }
 
 model HabilidadesPorRoles {
@@ -314,8 +316,16 @@ model NSFWSeleccionadosPorRoles {
 
 model CatalogoNSFW {
   id                        Int                         @id
-  nombre                    String
+  es                        String
+  en                        String
   NSFWSeleccionadosPorRoles NSFWSeleccionadosPorRoles[]
+}
+
+model CatalogoTipoUsosHorario {
+  id             Int                  @id
+  es             String
+  en             String
+  requisitos_rol RequisitosPorRoles[]
 }
 
 model FiltrosDemoPorRoles {
@@ -339,13 +349,7 @@ model AnimalPorRoles {
   tamanio                String
   id_filtro_demo_por_rol Int                 @unique
   filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
-  animal                 CatalogoAnimales    @relation(fields: [id_animal], references: [id])
-}
-
-model CatalogoAnimales {
-  id               Int              @id
-  nombre           String
-  animal_por_roles AnimalPorRoles[]
+  animal                 CatalogoTipoMascota @relation(fields: [id_animal], references: [id])
 }
 
 model AparenciasEtnicasPorRoles {
@@ -436,7 +440,7 @@ model RequisitosPorRoles {
   id                     Int                        @id @default(autoincrement())
   presentacion_solicitud DateTime
   informacion            String
-  uso_horario            String
+  id_uso_horario         Int
   id_rol                 Int                        @unique
   id_idioma              Int
   id_estado_republica    Int
@@ -444,6 +448,7 @@ model RequisitosPorRoles {
   idioma                 CatalogoIdiomas            @relation(fields: [id_idioma], references: [id])
   estado_republica       CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
   medios_multimedia      MediosMultimediaPorRoles[]
+  uso_horario            CatalogoTipoUsosHorario    @relation(fields: [id_uso_horario], references: [id])
 }
 
 model CatalogoIdiomas {
@@ -461,7 +466,7 @@ model CatalogoEstadosRepublica {
   casting_por_roles       CastingPorRoles[]
   filmacion_por_roles     FilmacionPorRoles[]
   locaciones_preferencias LocacionesPrerenciasPorTalentos[]
-  proyecto Proyecto[]
+  proyecto                Proyecto[]
 }
 
 model MediosMultimediaPorRoles {
@@ -474,7 +479,8 @@ model MediosMultimediaPorRoles {
 
 model CatalogoMediosMultimedia {
   id                Int                        @id @default(autoincrement())
-  nombre            String
+  es                String
+  en                String
   medios_multimedia MediosMultimediaPorRoles[]
 }
 
@@ -509,6 +515,7 @@ model CatalogoTipoMascota {
   id               Int              @id
   es               String
   en               String
+  animal_por_roles AnimalPorRoles[]
   mascotas_talento MascotaTalento[]
 }
 

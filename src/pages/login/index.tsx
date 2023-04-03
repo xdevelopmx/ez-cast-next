@@ -145,7 +145,16 @@ const LoginPage: NextPage = () => {
 										}).then(res => {
 											if (res?.ok) {
 												notify('success', 'Autenticacion Exitosa');
-												router.push('/talento/dashboard');
+												switch (state.tipo_usuario) {
+													case 'talento': {
+														router.push('/talento/dashboard');
+														break;
+													}
+													case 'cazatalentos': {
+														router.push('/cazatalentos/dashboard');
+														break;
+													}
+												}
 											}
 											console.log(res);
 										}).catch((err: Error) => {

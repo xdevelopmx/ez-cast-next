@@ -135,6 +135,36 @@ export const CatalogosRouter = createTRPCRouter({
 			return await ctx.prisma.catalogoTiposTatuajes.findMany();
 		}
 	),
+	getTiposRoles: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTiposRoles.findMany();
+		}
+	),
+	getTiposCompensacionesNoMonetarias: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogosCompNoMones.findMany();
+		},
+	),
+	getTiposNSFW: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoNSFW.findMany();
+		},
+	),
+	getTiposMultimedia: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoMediosMultimedia.findMany();
+		},
+	),
+	getUsosDeHorario: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoTipoUsosHorario.findMany();
+		},
+	),
+	getIdiomas: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoIdiomas.findMany();
+		},
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

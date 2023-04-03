@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { CameraAlt, Close } from '@mui/icons-material';
 import { FormGroup } from '../shared/FormGroup';
 import {MContainer} from '../layout/MContainer';
+import { signOut } from 'next-auth/react'
 import Image from 'next/image';
 import { api, parseErrorBody } from '~/utils/api';
 import { useSession } from "next-auth/react"
@@ -451,8 +452,18 @@ export const MenuLateral = () => {
 							<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
 							<a href="#">Ayuda</a>
 						</div>
-						<p className="mt-5 mb-2"><a className="text-white" href="#">Cerrar sesión</a></p>
-
+						<p className="mt-5 mb-2">
+							<a 
+								onClick={() => {
+									void signOut({
+										callbackUrl: '/login'
+									});
+								}} 
+								className="text-white" 
+								href="#">
+								Cerrar sesión
+							</a>
+						</p>
 						<div className="popup_conteiner box_editprofile">
 							<div className="close_popup close_popup_editprofile">
 								<motion.img src="/assets/img/iconos/equiz_blue.svg" alt="icono" />
