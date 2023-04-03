@@ -13,7 +13,7 @@ export const CompensacionRol = () => {
                 />
             </Grid>
             <Grid container item xs={12} mt={4}>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <MRadioGroup
                         label='¿Se pagará un sueldo?'
                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
@@ -29,7 +29,7 @@ export const CompensacionRol = () => {
                         }}
                     />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                     <MContainer direction='horizontal' styles={{ gap: 30 }}>
                         <FormGroup
                             //error={state.nombre.length < 2 ? 'El nombre es demasiado corto' : undefined}
@@ -65,7 +65,7 @@ export const CompensacionRol = () => {
                 </Grid>
             </Grid>
             <Grid container item xs={12} mt={2}>
-                <Grid item xs={3}>
+                <Grid item xs={4}>
                     <MRadioGroup
                         label='¿Se otorgarán compensaciones?'
                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
@@ -81,7 +81,7 @@ export const CompensacionRol = () => {
                         }}
                     />
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                     <MCheckboxGroup
                         title='¿Qué compensación no monetaria recibirá el talento?'
                         onChange={(e) => {
