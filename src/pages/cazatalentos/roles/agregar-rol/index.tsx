@@ -8,6 +8,7 @@ import { CompensacionRol } from '~/components/cazatalento/roles/agregar-rol/secc
 import { FiltrosDemograficosRol } from '~/components/cazatalento/roles/agregar-rol/secciones/FiltrosDemograficosRol'
 import { InformacionCastingRol } from '~/components/cazatalento/roles/agregar-rol/secciones/InformacionCastingRol'
 import { InformacionFilmacionRol } from '~/components/cazatalento/roles/agregar-rol/secciones/InformacionFilmacionRol'
+import { RequisitosRol } from '~/components/cazatalento/roles/agregar-rol/secciones/RequisitosRol'
 
 const AgregarRolPage: NextPage = () => {
     return (
@@ -40,6 +41,7 @@ const AgregarRolPage: NextPage = () => {
                             <DescripcionDelRol />
                             <InformacionCastingRol />
                             <InformacionFilmacionRol />
+                            <RequisitosRol />
                         </Grid>
                     </Grid>
                 </div>
