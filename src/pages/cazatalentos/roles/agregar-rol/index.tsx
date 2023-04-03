@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { DescripcionDelRol, InformacionGeneralRol } from '~/components/cazatalento/roles'
 import { CompensacionRol } from '~/components/cazatalento/roles/agregar-rol/secciones/CompensacionRol'
 import { FiltrosDemograficosRol } from '~/components/cazatalento/roles/agregar-rol/secciones/FiltrosDemograficosRol'
+import { InformacionCastingRol } from '~/components/cazatalento/roles/agregar-rol/secciones/InformacionCastingRol'
 
 const AgregarRolPage: NextPage = () => {
     return (
@@ -36,6 +37,7 @@ const AgregarRolPage: NextPage = () => {
                             <CompensacionRol/>
                             <FiltrosDemograficosRol />
                             <DescripcionDelRol />
+                            <InformacionCastingRol />
                         </Grid>
                     </Grid>
                 </div>

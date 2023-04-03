@@ -2,8 +2,15 @@ import { Grid } from '@mui/material'
 import { MContainer } from '~/components/layout/MContainer'
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from '~/components/shared'
 import { MTooltip } from '~/components/shared/MTooltip'
+import { api } from '~/utils/api';
 
 export const CompensacionRol = () => {
+
+    const tipos_compensaciones_no_monetarias = api.catalogos.getTiposCompensacionesNoMonetarias.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
@@ -84,17 +91,22 @@ export const CompensacionRol = () => {
                 <Grid item xs={8}>
                     <MCheckboxGroup
                         title='¿Qué compensación no monetaria recibirá el talento?'
-                        onChange={(e) => {
-                            /* onFormChange({ has_vehiculos: e }) */
+                        
+                        onChange={(e, i) => {
+                            const tipo_compensacion = tipos_compensaciones_no_monetarias.data?.filter((_, index) => index === i)[0];
+                            if (tipo_compensacion) {
+                                /* onFormChange({
+                                    tipos_compensaciones_no_monetarias_interesado_en_interpretar:
+                                        (state.tipos_compensaciones_no_monetarias_interesado_en_interpretar.includes(apariencia.id)) ?
+                                            state.tipos_compensaciones_no_monetarias_interesado_en_interpretar.filter(e => e !== apariencia.id) :
+                                            state.tipos_compensaciones_no_monetarias_interesado_en_interpretar.concat([apariencia.id])
+                                }) */
+                            }
                         }}
                         direction='horizontal'
                         id="tipos-compensaciones-no-monetarias"
                         labelClassName={'label-black-lg'}
-                        options={[
-                            'Agradecimientos', 'Comidas', 'Crédito en pantalla', 'Copia del proyecto', 'Hospedaje',
-                            'Kit Covid', 'Seguridad', 'Transporte', 'Otro'
-                        ]}
-
+                        options={(tipos_compensaciones_no_monetarias.data) ? tipos_compensaciones_no_monetarias.data.map(g => g.es) : []}
                         label='¿Qué compensación no monetaria recibirá el talento?'
                         labelStyle={{ fontWeight: '400', fontSize: '1.1rem', width: '45%' }}
                         values={[false, false, false, false, false, false, false, false, false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
