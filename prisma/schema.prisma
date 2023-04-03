@@ -66,14 +66,14 @@ model MedidasPorTalentos {
   hombre_mangas   Int?
   hombre_saco     String?
   hombre_playera  String?
-  hombre_calzado  Int?
+  hombre_calzado  Float?
   mujer_vestido   Int?
   mujer_busto     Int?
   mujer_copa      String?
   mujer_cadera    Int?
   mujer_playera   String?
   mujer_pants     Int?
-  mujer_calzado   Int?
+  mujer_calzado   Float?
   nino_4_18_anios String?
   nina_4_18_anios String?
   toddler         String?

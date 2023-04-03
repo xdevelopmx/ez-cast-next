@@ -528,7 +528,32 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { props.onClose(false) }} variant='text' startIcon={<Close />}>
 					Cancelar
 				</Button>
-				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { save_medidas.mutate((form) ? form : {}) }} variant='text' startIcon={<Check />}>
+				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { 
+					save_medidas.mutate({
+						general_cadera: (form && form.general_cadera && form.general_cadera > 0) ? form.general_cadera : null,
+						general_entrepiernas: (form && form.general_entrepiernas && form.general_entrepiernas > 0) ? form.general_entrepiernas : null,
+						general_guantes: (form && form.general_guantes && form.general_guantes > 0) ? form.general_guantes : null,
+						general_sombrero: (form && form.general_sombrero && form.general_sombrero > 0) ? form.general_sombrero : null,
+						hombre_pecho: (form && form.hombre_pecho && form.hombre_pecho > 0) ? form.hombre_pecho : null,
+						hombre_cuello: (form && form.hombre_cuello && form.hombre_cuello > 0) ? form.hombre_cuello : null,
+						hombre_mangas: (form && form.hombre_mangas && form.hombre_mangas > 0) ? form.hombre_mangas : null,
+						hombre_saco: (form && form.hombre_saco && form.hombre_saco.trim() !== '') ? form.hombre_saco : null,
+						hombre_playera: (form && form.hombre_playera && form.hombre_playera.trim() !== '') ? form.hombre_playera : null,
+						hombre_calzado: (form && form.hombre_calzado && form.hombre_calzado > 0) ? form.hombre_calzado : null,
+						mujer_vestido: (form && form.mujer_vestido && form.mujer_vestido > 0) ? form.mujer_vestido : null,
+						mujer_busto: (form && form.mujer_busto && form.mujer_busto > 0) ? form.mujer_busto : null,
+						mujer_copa: (form && form.mujer_copa && form.mujer_copa.trim() !== '') ? form.mujer_copa : null,
+						mujer_cadera: (form && form.mujer_cadera && form.mujer_cadera > 0) ? form.mujer_cadera : null,
+						mujer_playera: (form && form.mujer_playera && form.mujer_playera.trim() !== '') ? form.mujer_playera : null,
+						mujer_pants: (form && form.mujer_pants && form.mujer_pants > 0) ? form.mujer_pants : null,
+						mujer_calzado: (form && form.mujer_calzado && form.mujer_calzado > 0) ? form.mujer_calzado : null,
+						nino_4_18_anios: (form && form.nino_4_18_anios && form.nino_4_18_anios.trim() !== '') ? form.nino_4_18_anios : null,
+						nina_4_18_anios: (form && form.nina_4_18_anios && form.nina_4_18_anios.trim() !== '') ? form.nina_4_18_anios : null,
+						toddler: (form && form.toddler && form.toddler.trim() !== '') ? form.toddler : null,
+						bebe_meses: (form && form.bebe_meses && form.bebe_meses.trim() !== '') ? form.bebe_meses : null,
+						calzado_ninos: (form && form.calzado_ninos && form.calzado_ninos.trim() !== '') ? form.calzado_ninos : null
+					}) 
+				}} variant='text' startIcon={<Check />}>
 					Guardar
 				</Button>
 			</DialogActions>

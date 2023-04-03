@@ -5,6 +5,7 @@ import { api } from '~/utils/api';
 import { useMemo } from 'react';
 import { MTable } from '~/components/shared/MTable/MTable';
 import { useRouter } from 'next/router';
+import MotionDiv from '~/components/layout/MotionDiv';
 
 export const Activos = (props: { id_talento: number }) => {
     const router = useRouter();
@@ -22,14 +23,15 @@ export const Activos = (props: { id_talento: number }) => {
     }, [activos.data]);
 
     const activos_arr = useMemo(() => {
+        let arrays: {
+            mascotas: { tipo: string, raza: string, tamanio: string }[],
+            vehiculos: { tipo: string, marca: string, modelo: string, color: string, anio: string }[],
+            vestuarios: { tipo: string, tipo_especifico: string, descripcion: string }[],
+            props: { tipo: string, descripcion: string }[],
+            equipos_deportivos: { tipo: string, descripcion: string }[]
+        } = {mascotas: [], vehiculos: [], vestuarios: [], props: [], equipos_deportivos: []};
         if (data) {
-            const arrays: {
-                mascotas: { tipo: string, raza: string, tamanio: string }[],
-                vehiculos: { tipo: string, marca: string, modelo: string, color: string, anio: string }[],
-                vestuarios: { tipo: string, tipo_especifico: string, descripcion: string }[],
-                props: { tipo: string, descripcion: string }[],
-                equipos_deportivos: { tipo: string, descripcion: string }[]
-            } = {
+            arrays = {
                 mascotas: data.mascotas.map((m) => {
                     if (m.tipo_mascota) {
                         if (m.id_tipo_mascota === 5 && m.raza_mascota) {
@@ -67,7 +69,7 @@ export const Activos = (props: { id_talento: number }) => {
             }
             return arrays;
         }
-        return null;
+        return arrays;
     }, [data]);
 
     return (
@@ -96,7 +98,7 @@ export const Activos = (props: { id_talento: number }) => {
                             Tamaño
                         </Typography>,
                     ]}
-                    data={(!loading && activos_arr) ?
+                    data={(!loading) ?
                         activos_arr.mascotas
                         :
                         Array.from({ length: 4 }).map((n, i) => {
@@ -132,7 +134,7 @@ export const Activos = (props: { id_talento: number }) => {
                             Año
                         </Typography>,
                     ]}
-                    data={(!loading && activos_arr) ?
+                    data={(!loading) ?
                         activos_arr.vehiculos
                         :
                         Array.from({ length: 4 }).map((n, i) => {
@@ -164,7 +166,7 @@ export const Activos = (props: { id_talento: number }) => {
                             Descripcion
                         </Typography>,
                     ]}
-                    data={(!loading && activos_arr) ?
+                    data={(!loading) ?
                         activos_arr.vestuarios
                         :
                         Array.from({ length: 4 }).map((n, i) => {
@@ -191,7 +193,7 @@ export const Activos = (props: { id_talento: number }) => {
                             Descripcion
                         </Typography>,
                     ]}
-                    data={(!loading && activos_arr) ?
+                    data={(!loading) ?
                         activos_arr.props
                         :
                         Array.from({ length: 4 }).map((n, i) => {
@@ -217,7 +219,7 @@ export const Activos = (props: { id_talento: number }) => {
                             Descripcion
                         </Typography>,
                     ]}
-                    data={(!loading && activos_arr) ?
+                    data={(!loading) ?
                         activos_arr.equipos_deportivos
                         :
                         Array.from({ length: 4 }).map((n, i) => {

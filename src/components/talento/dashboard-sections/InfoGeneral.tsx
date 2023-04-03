@@ -127,8 +127,8 @@ export const InfoGeneral = (props: { id_talento: number }) => {
                     </Typography>
                     <div style={{ marginTop: 32 }}>
                         {creditos.isFetching && <Skeleton className="md-skeleton" />}
-                        {!creditos.isFetching && creditos.data?.creditos.length === 0 &&
-                            <Typography fontSize={'1rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun credito</Typography>
+                        {!creditos.isFetching && !creditos.data &&
+                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun credito</Typography>
                         }
                         {!creditos.isFetching && creditos.data && creditos.data.creditos.length > 0 && creditos.data.creditos.filter(c => c.destacado).length === 0 &&
                             <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes creditos destacados</Typography>
