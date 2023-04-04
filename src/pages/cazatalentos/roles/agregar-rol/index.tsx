@@ -63,7 +63,7 @@ const AgregarRolPage: NextPage = () => {
         onSuccess(input) {
             notify('success', 'Se guardo la informacion general con exito');
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            /* talento.refetch(); */
+            dispatch({ type: 'update-info-gral', value: { id_rol: input.id } })
             console.log({ input });
         },
         onError: (error) => {
@@ -103,20 +103,8 @@ const AgregarRolPage: NextPage = () => {
                                     dispatch({ type: 'update-info-gral', value: input });
                                 }}
                                 onSaveChanges={() => {
-                                    console.log({
-                                        id_rol: 0,
-                                        nombre: state.informacion_general.nombre,
-                                        id_tipo_rol: state.informacion_general.id_tipo_rol,
-                                        id_proyecto: router.query['id-proyecto']
-                                            ? parseInt(
-                                                typeof router.query['id-proyecto'] === 'string'
-                                                    ? router.query['id-proyecto']
-                                                    : '0'
-                                            )
-                                            : 0
-                                    });
                                     saveInfoGral.mutate({
-                                        id_rol: 0,
+                                        id_rol: state.informacion_general.id_rol,
                                         nombre: state.informacion_general.nombre,
                                         id_tipo_rol: state.informacion_general.id_tipo_rol,
                                         id_proyecto: router.query['id-proyecto']
