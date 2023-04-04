@@ -41,6 +41,68 @@ export const ProyectosRouter = createTRPCRouter({
 			return proyecto;
 		}
 	),
+	deleteProyecto: protectedProcedure
+		.input(z.number())
+		.mutation(async ({ input, ctx }) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				const proyecto: Proyecto = await ctx.prisma.proyecto.delete({
+					where: {
+						id: input
+					},
+				});
+				if (!proyecto) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar el proyecto',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return proyecto;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalentos puede modificar los proyectos',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
+	updateEstadoProyecto: protectedProcedure
+    	.input(z.object({ 
+			id: z.number(),
+			estatus: z.string(),
+		}))
+		.mutation(async ({ input, ctx }) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				const proyecto: Proyecto = await ctx.prisma.proyecto.update({
+					where: {
+						id: input.id
+					},
+					data: {
+						estatus: input.estatus
+					}
+				});
+				if (!proyecto) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar el proyecto',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return proyecto;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalentos puede modificar los proyectos',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
   	updateProyecto: protectedProcedure
     	.input(z.object({ 
 			id: z.number().nullish(),

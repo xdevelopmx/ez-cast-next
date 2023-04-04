@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion'
 import { AccordionDetails, AccordionSummary, Button, IconButton, Typography } from '@mui/material'
 import { Alertas, Destacados, Flotantes, ListadoProyectos, MainLayout, MenuLateral } from "~/components";
-import { api } from "~/utils/api";
+import { api, parseErrorBody } from "~/utils/api";
 import { getSession } from "next-auth/react";
 import { MTable } from "~/components/shared/MTable/MTable";
 import Link from "next/link";
@@ -13,17 +13,68 @@ import { MContainer } from "~/components/layout/MContainer";
 import { User } from "next-auth";
 import CircleIcon from '@mui/icons-material/Circle';
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import useNotify from "~/hooks/useNotify";
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
 }
 
 const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({user}) => {
-	const [confirmation_dialog, setConfirmationDialog] = useState<{opened: boolean, title: string, content: JSX.Element}>({opened: false, title: '', content: <></>});
+	const {notify} = useNotify();
+	const [tabSelected, setTabSelected] = useState<'ACTIVOS' | 'ARCHIVADOS'>('ACTIVOS');
+	const [confirmation_dialog, setConfirmationDialog] = useState<{opened: boolean, title: string, content: JSX.Element, action: 'STATE_CHANGE' | 'DELETE', data: Map<string, unknown>}>({opened: false, title: '', content: <></>, action: 'DELETE', data: new Map});
 	const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
 		refetchOnWindowFocus: false
 	});
+	const deleteProyecto = api.proyectos.deleteById.useMutation({
+		onSuccess() {
+			notify('success', 'Se elimino el proyecto con exito');
+			void proyectos.refetch();
+		},
+		onError(error) {
+			notify('error', parseErrorBody(error.message));
+		}
+	});
+	const updateEstadoProyecto = api.proyectos.updateEstadoProyecto.useMutation({
+		onSuccess() {
+			notify('success', 'Se cambio el estado el proyecto con exito');
+			void proyectos.refetch();
+		},
+		onError(error) {
+			notify('error', parseErrorBody(error.message));
+		}
+	});
+
+	const filtered_proyectos = useMemo(() => {
+		if (proyectos.data) {
+			if (tabSelected === 'ARCHIVADOS') {
+				return proyectos.data.filter(p => p.estatus.toUpperCase() === 'ARCHIVADO');
+			}
+			return proyectos.data.filter(p => p.estatus.toUpperCase() !== 'ARCHIVADO');
+		}
+		return [];
+	}, [tabSelected, proyectos.data]);
+
+
+	const no_data_message = useMemo(() => {
+		if (tabSelected === 'ACTIVOS') {
+			return <div className="box_message_blue">
+				<p className="h3">No has creado ningún proyecto</p>
+				<p>Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.<br />
+					Recuerda crear todos tus roles y leer los requisitos de aprobación antes de terminar y
+					mandarlos.<br />
+					¡Comienza ahora mismo!</p>
+			</div>
+		} 
+		if (tabSelected === 'ARCHIVADOS') {
+			return <div className="box_message_blue">
+				<p className="h3">No tienes ningún proyecto archivado</p>
+				<p>Aqui apareceran todos los proyectos que hayas colocado como archivados<br /></p>
+			</div>
+		} 
+	}, [tabSelected]);
+	
 	console.log(proyectos);
 	return (
 		<>
@@ -89,11 +140,11 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 								<div className="row">
 									<ul className="nav nav-tabs col ml-3" id="myTab" role="tablist">
 										<li className="nav-item">
-											<a className="nav-link active" id="activos-tab" data-toggle="tab" href="#activos" role="tab"
+											<a onClick={() => {setTabSelected('ACTIVOS')}} className={`nav-link ${tabSelected === 'ACTIVOS' ? 'active' : ''}`} id="activos-tab" data-toggle="tab" href="#activos" role="tab"
 												aria-controls="activos" aria-selected="true">Activos</a>
 										</li>
 										<li className="nav-item">
-											<a className="nav-link" id="archivados-tab" data-toggle="tab" href="#archivados" role="tab"
+											<a onClick={() => {setTabSelected('ARCHIVADOS')}} className={`nav-link ${tabSelected === 'ARCHIVADOS' ? 'active' : ''}`} id="archivados-tab" data-toggle="tab" href="#archivados" role="tab"
 												aria-controls="archivados" aria-selected="false">Archivados</a>
 										</li>
 									</ul>
@@ -119,7 +170,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 									backgroundColorHeader='#069cb1'
                     				styleHeaderTableCell={{ padding: '5px !important' }}
 									loading={proyectos.isFetching}
-									data={(proyectos.data) ? proyectos.data.map(p => {
+									data={(filtered_proyectos) ? filtered_proyectos.map(p => {
 										return {
 											nombre: <MContainer direction="horizontal">
 												<CircleIcon style={{color: (p.estatus.toUpperCase() === 'ACTIVO') ? 'green' : 'grey', width: 12, height: 12, marginTop: 6, marginRight: 4}} />
@@ -131,39 +182,69 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 											tipo: (p.tipo) ? (p.tipo.id_tipo_proyecto === 99) ? p.tipo.descripcion : p.tipo.tipo_proyecto.es : 'ND', 
 											fecha: p.created.toLocaleDateString('es-mx'), 
 											acciones: <MContainer direction="horizontal" justify='space-between'>
+												<>
+													{['ARCHIVADO', 'POR VALIDAR'].includes(p.estatus.toUpperCase()) &&
+														<IconButton 
+															onClick={(e) => {
+																const params = new Map<string, unknown>();
+																params.set('id', p.id);
+																params.set('state', (p.estatus.toUpperCase() === 'ARCHIVADO') ? 'Por Validar' : 'Archivado');
+																setConfirmationDialog({action: 'STATE_CHANGE', data: params, opened: true, title: (p.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Proyecto' : 'Archivar Proyecto', content: <Typography variant="body2">{`Seguro que deseas ${(p.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este proyecto?`}</Typography>});
+																e.stopPropagation();
+															}} 
+															color="primary" 
+															aria-label="archivar" 
+															component="label"
+														>
+															<Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar"/>
+														</IconButton>
+													}
+												
+												</>
 												<IconButton 
 													onClick={(e) => {
-														setConfirmationDialog({opened: true, title: 'Archivar Proyecto', content: <Typography variant="body2">Seguro que deseas archivar este proyecto?</Typography>});
 														e.stopPropagation();
 													}} 
 													color="primary" 
-													aria-label="expandir" 
+													aria-label="editar" 
 													component="label"
 												>
-													<Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar"/>
-												</IconButton>
-												<IconButton  onClick={(e) => {e.stopPropagation()}} color="primary" aria-label="expandir" component="label">
 													<Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar"/>
 												</IconButton>
-												<IconButton  onClick={(e) => {e.stopPropagation()}} color="primary" aria-label="expandir" component="label">
+												<IconButton 
+													onClick={(e) => {
+														e.stopPropagation();
+													}} 
+													color="primary" 
+													aria-label="consultar" 
+													component="label"
+												>
 													<Image src={'/assets/img/iconos/search_blue.png'} width={16} height={16} alt="archivar"/>
 												</IconButton>
-												<IconButton  onClick={(e) => {e.stopPropagation()}} color="primary" aria-label="expandir" component="label">
-													<Image src={'/assets/img/iconos/trash_blue.png'} width={16} height={16} alt="archivar"/>
-												</IconButton>
+												<>
+													{['ACTIVO'].includes(p.estatus.toUpperCase()) &&
+														<IconButton 
+															onClick={(e) => {
+																const params = new Map<string, unknown>();
+																params.set('id', p.id);
+																setConfirmationDialog({action: 'DELETE', data: params, opened: true, title: 'Eliminar Proyecto', content: <Typography variant="body2">Seguro que deseas eliminar este proyecto?</Typography>});
+																e.stopPropagation();
+															}} 
+															color="primary" 
+															aria-label="eliminar" 
+															component="label"
+														>
+															<Image src={'/assets/img/iconos/trash_blue.png'} width={16} height={16} alt="archivar"/>
+														</IconButton>
+													}
+												</>
 											</MContainer>
 										}
 									}) : []}
 									noDataContent={
-										(proyectos.data && proyectos.data.length > 0) ? undefined :
+										(filtered_proyectos.length > 0) ? undefined :
 										(proyectos.isFetching) ? undefined :
-										<div className="box_message_blue">
-											<p className="h3">No has creado ningún proyecto</p>
-											<p>Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.<br />
-												Recuerda crear todos tus roles y leer los requisitos de aprobación antes de terminar y
-												mandarlos.<br />
-												¡Comienza ahora mismo!</p>
-										</div> 
+										no_data_message
 									}
 								/>
 							</div>
@@ -176,7 +257,26 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 			<ConfirmationDialog
 				opened={confirmation_dialog.opened}
 				onOptionSelected={(confirmed: boolean) => {
-					
+					if (confirmed) {
+						switch (confirmation_dialog.action) {
+							case 'DELETE': {
+								const id = confirmation_dialog.data.get('id');
+								if (id) {
+									deleteProyecto.mutate({id: id as number}); 
+								}
+								break;
+							}
+							case 'STATE_CHANGE': {
+								const id = confirmation_dialog.data.get('id');
+								const new_state = confirmation_dialog.data.get('state');
+								if (id) {
+									updateEstadoProyecto.mutate({id: id as number, estatus: new_state as string}); 
+								}
+								break;
+							}
+						}
+					}
+					setConfirmationDialog({...confirmation_dialog, opened: false});
 					console.log(confirmed);
 				}}
 				title={confirmation_dialog.title}
