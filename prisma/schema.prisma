@@ -192,6 +192,7 @@ model Proyecto {
   url_archivo          String?
   detalles_adicionales String
   id_estado_republica  Int
+  created DateTime @default(now())
   url_foto_portada     String?
   compartir_nombre     Boolean                  @default(true)
   estatus              String                   @default("Por Validar")

@@ -15,7 +15,19 @@ export const ProyectosRouter = createTRPCRouter({
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			const proyectos = await ctx.prisma.proyecto.findMany({
-				where: {id_cazatalentos: input.id}
+				where: {id_cazatalentos: input.id},
+				include: {
+					tipo: {
+						include: {
+							tipo_proyecto: true
+						}
+					},
+					sindicato: {
+						include: {
+							sindicato: true
+						}
+					}
+				}
 			});
 			return proyectos;
 		}
@@ -74,7 +86,7 @@ export const ProyectosRouter = createTRPCRouter({
 						id: (input.id) ? input.id : 0
 					},
 					update: input.proyecto,
-					create: {...input.proyecto, id_cazatalentos: parseInt(ctx.session.user.id)},
+					create: {...input.proyecto, id_cazatalentos: parseInt(ctx.session.user.id), estatus: 'Por Validar'},
 				});
 				if (!proyecto) {
 					throw new TRPCError({

@@ -1,5 +1,5 @@
 export * from './MenuLateral'
-export * from './ListadoProductos'
+export * from './ListadoProyectos'
 export * from './Flotantes'
 export * from './Alertas'
 export * from './Destacados'

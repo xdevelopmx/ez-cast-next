@@ -7,7 +7,7 @@ import { api } from '~/utils/api';
 
 interface Props {
     state: ProyectoForm;
-    onFormChange: (input: { [id: string]: (string | number) }) => void;
+    onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
 export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
@@ -31,15 +31,15 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
             </Grid>
             <Grid item xs={4} mt={8}>
                 <FormGroup
-                    error={state.nombre.length < 2 ? 'El nombre es demasiado corto' : undefined}
+                    error={(state.errors.nombre && state.nombre != null) ? state.errors.nombre : undefined}
                     show_error_message
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={state.nombre}
+                    value={(state.nombre) ? state.nombre : ''}
                     onChange={(e) => {
                         onFormChange({
-                            nombre: e.target.value
+                            nombre: e.target.value,
                         })
                     }}
                     label='Nombre*'

@@ -1,6 +1,6 @@
 import { type NextPage } from 'next'
 import Head from 'next/head'
-import React, { useReducer } from 'react'
+import React, { useEffect, useMemo, useReducer, useState } from 'react'
 import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas } from '~/components'
 import { motion } from 'framer-motion'
 import { ContactoCasting } from '~/components/cazatalento/proyecto/crear/ContactoCasting'
@@ -11,18 +11,20 @@ import { PublicarProyecto } from '~/components/cazatalento/proyecto/crear/Public
 import { api, parseErrorBody } from '~/utils/api'
 import useNotify from '~/hooks/useNotify'
 import { Typography } from '@mui/material'
+import Constants from '~/constants'
+import { useRouter } from 'next/router'
 
 export type ProyectoForm = {
     id?: number,
-    nombre: string,
+    nombre: string | null,
     id_sindicato: number,
     sindicato: string,
     id_tipo: number,
     tipo: string,
-    director_casting: string,
-    telefono_contacto: string,
-    email_contacto: string,
-    email_contacto_confirmacion: string,
+    director_casting: string | null,
+    telefono_contacto: string | null,
+    email_contacto: string | null,
+    email_contacto_confirmacion: string | null,
     productor: string,
     casa_productora: string,
     director: string,
@@ -41,19 +43,27 @@ export type ProyectoForm = {
             base64: string,
             extension: string
         }
-    }
+    },
+    errors: {
+        nombre?: string,
+        director?: string,
+        telefono_contacto?: string,
+        email_contacto?: string,
+        email_contacto_confirmacion?: string,
+    },
+    hasErrors: boolean | null,
 }
 
 const initialState: ProyectoForm = {
-    nombre: '',
+    nombre: null,
     id_sindicato: 0,
     sindicato: '',
     id_tipo: 0,
     tipo: '',
-    director_casting: '',
-    telefono_contacto: '',
-    email_contacto: '',
-    email_contacto_confirmacion: '',
+    director_casting: null,
+    telefono_contacto: null,
+    email_contacto: null,
+    email_contacto_confirmacion: null,
     productor: '',
     casa_productora: '',
     director: '',
@@ -72,7 +82,9 @@ const initialState: ProyectoForm = {
             base64: '',
             extension: ''
         }
-    }
+    },
+    errors: {},
+    hasErrors: null,
 }
 
 function reducer(state: ProyectoForm, action: { type: string, value: { [key: string]: unknown } }) {
@@ -87,18 +99,77 @@ function reducer(state: ProyectoForm, action: { type: string, value: { [key: str
 
 const Proyecto: NextPage = () => {
 
-    const [state, dispatch] = useReducer(reducer, initialState)
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const [redirect, setRedirect] = useState<'' | 'back' | 'roles'>('');
 
     const { notify } = useNotify();
+
+    const router = useRouter();
 
     const updateProyecto = api.proyectos.updateProyecto.useMutation({
         onSuccess: (data) => {
             notify('success', 'Se guardo el proyecto con exito');
+            if (redirect === 'back') {
+                router.back();
+            } else {
+                void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${data.id}`);
+            }
         },
         onError: (error) => {
             notify('error', parseErrorBody(error.message));
         }
     })
+
+    const handleSave = (action_redirect: 'back' | 'roles') => {
+        setRedirect(action_redirect);
+        if (!state.hasErrors) {
+            updateProyecto.mutate({
+                sindicato: {
+                    id_sindicato: state.id_sindicato,
+                    descripcion: state.sindicato,
+                },
+                tipo_proyecto: {
+                    id_tipo_proyecto: state.id_tipo,
+                    descripcion: state.tipo
+                },
+                proyecto: { 
+                    ...state, 
+                    nombre: (state.nombre) ? state.nombre : '',
+                    director_casting: (state.director_casting) ? state.director_casting : '',
+                    telefono_contacto: (state.telefono_contacto) ? state.telefono_contacto : '',
+                    email_contacto: (state.email_contacto) ? state.email_contacto : ''
+                },
+            })
+        } else {
+            dispatch({ type: 'update-proyecto-form', value: {
+                    nombre: (state.nombre) ? state.nombre : '',
+                    director_casting: (state.director_casting) ? state.director_casting : '',
+                    telefono_contacto: (state.telefono_contacto) ? state.telefono_contacto : '',
+                    email_contacto: (state.email_contacto) ? state.email_contacto : '',
+                    email_contacto_confirmacion: (state.email_contacto_confirmacion) ? state.email_contacto_confirmacion : '',
+                } 
+            });
+            notify('warning', 'Por favor corrige los errores del formulario antes de guardar');
+        }
+    }
+    useEffect(() => {
+        if (state.hasErrors != null) {
+            const result = { 
+                errors: {
+                    nombre: (!state.nombre || state.nombre.length < 2) ? 'El nombre es demasiado corto' : undefined,
+                    director: (!state.director_casting || state.director_casting.length < 2) ? 'El nombre es demasiado corto' : undefined,
+                    telefono_contacto: (!state.telefono_contacto || (state.telefono_contacto.length < 10 || state.telefono_contacto.length > 12)) ? 'El telefono es invalido' : undefined,
+                    email_contacto: !state.email_contacto || !Constants.PATTERNS.EMAIL.test(state.email_contacto) ? 'El email es invalido' : undefined,
+                    email_contacto_confirmacion: state.email_contacto !== state.email_contacto_confirmacion ? 'El email no es el mismo' : undefined,
+                }, 
+                hasErrors: false
+            }
+            result.hasErrors = Object.entries(result.errors).filter(e => (e[1] != null)).length > 0;
+            dispatch({ type: 'update-proyecto-form', value: {errors: result.errors, hasErrors: result.hasErrors} })
+        } else {
+            dispatch({ type: 'update-proyecto-form', value: { hasErrors: true } })
+        }
+    }, [state.nombre, state.director_casting, state.telefono_contacto, state.email_contacto, state.email_contacto_confirmacion]);
 
     return (
         <>
@@ -125,7 +196,6 @@ const Proyecto: NextPage = () => {
                                     <p style={{ marginLeft: 20 }} className="mb-0"><b>¡Comencemos!</b></p>
                                 </div>
                             </div>
-
                             <InformacionGeneral
                                 state={state}
                                 onFormChange={(input: { [key: string]: unknown }) => {
@@ -176,19 +246,7 @@ const Proyecto: NextPage = () => {
                                 <div className="col d-flex justify-content-center" >
                                     <div className="mr-3">
                                         <button
-                                            onClick={() => {
-                                                updateProyecto.mutate({
-                                                    sindicato: {
-                                                        id_sindicato: state.id_sindicato,
-                                                        descripcion: state.sindicato,
-                                                    },
-                                                    tipo_proyecto: {
-                                                        id_tipo_proyecto: state.id_tipo,
-                                                        descripcion: state.tipo
-                                                    },
-                                                    proyecto: { ...state },
-                                                })
-                                            }}
+                                            onClick={() => {handleSave('back')}}
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >
@@ -196,7 +254,11 @@ const Proyecto: NextPage = () => {
                                         </button>
                                     </div>
                                     <div>
-                                        <button className="btn btn-intro btn-price mb-2" type="submit">
+                                        <button
+                                            onClick={() => {handleSave('roles')}}
+                                            className="btn btn-intro btn-price mb-2" 
+                                            type="submit"
+                                        >
                                             <Typography>
                                                 Guardar proyecto y agregar rol
                                             </Typography>

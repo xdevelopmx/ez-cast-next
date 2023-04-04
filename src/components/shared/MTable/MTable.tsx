@@ -1,8 +1,12 @@
-import { TableCell, TableRow, TableContainer, Paper, Table, TableHead, TableBody, Typography, TablePagination, Skeleton, TableFooter } from "@mui/material";
+import { TableCell, TableRow, TableContainer, Paper, Table, TableHead, TableBody, TablePagination, Skeleton, TableFooter, Accordion, AccordionSummary, Typography, AccordionDetails, IconButton } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState, type CSSProperties, type FC } from "react";
 import MotionDiv from "~/components/layout/MotionDiv";
 import classes from './MTable.module.css';
+import { ExpandMore } from "@mui/icons-material";
+import { MContainer } from "~/components/layout/MContainer";
+import UpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 type MRow = { [key: string]: number | string | boolean | JSX.Element };
 
@@ -17,20 +21,21 @@ interface MTableProps {
 	backgroundColorHeader?: string,
 	backgroundColorData?: string,
 	disable_animation?: boolean,
-
 	alternate_colors?: boolean,
 	styleHeaderRow?: CSSProperties,
 	styleHeaderTableCell?: CSSProperties,
+	accordionContent?: JSX.Element,
+	noDataContent?: JSX.Element
 }
 
 
 
 export const MTable: FC<MTableProps> = ({
-	disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
+	noDataContent, accordionContent, disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
 	backgroundColorHeader = '#EBEBEB', style = {}, alternate_colors = true, styleHeaderRow = {}, styleHeaderTableCell = {}
 }) => {
 	const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
-
+	const [expanded_rows, setExpandedRows] = useState<string[]>([]);
 	const _data = useMemo(() => {
 		if (loading && columnsHeader) {
 			return Array.from({ length: 5 }).map((n, i) => {
@@ -53,7 +58,7 @@ export const MTable: FC<MTableProps> = ({
 		}
 		return sliced_data;
 	}, [pagination, _data]);
-	console.log('paginated', paginated_data);
+
 	return (
 		<AnimatePresence>
 			<TableContainer component={Paper} style={{ ...style, overflowY: 'hidden' }}>
@@ -83,42 +88,31 @@ export const MTable: FC<MTableProps> = ({
 								<>
 
 									{!disable_animation &&
-
+									
 										<motion.tr
 											style={{
+												position: 'relative',
 												backgroundColor: alternate_colors
 													? ((i % 2) ? backgroundColorData : 'white')
 													: backgroundColorData,
 											}}
 											key={i}
 											layout={true}
+											onClick={() => {
+												if (accordionContent) {
+													setExpandedRows(prev => { 
+														if (prev.includes(`panel${i}`)) {
+															return prev.filter(p => p !== `panel${i}`);
+														} 
+														return prev.concat([`panel${i}`]);
+													 }) 
+												}
+											}}
 											initial={{ opacity: 0, y: 100 }}
 											animate={{ opacity: 1, y: 0 }}
 											exit={{ opacity: 0, y: 15 }}
 											transition={{ opacity: 0.2, y: 0.3 }}
 										>
-											<>
-												{row_values.map((val, i) => {
-													if (i === 0) {
-														return (
-															<TableCell
-																style={{ padding: 8 }}
-																key={i}
-																align='center'
-																component="th"
-																scope="row"
-															>
-																{val[1]}
-															</TableCell>
-														)
-													}
-													return <TableCell key={i} align='center'>{val[1]}</TableCell>
-												})}
-											</>
-										</motion.tr>
-									}
-									{disable_animation &&
-										<TableRow>
 											{row_values.map((val, i) => {
 												if (i === 0) {
 													return (
@@ -135,23 +129,72 @@ export const MTable: FC<MTableProps> = ({
 												}
 												return <TableCell key={i} align='center'>{val[1]}</TableCell>
 											})}
+											
+										</motion.tr>
+									}
+									{disable_animation &&
+										<TableRow style={{
+											position: 'relative',
+											backgroundColor: alternate_colors
+												? ((i % 2) ? backgroundColorData : 'white')
+												: backgroundColorData,
+										}}>
+											{row_values.map((val, i) => {
+												if (i === 0) {
+													return (
+														<TableCell
+															style={{ padding: 8 }}
+															key={i}
+															align='center'
+															component="th"
+															scope="row"
+														>
+															{val[1]}
+														</TableCell>
+													)
+												}
+												return <TableCell key={i} align='center'>{val[1]}</TableCell>
+											})}
+											
 										</TableRow>
 									}
+									<MotionDiv style={{position: 'relative', width: '100%'}} show={accordionContent != null && expanded_rows.includes(`panel${i}`)} animation="fade">
+										<div style={{position: 'relative', width: '100%'}}>
+											<IconButton onClick={() => { setExpandedRows(prev => { 
+												if (prev.includes(`panel${i}`)) {
+													return prev.filter(p => p !== `panel${i}`);
+												} 
+												return prev.concat([`panel${i}`]);
+											 }) }} style={{position: 'absolute', width: 16, top: -8, right: 8}} color="primary" aria-label="expandir" component="label">
+												{(expanded_rows.includes(`panel${i}`)) ? <DownIcon /> : <UpIcon />}
+											</IconButton>
+											
+											{accordionContent}
+										</div>
+									</MotionDiv>
 								</>
 							)
 						})}
 						{_data.length === 0 &&
-							<TableRow>
-								<TableCell align='left' component="th" scope="row">
-									<Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-										No hay registros
-									</Typography>
-
-								</TableCell>
-							</TableRow>
+							<>
+								{!noDataContent &&
+									<TableRow>
+										<TableCell align='left' component="th" scope="row">
+											<Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+												No hay registros
+											</Typography>
+										</TableCell>
+									</TableRow>
+								}
+							</>
+								
 						}
+						
 					</TableBody>
 				</Table>
+				{noDataContent &&
+					noDataContent
+				}
 			</TableContainer>
 			<MotionDiv show={_data.length > 5} animation={'fade'} style={{ backgroundColor: '#069cb1', width: '100%' }}>
 				<TablePagination

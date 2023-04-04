@@ -28,12 +28,12 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             </Grid>
             <Grid item xs={4} mt={8}>
                 <FormGroup
-                    error={state.director_casting.length < 2 ? 'El nombre es muy corto' : undefined}
+                    error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
                     show_error_message
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={state.director_casting}
+                    value={(state.director_casting) ? state.director_casting : ''}
                     onChange={(e) => {
                         onFormChange({
                             director_casting: e.target.value
@@ -44,13 +44,13 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             </Grid>
             <Grid item xs={8} mt={8}>
                 <FormGroup
-                    error={state.telefono_contacto.length < 10 || state.telefono_contacto.length > 12 ? 'El numero no es valido' : undefined}
+                    error={(state.errors.telefono_contacto && state.telefono_contacto != null) ? state.errors.telefono_contacto : undefined}
                     show_error_message
                     type='number'
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={state.telefono_contacto}
+                    value={(state.telefono_contacto) ? state.telefono_contacto : ''}
                     onChange={(e) => {
                         onFormChange({
                             telefono_contacto: e.target.value
@@ -61,12 +61,12 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             </Grid>
             <Grid item xs={4} mt={8}>
                 <FormGroup
-                    error={!Constants.PATTERNS.EMAIL.test(state.email_contacto) ? 'El email no es valido' : undefined}
+                    error={(state.errors.email_contacto && state.email_contacto != null) ? state.errors.email_contacto : undefined}
                     show_error_message
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={state.email_contacto}
+                    value={(state.email_contacto) ? state.email_contacto : ''}
                     onChange={(e) => {
                         onFormChange({
                             email_contacto: e.target.value
@@ -77,12 +77,12 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             </Grid>
             <Grid item xs={4} mt={8} >
                 <FormGroup
-                    error={state.email_contacto !== state.email_contacto_confirmacion ? 'El email no es el mismo' : undefined}
+                    error={(state.errors.email_contacto_confirmacion && state.email_contacto_confirmacion != null) ? state.errors.email_contacto_confirmacion : undefined}
                     show_error_message
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={state.email_contacto_confirmacion}
+                    value={(state.email_contacto_confirmacion) ? state.email_contacto_confirmacion : ''}
                     tooltip={
                         <MTooltip
                             color='orange'

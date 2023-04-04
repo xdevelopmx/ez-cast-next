@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Head from "next/head";
 import { motion } from 'framer-motion'
 
-import { Alertas, Destacados, Flotantes, ListadoProductos, MainLayout, MenuLateral } from "~/components";
+import { Alertas, Destacados, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { MStepper } from "~/components/shared/MStepper";
 import { useEffect, useReducer } from "react";
 import { EditarActivosTalento, EditarCreditosTalento, EditarFiltrosAparenciasTalento, EditarInfoBasicaTalento, EditarMediaTalento, EditarPreferenciaRolYCompensacionTalento } from "~/components/talento";
@@ -859,7 +859,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         </>
     );
 };
-
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);

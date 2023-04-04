@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Head from "next/head";
 import { motion } from 'framer-motion'
 
-import { Alertas, Destacados, Flotantes, ListadoProductos, MainLayout, MenuLateral } from "~/components";
+import { Alertas, Destacados, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
 import { Button, Grid, Link, Typography } from "@mui/material";
