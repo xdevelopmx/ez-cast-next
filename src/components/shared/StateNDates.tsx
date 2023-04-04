@@ -137,9 +137,9 @@ export const StateNDates: FC<Props> = ({
 
                 <Box sx={{ display: 'flex', gap: 1, padding: '10px 0px' }}>
                     {
-                        valueFechas.map(fecha => (
+                        valueFechas.map((fecha,i) => (
                             <Tag
-                                key={crypto.randomUUID()}
+                                key={i}
                                 text="10-10-2025"
                                 onRemove={onEliminarFecha}
                             />
