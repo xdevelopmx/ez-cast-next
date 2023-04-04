@@ -15,6 +15,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import { useMemo, useState } from "react";
 import useNotify from "~/hooks/useNotify";
+import { useRouter } from "next/router";
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
@@ -22,6 +23,7 @@ type DashBoardCazaTalentosPageProps = {
 
 const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({user}) => {
 	const {notify} = useNotify();
+	const router = useRouter();
 	const [tabSelected, setTabSelected] = useState<'ACTIVOS' | 'ARCHIVADOS'>('ACTIVOS');
 	const [confirmation_dialog, setConfirmationDialog] = useState<{opened: boolean, title: string, content: JSX.Element, action: 'STATE_CHANGE' | 'DELETE', data: Map<string, unknown>}>({opened: false, title: '', content: <></>, action: 'DELETE', data: new Map});
 	const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
@@ -203,6 +205,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 												</>
 												<IconButton 
 													onClick={(e) => {
+														void router.push(`/cazatalentos/proyecto?id_proyecto=${p.id}`);
 														e.stopPropagation();
 													}} 
 													color="primary" 

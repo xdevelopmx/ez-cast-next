@@ -101,10 +101,48 @@ const Proyecto: NextPage = () => {
 
     const [state, dispatch] = useReducer(reducer, initialState);
     const [redirect, setRedirect] = useState<'' | 'back' | 'roles'>('');
-
     const { notify } = useNotify();
-
     const router = useRouter();
+
+    const { mode, id } = useMemo(() => {
+        const { id_proyecto } = router.query;
+        if (id_proyecto) {
+            return {mode: 'EDIT', id: parseInt(id_proyecto as string)};
+        }
+        return {mode: 'CREATE', id: 0};
+    }, [router.query]);
+
+    const proyecto = api.proyectos.getById.useQuery(id, {
+		refetchOnWindowFocus: false
+	});
+
+    useEffect(() => {
+        if (proyecto.data) {
+            dispatch({
+                type: 'update-proyecto-form',
+                value: {
+                    nombre: proyecto.data.nombre,
+                    id_sindicato: proyecto.data.sindicato?.id_sindicato,
+                    sindicato: (proyecto.data.sindicato?.id_sindicato === 99) ? proyecto.data.sindicato?.descripcion : '',
+                    id_tipo: proyecto.data.tipo?.id_tipo_proyecto,
+                    tipo: (proyecto.data.tipo?.id_tipo_proyecto === 99) ? proyecto.data.tipo?.descripcion : '',
+                    director_casting: proyecto.data.director_casting,
+                    telefono_contacto: proyecto.data.telefono_contacto,
+                    email_contacto: proyecto.data.email_contacto,
+                    email_contacto_confirmacion: proyecto.data.email_contacto,
+                    productor: proyecto.data.productor,
+                    casa_productora: proyecto.data.casa_productora,
+                    director: proyecto.data.director,
+                    agencia_publicidad: proyecto.data.agencia_publicidad,
+                    sinopsis: proyecto.data.sinopsis,
+                    detalles_adicionales: proyecto.data.detalles_adicionales,
+                    id_estado_republica: proyecto.data.id_estado_republica,
+                    compartir_nombre: proyecto.data.compartir_nombre,
+                    estatus: proyecto.data.estatus,
+                }
+            })
+        }
+    }, [proyecto.data]);
 
     const updateProyecto = api.proyectos.updateProyecto.useMutation({
         onSuccess: (data) => {

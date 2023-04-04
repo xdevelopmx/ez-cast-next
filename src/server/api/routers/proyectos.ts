@@ -33,10 +33,23 @@ export const ProyectosRouter = createTRPCRouter({
 		}
 	),
 	getById: publicProcedure
-		.input(z.object({ id: z.number() }))
+		.input(z.number())
 		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
 			const proyecto = await ctx.prisma.proyecto.findUnique({
-				where: {id: input.id}
+				where: {id: input},
+				include: {
+					sindicato: {
+						include: {
+							sindicato: true,
+						}
+					},
+					tipo: {
+						include: {
+							tipo_proyecto: true
+						}
+					}
+				}
 			});
 			return proyecto;
 		}
