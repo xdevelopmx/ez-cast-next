@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { type NextPage } from 'next'
 import Head from 'next/head'
 import { Alertas, Flotantes, MainLayout, MenuLateral } from '~/components'
@@ -37,13 +37,46 @@ const AgregarRolPage: NextPage = () => {
                                 </div>
                             </div>
                             <InformacionGeneralRol />
-                            <CompensacionRol/>
+                            <CompensacionRol />
                             <FiltrosDemograficosRol />
                             <DescripcionDelRol />
                             <InformacionCastingRol />
                             <InformacionFilmacionRol />
                             <RequisitosRol />
                             <SelfTapeRol />
+
+                            <div className="row mt-lg-4">
+                                <div className="col d-flex justify-content-center" >
+                                    <div className="mr-3">
+                                        <button
+                                            onClick={() => {
+                                                /* updateProyecto.mutate({
+                                                    sindicato: {
+                                                        id_sindicato: state.id_sindicato,
+                                                        descripcion: state.sindicato,
+                                                    },
+                                                    tipo_proyecto: {
+                                                        id_tipo_proyecto: state.id_tipo,
+                                                        descripcion: state.tipo
+                                                    },
+                                                    proyecto: { ...state },
+                                                }) */
+                                            }}
+                                            className="btn btn-intro btn-price btn_out_line mb-2"
+                                            type="button"
+                                        >
+                                            <Typography>Guardar e ir a proyectos</Typography>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button className="btn btn-intro btn-price mb-2" type="submit">
+                                            <Typography>
+                                                Guardar y crear otro rol
+                                            </Typography>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </Grid>
                     </Grid>
                 </div>
