@@ -23,8 +23,29 @@ export type RolInformacionGeneralForm = {
     rol_principal_secundario: string
 }
 
+export type RolCompensacionForm = {
+    id_rol: number,
+    compensacion: {
+        datos_adicionales: string,
+        suma_total_compensaciones_no_monetarias?: number,
+    },
+    sueldo?: {
+        cantidad_sueldo: number,
+        periodo_sueldo: string,
+    },
+    compensaciones_no_monetarias: {
+        id_compensacion: number,
+        descripcion_compensacion: string
+    }[],
+
+    //extras para el formulario
+    se_pagara_sueldo: 'Sí' | 'No',
+    se_otorgaran_compensaciones: 'Sí' | 'No',
+}
+
 export type RolForm = {
     informacion_general: RolInformacionGeneralForm,
+    compensacion: RolCompensacionForm,
 }
 
 const initialState: RolForm = {
@@ -34,6 +55,22 @@ const initialState: RolForm = {
         id_tipo_rol: 0,
         id_proyecto: 0,
         rol_principal_secundario: 'Principal'
+    },
+    compensacion: {
+        id_rol: 0,
+        compensacion: {
+            datos_adicionales: '',
+            suma_total_compensaciones_no_monetarias: 0
+        },
+        sueldo: {
+            cantidad_sueldo: 0,
+            periodo_sueldo: 'Diario'
+        },
+        compensaciones_no_monetarias: [],
+
+        //extras para el formulario
+        se_pagara_sueldo: 'Sí',
+        se_otorgaran_compensaciones: 'Sí',
     }
 }
 
@@ -43,6 +80,9 @@ const reducerRol = (state: RolForm, action: { type: string, value: { [key: strin
             return { ...state, ...action.value }
         case 'update-info-gral': {
             return { ...state, informacion_general: { ...state.informacion_general, ...action.value } } as RolForm;
+        }
+        case 'update-compensacion': {
+            return { ...state, compensacion: { ...state.compensacion, ...action.value } } as RolForm;
         }
         default:
             return { ...state }
@@ -59,11 +99,28 @@ const AgregarRolPage: NextPage = () => {
 
     /* console.log({ query: router.query }); */
 
+    const updatesIDs = (id: any) => {
+        dispatch({ type: 'update-info-gral', value: { id_rol: id } })
+        dispatch({ type: 'update-compensacion', value: { id_rol: id } })
+    }
+
     const saveInfoGral = api.roles.saveInfoGral.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo la informacion general con exito');
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            dispatch({ type: 'update-info-gral', value: { id_rol: input.id } })
+            updatesIDs(input.id)
+            console.log({ input });
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    });
+
+    const saveCompensacion = api.roles.saveCompensacion.useMutation({
+        onSuccess(input) {
+            notify('success', 'Se guardo la compensación con exito');
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            updatesIDs(input.id_rol)
             console.log({ input });
         },
         onError: (error) => {
@@ -117,7 +174,26 @@ const AgregarRolPage: NextPage = () => {
                                     })
                                 }}
                             />
-                            <CompensacionRol />
+                            <CompensacionRol
+                                state={state}
+                                onFormChange={(input) => {
+                                    dispatch({ type: 'update-compensacion', value: input });
+                                }}
+                                onSaveChanges={() => {
+                                    console.log({
+                                        id_rol: state.compensacion.id_rol,
+                                        compensacion: state.compensacion.compensacion,
+                                        compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias,
+                                        sueldo: state.compensacion.sueldo
+                                    });
+                                    saveCompensacion.mutate({
+                                        id_rol: state.compensacion.id_rol,
+                                        compensacion: state.compensacion.compensacion,
+                                        compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias,
+                                        sueldo: state.compensacion.sueldo
+                                    })
+                                }}
+                            />
                             <FiltrosDemograficosRol />
                             <DescripcionDelRol />
                             <InformacionCastingRol />
