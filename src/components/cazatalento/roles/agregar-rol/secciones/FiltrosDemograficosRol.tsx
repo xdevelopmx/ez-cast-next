@@ -1,11 +1,19 @@
+import { type FC } from 'react';
 import Image from 'next/image'
 import { Box, Button, Grid, Typography } from "@mui/material"
 import { MContainer } from "~/components/layout/MContainer"
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from "~/components/shared"
 import { api } from '~/utils/api';
 import { MTooltip } from '~/components/shared/MTooltip';
+import { type RolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 
-export const FiltrosDemograficosRol = () => {
+interface Props {
+    state: RolForm;
+    onFormChange: (input: { [id: string]: unknown }) => void;
+    onSaveChanges: (...args: unknown[]) => unknown;
+}
+
+export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
 
     const generos = api.catalogos.getGeneros.useQuery(undefined, {
         refetchOnMount: false,
@@ -20,9 +28,12 @@ export const FiltrosDemograficosRol = () => {
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 3' subtitle='Filtros demográficos'
+                <SectionTitle
+                    title='Paso 3'
+                    subtitle='Filtros demográficos'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
+                    onClickButton={onSaveChanges}
                 />
             </Grid>
 
@@ -39,11 +50,11 @@ export const FiltrosDemograficosRol = () => {
                                     labelClassName={'form-input-label'}
                                     rootStyle={{ margin: 0 }}
                                     style={{ width: 60 }}
-                                    value={'19'}
+                                    value={`${state.filtros_demograficos.rango_edad_inicio}`}
                                     onChange={(e) => {
-                                        /* onFormChange({
-                                            director_casting: e.target.value
-                                        }) */
+                                        onFormChange({
+                                            rango_edad_inicio: parseInt(e.target.value || '0')
+                                        })
                                     }}
                                     label=''
                                 />
@@ -55,16 +66,23 @@ export const FiltrosDemograficosRol = () => {
                                     labelClassName={'form-input-label'}
                                     rootStyle={{ margin: 0 }}
                                     style={{ width: 60 }}
-                                    value={'19'}
+                                    value={`${state.filtros_demograficos.rango_edad_fin}`}
                                     onChange={(e) => {
-                                        /* onFormChange({
-                                            director_casting: e.target.value
-                                        }) */
+                                        onFormChange({
+                                            rango_edad_fin: parseInt(e.target.value || '0')
+                                        })
                                     }}
                                     label=''
                                 />
                             </MContainer>
-                            <Button sx={{ textTransform: 'none' }}>
+                            <Button 
+                                sx={{ textTransform: 'none' }}
+                                onClick={()=> {
+                                    onFormChange({
+                                        rango_edad_en_meses: !state.filtros_demograficos.rango_edad_en_meses
+                                    })
+                                }}
+                                >
                                 <Image
                                     src="/assets/img/iconos/change_blue_icon.svg"
                                     width={25}
@@ -73,7 +91,7 @@ export const FiltrosDemograficosRol = () => {
                                     alt="icon-change"
                                 />
                                 <Typography>
-                                    Cambiar a meses
+                                    Cambiar a {state.filtros_demograficos.rango_edad_en_meses ? 'meses' : 'años'}
                                 </Typography>
                             </Button>
                         </Grid>
@@ -85,12 +103,12 @@ export const FiltrosDemograficosRol = () => {
                                 styleRoot={{ marginTop: 5 }}
                                 id="genero-del-rol"
                                 options={['No especificado', 'Género especificado']}
-                                value={'No especificado'}
+                                value={state.filtros_demograficos.genero_del_rol}
                                 direction='vertical'
                                 onChange={(e) => {
-                                    /* onFormChange({
-                                        compartir_nombre: (e.target.value === 'Compartir nombre de proyecto')
-                                    }) */
+                                    onFormChange({
+                                        genero_del_rol: e.target.value
+                                    })
                                 }}
                             />
                             <Box sx={{ padding: '0px 40px' }}>

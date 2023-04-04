@@ -43,9 +43,35 @@ export type RolCompensacionForm = {
     se_otorgaran_compensaciones: 'Sí' | 'No',
 }
 
+export type FiltrosDemograficosRol = {
+    id_rol: number,
+    generos?: {
+        id_genero: number,
+        id_filtro_demo_por_rol?: number
+    }[],
+    apariencias_etnias?: {
+        id_aparencia_etnica: number,
+        id_filtro_demo_por_rol?: number
+    }[],
+    animal?: {
+        id: number,
+        descripcion: string,
+        tamanio: string
+    }[],
+    rango_edad_inicio: number,
+    rango_edad_fin: number,
+    rango_edad_en_meses: boolean,
+    id_pais: number,
+
+    //extras
+    genero_del_rol: 'No especificado' | 'Género especificado',
+
+}
+
 export type RolForm = {
     informacion_general: RolInformacionGeneralForm,
     compensacion: RolCompensacionForm,
+    filtros_demograficos: FiltrosDemograficosRol,
 }
 
 const initialState: RolForm = {
@@ -71,6 +97,19 @@ const initialState: RolForm = {
         //extras para el formulario
         se_pagara_sueldo: 'Sí',
         se_otorgaran_compensaciones: 'Sí',
+    },
+    filtros_demograficos: {
+        id_rol: 0,
+        generos: [],
+        apariencias_etnias: [],
+        animal: [],
+        rango_edad_inicio: 0,
+        rango_edad_fin: 0,
+        rango_edad_en_meses: false,
+        id_pais: 0,
+
+        //extras
+        genero_del_rol: 'Género especificado',
     }
 }
 
@@ -83,6 +122,9 @@ const reducerRol = (state: RolForm, action: { type: string, value: { [key: strin
         }
         case 'update-compensacion': {
             return { ...state, compensacion: { ...state.compensacion, ...action.value } } as RolForm;
+        }
+        case 'update-filtros-demograficos': {
+            return { ...state, filtros_demograficos: { ...state.filtros_demograficos, ...action.value } } as RolForm;
         }
         default:
             return { ...state }
@@ -194,7 +236,26 @@ const AgregarRolPage: NextPage = () => {
                                     })
                                 }}
                             />
-                            <FiltrosDemograficosRol />
+                            <FiltrosDemograficosRol
+                                state={state}
+                                onFormChange={(input) => {
+                                    dispatch({ type: 'update-filtros-demograficos', value: input });
+                                }}
+                                onSaveChanges={() => {
+                                    console.log({
+                                        id_rol: state.compensacion.id_rol,
+                                        compensacion: state.compensacion.compensacion,
+                                        compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias,
+                                        sueldo: state.compensacion.sueldo
+                                    });
+                                    saveCompensacion.mutate({
+                                        id_rol: state.compensacion.id_rol,
+                                        compensacion: state.compensacion.compensacion,
+                                        compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias,
+                                        sueldo: state.compensacion.sueldo
+                                    })
+                                }}
+                            />
                             <DescripcionDelRol />
                             <InformacionCastingRol />
                             <InformacionFilmacionRol />
