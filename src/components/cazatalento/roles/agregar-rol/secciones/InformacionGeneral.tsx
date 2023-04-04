@@ -1,9 +1,15 @@
 import { Grid, Typography } from "@mui/material"
 import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import { MTooltip } from "~/components/shared/MTooltip"
-
+import { api } from '~/utils/api';
 
 export const InformacionGeneralRol = () => {
+
+    const tipos_roles = api.catalogos.getTiposRoles.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
     return (
         <Grid container item xs={12}>
             <Grid item xs={12}>
@@ -64,8 +70,8 @@ export const InformacionGeneralRol = () => {
             <Grid item xs={12}>
                 <MSelect
                     id="tipo-rol-select"
-                    loading={/* tipos_proyectos.isFetching */ false }
-                    options={/* (tipos_proyectos.data) ? tipos_proyectos.data.map(s => { return { value: s.id.toString(), label: s.es } }) : */ []}
+                    loading={tipos_roles.isFetching}
+                    options={(tipos_roles.data) ? tipos_roles.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
                     value={/* state.id_tipo.toString() */ ''}
                     className={'form-input-md'}
                     onChange={(e) => {
