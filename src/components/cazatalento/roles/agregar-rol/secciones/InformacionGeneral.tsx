@@ -1,9 +1,17 @@
 import { Grid, Typography } from "@mui/material"
+import { type FC } from "react";
 import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import { MTooltip } from "~/components/shared/MTooltip"
+import { type RolForm } from "~/pages/cazatalentos/roles/agregar-rol";
 import { api } from '~/utils/api';
 
-export const InformacionGeneralRol = () => {
+interface Props {
+    state: RolForm;
+    onFormChange: (input: { [id: string]: unknown }) => void;
+    onSaveChanges: (...args: unknown[]) => unknown;
+}
+
+export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
 
     const tipos_roles = api.catalogos.getTiposRoles.useQuery(undefined, {
         refetchOnMount: false,
@@ -13,9 +21,13 @@ export const InformacionGeneralRol = () => {
     return (
         <Grid container item xs={12}>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 1' subtitle='Información General'
+                <SectionTitle 
+                    title='Paso 1' 
+                    subtitle='Información General'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
+                    textButton="Guardar y terminar más tarde"
+                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item xs={12} mt={8}>
@@ -25,12 +37,11 @@ export const InformacionGeneralRol = () => {
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    //value={state.nombre}
-                    value={''}
+                    value={state.informacion_general.nombre}
                     onChange={(e) => {
-                        /* onFormChange({
+                        onFormChange({
                             nombre: e.target.value
-                        }) */
+                        })
                     }}
                     tooltip={
                         <MTooltip
@@ -58,12 +69,12 @@ export const InformacionGeneralRol = () => {
                     style={{ gap: 0 }}
                     id="rol-principal-o-extra"
                     options={['Principal', 'Extra']}
-                    value={/* state.compartir_nombre */ 'Principal' ? 'Principal' : 'Extra'}
+                    value={state.informacion_general.rol_principal_secundario}
                     direction='vertical'
                     onChange={(e) => {
-                        /* onFormChange({
-                            compartir_nombre: (e.target.value === 'Compartir nombre de proyecto')
-                        }) */
+                        onFormChange({
+                            rol_principal_secundario: e.target.value
+                        })
                     }}
                 />
             </Grid>
@@ -71,13 +82,17 @@ export const InformacionGeneralRol = () => {
                 <MSelect
                     id="tipo-rol-select"
                     loading={tipos_roles.isFetching}
-                    options={(tipos_roles.data) ? tipos_roles.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
-                    value={/* state.id_tipo.toString() */ ''}
+                    options={
+                        (tipos_roles.data)
+                            ? tipos_roles.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                            : []
+                    }
+                    value={`${state.informacion_general.id_tipo_rol}`}
                     className={'form-input-md'}
                     onChange={(e) => {
-                        /* onFormChange({
-                            id_tipo: parseInt(e.target.value)
-                        }) */
+                        onFormChange({
+                            id_tipo_rol: parseInt(e.target.value)
+                        })
                     }}
                     label='Tipo de rol*'
                 />
