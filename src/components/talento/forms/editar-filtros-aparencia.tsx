@@ -1,6 +1,6 @@
 import { type FC } from 'react'
 import { AddButton, FormGroup, MCheckboxGroup, MRadioGroup, MSelect, Tag } from '~/components';
-import { Alert, Chip, Divider, Grid, Typography } from '@mui/material';
+import { Alert, Divider, Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import { type FiltrosAparienciaForm } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
@@ -512,7 +512,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                     return <Tag
                                         key={i}
                                         text={`${tipo_piercing} - ${_p.descripcion}`}
-                                        onRemove={(e) => {
+                                        onRemove={(_) => {
                                             onFormChange({
                                                 piercings: state.piercings.filter((_, j) => i !== j)
                                             })
