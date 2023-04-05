@@ -229,7 +229,10 @@ export const MenuLateral = () => {
 		tipo_usuario: string,
 		nombre: string,
 		biografia?: string,
-		redes_sociales: { [nombre: string]: string }
+		redes_sociales: { [nombre: string]: string },
+
+		posicion: string,
+		compania: string,
 	}>({
 		tipo_usuario: TipoUsuario.NO_DEFINIDO,
 		nombre: '',
@@ -242,7 +245,10 @@ export const MenuLateral = () => {
 			'instagram': '',
 			'twitter': '',
 			'imdb': ''
-		}
+		},
+
+		posicion: '',
+		compania: ''
 	});
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
@@ -261,6 +267,16 @@ export const MenuLateral = () => {
 	const update_perfil_talento = api.talentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
 			notify('success', 'Se actualizo el talento con exito');
+			void talento.refetch();
+		},
+		onError: (error) => {
+			notify('error', parseErrorBody(error.message));
+		}
+	})
+
+	const update_perfil_cazatalento = api.cazatalentos.updatePerfil.useMutation({
+		onSuccess: (data, input) => {
+			notify('success', 'Se actualizo el cazatalento con exito');
 			void talento.refetch();
 		},
 		onError: (error) => {
@@ -299,7 +315,10 @@ export const MenuLateral = () => {
 							nombre: cazatalentos.data.nombre,
 							apellido: cazatalentos.data.apellido,
 							biografia: cazatalentos.data.biografia,
-							redes_sociales: redes_sociales
+							redes_sociales: redes_sociales,
+
+							posicion: cazatalentos.data.posicion,
+							compania: cazatalentos.data.compania,
 						}
 					}
 				}
@@ -314,10 +333,17 @@ export const MenuLateral = () => {
 				tipo_usuario: user_info.tipo_usuario,
 				nombre: user_info.nombre,
 				biografia: user_info.biografia,
-				redes_sociales: user_info.redes_sociales
+				redes_sociales: user_info.redes_sociales,
+
+				posicion: user_info.posicion || '',
+				compania: user_info.compania || '',
 			});
 		}
 	}, [user_info]);
+
+	useEffect(() => {
+		console.log(form);
+	}, [form])
 
 	return (
 		<>
@@ -420,16 +446,16 @@ export const MenuLateral = () => {
 										<FormGroup
 											show_error_message={false}
 											error={(() => {
-												if (form.nombre.length === 0) {
+												/* if (form.nombre.length === 0) {
 													return 'El nombre no debe estar vacio';
-												}
+												} */
 												return undefined;
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.posicion}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({ ...form, posicion: e.target.value })
 											}}
 											label='Posición'
 										/>
@@ -441,16 +467,16 @@ export const MenuLateral = () => {
 										<FormGroup
 											show_error_message={false}
 											error={(() => {
-												if (form.nombre.length === 0) {
+												/* if (form.nombre.length === 0) {
 													return 'El nombre no debe estar vacio';
-												}
+												} */
 												return undefined;
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.compania}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({ ...form, compania: e.target.value })
 											}}
 											label='Compañia'
 										/>
@@ -486,16 +512,21 @@ export const MenuLateral = () => {
 										<FormGroup
 											show_error_message={false}
 											error={(() => {
-												if (form.nombre.length === 0) {
+												/* if (form.nombre.length === 0) {
 													return 'El nombre no debe estar vacio';
-												}
+												} */
 												return undefined;
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.pagina_web}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														pagina_web: e.target.value
+													}
+												})
 											}}
 											label='Link a página web'
 										/>
@@ -509,16 +540,21 @@ export const MenuLateral = () => {
 										<FormGroup
 											show_error_message={false}
 											error={(() => {
-												if (form.nombre.length === 0) {
+												/* if (form.nombre.length === 0) {
 													return 'El nombre no debe estar vacio';
-												}
+												} */
 												return undefined;
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.vimeo}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														vimeo: e.target.value
+													}
+												})
 											}}
 											label='Vimeo'
 										/>
@@ -530,16 +566,21 @@ export const MenuLateral = () => {
 										<FormGroup
 											show_error_message={false}
 											error={(() => {
-												if (form.nombre.length === 0) {
+												/* if (form.nombre.length === 0) {
 													return 'El nombre no debe estar vacio';
-												}
+												} */
 												return undefined;
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.youtube}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														youtube: e.target.value
+													}
+												})
 											}}
 											label='Youtube'
 										/>
@@ -558,9 +599,14 @@ export const MenuLateral = () => {
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.linkedin}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														linkedin: e.target.value
+													}
+												})
 											}}
 											label='LinkedIn'
 										/>
@@ -572,16 +618,21 @@ export const MenuLateral = () => {
 										<FormGroup
 											show_error_message={false}
 											error={(() => {
-												if (form.nombre.length === 0) {
+												/* if (form.nombre.length === 0) {
 													return 'El nombre no debe estar vacio';
-												}
+												} */
 												return undefined;
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.instagram}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														instagram: e.target.value
+													}
+												})
 											}}
 											label='Instagram'
 										/>
@@ -600,9 +651,14 @@ export const MenuLateral = () => {
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.twitter}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														twitter: e.target.value
+													}
+												})
 											}}
 											label='Twitter'
 										/>
@@ -621,9 +677,14 @@ export const MenuLateral = () => {
 											})()}
 											style={{ width: 200 }}
 											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
-											value={form.nombre}
+											value={form.redes_sociales.imdb}
 											onChange={(e) => {
-												setForm({ ...form, nombre: e.target.value })
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														imdb: e.target.value
+													}
+												})
 											}}
 											label='IMDb'
 										/>
@@ -643,6 +704,17 @@ export const MenuLateral = () => {
 													biografia: (form.biografia) ? form.biografia : '',
 												})
 												break;
+											}
+											case TipoUsuario.CAZATALENTOS: {
+												update_perfil_cazatalento.mutate({
+													nombre: form.nombre,
+													biografia: (form.biografia) ? form.biografia : '',
+													posicion: form.posicion,
+													redes_sociales: Object.keys(form.redes_sociales).map(key=>({
+														nombre: key,
+														url: form.redes_sociales[key] || ''
+													}))
+												})
 											}
 										}
 									}
