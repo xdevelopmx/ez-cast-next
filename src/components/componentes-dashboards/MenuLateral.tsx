@@ -538,6 +538,16 @@ export const MenuLateral = () => {
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 										<Typography>Link a redes sociales:</Typography>
 										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_vimeo_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
 											show_error_message={false}
 											error={(() => {
 												/* if (form.nombre.length === 0) {
@@ -564,6 +574,16 @@ export const MenuLateral = () => {
 								<Grid item xs={12} textAlign={'start'}>
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_youtube_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="30"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
 											show_error_message={false}
 											error={(() => {
 												/* if (form.nombre.length === 0) {
@@ -590,6 +610,16 @@ export const MenuLateral = () => {
 								<Grid item xs={12} textAlign={'start'}>
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_linkedin_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
 											show_error_message={false}
 											error={(() => {
 												if (form.nombre.length === 0) {
@@ -616,6 +646,16 @@ export const MenuLateral = () => {
 								<Grid item xs={12} textAlign={'start'}>
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_insta_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
 											show_error_message={false}
 											error={(() => {
 												/* if (form.nombre.length === 0) {
@@ -642,6 +682,16 @@ export const MenuLateral = () => {
 								<Grid item xs={12} textAlign={'start'}>
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_Twitwe_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
 											show_error_message={false}
 											error={(() => {
 												if (form.nombre.length === 0) {
@@ -668,6 +718,16 @@ export const MenuLateral = () => {
 								<Grid item xs={12} textAlign={'start'}>
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_imbd_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
 											show_error_message={false}
 											error={(() => {
 												if (form.nombre.length === 0) {
@@ -710,7 +770,7 @@ export const MenuLateral = () => {
 													nombre: form.nombre,
 													biografia: (form.biografia) ? form.biografia : '',
 													posicion: form.posicion,
-													redes_sociales: Object.keys(form.redes_sociales).map(key=>({
+													redes_sociales: Object.keys(form.redes_sociales).map(key => ({
 														nombre: key,
 														url: form.redes_sociales[key] || ''
 													}))
