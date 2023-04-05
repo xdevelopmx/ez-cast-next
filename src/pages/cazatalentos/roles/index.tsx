@@ -162,7 +162,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 />
                                             }
                                             style={{
-                                                padding: '8px 40px 4px !important',
+                                                padding: '8px 40px',
                                                 marginTop: 0,
                                                 marginRight: 10,
                                                 fontWeight: 500
@@ -177,7 +177,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                         <Button
                                             className="btn btn-sm btn-intro btn-price mb-2"
                                             style={{
-                                                padding: '8px 40px 4px !important',
+                                                padding: '8px 40px',
                                                 marginTop: 0,
                                                 display: 'block',
                                                 height: 40,

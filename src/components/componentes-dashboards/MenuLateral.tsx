@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Grid, IconButton, Button, Typography, Skeleton } from '@mui/material'
+import { Grid, IconButton, Button, Typography, Skeleton, Box } from '@mui/material'
 import { type TalentoFormInfoGral } from '~/pages/talento/editar-perfil';
 import { motion } from 'framer-motion'
 import { CameraAlt, Close } from '@mui/icons-material';
@@ -801,6 +801,70 @@ export const MenuLateral = () => {
 						{is_fetching && <Skeleton className="h2 text-white mb-3 user_lastName" />}
 						{!is_fetching && <p className="h2 text-white mb-3 user_lastName">{user_info?.apellido}</p>}
 						<motion.img src="/assets/img/iconos/icon_estrella_dorada.svg" className="ml-1 gold_star" alt="icono estrella dorada" />
+
+
+						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.CAZATALENTOS && <>
+							<Typography sx={{ textAlign: 'center', color: '#fff', fontStyle: 'italic', fontSize: '1rem' }}>{user_info?.posicion}</Typography>
+
+							<Typography sx={{ textAlign: 'center', color: '#fff', fontSize: '1rem' }}>{user_info?.biografia}</Typography>
+
+							<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+								{form.redes_sociales.vimeo && <a href={form.redes_sociales.vimeo} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_vimeo.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.linkedin && <a href={form.redes_sociales.linkedin} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_linkedin.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.youtube && <a href={form.redes_sociales.youtube} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_youtube.svg"
+										style={{ marginLeft: 10 }}
+										width="40"
+										height="50"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.imdb && <a href={form.redes_sociales.imdb} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_imbd.svg"
+										style={{ marginLeft: 10 }}
+										width="30"
+										height="40"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.twitter && <a href={form.redes_sociales.twitter} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_Twitwe.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.instagram && <a href={form.redes_sociales.instagram} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_insta.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+							</Box>
+						</>}
 
 
 						<hr />
