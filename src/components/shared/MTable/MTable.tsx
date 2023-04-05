@@ -1,6 +1,6 @@
 import { TableCell, TableRow, TableContainer, Paper, Table, TableHead, TableBody, TablePagination, Skeleton, TableFooter, Accordion, AccordionSummary, Typography, AccordionDetails, IconButton } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState, type CSSProperties, type FC } from "react";
+import { useMemo, useState, type CSSProperties, type FC, useRef } from "react";
 import MotionDiv from "~/components/layout/MotionDiv";
 import classes from './MTable.module.css';
 import { ExpandMore } from "@mui/icons-material";
@@ -24,7 +24,7 @@ interface MTableProps {
 	alternate_colors?: boolean,
 	styleHeaderRow?: CSSProperties,
 	styleHeaderTableCell?: CSSProperties,
-	accordionContent?: JSX.Element,
+	accordionContent?: (element_index: number, container_width: number) => JSX.Element | null,
 	noDataContent?: JSX.Element
 }
 
@@ -59,10 +59,22 @@ export const MTable: FC<MTableProps> = ({
 		return sliced_data;
 	}, [pagination, _data]);
 
+	const table_body_ref = useRef<HTMLTableSectionElement>(null);
+
+	const accordion_content_width = useMemo(() => {
+		console.log('xdxd')
+		if (table_body_ref.current) {
+			return table_body_ref.current.getBoundingClientRect().width;
+		}
+		return 0;
+	}, [table_body_ref.current]);
+
+	console.log(accordion_content_width)
+
 	return (
 		<AnimatePresence>
 			<TableContainer component={Paper} style={{ ...style, overflowY: 'hidden' }}>
-				<Table sx={{ minWidth: 700 }} aria-label="customized table">
+				<Table sx={{ minWidth: 700 }} aria-label="customized table" size="small">
 					{
 						columnsHeader &&
 						<TableHead
@@ -79,7 +91,7 @@ export const MTable: FC<MTableProps> = ({
 						</TableHead>
 					}
 
-					<TableBody>
+					<TableBody ref={table_body_ref}>
 
 						{_data.length > 0 && paginated_data.map((row, i) => {
 
@@ -91,7 +103,6 @@ export const MTable: FC<MTableProps> = ({
 									
 										<motion.tr
 											style={{
-												position: 'relative',
 												backgroundColor: alternate_colors
 													? ((i % 2) ? backgroundColorData : 'white')
 													: backgroundColorData,
@@ -129,7 +140,6 @@ export const MTable: FC<MTableProps> = ({
 												}
 												return <TableCell key={i} align='center'>{val[1]}</TableCell>
 											})}
-											
 										</motion.tr>
 									}
 									{disable_animation &&
@@ -158,20 +168,24 @@ export const MTable: FC<MTableProps> = ({
 											
 										</TableRow>
 									}
-									<MotionDiv style={{position: 'relative', width: '100%'}} show={accordionContent != null && expanded_rows.includes(`panel${i}`)} animation="fade">
-										<div style={{position: 'relative', width: '100%'}}>
-											<IconButton onClick={() => { setExpandedRows(prev => { 
-												if (prev.includes(`panel${i}`)) {
-													return prev.filter(p => p !== `panel${i}`);
-												} 
-												return prev.concat([`panel${i}`]);
-											 }) }} style={{position: 'absolute', width: 16, top: -8, right: 8}} color="primary" aria-label="expandir" component="label">
-												{(expanded_rows.includes(`panel${i}`)) ? <DownIcon /> : <UpIcon />}
-											</IconButton>
-											
-											{accordionContent}
-										</div>
-									</MotionDiv>
+									<TableRow style={{borderWidth: 1, borderColor: 'gray', borderStyle: (accordionContent != null && expanded_rows.includes(`panel${i}`)) ? 'solid' : 'unset'}}>
+										<MotionDiv  show={accordionContent != null && expanded_rows.includes(`panel${i}`)} animation="fade">
+											<div style={{position: 'relative', width: 100}}>
+												<div style={{ position: 'absolute', width: accordion_content_width}}>
+													<IconButton onClick={() => { setExpandedRows(prev => { 
+														if (prev.includes(`panel${i}`)) {
+															return prev.filter(p => p !== `panel${i}`);
+														} 
+														return prev.concat([`panel${i}`]);
+													}) }} style={{position: 'absolute', width: 16, top: -8, right: 8}} color="primary" aria-label="expandir" component="label">
+														{(expanded_rows.includes(`panel${i}`)) ? <DownIcon /> : <UpIcon />}
+													</IconButton>
+												</div>
+												{accordionContent && accordionContent(i, accordion_content_width)}
+											</div>
+										</MotionDiv>
+
+									</TableRow>
 								</>
 							)
 						})}

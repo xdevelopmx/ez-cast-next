@@ -48,7 +48,8 @@ export const ProyectosRouter = createTRPCRouter({
 						include: {
 							tipo_proyecto: true
 						}
-					}
+					},
+					estado_republica: true
 				}
 			});
 			return proyecto;
@@ -154,6 +155,7 @@ export const ProyectosRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			console.log(input);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const proyecto: Proyecto = await ctx.prisma.proyecto.upsert({

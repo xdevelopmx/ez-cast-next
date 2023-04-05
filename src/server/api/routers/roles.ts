@@ -7,6 +7,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { TipoUsuario } from "~/enums";
 
 export const RolesRouter = createTRPCRouter({
     getById: publicProcedure
@@ -18,9 +19,98 @@ export const RolesRouter = createTRPCRouter({
 			return rol;
 		}
 	),
+	getCompleteById: publicProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			const rol = await ctx.prisma.roles.findUnique({
+				where: {id: input},
+				include: {
+					compensaciones: true,
+					filtros_demograficos: true,
+					habilidades: true,
+					requisitos: true,
+					nsfw: true,
+					casting: true,
+					filmaciones: true,
+					tipo_rol: true,
+				}
+			});
+			return rol;
+		}
+	),
   	getAll: publicProcedure.query(async ({ ctx }) => {
     	return await ctx.prisma.roles.findMany();
 	}),
+	getAllByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
+    	return await ctx.prisma.roles.findMany({
+			where: {
+				id_proyecto: input
+			}
+		});
+	}),
+	deleteRolById: protectedProcedure
+		.input(z.number())
+		.mutation(async ({ input, ctx }) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				const rol = await ctx.prisma.roles.delete({
+					where: {
+						id: input
+					},
+				});
+				if (!rol) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de eliminar el rol',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return rol;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalentos puede modificar los roles',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
+	updateEstadoRolById: protectedProcedure
+    	.input(z.object({ 
+			id: z.number(),
+			estatus: z.string(),
+		}))
+		.mutation(async ({ input, ctx }) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				const rol = await ctx.prisma.roles.update({
+					where: {
+						id: input.id
+					},
+					data: {
+						estatus: input.estatus
+					}
+				});
+				if (!rol) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar el rol',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return rol;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalentos puede modificar los roles',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
 	saveInfoGral: publicProcedure
     	.input(z.object({ 
 			id_rol: z.number(),

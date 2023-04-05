@@ -76,8 +76,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 			</div>
 		} 
 	}, [tabSelected]);
-	
-	console.log(proyectos);
+
 	return (
 		<>
 			<Head>
@@ -216,6 +215,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 												</IconButton>
 												<IconButton 
 													onClick={(e) => {
+														void router.push(`/cazatalentos/roles?id_proyecto=${p.id}`);
 														e.stopPropagation();
 													}} 
 													color="primary" 

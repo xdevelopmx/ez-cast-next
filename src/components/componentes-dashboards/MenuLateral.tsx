@@ -312,7 +312,7 @@ export const MenuLateral = () => {
 						position: 'absolute',
 						width: '80%',
 						left: '10%',
-						height: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO) ? '550px' : 'calc(88vh)',
+						height: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO) ? '550px' : 'calc(80vh)',
 						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
 						top: 32,
 						borderRadius: 4,

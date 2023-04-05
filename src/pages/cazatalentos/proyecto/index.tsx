@@ -121,6 +121,7 @@ const Proyecto: NextPage = () => {
             dispatch({
                 type: 'update-proyecto-form',
                 value: {
+                    id: (id > 0) ? id : null,
                     nombre: proyecto.data.nombre,
                     id_sindicato: proyecto.data.sindicato?.id_sindicato,
                     sindicato: (proyecto.data.sindicato?.id_sindicato === 99) ? proyecto.data.sindicato?.descripcion : '',
@@ -142,7 +143,7 @@ const Proyecto: NextPage = () => {
                 }
             })
         }
-    }, [proyecto.data]);
+    }, [proyecto.data, id]);
 
     const updateProyecto = api.proyectos.updateProyecto.useMutation({
         onSuccess: (data) => {
@@ -162,6 +163,7 @@ const Proyecto: NextPage = () => {
         setRedirect(action_redirect);
         if (!state.hasErrors) {
             updateProyecto.mutate({
+                id: (state.id && state.id > 0) ? state.id : null,
                 sindicato: {
                     id_sindicato: state.id_sindicato,
                     descripcion: state.sindicato,
