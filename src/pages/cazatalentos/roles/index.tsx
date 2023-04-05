@@ -149,27 +149,46 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     </motion.div>
                                 </MContainer>
 
+                                <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
+                                    <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
+                                        <Button
+                                            className="btn btn-intro btn-price btn_out_line mb-2"
+                                            startIcon={
+                                                <Image
+                                                    src={`/assets/img/iconos/cruz_ye.svg`}
+                                                    height={16}
+                                                    width={16}
+                                                    alt={'agregar-rol'}
+                                                />
+                                            }
+                                            style={{
+                                                padding: '8px 40px 4px !important',
+                                                marginTop: 0,
+                                                marginRight: 10,
+                                                fontWeight: 500
+                                            }}
+                                        >
+                                            Nuevo rol
+                                        </Button>
 
-                                <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
-                                    <Button
-                                        className="btn btn-intro btn-price btn_out_line mb-2"
-                                        startIcon={<Image src={`/assets/img/iconos/cruz_ye.svg`} height={16} width={16} alt={'agregar-rol'} />}
-                                        style={{ paddingTop: 8, marginTop: 0 }}
-                                    >
-                                        Nuevo rol
-                                    </Button>
+                                    </Link>
 
-                                </Link>
+                                    <Link href="/cazatalentos/proyecto" >
+                                        <Button
+                                            className="btn btn-sm btn-intro btn-price mb-2"
+                                            style={{
+                                                padding: '8px 40px 4px !important',
+                                                marginTop: 0,
+                                                display: 'block',
+                                                height: 40,
+                                                fontWeight: 500
+                                            }}
+                                        >
+                                            Enviar proyecto para aprobación
+                                        </Button>
 
-                                <Link href="/cazatalentos/proyecto" >
-                                    <Button
-                                        className="btn btn-sm btn-intro btn-price mb-2"
-                                        style={{ paddingTop: 8, marginTop: 0 }}
-                                    >
-                                        Enviar proyecto para aprobación
-                                    </Button>
-
-                                </Link>
+                                    </Link>
+                                </MContainer>
 
 
                             </MContainer>
@@ -192,105 +211,105 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                 </MContainer>
                                 <Divider style={{ borderWidth: 1 }} />
                             </MContainer>
+
                             <MotionDiv show={proyecto_details_expanded} animation='fade'>
                                 <Grid container>
                                     <Grid mt={2} item xs={12}>
-                                        <Typography variant="subtitle1" style={{ color: '#4ab7c6' }}>
+                                        <Typography style={{ color: '#069cb1' }}>
                                             Contacto de casting
                                         </Typography>
                                         <Divider style={{ borderWidth: 1 }} />
                                     </Grid>
                                     <Grid mt={2} item xs={6} md={3}>
-                                        <Typography variant="subtitle1">
+                                        <Typography fontWeight={500}>
                                             {(proyecto.data) ? proyecto.data.director_casting : 'ND'}
                                         </Typography>
                                     </Grid>
                                     <Grid mt={2} item xs={6} md={3}>
-                                        <Typography variant="body1">
+                                        <Typography fontWeight={500}>
                                             {(proyecto.data) ? proyecto.data.email_contacto : 'ND'}
                                         </Typography>
                                     </Grid>
                                     <Grid mt={2} item xs={6} md={3}>
-                                        {(proyecto.data) ? proyecto.data.telefono_contacto : 'ND'}
+                                        <Typography fontWeight={500}>
+                                            {(proyecto.data) ? proyecto.data.telefono_contacto : 'ND'}
+                                        </Typography>
                                     </Grid>
+
                                     <Grid mt={2} item xs={12}>
-                                        <Typography variant="subtitle1" style={{ color: '#4ab7c6' }}>
+                                        <Typography style={{ color: '#069cb1' }}>
                                             Equipo creativo
                                         </Typography>
                                         <Divider style={{ borderWidth: 1 }} />
                                     </Grid>
                                     <Grid mt={2} item md={6}>
                                         <MContainer direction="horizontal">
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
                                                 Productor
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography sx={{ color: '#928F8F' }}>
                                                 {(proyecto.data) ? proyecto.data.productor : 'ND'}
                                             </Typography>
                                         </MContainer>
                                     </Grid>
                                     <Grid mt={2} item md={6}>
                                         <MContainer direction="horizontal">
-
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
                                                 Director
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography sx={{ color: '#928F8F' }}>
                                                 {(proyecto.data) ? proyecto.data.director : 'ND'}
                                             </Typography>
                                         </MContainer>
                                     </Grid>
                                     <Grid mt={2} item md={6}>
                                         <MContainer direction="horizontal">
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
                                                 Casa productora
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography sx={{ color: '#928F8F' }}>
                                                 {(proyecto.data) ? proyecto.data.casa_productora : 'ND'}
                                             </Typography>
                                         </MContainer>
                                     </Grid>
                                     <Grid mt={2} item md={6}>
                                         <MContainer direction="horizontal">
-
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
                                                 Agencia de Publicidad
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography sx={{ color: '#928F8F' }}>
                                                 {(proyecto.data) ? proyecto.data.agencia_publicidad : 'ND'}
                                             </Typography>
                                         </MContainer>
                                     </Grid>
                                     <Grid mt={2} item xs={12}>
-                                        <Typography variant="subtitle1" style={{ color: '#4ab7c6' }}>
+                                        <Typography style={{ color: '#069cb1' }}>
                                             Detalles adicionales
                                         </Typography>
                                         <Divider style={{ borderWidth: 1 }} />
                                     </Grid>
                                     <Grid mt={2} item xs={12}>
                                         <MContainer direction="horizontal">
-
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
                                                 Sinopsis
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography sx={{ color: '#928F8F' }}>
                                                 {(proyecto.data) ? proyecto.data.sinopsis : 'ND'}
                                             </Typography>
                                         </MContainer>
                                     </Grid>
                                     <Grid mt={2} item xs={12}>
                                         <MContainer direction="horizontal">
-
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 100 }}>
                                                 Archivos
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography>
                                                 {'ND'}
                                             </Typography>
                                         </MContainer>
                                     </Grid>
                                     <Grid mt={2} item xs={12}>
-                                        <Typography variant="subtitle1" style={{ color: '#4ab7c6' }}>
+                                        <Typography style={{ color: '#069cb1' }}>
                                             Locación proyecto
                                         </Typography>
                                         <Divider style={{ borderWidth: 1 }} />
@@ -299,10 +318,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     <Grid mt={2} item xs={12}>
                                         <MContainer direction="horizontal">
 
-                                            <Typography variant="subtitle1">
+                                            <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
                                                 Estado
                                             </Typography>
-                                            <Typography variant="body2">
+                                            <Typography sx={{ color: '#928F8F' }}>
                                                 {(proyecto.data) ? proyecto.data.estado_republica.es : 'ND'}
                                             </Typography>
                                         </MContainer>
@@ -328,6 +347,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     </ul>
                                 </div>
                                 <MTable
+                                    alternate_colors={false}
                                     columnsHeader={[
                                         <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Nombre
@@ -365,7 +385,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                     {r.nombre}
                                                 </Typography>
                                             </MContainer>,
-                                            estado: r.estatus,
+                                            estado: r.estatus === 'SIN_FINALIZAR' ? 'Sin finalizar' : 'Archivado',
                                             no_vistos: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icon_no_vistos.svg'} width={16} height={16} alt="no vistos" />
                                                 <Typography style={{ marginLeft: 8 }} variant={'body2'}>1</Typography>
