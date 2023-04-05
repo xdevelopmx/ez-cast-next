@@ -437,17 +437,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 >
                                                     <Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar" />
                                                 </IconButton>
-                                                <IconButton
-                                                    onClick={(e) => {
-                                                        void router.push(`/cazatalentos/roles?id_rol=${r.id}`);
-                                                        e.stopPropagation();
-                                                    }}
-                                                    color="primary"
-                                                    aria-label="consultar"
-                                                    component="label"
-                                                >
-                                                    <Image src={'/assets/img/iconos/search_blue.png'} width={16} height={16} alt="archivar" />
-                                                </IconButton>
+                                                
                                                 <>
                                                     {['ACTIVO'].includes(r.estatus.toUpperCase()) &&
                                                         <IconButton
