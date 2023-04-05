@@ -246,6 +246,9 @@ export const MenuLateral = () => {
 	});
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
+	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
+		refetchOnWindowFocus: false
+	});
 	const talento = api.talentos.getById.useQuery({id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0}, {
 		refetchOnWindowFocus: false
 	});
@@ -286,12 +289,24 @@ export const MenuLateral = () => {
 					}
 				}
 				case TipoUsuario.CAZATALENTOS: {
-
+					if (cazatalentos.data) {
+						const redes_sociales: {[red_social: string]: string} = {};
+						cazatalentos.data.redes_sociales.forEach(red => {
+							redes_sociales[red.nombre] = red.url;
+						});
+						return {
+							tipo_usuario: TipoUsuario.CAZATALENTOS,
+							nombre: cazatalentos.data.nombre,
+							apellido: cazatalentos.data.apellido,
+							biografia: cazatalentos.data.biografia,
+							redes_sociales: redes_sociales
+						}
+					}
 				}
 			}
 		}
 		return null;
-	}, [session, talento.data, info_gral_talento.data]);
+	}, [session, cazatalentos.data, talento.data, info_gral_talento.data]);
 
 	useEffect(() => {
 		if (user_info) {
@@ -312,7 +327,7 @@ export const MenuLateral = () => {
 						position: 'absolute',
 						width: '80%',
 						left: '10%',
-						height: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO) ? '550px' : 'calc(80vh)',
+						height: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO) ? '550px' : 'calc(70vh)',
 						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
 						top: 32,
 						borderRadius: 4,
@@ -430,7 +445,7 @@ export const MenuLateral = () => {
 					<>
 						<motion.img src="/assets/img/iconos/EZ_Claqueta.svg" className="mt-5 mb-3 claqueta_black" />
 						<p className="h2 text-uppercase text-white mb-3"><b>EZ-CAST</b></p>
-						<p className="h2 text-white mb-0">TALENTO</p>
+						{user_info?.tipo_usuario === TipoUsuario.TALENTO && <p className="h2 text-white mb-0">TALENTO</p>}
 						<div className="mt-3 mb-3 avatar">
 							<motion.img src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar" />
 						</div>

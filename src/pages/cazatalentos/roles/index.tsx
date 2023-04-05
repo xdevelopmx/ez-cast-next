@@ -148,7 +148,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({user}) => {
                                 </MContainer>
                                 
 
-                                <Link href="/cazatalentos/proyecto" >
+                                <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
                                     <Button
                                         className="btn btn-intro btn-price btn_out_line mb-2"
                                         startIcon={<Image src={`/assets/img/iconos/cruz_ye.svg`} height={16} width={16} alt={'agregar-rol'}/>}

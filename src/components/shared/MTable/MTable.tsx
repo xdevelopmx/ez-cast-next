@@ -171,7 +171,7 @@ export const MTable: FC<MTableProps> = ({
 									<TableRow style={{borderWidth: 1, borderColor: 'gray', borderStyle: (accordionContent != null && expanded_rows.includes(`panel${i}`)) ? 'solid' : 'unset'}}>
 										<MotionDiv  show={accordionContent != null && expanded_rows.includes(`panel${i}`)} animation="fade">
 											<div style={{position: 'relative', width: 100}}>
-												<div style={{ position: 'absolute', width: accordion_content_width}}>
+												<div style={{ position: 'absolute', width: accordion_content_width - 8}}>
 													<IconButton onClick={() => { setExpandedRows(prev => { 
 														if (prev.includes(`panel${i}`)) {
 															return prev.filter(p => p !== `panel${i}`);
@@ -181,7 +181,7 @@ export const MTable: FC<MTableProps> = ({
 														{(expanded_rows.includes(`panel${i}`)) ? <DownIcon /> : <UpIcon />}
 													</IconButton>
 												</div>
-												{accordionContent && accordionContent(i, accordion_content_width)}
+												{accordionContent && accordionContent(i, accordion_content_width - 8)}
 											</div>
 										</MotionDiv>
 
