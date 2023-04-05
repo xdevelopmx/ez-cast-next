@@ -46,6 +46,21 @@ export const RolesRouter = createTRPCRouter({
     	return await ctx.prisma.roles.findMany({
 			where: {
 				id_proyecto: input
+			},
+			include: {
+				tipo_rol: true,
+				proyecto: true,
+				compensaciones: true,
+				filtros_demograficos: true,
+				habilidades: {
+					include: {
+						habilidades_seleccionadas: true
+					}
+				},
+				requisitos: true,
+				nsfw: true,
+				casting: true,
+				filmaciones: true,
 			}
 		});
 	}),
