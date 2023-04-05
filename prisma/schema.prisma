@@ -240,11 +240,11 @@ model Roles {
   estatus              String                 @default("SIN_FINALIZAR")
   id_proyecto          Int
   proyecto             Proyecto               @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
-  compensaciones       CompensacionesPorRoles @relation(map: "compensaciones", fields: [id], references: [id_rol], onDelete: Cascade)
-  filtros_demograficos FiltrosDemoPorRoles    @relation(map: "filtros", fields: [id], references: [id_rol], onDelete: Cascade)
-  habilidades          HabilidadesPorRoles    @relation(map: "habilidades", fields: [id], references: [id_rol], onDelete: Cascade)
-  requisitos           RequisitosPorRoles     @relation(map: "requisitos", fields: [id], references: [id_rol], onDelete: Cascade)
-  nsfw                 NSFWPorRoles           @relation(map: "nsfw", fields: [id], references: [id_rol], onDelete: Cascade)
+  compensaciones       CompensacionesPorRoles? @relation(map: "compensaciones", fields: [id], references: [id_rol], onDelete: Cascade)
+  filtros_demograficos FiltrosDemoPorRoles?    @relation(map: "filtros", fields: [id], references: [id_rol], onDelete: Cascade)
+  habilidades          HabilidadesPorRoles?    @relation(map: "habilidades", fields: [id], references: [id_rol], onDelete: Cascade)
+  requisitos           RequisitosPorRoles?     @relation(map: "requisitos", fields: [id], references: [id_rol], onDelete: Cascade)
+  nsfw                 NSFWPorRoles?           @relation(map: "nsfw", fields: [id], references: [id_rol], onDelete: Cascade)
   casting              CastingPorRoles[]
   filmaciones          FilmacionPorRoles[]
   tipo_rol             CatalogoTiposRoles     @relation(fields: [id_tipo_rol], references: [id])
