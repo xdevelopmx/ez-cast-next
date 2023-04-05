@@ -864,6 +864,19 @@ export const MenuLateral = () => {
 									/>
 								</a>}
 							</Box>
+
+							<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+								<Image
+									src="/assets/img/iconos/icon_website.svg"
+									style={{ marginRight: 10 }}
+									width="20"
+									height="30"
+									alt=""
+								/>
+								<a style={{ textDecoration: 'underline', color: '#fff' }} href={form.redes_sociales.pagina_web} target='_blank'>
+									<Typography sx={{ fontSize: '1rem', color: '#fff' }}>{form.redes_sociales.pagina_web}</Typography>
+								</a>
+							</Box>
 						</>}
 
 
