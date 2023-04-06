@@ -54,6 +54,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                         <FormGroup
                             //error={state.nombre.length < 2 ? 'El nombre es demasiado corto' : undefined}
                             type='number'
+                            disabled={state.se_pagara_sueldo === 'No'}
                             show_error_message
                             className={'form-input-md'}
                             labelStyle={{ fontWeight: 600 }}
@@ -76,10 +77,11 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
 
                         <MRadioGroup
                             label='Selecciona una'
+                            disabled={state.se_pagara_sueldo === 'No'}
                             labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                             style={{ gap: 0 }}
                             id="cada-cuanto-sueldo"
-                            options={['Diario', 'Mensual', 'Semanal', 'Por Proyecto']}
+                            options={['Diario', 'Mensual', 'Semanal', 'Proyecto']}
                             value={state.sueldo?.periodo_sueldo || 'Diario'}
                             direction='horizontal'
                             onChange={(e) => {
@@ -113,6 +115,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                 </Grid>
                 <Grid item xs={8}>
                     <MCheckboxGroup
+                        disabled={state.se_otorgaran_compensaciones === 'No'}
                         title='¿Qué compensación no monetaria recibirá el talento?'
                         onChange={(e, i) => {
                             const tipo_compensacion = tipos_compensaciones_no_monetarias
@@ -156,6 +159,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                     />
                     <MContainer direction='horizontal' justify='start'>
                         <FormControlLabel 
+                            disabled={state.se_otorgaran_compensaciones === 'No'}
                             className={'label-black-lg'} 
                             style={{ fontWeight: '400', fontSize: '1.1rem' }}
                             label={'Otro'} 
@@ -180,6 +184,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                         />
                         <MotionDiv show={state.compensaciones_no_monetarias.some(e => e.id_compensacion === 99)} animation='fade'>
                             <FormGroup
+                                disabled={state.se_otorgaran_compensaciones === 'No'}
                                 rootStyle={{ marginTop: 16 }}
                                 className={'form-input-md'}
                                 value={state.descripcion_otra_compensacion}

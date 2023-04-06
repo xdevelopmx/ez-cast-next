@@ -245,12 +245,114 @@ const AgregarRolPage: NextPage = () => {
         dispatch({ type: 'update-form', value: {id_proyecto: (id_proyecto) ? parseInt(id_proyecto as string) : 0, id_rol: (id_rol) ? parseInt(id_rol as string) : 0}})
     }, [router.query]);
 
-    /* console.log({ query: router.query }); */
+    const rol = api.roles.getCompleteById.useQuery(state.id_rol, {
+        refetchOnWindowFocus: false
+    })
 
-    //const updatesIDs = (id: number) => {
-    //    dispatch({ type: 'update-info-gral', value: { id_rol: id } })
-    //    dispatch({ type: 'update-compensacion', value: { id_rol: id } })
-    //}
+    useEffect(() => {
+        if (rol.data) {
+            const compensaciones = rol.data.compensaciones;
+            const sueldo = (compensaciones) ? compensaciones.sueldo : null;
+            const compensaciones_no_monetarias = (compensaciones) ? compensaciones.compensaciones_no_monetarias : [];
+            const otra_compensacion = compensaciones_no_monetarias.filter(c => c.id_compensacion === 99)[0];
+            const filtros_demo = rol.data.filtros_demograficos;
+            const animal = (filtros_demo) ? filtros_demo.animal : null;
+
+            const fecha_requisitos = (rol.data.requisitos) ? `${rol.data.requisitos.presentacion_solicitud.toLocaleDateString('es-mx')}` : null;
+            const fecha_requisitos_exploded = (fecha_requisitos) ? fecha_requisitos.split('/') : [];
+            const fecha_requisitos_convertida = `${(fecha_requisitos_exploded[2]) ? fecha_requisitos_exploded[2] : ''}-${(fecha_requisitos_exploded[1]) ? (fecha_requisitos_exploded[1].length < 2) ? `0${fecha_requisitos_exploded[1]}` : fecha_requisitos_exploded[1] : ''}-${(fecha_requisitos_exploded[0]) ? (fecha_requisitos_exploded[0].length < 2) ? `0${fecha_requisitos_exploded[0]}` : fecha_requisitos_exploded[0] : ''}`; 
+
+            console.log(sueldo, 'sueldo');
+            dispatch({ type: 'update-form', value: {
+                informacion_general: {
+                    nombre: rol.data.nombre,
+                    id_tipo_rol: rol.data.id_tipo_rol,
+                    id_proyecto: rol.data.id_proyecto,
+                    rol_principal_secundario: (rol.data.tipo_rol.tipo.toUpperCase() === 'PRINCIPAL') ? 'Principal' : 'Extra'
+                },
+                compensacion: {
+                    compensacion: {
+                        datos_adicionales: (compensaciones) ? compensaciones.datos_adicionales : '',
+                        suma_total_compensaciones_no_monetarias: (compensaciones) ? compensaciones.suma_total_compensaciones_no_monetarias : 0
+                    },
+                    sueldo: {
+                        cantidad_sueldo: (sueldo) ? sueldo.cantidad : 0,
+                        periodo_sueldo: (sueldo) ? `${sueldo.periodo.substring(0, 1)}${sueldo.periodo.substring(1, sueldo.periodo.length).toLowerCase()}` : 'Diario'
+                    },
+                    compensaciones_no_monetarias: compensaciones_no_monetarias.map(c => { return {
+                        id_compensacion: c.id_compensacion,
+                        descripcion_compensacion: c.descripcion_compensacion
+                    }}),
+            
+                    //extras para el formulario
+                    se_pagara_sueldo: (rol.data.compensaciones?.sueldo) ? 'Sí' : 'No',
+                    se_otorgaran_compensaciones: (compensaciones_no_monetarias.length > 0) ? 'Sí' : 'No',
+                    descripcion_otra_compensacion: (otra_compensacion) ? otra_compensacion.descripcion_compensacion : ''
+                },
+                filtros_demograficos: {
+                    generos: (filtros_demo) ? filtros_demo.generos.map(g => g.id_genero) : [],
+                    apariencias_etnias: (filtros_demo) ? filtros_demo.aparencias_etnicas.map(a => a.id_aparencia_etnica) : [],
+                    animal: {
+                        id: (animal) ? animal.id_animal : 0,
+                        descripcion: (animal) ? animal.descripcion : '',
+                        tamanio: (animal) ? animal.tamanio : ''
+                    },
+                    rango_edad_inicio: (filtros_demo) ? filtros_demo.rango_edad_inicio : 1,
+                    rango_edad_fin: (filtros_demo) ? filtros_demo.rango_edad_fin : 18,
+                    rango_edad_en_meses: (filtros_demo) ? filtros_demo.rango_edad_en_meses : false,
+                    id_pais: (filtros_demo) ? filtros_demo.id_pais : 0,
+
+                    //extras
+                    genero_del_rol: (filtros_demo && filtros_demo.generos.length > 0) ? 'Género especificado' : 'No especificado',
+                    apariencia_etnica_del_rol: (filtros_demo && filtros_demo.aparencias_etnicas.length > 0) ? 'Especificado' : 'No especificado',
+                    es_mascota: animal != null,
+                },
+                descripcion_rol: {
+                    tiene_nsfw: (rol.data && rol.data.nsfw) ? 'Desnudos/Situaciones Sexuales' : 'No hay desnudos y/o situaciones sexuales',
+                    descripcion: (rol.data && rol.data.nsfw) ? rol.data.nsfw.descripcion : '',
+                    detalles_adicionales: (rol.data) ? rol.data.detalles_adicionales : '',
+                    habilidades: (rol.data && rol.data.habilidades) ? rol.data.habilidades.habilidades_seleccionadas.map(h => h.id_habilidad) : [],
+                    especificacion_habilidad: (rol.data && rol.data.habilidades) ? rol.data.habilidades.especificacion : '',
+                    nsfw: {
+                        ids: (rol.data && rol.data.nsfw) ? rol.data.nsfw.nsfw_seleccionados.map(n => n.id_nsfw) : [],
+                        descripcion: (rol.data && rol.data.nsfw) ? rol.data.nsfw.descripcion : ''
+                    }
+                },
+                castings: {
+                    id_estado_republica: (rol.data.casting && rol.data.casting.length > 0) ? rol.data.casting[0]?.id_estado_republica : 0,
+                    tipo_fecha_selected: 'Rango de fechas',
+                    fechas: (rol.data.casting) ? rol.data.casting.map(c => {
+                        if (c.fecha_fin) {
+                            return `${c.fecha_inicio.toLocaleDateString('es-mx')} a ${c.fecha_fin.toLocaleDateString('es-mx')}`;
+                        }
+                        return c.fecha_inicio;
+                    }) : []
+                },
+                filmaciones: {
+                    id_estado_republica: (rol.data.filmaciones && rol.data.filmaciones.length > 0) ? rol.data.filmaciones[0]?.id_estado_republica : 0,
+                    tipo_fecha_selected: 'Rango de fechas',
+                    fechas: (rol.data.filmaciones) ? rol.data.filmaciones.map(c => {
+                        if (c.fecha_fin) {
+                            return `${c.fecha_inicio.toLocaleDateString('es-mx')} a ${c.fecha_fin.toLocaleDateString('en-us')}`;
+                        }
+                        return c.fecha_inicio;
+                    }) : []
+                },
+                requisitos: {
+                    fecha_presentacion: (rol.data.requisitos) ? fecha_requisitos_convertida : '',
+                    id_uso_horario: (rol.data.requisitos) ? rol.data.requisitos.id_uso_horario : 0,
+                    info_trabajo: (rol.data.requisitos) ? rol.data.requisitos.informacion : '',
+                    id_idioma: (rol.data.requisitos) ? rol.data.requisitos.id_idioma : 0,
+                    medios_multimedia_a_incluir: (rol.data.requisitos) ? rol.data.requisitos.medios_multimedia.map(m => m.id_medio_multimedia) : [],
+                    id_estado_donde_aceptan_solicitudes: (rol.data.requisitos) ? rol.data.requisitos.id_estado_republica : 0
+                },
+                selftape: {
+                    pedir_selftape: (rol.data.selftape) ? rol.data.selftape.pedir_selftape : false,
+                    indicaciones: (rol.data.selftape) ? rol.data.selftape.indicaciones : '',
+                }
+            }})
+        }
+    }, [rol.data]);
 
     const saveInfoGral = api.roles.saveInfoGral.useMutation({
         onSuccess(input) {
@@ -368,9 +470,15 @@ const AgregarRolPage: NextPage = () => {
                                 onSaveChanges={() => {
                                     saveCompensacion.mutate({
                                         id_rol: state.id_rol,
-                                        compensacion: state.compensacion.compensacion,
+                                        compensacion: {
+                                            ...state.compensacion.compensacion,
+                                            suma_total_compensaciones_no_monetarias: (state.compensacion.compensacion.suma_total_compensaciones_no_monetarias) ? parseFloat(state.compensacion.compensacion.suma_total_compensaciones_no_monetarias.toString()) : 0
+                                        },
                                         compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias,
-                                        sueldo: state.compensacion.sueldo
+                                        sueldo: {
+                                            cantidad_sueldo: (state.compensacion.sueldo) ? parseFloat(`${state.compensacion.sueldo.cantidad_sueldo}`) : 0,
+                                            periodo_sueldo: (state.compensacion.sueldo) ? state.compensacion.sueldo.periodo_sueldo : ''
+                                        }
                                     })
                                 }}
                             />
@@ -498,6 +606,9 @@ const AgregarRolPage: NextPage = () => {
                                     <div className="mr-3">
                                         <button
                                             onClick={() => {
+                                                void router.push('/cazatalentos/dashboard');
+                                                
+                                                
                                                 /* updateProyecto.mutate({
                                                     sindicato: {
                                                         id_sindicato: state.id_sindicato,
@@ -517,7 +628,8 @@ const AgregarRolPage: NextPage = () => {
                                         </button>
                                     </div>
                                     <div>
-                                        <button className="btn btn-intro btn-price mb-2" type="submit">
+                                        <button
+                                            className="btn btn-intro btn-price mb-2" type="submit">
                                             <Typography>
                                                 Guardar y crear otro rol
                                             </Typography>
