@@ -47,6 +47,7 @@ export const CazatalentosRouter = createTRPCRouter({
     	.input(z.object({ 
 			nombre: z.string(),
             posicion: z.string(),
+			compania: z.string(),
 			biografia: z.string({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
@@ -70,7 +71,8 @@ export const CazatalentosRouter = createTRPCRouter({
 					data: {
                         posicion: input.posicion,
 						nombre: input.nombre,
-                        biografia: input.biografia
+                        biografia: input.biografia,
+						compania: input.compania
 					}
 				})
 
@@ -82,8 +84,6 @@ export const CazatalentosRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-
-				
 				
 				const deleted_redes_sociales = await ctx.prisma.redesSocialesPorCazatalentos.deleteMany({
 					where: { 

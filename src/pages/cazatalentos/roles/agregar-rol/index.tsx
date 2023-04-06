@@ -302,6 +302,15 @@ const AgregarRolPage: NextPage = () => {
         }
     });
 
+    const saveRequisitosRol = api.roles.saveRequisitosRol.useMutation({
+        onSuccess(input) {
+            notify('success', 'Se guardaron los requisitos del rol con exito');
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    });
+
     const saveSeltapeRol = api.roles.saveSelftapeRol.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo el selftape del rol con exito');
@@ -450,18 +459,22 @@ const AgregarRolPage: NextPage = () => {
                                     dispatch({ type: 'update-requisitos-rol', value: input });
                                 }}
                                 onSaveChanges={() => {
-                                    if (state.descripcion_rol.habilidades.length > 0) {
-                                        saveDescripcionRol.mutate({
-                                            id_rol: state.id_rol,
-                                            descripcion: state.descripcion_rol.descripcion,
-                                            detalles_adicionales: (state.descripcion_rol.detalles_adicionales.length > 0) ? state.descripcion_rol.detalles_adicionales : null,
-                                            habilidades: state.descripcion_rol.habilidades,
-                                            especificacion_habilidad: state.descripcion_rol.especificacion_habilidad,
-                                            nsfw: (state.descripcion_rol.nsfw.ids.length > 0) ? state.descripcion_rol.nsfw : null,
-                                        })
-                                    } else {
-                                        notify('warning', 'Por favor ingresa al menos una habilidad');
-                                    }
+                                    if (state.requisitos.fecha_presentacion.length > 0 &&
+                                        state.requisitos.id_uso_horario > 0 &&
+                                        state.requisitos.id_idioma > 0 &&
+                                        state.requisitos.id_estado_donde_aceptan_solicitudes > 0) {
+                                            saveRequisitosRol.mutate({
+                                                id_rol: state.id_rol,
+                                                fecha_presentacion: state.requisitos.fecha_presentacion,
+                                                id_uso_horario: state.requisitos.id_uso_horario,
+                                                info_trabajo: state.requisitos.info_trabajo,
+                                                id_idioma: state.requisitos.id_idioma,
+                                                medios_multimedia_a_incluir: state.requisitos.medios_multimedia_a_incluir,
+                                                id_estado_donde_aceptan_solicitudes: state.requisitos.id_estado_donde_aceptan_solicitudes
+                                            })
+                                        } else {
+                                            notify('warning', 'Por favor ingresa datos validos');
+                                        }
                                 }}
                             />
                             <SelfTapeRol 
