@@ -1,4 +1,4 @@
-import { type FC, type CSSProperties, useState } from "react"
+import { type FC, type CSSProperties, useState, useEffect } from "react"
 import { Box, Button, Divider, Typography } from "@mui/material"
 import { MSelect } from "./MSelect/MSelect";
 import { MRadioGroup } from "./MRadioGroup";
@@ -6,6 +6,7 @@ import { MContainer } from "../layout/MContainer";
 import { FormGroup } from "./FormGroup";
 import MotionDiv from "../layout/MotionDiv";
 import { Tag } from "./Tag";
+import useNotify from "~/hooks/useNotify";
 
 interface Props {
     title?: string;
@@ -17,18 +18,15 @@ interface Props {
     optionsSelect: { value: string, label: string }[];
     nameSelect: string;
     valueSelect: string;
-    onSelectChange: (...args: unknown[]) => unknown;
+    onSelectChange: (value: string) => void;
 
     //radio
     nameRadio: string;
 
     //fechas
-    valueFechas: any[];
-    onAgregarFecha: (...args: unknown[]) => unknown;
-    onEliminarFecha: (...args: unknown[]) => unknown;
-
-    onFormChange: (input: { [id: string]: unknown }) => void;
-
+    valueFechas: {inicio: Date, fin?: Date}[];
+    onAgregarFecha: (date: {inicio: Date, fin?: Date}) => void;
+    onEliminarFecha: (index: number) => void;
 }
 
 export const StateNDates: FC<Props> = ({
@@ -40,13 +38,20 @@ export const StateNDates: FC<Props> = ({
     onSelectChange,
     onAgregarFecha,
     onEliminarFecha,
-    onFormChange,
 }) => {
 
     const [valueRadio, setValueRadio] = useState('Rango de fechas')
 
     const [date1, setDate1] = useState('')
-    const [date2, setDate2] = useState('')
+    const [date2, setDate2] = useState<string | null>('')
+
+    useEffect(() => {
+        if (valueRadio === 'Individuales') {
+            setDate2(null);
+        }
+    }, [valueRadio]);
+
+    const {notify} = useNotify();
 
     return (
         <Box sx={styleRoot}>
@@ -59,7 +64,7 @@ export const StateNDates: FC<Props> = ({
                         options={optionsSelect}
                         value={valueSelect}
                         className={'form-input-md'}
-                        onChange={onSelectChange}
+                        onChange={(e) => {onSelectChange(e.target.value)}}
                         label='Ciudad/Estado:'
                     />
                 </Box>
@@ -103,7 +108,7 @@ export const StateNDates: FC<Props> = ({
                                 labelStyle={{ fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
                                 style={{ width: 130 }}
-                                value={date2}
+                                value={(date2) ? date2 : ''}
                                 onChange={(e) => {
                                     setDate2(e.target.value)
                                 }}
@@ -113,7 +118,26 @@ export const StateNDates: FC<Props> = ({
                     </MContainer>
                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                         <Button
-                            onClick={onAgregarFecha}
+                            onClick={() => {
+                                switch (valueRadio) {
+                                    case 'Rango de fechas': {
+                                        if (date2 != null && date2 !== '') {
+                                            onAgregarFecha({inicio: new Date(date1), fin: new Date(date2)})
+                                        }  else {
+                                            notify('warning', 'Por favor agregar la segunda fecha antes de continuar');
+                                        }
+                                        break;
+                                    }
+                                    case 'Individuales': {
+                                        if (date1 !== '') {
+                                            onAgregarFecha({inicio: new Date(date1), fin: undefined})
+                                        }  else {
+                                            notify('warning', 'Por favor agrega una fecha valida');
+                                        }
+                                        break;
+                                    }
+                                }
+                            }}
                             sx={{
                                 textTransform: 'none',
                                 backgroundColor: '#069cb1',
@@ -135,15 +159,21 @@ export const StateNDates: FC<Props> = ({
 
                 <Divider sx={{ marginTop: 2 }} />
 
-                <Box sx={{ display: 'flex', gap: 1, padding: '10px 0px' }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, padding: '10px 0px', maxWidth: '100%' }}>
                     {
-                        valueFechas.map((fecha,i) => (
-                            <Tag
-                                key={i}
-                                text="10-10-2025"
-                                onRemove={onEliminarFecha}
-                            />
-                        ))
+                        valueFechas.map((fecha,i) => {
+                            if (fecha.inicio) {
+                                return <Tag
+                                    key={i}
+                                    text={`${fecha.inicio.toLocaleDateString('es-mx')}${(fecha.fin) ? ` a ${fecha.fin.toLocaleDateString('es-mx')}` : ''}`}
+                                    onRemove={() => {
+                                        onEliminarFecha(i);
+                                    }}
+                                />
+                            }
+                            return null;
+
+                        })
                     }
                 </Box>
             </Box>

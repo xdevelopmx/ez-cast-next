@@ -240,14 +240,24 @@ model Roles {
   estatus              String                 @default("SIN_FINALIZAR")
   id_proyecto          Int
   proyecto             Proyecto               @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
-  compensaciones       CompensacionesPorRoles? @relation(map: "compensaciones", fields: [id], references: [id_rol], onDelete: Cascade)
-  filtros_demograficos FiltrosDemoPorRoles?    @relation(map: "filtros", fields: [id], references: [id_rol], onDelete: Cascade)
-  habilidades          HabilidadesPorRoles?    @relation(map: "habilidades", fields: [id], references: [id_rol], onDelete: Cascade)
-  requisitos           RequisitosPorRoles?     @relation(map: "requisitos", fields: [id], references: [id_rol], onDelete: Cascade)
-  nsfw                 NSFWPorRoles?           @relation(map: "nsfw", fields: [id], references: [id_rol], onDelete: Cascade)
+  compensaciones       CompensacionesPorRoles?
+  filtros_demograficos FiltrosDemoPorRoles?
+  habilidades          HabilidadesPorRoles?   
+  requisitos           RequisitosPorRoles?     
+  nsfw                 NSFWPorRoles?           
   casting              CastingPorRoles[]
   filmaciones          FilmacionPorRoles[]
+  selftape SelftapePorRoles?
   tipo_rol             CatalogoTiposRoles     @relation(fields: [id_tipo_rol], references: [id])
+}
+
+model SelftapePorRoles {
+  id Int                    @id @default(autoincrement())
+  id_rol Int @unique
+  rol                       Roles  @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  pedir_selftape Boolean
+  indicaciones String @db.VarChar(512)
+  lineas String?
 }
 
 model CatalogoTiposRoles {
@@ -262,13 +272,14 @@ model CatalogosCompNoMones {
   id Int    @id
   es String
   en String
+  compensaciones_no_monetarias_por_roles CompNoMonetariasPorRoles[]
 }
 
 model HabilidadesPorRoles {
   id                        Int                        @id @default(autoincrement())
   especificacion            String?
   id_rol                    Int                        @unique
-  rol                       Roles?
+  rol                       Roles  @relation(map: "habilidades", fields: [id_rol], references: [id], onDelete: Cascade)
   habilidades_seleccionadas HabilidadesSelecPorRoles[]
 }
 
@@ -303,7 +314,7 @@ model NSFWPorRoles {
   id                 Int                         @id @default(autoincrement())
   descripcion        String?
   id_rol             Int                         @unique
-  rol                Roles?
+  rol                Roles @relation(map: "nsfw", fields: [id_rol], references: [id], onDelete: Cascade)
   nsfw_seleccionados NSFWSeleccionadosPorRoles[]
 }
 
@@ -336,7 +347,7 @@ model FiltrosDemoPorRoles {
   rango_edad_fin      Int
   rango_edad_en_meses Boolean
   id_pais             Int
-  rol                 Roles?
+  rol                 Roles @relation(map: "filtros", fields: [id_rol], references: [id], onDelete: Cascade)
   aparencias_etnicas  AparenciasEtnicasPorRoles[]
   animal              AnimalPorRoles?
   generos             GenerosPorRoles[]
@@ -387,7 +398,8 @@ model CatalogoGeneros {
 
 model CatalogoPaises {
   id                  Int                   @id
-  nombre              String
+  es String
+  en String
   FiltrosDemoPorRoles FiltrosDemoPorRoles[]
 }
 
@@ -396,9 +408,9 @@ model CompensacionesPorRoles {
   id_rol                                  Int                        @unique
   datos_adicionales                       String
   suma_total_compensaciones_no_monetarias Decimal?
+  sueldo                                  SueldosPorRoles?       
   compensaciones_no_monetarias            CompNoMonetariasPorRoles[]
-  sueldo                                  SueldosPorRoles?           @relation(map: "sueldo", fields: [id], references: [id_comp_por_rol], onDelete: Cascade)
-  rol                                     Roles?
+  rol                                     Roles @relation(fields: [id_rol], references: [id], onDelete: Cascade)
 }
 
 model CompNoMonetariasPorRoles {
@@ -408,7 +420,8 @@ model CompNoMonetariasPorRoles {
   // se selecicone otro que no este en el catalogo
   descripcion_compensacion String
   id_comp_por_rol          Int
-  compensaciones_por_rol   CompensacionesPorRoles @relation(map: "compensaciones_no_monetarias", fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
+  compensaciones_por_rol   CompensacionesPorRoles @relation(fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
+  compensacion CatalogosCompNoMones @relation(fields: [id_compensacion], references: [id])
 }
 
 model SueldosPorRoles {
@@ -416,7 +429,7 @@ model SueldosPorRoles {
   cantidad               Decimal
   periodo                String
   id_comp_por_rol        Int                     @unique
-  compensaciones_por_rol CompensacionesPorRoles?
+  compensaciones_por_rol CompensacionesPorRoles  @relation(fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
 }
 
 model Media {
@@ -445,7 +458,7 @@ model RequisitosPorRoles {
   id_rol                 Int                        @unique
   id_idioma              Int
   id_estado_republica    Int
-  rol                    Roles?
+  rol                    Roles @relation(map: "requisitos", fields: [id_rol], references: [id], onDelete: Cascade)
   idioma                 CatalogoIdiomas            @relation(fields: [id_idioma], references: [id])
   estado_republica       CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
   medios_multimedia      MediosMultimediaPorRoles[]

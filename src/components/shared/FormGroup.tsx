@@ -24,17 +24,18 @@ interface Props {
     show_error_message?: boolean,
     rows?: number,
     textBlueLabel?: string,
-
+    disabled?: boolean,
     tooltip?: ReactNode;
 }
 
 export const FormGroup: FC<Props> = ({
-    show_error_message, rows, error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
+    disabled, show_error_message, rows, error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
     onChange, value, labelStyle, style, textBlueLabel, tooltip
 }) => {
-    let input: JSX.Element = <input style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
+    let input: JSX.Element = <input disabled={(disabled)} style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
     if (type === 'text-area') {
         input = <TextField
+            disabled={(disabled)}
             id={id}
             className={className}
             style={{ ...style }}

@@ -140,8 +140,13 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     />
 
                     <MCheckboxGroup
-                        onAllOptionChecked={() => {
-                            console.log('xd');
+                        onAllOptionChecked={(checked) => {
+                            if (generos.data) {
+                                onFormChange({
+                                    generos_interesado_en_interpretar: (checked) ? generos.data.map(i => i.id) : []
+                                })
+                            }
+
                         }}
                         direction='horizontal'
                         title="Género interesado en interpretar"
@@ -388,7 +393,14 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         options={['Sí', 'No']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                         value={state.has_tatoos ? 'Sí' : 'No'}
-                        onChange={(e) => { onFormChange({ has_tatoos: (e.currentTarget.value === 'Sí') }) }}
+                        onChange={(e) => { 
+                            onFormChange({ 
+                                has_tatoos: (e.currentTarget.value === 'Sí'),
+                                tatuajes: (e.currentTarget.value === 'Sí') ? state.tatuajes : [],
+                                id_tipo_tatuaje: (e.currentTarget.value === 'Sí') ? state.id_tipo_tatuaje : 0,
+                                descripcion_tatoo: (e.currentTarget.value === 'Sí') ? state.descripcion_tatoo : '',
+                            }) 
+                        }}
                         label=''
                     />
                     <MotionDiv show={state.has_tatoos} animation='fade'>
@@ -464,12 +476,18 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         options={['Sí', 'No']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
                         value={(state.has_piercings) ? 'Sí' : 'No'}
-                        onChange={(e) => { onFormChange({ has_piercings: (e.currentTarget.value === 'Sí') }) }}
+                        onChange={(e) => { 
+                            onFormChange({ 
+                                has_piercings: (e.currentTarget.value === 'Sí'),
+                                piercings: (e.currentTarget.value === 'Sí') ? state.piercings : [],
+                                id_tipo_piercing: (e.currentTarget.value === 'Sí') ? state.id_tipo_piercing : 0,
+                                descripcion_piercing: (e.currentTarget.value === 'Sí') ? state.descripcion_piercing : '',
+                            }) 
+                        }}
                         label=''
                     />
                     <MotionDiv show={state.has_piercings} animation='fade'>
                         <>
-
                             <MContainer direction='horizontal' styles={{ gap: 40, alignItems: 'center' }}>
                                 <Typography>Lugar:</Typography>
                                 <MSelect

@@ -1,9 +1,17 @@
 import { Grid } from '@mui/material'
-import React from 'react'
+import React, { FC } from 'react'
 import { SectionTitle, StateNDates } from '~/components/shared'
+import { CastingsRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
-export const InformacionCastingRol = () => {
+interface Props {
+    state: CastingsRolForm;
+    onFormChange: (input: { [id: string]: unknown }) => void;
+    onSaveChanges: (...args: unknown[]) => unknown;
+}
+
+
+export const InformacionCastingRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
 
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
@@ -15,13 +23,15 @@ export const InformacionCastingRol = () => {
                 <SectionTitle title='Paso 5' subtitle='Información de Casting'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
+                    textButton="Guardar y terminar más tarde"
+                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item xs={12} mt={4}>
                 <StateNDates
                     title='Locación de Casting y fecha:'
 
-                    valueSelect={'0'}
+                    valueSelect={state.id_estado_republica.toString()}
                     nameSelect='casting_select'
                     loadingSelect={estados_republica.isFetching}
                     optionsSelect={
@@ -29,17 +39,25 @@ export const InformacionCastingRol = () => {
                             ? estados_republica.data.map(s => { return { value: s.id.toString(), label: s.es } })
                             : []
                     }
-                    onSelectChange={() => { console.log('select change'); }}
+                    onSelectChange={(value) => { 
+                        onFormChange({
+                            id_estado_republica: parseInt(value)
+                        })
+                    }}
 
                     nameRadio='casting_radio'
 
-                    valueFechas={[1, 2, 3]}
-                    onAgregarFecha={() => { console.log('click'); }}
-                    onEliminarFecha={() => { console.log('eliminar'); }}
-
-                    onFormChange={(input: { [key: string]: unknown }) => {
-                        //dispatch({ type: 'update-proyecto-form', value: input })
-                        console.log(input);
+                    valueFechas={state.fechas}
+                    onAgregarFecha={(date: {inicio: Date, fin?: Date}) => { 
+                        onFormChange({
+                            fechas: state.fechas.concat([date])
+                        })
+                    }}
+                    onEliminarFecha={(index: number) => { 
+                        state.fechas.splice(index, 1);
+                        onFormChange({
+                            fechas: state.fechas
+                        })
                     }}
                 />
             </Grid>

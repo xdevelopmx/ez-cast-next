@@ -23,10 +23,11 @@ interface Props {
     textTooltip?: string,
     styleTooltip?: CSSProperties,
     colorTooltip?: 'orange' | 'blue',
+    disabled?: boolean,
 }
 
 export const MCheckboxGroup: FC<Props> = ({
-    direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle,
+    disabled, direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle,
     style, options, fontWeight, textTooltip, styleTooltip = {}, colorTooltip = 'orange'
 }) => {
     return (
@@ -45,6 +46,7 @@ export const MCheckboxGroup: FC<Props> = ({
                             style={labelStyle}
                             control={
                                 <Checkbox
+                                    disabled={(disabled)}
                                     onChange={(e) => { onAllOptionChecked(e.target.checked) }}
                                     style={style}
                                     sx={{
@@ -68,6 +70,7 @@ export const MCheckboxGroup: FC<Props> = ({
                         return <FormControlLabel className={labelClassName} style={labelStyle} key={i}
                             control={
                                 <Checkbox
+                                    disabled={(disabled)}
                                     checked={(value && value === true) ? value : false}
                                     onChange={onChange ? (e) => onChange(e.target.checked, i) : () => { console.log('nothing'); }}
                                     style={style}

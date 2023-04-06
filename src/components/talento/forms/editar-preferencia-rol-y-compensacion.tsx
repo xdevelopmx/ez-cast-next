@@ -24,7 +24,10 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
     const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
     const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
-    const [locacionPrincipalSelect, setLocacionPrincipalSelect] = useState<string>('0')
+
+
+    console.log('estado', state);
+    const [locacionPrincipalSelect, setLocacionPrincipalSelect] = useState<string>(state.id_estado_principal.toString())
 
     const [tieneAgenciaRepresentante, setTieneAgenciaRepresentante] = useState<boolean>(false)
     const [estaEmbarazada, setEstaEmbarazada] = useState<boolean>(false)

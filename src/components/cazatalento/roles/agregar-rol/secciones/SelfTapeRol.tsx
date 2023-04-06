@@ -2,29 +2,40 @@ import Image from 'next/image'
 import { Grid, Typography } from "@mui/material"
 import { FormGroup, MCheckboxGroup, SectionTitle } from "~/components/shared"
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop"
+import { SelftapeRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
+import { FC } from 'react';
 
+interface Props {
+    state: SelftapeRolForm;
+    onFormChange: (input: { [id: string]: unknown }) => void;
+    onSaveChanges: (...args: unknown[]) => unknown;
+}
 
-export const SelfTapeRol = () => {
+export const SelfTapeRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
                 <SectionTitle title='Paso 8' subtitle='Self-Tape (opcional)'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
+                    textButton="Guardar y terminar más tarde"
+                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>
                 <MCheckboxGroup
                     title=''
                     onChange={(e, i) => {
-                        /** */
+                        onFormChange({
+                            pedir_selftape: e
+                        })
                     }}
                     direction='horizontal'
                     id="pedir-self-tape"
                     options={['Pedir Self-Tape']}
                     label=''
                     labelStyle={{ fontWeight: 400, fontSize: '1.1rem' }}
-                    values={[false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
+                    values={[state.pedir_selftape]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
             <Grid item xs={6} mt={2}>
@@ -34,11 +45,11 @@ export const SelfTapeRol = () => {
                     style={{ width: '80%' }}
                     labelStyle={{ fontWeight: 600, width: '100%', marginTop: 10 }}
                     labelClassName={'form-input-label'}
-                    value={''}
+                    value={state.indicaciones}
                     onChange={(e) => {
-                        /* onFormChange({
-                            sinopsis: e.target.value
-                        }) */
+                        onFormChange({
+                            indicaciones: e.target.value
+                        })
                     }}
                     label='Indicaciones'
                 />

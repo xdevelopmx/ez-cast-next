@@ -1,13 +1,14 @@
-import { Grid } from '@mui/material'
+import { Checkbox, FormControlLabel, Grid } from '@mui/material'
 import { type FC } from 'react';
 import { MContainer } from '~/components/layout/MContainer'
+import MotionDiv from '~/components/layout/MotionDiv';
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from '~/components/shared'
 import { MTooltip } from '~/components/shared/MTooltip'
-import { type RolForm } from '~/pages/cazatalentos/roles/agregar-rol';
+import { type RolCompensacionForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
 interface Props {
-    state: RolForm;
+    state: RolCompensacionForm;
     onFormChange: (input: { [id: string]: unknown }) => void;
     onSaveChanges: (...args: unknown[]) => unknown;
 }
@@ -39,7 +40,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                         style={{ gap: 0 }}
                         id="se-pagara-sueldo"
                         options={['Sí', 'No']}
-                        value={state.compensacion.se_pagara_sueldo}
+                        value={state.se_pagara_sueldo}
                         direction='vertical'
                         onChange={(e) => {
                             onFormChange({
@@ -58,14 +59,14 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                             labelStyle={{ fontWeight: 600 }}
                             labelClassName={'form-input-label'}
                             value={
-                                state.compensacion.sueldo
-                                    ? `${state.compensacion.sueldo.cantidad_sueldo}`
+                                state.sueldo
+                                    ? `${state.sueldo.cantidad_sueldo}`
                                     : ''
                             }
                             onChange={(e) => {
                                 onFormChange({
                                     sueldo: {
-                                        ...state.compensacion.sueldo,
+                                        ...state.sueldo,
                                         cantidad_sueldo: parseInt(e.target.value || '0')
                                     }
                                 })
@@ -79,12 +80,12 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                             style={{ gap: 0 }}
                             id="cada-cuanto-sueldo"
                             options={['Diario', 'Mensual', 'Semanal', 'Por Proyecto']}
-                            value={state.compensacion.sueldo?.periodo_sueldo || 'Diario'}
+                            value={state.sueldo?.periodo_sueldo || 'Diario'}
                             direction='horizontal'
                             onChange={(e) => {
                                 onFormChange({
                                     sueldo: {
-                                        ...state.compensacion.sueldo,
+                                        ...state.sueldo,
                                         periodo_sueldo: e.target.value
                                     }
                                 })
@@ -101,7 +102,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                         style={{ gap: 0 }}
                         id="se-pagara-sueldo"
                         options={['Sí', 'No']}
-                        value={state.compensacion.se_otorgaran_compensaciones}
+                        value={state.se_otorgaran_compensaciones}
                         direction='vertical'
                         onChange={(e) => {
                             onFormChange({
@@ -119,12 +120,12 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                             if (tipo_compensacion) {
                                 onFormChange({
                                     compensaciones_no_monetarias:
-                                        (state.compensacion.compensaciones_no_monetarias
+                                        (state.compensaciones_no_monetarias
                                             .some(cm => cm.id_compensacion === tipo_compensacion.id))
-                                            ? state.compensacion.compensaciones_no_monetarias
+                                            ? state.compensaciones_no_monetarias
                                                 .filter(e => e.id_compensacion !== tipo_compensacion.id)
                                             : [
-                                                ...state.compensacion.compensaciones_no_monetarias, {
+                                                ...state.compensaciones_no_monetarias, {
                                                     id_compensacion: tipo_compensacion.id,
                                                     descripcion_compensacion: ''
                                                 }]
@@ -137,7 +138,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                         labelClassName={'label-black-lg'}
                         options={
                             (tipos_compensaciones_no_monetarias.data)
-                                ? tipos_compensaciones_no_monetarias.data.map(g => g.es)
+                                ? tipos_compensaciones_no_monetarias.data.filter(e => e.id < 99).map(g => g.es)
                                 : []
                         }
                         label='¿Qué compensación no monetaria recibirá el talento?'
@@ -145,14 +146,57 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                         values={
                             (tipos_compensaciones_no_monetarias.data)
                                 ? tipos_compensaciones_no_monetarias.data.map(g => (
-                                    state.compensacion.compensaciones_no_monetarias
-                                        ? state.compensacion.compensaciones_no_monetarias
+                                    state.compensaciones_no_monetarias
+                                        ? state.compensaciones_no_monetarias
                                             .some(cm => cm.id_compensacion == g.id)
                                         : false
                                 ))
                                 : [false]
                         }
                     />
+                    <MContainer direction='horizontal' justify='start'>
+                        <FormControlLabel 
+                            className={'label-black-lg'} 
+                            style={{ fontWeight: '400', fontSize: '1.1rem' }}
+                            label={'Otro'} 
+                            control={
+                                <Checkbox
+                                    checked={state.compensaciones_no_monetarias.some(e => e.id_compensacion === 99)}
+                                    onChange={(e) => {
+                                        onFormChange({
+                                            compensaciones_no_monetarias: (state.compensaciones_no_monetarias.some(c => c.id_compensacion === 99)) ? 
+                                                state.compensaciones_no_monetarias.filter(c => c.id_compensacion !== 99) :
+                                                state.compensaciones_no_monetarias.concat([{id_compensacion: 99, descripcion_compensacion: state.descripcion_otra_compensacion}])
+                                        })
+                                    }}
+                                    sx={{
+                                        color: '#069CB1',
+                                        '&.Mui-checked': {
+                                            color: '#069CB1',
+                                        },
+                                    }}
+                                />
+                            } 
+                        />
+                        <MotionDiv show={state.compensaciones_no_monetarias.some(e => e.id_compensacion === 99)} animation='fade'>
+                            <FormGroup
+                                rootStyle={{ marginTop: 16 }}
+                                className={'form-input-md'}
+                                value={state.descripcion_otra_compensacion}
+                                onChange={(e) => {
+                                    onFormChange({ 
+                                        compensaciones_no_monetarias: state.compensaciones_no_monetarias.map(c => {
+                                            if (c.id_compensacion === 99) {
+                                                c.descripcion_compensacion = e.target.value
+                                            }
+                                            return c;
+                                        }),
+                                        descripcion_otra_compensacion: e.target.value 
+                                    })
+                                }}
+                            />
+                        </MotionDiv>
+                    </MContainer>
                 </Grid>
             </Grid>
 
@@ -164,11 +208,11 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={`${state.compensacion.compensacion.suma_total_compensaciones_no_monetarias || '0'}`}
+                    value={`${state.compensacion.suma_total_compensaciones_no_monetarias || '0'}`}
                     onChange={(e) => {
                         onFormChange({
                             compensacion: {
-                                ...state.compensacion.compensacion,
+                                ...state.compensacion,
                                 suma_total_compensaciones_no_monetarias: parseInt(e.target.value || '0')
                             }
                         })
@@ -191,11 +235,11 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                     style={{ width: 300 }}
                     labelStyle={{ fontWeight: 600, width: '100%' }}
                     labelClassName={'form-input-label'}
-                    value={state.compensacion.compensacion.datos_adicionales || ''}
+                    value={state.compensacion.datos_adicionales || ''}
                     onChange={(e) => {
                         onFormChange({
                             compensacion: {
-                                ...state.compensacion.compensacion,
+                                ...state.compensacion,
                                 datos_adicionales: e.target.value
                             }
                         })

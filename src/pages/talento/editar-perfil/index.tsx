@@ -169,7 +169,7 @@ export type TalentoFormPreferencias = {
 
     tipo_trabajo: number[],
     interes_en_proyectos: number[],
-
+    id_estado_principal: number,
     locaciones: locacion[],
 
     documentos: documento[],
@@ -316,7 +316,6 @@ const initialState: TalentoForm = {
         equipos_deportivos: null
     },
     preferencias: {
-
         preferencias: {
             interesado_en_trabajos_de_extra: false,
             nombre_agente: '',
@@ -327,6 +326,7 @@ const initialState: TalentoForm = {
         interes_en_proyectos: [],
         documentos: [],
         locaciones: [],
+        id_estado_principal: 0,
         disponibilidad: [],
         otras_profesiones: [],
     },
@@ -589,7 +589,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
 
             if (talento.data && talento.data.preferencias) {
-                const preferencias = talento.data.preferencias
+                const preferencias = talento.data.preferencias;
+                const id_estado_principal = preferencias.locaciones.filter(l => l.es_principal)[0];
                 dispatch({
                     type: 'update-preferencia-rol',
                     value: {
@@ -605,6 +606,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             id_documento: documento.id_documento,
                             descripcion: documento.descripcion
                         })),
+                        id_estado_principal: (id_estado_principal) ? id_estado_principal.id_estado_republica : 0,
                         locaciones: preferencias.locaciones.map(locacion => ({
                             es_principal: locacion.es_principal,
                             id_estado_republica: locacion.id_estado_republica,

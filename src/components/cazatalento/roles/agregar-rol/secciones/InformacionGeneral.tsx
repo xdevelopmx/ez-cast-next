@@ -2,11 +2,11 @@ import { Grid, Typography } from "@mui/material"
 import { type FC } from "react";
 import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import { MTooltip } from "~/components/shared/MTooltip"
-import { type RolForm } from "~/pages/cazatalentos/roles/agregar-rol";
+import { type RolInformacionGeneralForm } from "~/pages/cazatalentos/roles/agregar-rol";
 import { api } from '~/utils/api';
 
 interface Props {
-    state: RolForm;
+    state: RolInformacionGeneralForm;
     onFormChange: (input: { [id: string]: unknown }) => void;
     onSaveChanges: (...args: unknown[]) => unknown;
 }
@@ -37,7 +37,7 @@ export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange, onSaveCh
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={state.informacion_general.nombre}
+                    value={state.nombre}
                     onChange={(e) => {
                         onFormChange({
                             nombre: e.target.value
@@ -69,7 +69,7 @@ export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange, onSaveCh
                     style={{ gap: 0 }}
                     id="rol-principal-o-extra"
                     options={['Principal', 'Extra']}
-                    value={state.informacion_general.rol_principal_secundario}
+                    value={state.rol_principal_secundario}
                     direction='vertical'
                     onChange={(e) => {
                         onFormChange({
@@ -87,7 +87,7 @@ export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange, onSaveCh
                             ? tipos_roles.data.map(s => { return { value: s.id.toString(), label: s.es } })
                             : []
                     }
-                    value={`${state.informacion_general.id_tipo_rol}`}
+                    value={`${state.id_tipo_rol}`}
                     className={'form-input-md'}
                     onChange={(e) => {
                         onFormChange({

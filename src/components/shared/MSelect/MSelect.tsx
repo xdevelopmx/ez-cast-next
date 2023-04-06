@@ -16,13 +16,13 @@ interface Props {
     icon?: JSX.Element,
     loading?: boolean,
     styleRoot?: CSSProperties,
-
+    disabled?: boolean,
     tooltip?: ReactNode,
     inferiorBlueText?: ReactNode,
 }
 
 export const MSelect: FC<Props> = ({
-    loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options, tooltip,
+    disabled, loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options, tooltip,
     inferiorBlueText, styleRoot = {},
 }) => {
     let label_element: JSX.Element | null = null;
@@ -66,6 +66,7 @@ export const MSelect: FC<Props> = ({
             {!loading &&
                 <>
                     <Select
+                        disabled={(disabled)}
                         sx={{
                             '&ul': {
                                 maxHeight: 100

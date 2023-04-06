@@ -4,10 +4,22 @@ import { api } from '~/utils/api';
 import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from '~/components/shared'
 import { MTooltip } from '~/components/shared/MTooltip';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
+import { DescripcionDelRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
+import { FC } from 'react';
 
-export const DescripcionDelRol = () => {
+interface Props {
+    state: DescripcionDelRolForm;
+    onFormChange: (input: { [id: string]: unknown }) => void;
+    onSaveChanges: (...args: unknown[]) => unknown;
+}
 
-    const habilidades = api.catalogos.getHabilidades.useQuery({ include_subcategories: true }, {
+export const DescripcionDelRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+
+    const habilidades = api.catalogos.getHabilidades.useQuery({ include_subcategories: false }, {
+        refetchOnWindowFocus: false
+    })
+
+    const tipos_nsfw = api.catalogos.getTiposNSFW.useQuery(undefined, {
         refetchOnWindowFocus: false
     })
 
@@ -17,46 +29,77 @@ export const DescripcionDelRol = () => {
                 <SectionTitle title='Paso 4' subtitle='Descripción del rol'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
+                    textButton="Guardar y terminar más tarde"
+                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item container xs={12} mt={4}>
                 <Grid item container xs={6}>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} mt={2} mb={5}>
                         <FormGroup
                             type={'text-area'}
                             className={'form-input-md'}
                             style={{ width: '80%' }}
                             labelStyle={{ fontWeight: 600, width: '100%' }}
                             labelClassName={'form-input-label'}
-                            value={''}
+                            value={state.descripcion}
                             onChange={(e) => {
-                                /* onFormChange({
-                                    sinopsis: e.target.value
-                                }) */
+                                onFormChange({
+                                    descripcion: e.target.value
+                                }) 
                             }}
                             label='Descripción del rol'
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <MSelect
-                            id="sindicato-select"
-                            loading={habilidades.isFetching}
-                            options={(habilidades.data) ? habilidades.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
-                            className={'form-input-md'}
-                            value={'0'}
-                            onChange={(e) => {
-                                /* onFormChange({
-                                    id_sindicato: parseInt(e.target.value)
-                                }) */
+                    <Grid item xs={12} mb={4}>
+                        <MCheckboxGroup
+                            textTooltip='Agrega las habilidades recomendadas para este rol que consideres necesarias para que el talento lleve a cabo su trabajo.'
+                            title='Habilidades'
+                            onChange={(e, i) => {
+                                const habilidad = habilidades.data?.filter((_, index) => index === i)[0];
+                                if (habilidad) {
+                                    onFormChange({
+                                        habilidades:
+                                        (state.habilidades.includes(habilidad.id)) ?
+                                            state.habilidades.filter(h => h !== habilidad.id) :
+                                            state.habilidades.concat([habilidad.id])
+
+                                    })
+                                }
                             }}
-                            label='Habilidades'
-                            tooltip={
-                                <MTooltip
-                                    color="orange"
-                                    placement='right'
-                                    text="Agrega las habilidades recomendadas para este rol que consideres necesarias para que el talento lleve a cabo su trabajo."
-                                />
+                            direction='horizontal'
+                            id="habilidades-del-rol"
+                            labelClassName={'label-black-lg'}
+                            options={
+                                (habilidades.data)
+                                    ? habilidades.data.map(g => g.es)
+                                    : []
                             }
+                            label='¿Qué compensación no monetaria recibirá el talento?'
+                            labelStyle={{ fontWeight: '400', fontSize: '1.1rem', width: '45%' }}
+                            values={
+                                (habilidades.data)
+                                    ? habilidades.data.map(g => (state.habilidades.includes(g.id)))
+                                    : [false]
+                            }
+                        />
+                        
+                    </Grid>
+                    <Grid item xs={12} mt={2}>
+                        <FormGroup
+                            disabled={state.habilidades.length === 0}
+                            type={'text-area'}
+                            className={'form-input-md'}
+                            style={{ width: '80%' }}
+                            labelStyle={{ fontWeight: 600, width: '100%' }}
+                            labelClassName={'form-input-label'}
+                            value={state.especificacion_habilidad}
+                            onChange={(e) => {
+                                onFormChange({
+                                    especificacion_habilidad: e.target.value
+                                })
+                            }}
+                            label='Especificaciones habilidad'
                         />
                     </Grid>
                     <Grid item xs={12} mt={4}>
@@ -134,47 +177,74 @@ export const DescripcionDelRol = () => {
                             styleRoot={{ marginTop: 1 }}
                             id="desnudos-situaciones-rol"
                             options={['Desnudos/Situaciones Sexuales', 'No hay desnudos y/o situaciones sexuales']}
-                            value={'Desnudos/Situaciones Sexuales'}
+                            value={state.tiene_nsfw}
                             direction='vertical'
                             onChange={(e) => {
-                                /* onFormChange({
-                                    compartir_nombre: (e.target.value === 'Compartir nombre de proyecto')
-                                }) */
+                                onFormChange({
+                                    tiene_nsfw: e.target.value
+                                })
                             }}
                         />
-                        <Box sx={{ padding: '0px 0px 0px 40px' }}>
+                        <Box sx={{ padding: '0px 0px 0px 40px', my: 4 }}>
                             <MCheckboxGroup
+                                disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
                                 direction='vertical'
                                 title="El rol involucra:"
                                 onChange={(e, i) => {
+                                    const nsfw = tipos_nsfw.data?.filter((_, index) => index === i)[0];
+                                    if (nsfw) {
+                                        onFormChange({
+                                            nsfw: {
+                                                ...state.nsfw, 
+                                                ids: (state.nsfw.ids.includes(nsfw.id)) ?
+                                                state.nsfw.ids.filter(n => n !== nsfw.id) :
+                                                state.nsfw.ids.concat([nsfw.id])
+                                            }
+                                        })
+                                    }
                                     console.log('change');
                                 }}
                                 id="tipos-apariencias-rol"
                                 labelStyle={{ marginBottom: 0, width: '45%' }}
-                                options={['Desnudos', 'Situación sexual']}
-                                values={/* (apariencias.data) ? apariencias.data.map(g => {
-                                    return state.apariencias_interesado_en_interpretar.includes(g.id);
-                                }) : */ [false]}
+                                options={(tipos_nsfw.data) ? tipos_nsfw.data.map(n => n.es) : []}
+                                values={(tipos_nsfw.data) ? tipos_nsfw.data.map(g => {
+                                    return state.nsfw.ids.includes(g.id);
+                                }) : [false]}
                             />
                         </Box>
+                        <FormGroup
+                            disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
+                            type={'text-area'}
+                            className={'form-input-md'}
+                            style={{ width: '80%' }}
+                            labelStyle={{ fontWeight: 600, width: '100%' }}
+                            labelClassName={'form-input-label'}
+                            value={state.nsfw.descripcion}
+                            onChange={(e) => {
+                                onFormChange({
+                                    nsfw: { ...state.nsfw, descripcion: e.target.value }
+                                })
+                            }}
+                            label='Descripción:'
+                        />
                     </Grid>
-                    <Grid item xs={12}>
+                </Grid>
+                <Grid item xs={6} mt={2}>
                         <FormGroup
                             type={'text-area'}
                             className={'form-input-md'}
                             style={{ width: '80%' }}
                             labelStyle={{ fontWeight: 600, width: '100%' }}
                             labelClassName={'form-input-label'}
-                            value={''}
+                            value={state.detalles_adicionales}
                             onChange={(e) => {
-                                /* onFormChange({
-                                    sinopsis: e.target.value
-                                }) */
+                                onFormChange({
+                                    detalles_adicionales: e.target.value
+                                })
                             }}
-                            label='Descripción:'
+                            label='Detalles adicionales'
                         />
                     </Grid>
-                </Grid>
             </Grid>
         </Grid>
     )
