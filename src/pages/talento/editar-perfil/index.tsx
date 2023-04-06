@@ -586,6 +586,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         }) : [],
                     }
                 })
+            } else {
+                dispatch({
+                    type: 'update-activos', value: {
+                        vehiculos: [],
+                        mascotas: [],
+                        vestuarios: [],
+                        props: [],
+                        equipos_deportivos: [],
+                    }
+                })
             }
 
             if (talento.data && talento.data.preferencias) {
@@ -724,7 +734,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                 }
 
                                 case 2: {
-                                    console.log(state.medios);
                                     saveMedios.mutate({
                                         fotos: state.medios.fotos.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: (i === 0) ? 'FOTO_PERFIL' : `FOTO_${i}` } }),
                                         audios: state.medios.audios.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: `AUDIO_${i}` } }),
@@ -828,30 +837,25 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             }} />
                         <EditarCreditosTalento state={state.creditos}
                             onFormChange={(input) => {
-                                console.log(input);
                                 dispatch({ type: 'update-creditos', value: input });
                             }} />
                         <EditarHabilidadesTalento state={state.habilidades}
                             onFormChange={(input) => {
-                                console.log(input)
                                 dispatch({ type: 'update-habilidades', value: input });
                             }} />
                         <EditarActivosTalento state={state.activos}
                             onFormChange={(input) => {
-                                console.log(input);
                                 dispatch({ type: 'update-activos', value: input });
                             }} />
                         <EditarPreferenciaRolYCompensacionTalento
                             state={state.preferencias}
                             onFormChange={(input) => {
-                                console.log(input);
                                 dispatch({ type: 'update-preferencia-rol', value: input });
                             }}
                         />
                         <EditarFiltrosAparenciasTalento
                             state={state.filtros_apariencia}
                             onFormChange={(input) => {
-                                console.log(input)
                                 dispatch({ type: 'update-filtros-apariencia', value: input });
                             }}
                         />
