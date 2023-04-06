@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Grid, IconButton, Button, Typography, Skeleton } from '@mui/material'
+import { Grid, IconButton, Button, Typography, Skeleton, Box } from '@mui/material'
 import { type TalentoFormInfoGral } from '~/pages/talento/editar-perfil';
 import { motion } from 'framer-motion'
 import { CameraAlt, Close } from '@mui/icons-material';
 import { FormGroup } from '../shared/FormGroup';
-import {MContainer} from '../layout/MContainer';
+import { MContainer } from '../layout/MContainer';
 import { signOut } from 'next-auth/react'
 import Image from 'next/image';
 import { api, parseErrorBody } from '~/utils/api';
@@ -229,12 +229,15 @@ export const MenuLateral = () => {
 		tipo_usuario: string,
 		nombre: string,
 		biografia?: string,
-		redes_sociales: {[nombre: string]: string}
+		redes_sociales: { [nombre: string]: string },
+
+		posicion: string,
+		compania: string,
 	}>({
 		tipo_usuario: TipoUsuario.NO_DEFINIDO,
 		nombre: '',
-        biografia: '',
-        redes_sociales: {
+		biografia: '',
+		redes_sociales: {
 			'pagina_web': '',
 			'vimeo': '',
 			'youtube': '',
@@ -242,27 +245,40 @@ export const MenuLateral = () => {
 			'instagram': '',
 			'twitter': '',
 			'imdb': ''
-		}
+		},
+
+		posicion: '',
+		compania: ''
 	});
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
 		refetchOnWindowFocus: false
 	});
-	const talento = api.talentos.getById.useQuery({id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0}, {
+	const talento = api.talentos.getById.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
-	const info_gral_talento = api.talentos.getInfoBasicaByIdTalento.useQuery({id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0}, {
+	const info_gral_talento = api.talentos.getInfoBasicaByIdTalento.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
 
-	const {notify} = useNotify();
+	const { notify } = useNotify();
 
 	const update_perfil_talento = api.talentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
 			notify('success', 'Se actualizo el talento con exito');
 			void talento.refetch();
-		}, 
+		},
+		onError: (error) => {
+			notify('error', parseErrorBody(error.message));
+		}
+	})
+
+	const update_perfil_cazatalento = api.cazatalentos.updatePerfil.useMutation({
+		onSuccess: (data, input) => {
+			notify('success', 'Se actualizo el cazatalento con exito');
+			void talento.refetch();
+		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
 		}
@@ -290,7 +306,7 @@ export const MenuLateral = () => {
 				}
 				case TipoUsuario.CAZATALENTOS: {
 					if (cazatalentos.data) {
-						const redes_sociales: {[red_social: string]: string} = {};
+						const redes_sociales: { [red_social: string]: string } = {};
 						cazatalentos.data.redes_sociales.forEach(red => {
 							redes_sociales[red.nombre] = red.url;
 						});
@@ -299,7 +315,10 @@ export const MenuLateral = () => {
 							nombre: cazatalentos.data.nombre,
 							apellido: cazatalentos.data.apellido,
 							biografia: cazatalentos.data.biografia,
-							redes_sociales: redes_sociales
+							redes_sociales: redes_sociales,
+
+							posicion: cazatalentos.data.posicion,
+							compania: cazatalentos.data.compania,
 						}
 					}
 				}
@@ -314,39 +333,54 @@ export const MenuLateral = () => {
 				tipo_usuario: user_info.tipo_usuario,
 				nombre: user_info.nombre,
 				biografia: user_info.biografia,
-				redes_sociales: user_info.redes_sociales
+				redes_sociales: user_info.redes_sociales,
+
+				posicion: user_info.posicion || '',
+				compania: user_info.compania || '',
 			});
 		}
 	}, [user_info]);
 
+	useEffect(() => {
+		console.log(form);
+	}, [form])
+
 	return (
 		<>
-			<div className="menu_container text-center ezcast_container" style={{position: 'relative'}}>
-				<motion.div 
+			<div className="menu_container text-center ezcast_container" style={{ position: 'relative' }}>
+				<motion.div
 					style={{
 						position: 'absolute',
 						width: '80%',
 						left: '10%',
-						height: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO) ? '550px' : 'calc(70vh)',
+						height: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO)
+							? '550px'
+							: (user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS)
+								? 'calc(75vh)'
+								: 'calc(70vh)',
+						overflowY: (user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS)
+							? 'scroll'
+							: 'visible'
+						,
 						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
 						top: 32,
 						borderRadius: 4,
 						zIndex: 99,
 						backgroundColor: 'white',
-						
+
 					}}
-					initial={{ opacity: 0, scale: 0}}
-					animate={(edit_mode) ? { opacity: 1, scale: 1 } : {opacity: 0, scale: 0}}
+					initial={{ opacity: 0, scale: 0 }}
+					animate={(edit_mode) ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
 					exit={{ opacity: 0, scale: 0 }}
 					transition={{
 						ease: "linear",
 						duration: 0.4,
-						opacity: {duration: 0.4}, 
-						scale: {duration: 0.4} 
+						opacity: { duration: 0.4 },
+						scale: { duration: 0.4 }
 					}}
 				>
 					<IconButton
-						style={{ 
+						style={{
 							position: 'absolute',
 							right: 0,
 							color: '#069cb1'
@@ -360,10 +394,10 @@ export const MenuLateral = () => {
 					</IconButton>
 					<Grid container justifyContent="center">
 						<Grid item xs={12}>
-							<div className="mt-3 mb-3 avatar" style={{position: 'relative'}}>
+							<div className="mt-3 mb-3 avatar" style={{ position: 'relative' }}>
 								<motion.img src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar" />
 								<IconButton
-									style={{ 
+									style={{
 										position: 'absolute',
 										top: '35%',
 										left: '35%',
@@ -377,14 +411,14 @@ export const MenuLateral = () => {
 									<CameraAlt />
 								</IconButton>
 							</div>
-							<Button color={'inherit'} style={{ textDecoration: 'underline', fontWeight: 800}} onClick={() => { 
+							<Button color={'inherit'} style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => {
 								console.log('xd')
-							 }} variant='text'>
+							}} variant='text'>
 								Cambiar foto
 							</Button>
 						</Grid>
-						<Grid item xs={12} sx={{mt: 4}} textAlign={'start'} maxHeight={'95vh'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
+						<Grid item xs={12} sx={{ mt: 4 }} textAlign={'start'} maxHeight={'95vh'}>
+							<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
 								<FormGroup
 									show_error_message={false}
 									error={(() => {
@@ -393,34 +427,334 @@ export const MenuLateral = () => {
 										}
 										return undefined;
 									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
+									style={{ width: 200 }}
+									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
 									value={form.nombre}
-									onChange={(e) => { 
-										setForm({...form, nombre: e.target.value}) 
+									onChange={(e) => {
+										setForm({ ...form, nombre: e.target.value })
 									}}
 									label='Nombre*'
 								/>
 							</MContainer>
 						</Grid>
+
+						{
+							user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS &&
+							<>
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											show_error_message={false}
+											error={(() => {
+												/* if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												} */
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.posicion}
+											onChange={(e) => {
+												setForm({ ...form, posicion: e.target.value })
+											}}
+											label='Posición'
+										/>
+									</MContainer>
+								</Grid>
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											show_error_message={false}
+											error={(() => {
+												/* if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												} */
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.compania}
+											onChange={(e) => {
+												setForm({ ...form, compania: e.target.value })
+											}}
+											label='Compañia'
+										/>
+									</MContainer>
+								</Grid>
+							</>
+						}
+
+
+
 						<Grid item xs={12} textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around', textAlign: 'center'}}>
+							<MContainer direction='vertical' styles={{ alignContent: 'space-around', textAlign: 'center' }}>
 								<FormGroup
 									type={'text-area'}
-									style={{width: 200}}
-									labelStyle={{ width: 200, fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
+									style={{ width: 200 }}
+									labelStyle={{ width: 200, fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
 									value={form.biografia}
 									rows={2}
-									onChange={(e) => { 
-										setForm({...form, biografia: e.target.value}) 
+									onChange={(e) => {
+										setForm({ ...form, biografia: e.target.value })
 									}}
 									label='Biografia'
 								/>
 							</MContainer>
 						</Grid>
-						
-						<Grid item xs={12}  textAlign={'center'}>
-							<Button 
+
+
+						{
+							user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS &&
+							<>
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											show_error_message={false}
+											error={(() => {
+												/* if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												} */
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.pagina_web}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														pagina_web: e.target.value
+													}
+												})
+											}}
+											label='Link a página web'
+										/>
+									</MContainer>
+								</Grid>
+
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<Typography>Link a redes sociales:</Typography>
+										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_vimeo_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
+											show_error_message={false}
+											error={(() => {
+												/* if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												} */
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.vimeo}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														vimeo: e.target.value
+													}
+												})
+											}}
+											label='Vimeo'
+										/>
+									</MContainer>
+								</Grid>
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_youtube_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="30"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
+											show_error_message={false}
+											error={(() => {
+												/* if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												} */
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.youtube}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														youtube: e.target.value
+													}
+												})
+											}}
+											label='Youtube'
+										/>
+									</MContainer>
+								</Grid>
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_linkedin_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
+											show_error_message={false}
+											error={(() => {
+												if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												}
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.linkedin}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														linkedin: e.target.value
+													}
+												})
+											}}
+											label='LinkedIn'
+										/>
+									</MContainer>
+								</Grid>
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_insta_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
+											show_error_message={false}
+											error={(() => {
+												/* if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												} */
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.instagram}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														instagram: e.target.value
+													}
+												})
+											}}
+											label='Instagram'
+										/>
+									</MContainer>
+								</Grid>
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_Twitwe_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
+											show_error_message={false}
+											error={(() => {
+												if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												}
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.twitter}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														twitter: e.target.value
+													}
+												})
+											}}
+											label='Twitter'
+										/>
+									</MContainer>
+								</Grid>
+
+								<Grid item xs={12} textAlign={'start'}>
+									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
+										<FormGroup
+											icon={{
+												element: <Image
+													src="/assets/img/iconos/icon_imbd_blue.svg"
+													style={{ marginLeft: 10 }}
+													width="20"
+													height="30"
+													alt=""
+												/>,
+												position: 'end'
+											}}
+											show_error_message={false}
+											error={(() => {
+												if (form.nombre.length === 0) {
+													return 'El nombre no debe estar vacio';
+												}
+												return undefined;
+											})()}
+											style={{ width: 200 }}
+											labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start', color: '#069cb1' }}
+											value={form.redes_sociales.imdb}
+											onChange={(e) => {
+												setForm({
+													...form, redes_sociales: {
+														...form.redes_sociales,
+														imdb: e.target.value
+													}
+												})
+											}}
+											label='IMDb'
+										/>
+									</MContainer>
+								</Grid>
+							</>
+						}
+
+						<Grid item xs={12} textAlign={'center'} sx={{ paddingBottom: 3 }}>
+							<Button
 								onClick={() => {
 									if (user_info) {
 										switch (user_info.tipo_usuario) {
@@ -431,16 +765,29 @@ export const MenuLateral = () => {
 												})
 												break;
 											}
+											case TipoUsuario.CAZATALENTOS: {
+												update_perfil_cazatalento.mutate({
+													nombre: form.nombre,
+													biografia: (form.biografia) ? form.biografia : '',
+													posicion: form.posicion,
+													redes_sociales: Object.keys(form.redes_sociales).map(key => ({
+														nombre: key,
+														url: form.redes_sociales[key] || ''
+													}))
+												})
+											}
 										}
 									}
-								}}	
-								style={{backgroundColor: '#069cb1', width: 200, color: 'white', borderRadius: 16}}
+								}}
+								style={{ backgroundColor: '#069cb1', width: 200, color: 'white', borderRadius: 16 }}
 							>
 								Guardar Cambios
 							</Button>
 						</Grid>
 					</Grid>
 				</motion.div>
+
+
 				{!edit_mode &&
 					<>
 						<motion.img src="/assets/img/iconos/EZ_Claqueta.svg" className="mt-5 mb-3 claqueta_black" />
@@ -449,15 +796,92 @@ export const MenuLateral = () => {
 						<div className="mt-3 mb-3 avatar">
 							<motion.img src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar" />
 						</div>
-						{is_fetching && <Skeleton className="h2 text-white mb-0"/>}
+						{is_fetching && <Skeleton className="h2 text-white mb-0" />}
 						{!is_fetching && <p className="h2 text-white mb-0">{user_info?.nombre}</p>}
-						{is_fetching && <Skeleton className="h2 text-white mb-3 user_lastName"/>}
+						{is_fetching && <Skeleton className="h2 text-white mb-3 user_lastName" />}
 						{!is_fetching && <p className="h2 text-white mb-3 user_lastName">{user_info?.apellido}</p>}
 						<motion.img src="/assets/img/iconos/icon_estrella_dorada.svg" className="ml-1 gold_star" alt="icono estrella dorada" />
-						
-						
+
+
+						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.CAZATALENTOS && <>
+							<Typography sx={{ textAlign: 'center', color: '#fff', fontStyle: 'italic', fontSize: '1rem' }}>{user_info?.posicion}</Typography>
+
+							<Typography sx={{ textAlign: 'center', color: '#fff', fontSize: '1rem' }}>{user_info?.biografia}</Typography>
+
+							<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+								{form.redes_sociales.vimeo && <a href={form.redes_sociales.vimeo} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_vimeo.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.linkedin && <a href={form.redes_sociales.linkedin} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_linkedin.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.youtube && <a href={form.redes_sociales.youtube} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_youtube.svg"
+										style={{ marginLeft: 10 }}
+										width="40"
+										height="50"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.imdb && <a href={form.redes_sociales.imdb} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_imbd.svg"
+										style={{ marginLeft: 10 }}
+										width="30"
+										height="40"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.twitter && <a href={form.redes_sociales.twitter} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_Twitwe.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+								{form.redes_sociales.instagram && <a href={form.redes_sociales.instagram} target='_blank'>
+									<Image
+										src="/assets/img/iconos/icon_insta.svg"
+										style={{ marginLeft: 10 }}
+										width="20"
+										height="30"
+										alt=""
+									/>
+								</a>}
+							</Box>
+
+							<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+								<Image
+									src="/assets/img/iconos/icon_website.svg"
+									style={{ marginRight: 10 }}
+									width="20"
+									height="30"
+									alt=""
+								/>
+								<a style={{ textDecoration: 'underline', color: '#fff' }} href={form.redes_sociales.pagina_web} target='_blank'>
+									<Typography sx={{ fontSize: '1rem', color: '#fff' }}>{form.redes_sociales.pagina_web}</Typography>
+								</a>
+							</Box>
+						</>}
+
+
 						<hr />
-						{is_fetching && <Skeleton className="mt-2 mb-5 text-white open_popup"/>}
+						{is_fetching && <Skeleton className="mt-2 mb-5 text-white open_popup" />}
 						{!is_fetching && <p onClick={() => setEditMode(edit => !edit)} className="mt-2 mb-5 text-white open_popup" data-popup="box_editprofile">Editar perfil</p>}
 						<div className="sub_menu">
 							<a href="#" className="active">Perfil</a>
@@ -468,13 +892,13 @@ export const MenuLateral = () => {
 							<a href="#">Ayuda</a>
 						</div>
 						<p className="mt-5 mb-2">
-							<a 
+							<a
 								onClick={() => {
 									void signOut({
 										callbackUrl: '/login'
 									});
-								}} 
-								className="text-white" 
+								}}
+								className="text-white"
 								href="#">
 								Cerrar sesión
 							</a>
@@ -550,7 +974,7 @@ export const MenuLateral = () => {
 						</div>
 					</>
 				}
-				
+
 			</div>
 		</>
 	)

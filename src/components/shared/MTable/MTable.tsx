@@ -178,7 +178,7 @@ export const MTable: FC<MTableProps> = ({
 														} 
 														return prev.concat([`panel${i}`]);
 													}) }} style={{position: 'absolute', width: 16, top: -8, right: 8}} color="primary" aria-label="expandir" component="label">
-														{(expanded_rows.includes(`panel${i}`)) ? <DownIcon /> : <UpIcon />}
+														{(expanded_rows.includes(`panel${i}`)) ? <DownIcon sx={{color: '#928F8F'}} /> : <UpIcon sx={{color: '#928F8F'}} />}
 													</IconButton>
 												</div>
 												{accordionContent && accordionContent(i, accordion_content_width - 8)}

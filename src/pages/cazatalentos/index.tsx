@@ -4,6 +4,7 @@ import Head from "next/head";
 import { motion } from 'framer-motion'
 
 import { MainLayout, SlideImagenesLinks } from "~/components";
+import Link from "next/link";
 
 const CazaTalentos: NextPage = () => {
 
@@ -25,7 +26,9 @@ const CazaTalentos: NextPage = () => {
                 <p className="mb-5">Ahora siendo casteado…</p>
               </div>
               <div className="d-flex align-items-center">
-                <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p> 
+                <Link href={'/cazatalentos/dashboard'} style={{ textDecoration: 'none' }}>
+                  <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
+                </Link>
                 <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="icon" />
               </div>
             </div>
@@ -45,7 +48,7 @@ const CazaTalentos: NextPage = () => {
           <SlideImagenesLinks />
           <hr className="hr_blue" />
           <div className="d-flex justify-content-end align-items-center">
-            <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p> 
+            <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
             <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="" />
           </div>
         </div>
