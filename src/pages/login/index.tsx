@@ -40,11 +40,11 @@ const LoginPage: NextPage = () => {
 	const [state, dispatch] = useReducer(reducer, { user: '', password: '', errors: {}, tipo_usuario: TipoUsuario.NO_DEFINIDO });
 
 	const validationLogin = useMemo(() => {
-		const result = { 
+		const result = {
 			errors: {
 				user: (!state.user || state.user.length < 2) ? 'El usuario es demasiado corto' : undefined,
 				password: (!state.password || state.password.length < 8) ? 'La contrasenia es demasiado corta' : undefined,
-			}, 
+			},
 			hasErrors: false
 		}
 		result.hasErrors = Object.entries(result.errors).filter(e => (e[1] != null)).length > 0;
@@ -53,7 +53,7 @@ const LoginPage: NextPage = () => {
 
 	return (
 		<MotionDiv show={true} animation='down-to-up'>
-			<MainLayout>
+			<MainLayout style={{ margin: 0 }}>
 				<CarrucelFondo>
 					<div className="box_cart_login">
 						<div className="login_container text-center">
@@ -61,26 +61,28 @@ const LoginPage: NextPage = () => {
 							<p className="text-muted">No tienes cuenta? <Link href="/registro" className="color_a">Registrate aquí</Link></p>
 							<div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
 								<MContainer direction="horizontal">
-									<label style={{marginRight: 16}} htmlFor="user">Usuario / Email</label>
+									<label style={{ marginRight: 16 }} htmlFor="user">Usuario / Email</label>
 									<FormGroup
 										error={state.errors.user}
 										show_error_message
 										className={`form-control form-control-sm text_custom ${(state.user.length < 2) ? '' : 'login_custom'} m-0`}
 										labelStyle={{ fontWeight: 400 }}
-										style={{width: 250}}
+										style={{ width: 250 }}
 										value={state.user}
-										onChange={(e) => { 
-											dispatch({ type: 'update-form', value: { 
-												user: e.currentTarget.value,
-												errors: {...state.errors, user: (!e.target.value || e.target.value.length < 2) ? 'El usuario es demasiado corto' : undefined}
-											}}) 
+										onChange={(e) => {
+											dispatch({
+												type: 'update-form', value: {
+													user: e.currentTarget.value,
+													errors: { ...state.errors, user: (!e.target.value || e.target.value.length < 2) ? 'El usuario es demasiado corto' : undefined }
+												}
+											})
 										}}
 									/>
 								</MContainer>
 							</div>
 							<div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
 								<MContainer direction="horizontal">
-									<label style={{marginRight: 40}} htmlFor="user">Contraseña</label>
+									<label style={{ marginRight: 40 }} htmlFor="user">Contraseña</label>
 									<FormGroup
 										type="password"
 										show_error_message
@@ -88,17 +90,19 @@ const LoginPage: NextPage = () => {
 										className={`form-control form-control-sm text_custom ${(state.user.length < 2) ? '' : 'login_custom'} m-0`}
 										labelStyle={{ fontWeight: 400 }}
 										value={state.password}
-										style={{width: 250}}
-										onChange={(e) => { 
-											dispatch({ type: 'update-form', value: { 
-												password: e.currentTarget.value,  
-												errors: {...state.errors, password: (!e.target.value || e.target.value.length < 8) ? 'La contraseña es demasiado corta' : undefined}
-											}}) 
+										style={{ width: 250 }}
+										onChange={(e) => {
+											dispatch({
+												type: 'update-form', value: {
+													password: e.currentTarget.value,
+													errors: { ...state.errors, password: (!e.target.value || e.target.value.length < 8) ? 'La contraseña es demasiado corta' : undefined }
+												}
+											})
 										}}
 										label=""
 									/>
 								</MContainer>
-								
+
 							</div>
 							<p className="text-muted">Olvido contraseña? <Link href="/restablecer-contrasena" className="color_a">Restablecer</Link></p>
 							<p>Ingresar como</p>
@@ -151,7 +155,7 @@ const LoginPage: NextPage = () => {
 														break;
 													}
 													case 'cazatalentos': {
-														router.push('/cazatalentos/dashboard');
+														router.push('/cazatalentos');
 														break;
 													}
 												}
