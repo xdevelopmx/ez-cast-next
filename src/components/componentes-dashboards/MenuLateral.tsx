@@ -277,7 +277,7 @@ export const MenuLateral = () => {
 	const update_perfil_cazatalento = api.cazatalentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
 			notify('success', 'Se actualizo el cazatalento con exito');
-			void talento.refetch();
+			void cazatalentos.refetch();
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
@@ -770,6 +770,7 @@ export const MenuLateral = () => {
 													nombre: form.nombre,
 													biografia: (form.biografia) ? form.biografia : '',
 													posicion: form.posicion,
+													compania: form.compania,
 													redes_sociales: Object.keys(form.redes_sociales).map(key => ({
 														nombre: key,
 														url: form.redes_sociales[key] || ''

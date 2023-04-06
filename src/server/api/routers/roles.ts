@@ -65,7 +65,18 @@ export const RolesRouter = createTRPCRouter({
 							}
 						}
 					},
-					requisitos: true,
+					requisitos: {
+						include: {
+							estado_republica: true,
+							idioma: true,
+							uso_horario: true,
+							medios_multimedia: {
+								include: {
+									medio_multimedia: true
+								}
+							}
+						}
+					},
 					nsfw: {
 						include: {
 							nsfw_seleccionados: {
@@ -95,47 +106,92 @@ export const RolesRouter = createTRPCRouter({
   	getAll: publicProcedure.query(async ({ ctx }) => {
     	return await ctx.prisma.roles.findMany();
 	}),
-	getAllByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
+	getAllCompleteByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
     	return await ctx.prisma.roles.findMany({
 			where: {
 				id_proyecto: input
 			},
 			include: {
-				tipo_rol: true,
-				proyecto: {
+				compensaciones: {
 					include: {
-						sindicato: {
+						sueldo: true,
+						compensaciones_no_monetarias: {
 							include: {
-								sindicato: true
-							}
-						},
-						tipo: {
-							include: {
-								tipo_proyecto: true,
+								compensacion: true
 							}
 						}
 					}
 				},
-				compensaciones: true,
 				filtros_demograficos: {
 					include: {
+						pais: true,
 						generos: {
 							include: {
-								genero: true,
+								genero: true
+							}
+						},
+						aparencias_etnicas: {
+							include: {
+								aparencia_etnica: true
+							}
+						},
+						animal: {
+							include: {
+								animal: true
 							}
 						}
 					}
 				},
 				habilidades: {
 					include: {
-						habilidades_seleccionadas: true
+						habilidades_seleccionadas: {
+							include: {
+								habilidad: true
+							}
+						}
 					}
 				},
-				requisitos: true,
-				nsfw: true,
-				casting: true,
-				filmaciones: true,
+				requisitos: {
+					include: {
+						estado_republica: true,
+						idioma: true,
+						uso_horario: true,
+						medios_multimedia: {
+							include: {
+								medio_multimedia: true
+							}
+						}
+					}
+				},
+				nsfw: {
+					include: {
+						nsfw_seleccionados: {
+							include: {
+								nsfw: true
+							}
+						}
+					}
+				},
+				casting: {
+					include: {
+						estado_republica: true
+					}
+				},
+				filmaciones: {
+					include: {
+						estado_republica: true
+					}
+				},
+				selftape: true,
+				tipo_rol: true,
 			}
+		});
+	}),
+	getAllByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
+    	return await ctx.prisma.roles.findMany({
+			where: {
+				id_proyecto: input
+			},
 		});
 	}),
 	deleteRolById: protectedProcedure

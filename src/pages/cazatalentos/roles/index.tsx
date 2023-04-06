@@ -46,9 +46,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
         refetchOnWindowFocus: false
     });
 
-    const roles = api.roles.getAllByProyecto.useQuery(id_proyecto, {
+    const roles = api.roles.getAllCompleteByProyecto.useQuery(id_proyecto, {
         refetchOnWindowFocus: false
     });
+
+    console.table(roles.data);
 
     const filtered_roles = useMemo(() => {
         if (roles.data) {
@@ -428,7 +430,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 </>
                                                 <IconButton
                                                     onClick={(e) => {
-                                                        void router.push(`/cazatalentos/agregar-rol?id_rol=${r.id}`);
+                                                        void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`);
                                                         e.stopPropagation();
                                                     }}
                                                     color="primary"
