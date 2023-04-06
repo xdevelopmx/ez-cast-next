@@ -29,8 +29,8 @@ export const Carroucel: FC<Props> = ({ children, slidesPerView = 5, spaceBetween
             spaceBetween={spaceBetween}
             slidesPerView={slidesPerView}
             navigation={navigation}
-            onSlideChange={() => console.log('slide change')}
-            onSwiper={(swiper) => console.log(swiper)}
+            //onSlideChange={() => console.log('slide change')}
+            //onSwiper={(swiper) => console.log(swiper)}
         >
             {slides}
         </Swiper>

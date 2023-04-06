@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Grid, IconButton, Button, Typography, Skeleton, Box } from '@mui/material'
-import { type TalentoFormInfoGral } from '~/pages/talento/editar-perfil';
 import { motion } from 'framer-motion'
 import { CameraAlt, Close } from '@mui/icons-material';
 import { FormGroup } from '../shared/FormGroup';
@@ -267,6 +266,7 @@ export const MenuLateral = () => {
 	const update_perfil_talento = api.talentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
 			notify('success', 'Se actualizo el talento con exito');
+			setEditMode(false)
 			void talento.refetch();
 		},
 		onError: (error) => {
@@ -277,6 +277,7 @@ export const MenuLateral = () => {
 	const update_perfil_cazatalento = api.cazatalentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
 			notify('success', 'Se actualizo el cazatalento con exito');
+			setEditMode(false)
 			void cazatalentos.refetch();
 		},
 		onError: (error) => {
@@ -776,6 +777,7 @@ export const MenuLateral = () => {
 														url: form.redes_sociales[key] || ''
 													}))
 												})
+												break;
 											}
 										}
 									}
