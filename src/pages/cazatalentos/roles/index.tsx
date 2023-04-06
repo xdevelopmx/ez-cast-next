@@ -1,7 +1,7 @@
 import { GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image';
-import React, { useEffect, useMemo, useReducer, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useReducer, useState } from 'react'
 import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas, Destacados } from '~/components'
 import { motion } from 'framer-motion'
 import { ContactoCasting } from '~/components/cazatalento/proyecto/crear/ContactoCasting'
@@ -15,7 +15,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { Button, Divider, Grid, IconButton, Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
-import { User } from 'next-auth'
+import { type User } from 'next-auth'
 import { getSession } from 'next-auth/react'
 import ConfirmationDialog from '~/components/shared/ConfirmationDialog'
 import Link from 'next/link'
@@ -439,7 +439,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 >
                                                     <Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar" />
                                                 </IconButton>
-                                                
+
                                                 <>
                                                     {['ACTIVO'].includes(r.estatus.toUpperCase()) &&
                                                         <IconButton
@@ -468,30 +468,87 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                     <Grid item container xs={12}>
                                                         <Grid item xs={7}>
                                                             <MContainer direction='horizontal' styles={{ gap: 10 }}>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Principal- En cuadro</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Crédito en pantalla</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Sin unión</Typography>
+                                                                {roles.data ? <Typography component={'span'} sx={{ color: '#928F8F', textTransform: 'capitalize' }}>{roles.data[element_index]?.tipo_rol.tipo}</Typography> : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
+                                                                {roles.data && roles.data[element_index]?.tipo_rol.tipo ? <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /> : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
+
+                                                                {roles.data && roles.data[element_index]?.compensaciones && roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias ?
+                                                                    <>
+                                                                        {
+                                                                            roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.map((c, i) => (
+                                                                                <Fragment key={c.id_compensacion}>
+                                                                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                                        {c.compensacion.es}
+                                                                                    </Typography>
+                                                                                    {i !== (roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.length || 0) - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                </Fragment>
+                                                                            ))
+                                                                        }
+
+                                                                    </>
+                                                                    : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
+                                                                }
+
+
+                                                                {/* {<Typography component={'span'} sx={{ color: '#928F8F' }}>Sin unión</Typography>} */}
                                                             </MContainer>
+
                                                             <MContainer direction='horizontal' styles={{ gap: 10 }}>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Mujer</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>18-25</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Latino/Hispano</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Nacionalidad</Typography>
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.generos ?
+                                                                        <>
+                                                                            {
+                                                                                roles.data[element_index]?.filtros_demograficos?.generos.map(g => (
+                                                                                    <Fragment key={g.id_genero}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{g.genero.es}</Typography>
+                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                    </Fragment>
+                                                                                ))
+
+                                                                            }
+                                                                        </>
+                                                                        :
+                                                                        <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
+                                                                }
+
+
+
+
+                                                                {roles.data && roles.data[element_index]?.filtros_demograficos && typeof roles.data[element_index]?.filtros_demograficos?.rango_edad_fin === 'number' && typeof roles.data[element_index]?.filtros_demograficos?.rango_edad_inicio === 'number'
+                                                                    ? <>
+                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{roles.data[element_index]?.filtros_demograficos?.rango_edad_inicio}-{roles.data[element_index]?.filtros_demograficos?.rango_edad_fin}</Typography>
+                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                    </>
+                                                                    : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
+
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas
+                                                                        ? <>
+                                                                            {
+                                                                                roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas.map(ae => (
+                                                                                    <Fragment key={ae.id_aparencia_etnica}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{ae.aparencia_etnica.nombre}</Typography>
+                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                    </Fragment>
+                                                                                ))
+                                                                            }
+                                                                        </>
+                                                                        : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
+
+                                                                }
+
+
+
+                                                                {roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.pais
+                                                                    ? <Typography component={'span'} sx={{ color: '#928F8F' }}>{roles.data[element_index]?.filtros_demograficos?.pais.es}</Typography>
+                                                                    : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                }
                                                             </MContainer>
 
                                                         </Grid>
                                                         <Grid item xs={5}>
                                                             <Typography component={'p'} sx={{ color: '#928F8F' }}>
                                                                 <Typography component={'span'} fontWeight={600} sx={{ paddingRight: 1 }}>Descripción:</Typography>
-                                                                Características del personaje
-                                                                y el rol que interpretará Características del
-                                                                personaje y el rol que interpretará Caracterí
-                                                                sticas del personaje y el rol que interpretará
+                                                                {roles.data ? roles.data[element_index]?.descripcion || 'No especificado' : 'No especificado'}
                                                             </Typography>
                                                         </Grid>
                                                     </Grid>
@@ -502,9 +559,23 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         <MContainer direction='horizontal'>
                                                             <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Habilidades:</Typography>
                                                             <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Danza</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Canto</Typography>
+
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.habilidades && roles.data[element_index]?.habilidades?.habilidades_seleccionadas
+                                                                        ? <>
+                                                                            {
+                                                                                roles.data[element_index]?.habilidades?.habilidades_seleccionadas.map((h, i) => (
+                                                                                    <Fragment key={h.id_habilidad}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
+                                                                                        {i !== ((roles.data[element_index]?.habilidades?.habilidades_seleccionadas.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                    </Fragment>
+                                                                                ))
+                                                                            }
+                                                                        </>
+                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                }
+
+
                                                             </MContainer>
                                                         </MContainer>
                                                     </Grid>
@@ -515,11 +586,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         <MContainer direction='horizontal'>
                                                             <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Desnudos situaciones sexuales:</Typography>
                                                             <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Si desnudos</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>No situación sexual</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Descripción del tipo de situación</Typography>
+
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.nsfw && roles.data[element_index]?.nsfw?.nsfw_seleccionados
+                                                                        ? <>
+                                                                            {
+                                                                                roles.data[element_index]?.nsfw?.nsfw_seleccionados.map((n, i) => (
+                                                                                    <Fragment key={n.id_nsfw}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw?.es}</Typography>
+                                                                                        {i !== ((roles.data[element_index]?.nsfw?.nsfw_seleccionados.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                    </Fragment>
+                                                                                ))
+                                                                            }
+                                                                        </>
+                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                }
+
                                                             </MContainer>
                                                         </MContainer>
                                                     </Grid>
@@ -530,9 +612,23 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         <MContainer direction='horizontal'>
                                                             <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de casting y fechas:</Typography>
                                                             <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.casting && (roles.data[element_index]?.casting.length || 0) > 0
+                                                                        ? <>
+                                                                            {
+                                                                                roles.data[element_index]?.casting.map(c => (
+                                                                                    <Fragment key={c.id}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
+                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.fecha_inicio.toString()}{c.fecha_fin ? `a ${c.fecha_fin.toString()}` : ''}</Typography>
+                                                                                    </Fragment>
+                                                                                ))
+
+                                                                            }
+                                                                        </>
+                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                }
                                                             </MContainer>
                                                         </MContainer>
                                                     </Grid>
@@ -543,9 +639,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         <MContainer direction='horizontal'>
                                                             <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de filmación y fechas:</Typography>
                                                             <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.filmaciones && (roles.data[element_index]?.filmaciones.length || 0) > 0
+                                                                        ? <>
+                                                                            {
+                                                                                roles.data[element_index]?.filmaciones.map(c => (
+                                                                                    <Fragment key={c.id}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
+                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.fecha_inicio.toString()}{c.fecha_fin ? `a ${c.fecha_fin.toString()}` : ''}</Typography>
+                                                                                    </Fragment>
+                                                                                ))
+
+                                                                            }
+                                                                        </>
+                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                }
                                                             </MContainer>
                                                         </MContainer>
                                                     </Grid>
@@ -556,11 +665,20 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         <MContainer direction='horizontal'>
                                                             <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Presentación de solicitud:</Typography>
                                                             <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
+                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.estado_republica
+                                                                        ? roles.data[element_index]?.requisitos?.estado_republica.es : 'No especificado'}
+                                                                </Typography>
                                                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.presentacion_solicitud
+                                                                        ? roles.data[element_index]?.requisitos?.presentacion_solicitud.toString() : 'No especificado'}
+                                                                </Typography>
                                                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>14:00 UTC(CNM) – 5</Typography>
+                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.uso_horario
+                                                                        ? roles.data[element_index]?.requisitos?.uso_horario.es : 'No especificado'}
+                                                                </Typography>
                                                             </MContainer>
                                                         </MContainer>
                                                     </Grid>
@@ -571,13 +689,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         <MContainer direction='horizontal'>
                                                             <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Requisitos:</Typography>
                                                             <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Foto</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Video</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Audio</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Texto requisitos o notas</Typography>
+
+                                                                {
+                                                                    roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.medios_multimedia
+                                                                        && (roles.data[element_index]?.requisitos?.medios_multimedia.length || 0) > 0
+                                                                        ? <>
+                                                                            {
+                                                                                roles.data[element_index]?.requisitos?.medios_multimedia.map((m, i) => (
+                                                                                    <Fragment key={m.id_medio_multimedia}>
+                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
+                                                                                        {i !== ((roles.data[element_index]?.requisitos?.medios_multimedia.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                    </Fragment>
+                                                                                ))
+                                                                            }
+                                                                        </>
+                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                }
                                                             </MContainer>
                                                         </MContainer>
                                                     </Grid>
