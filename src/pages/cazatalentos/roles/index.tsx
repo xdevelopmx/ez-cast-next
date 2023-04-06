@@ -15,7 +15,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import { Button, Divider, Grid, IconButton, Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
-import { User } from 'next-auth'
+import { type User } from 'next-auth'
 import { getSession } from 'next-auth/react'
 import ConfirmationDialog from '~/components/shared/ConfirmationDialog'
 import Link from 'next/link'
@@ -437,7 +437,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 >
                                                     <Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar" />
                                                 </IconButton>
-                                                
+
                                                 <>
                                                     {['ACTIVO'].includes(r.estatus.toUpperCase()) &&
                                                         <IconButton
@@ -466,10 +466,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                     <Grid item container xs={12}>
                                                         <Grid item xs={7}>
                                                             <MContainer direction='horizontal' styles={{ gap: 10 }}>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Principal- En cuadro</Typography>
+                                                                {roles.data ? <Typography component={'span'} sx={{ color: '#928F8F', textTransform: 'capitalize' }}>{roles.data[element_index]?.tipo_rol.tipo}</Typography> : <></>}
+                                                                {roles.data && roles.data[element_index]?.tipo_rol.tipo ? <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />:<></>}
+}
+                                                                {roles.data ?<Typography component={'span'} sx={{ color: '#928F8F' }}>Crédito en pantalla</Typography>: <></>}
                                                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>Crédito en pantalla</Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                
                                                                 <Typography component={'span'} sx={{ color: '#928F8F' }}>Sin unión</Typography>
                                                             </MContainer>
                                                             <MContainer direction='horizontal' styles={{ gap: 10 }}>
