@@ -342,10 +342,6 @@ export const MenuLateral = () => {
 		}
 	}, [user_info]);
 
-	useEffect(() => {
-		console.log(form);
-	}, [form])
-
 	return (
 		<>
 			<div className="menu_container text-center ezcast_container" style={{ position: 'relative' }}>
