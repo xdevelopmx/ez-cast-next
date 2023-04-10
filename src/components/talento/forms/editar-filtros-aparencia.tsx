@@ -449,7 +449,6 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                             onFormChange({
                                                 tatuajes: state.tatuajes.filter((_, j) => i !== j)
                                             })
-                                            console.log(e);
                                         }}
                                     />
                                 })}

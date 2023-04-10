@@ -2,7 +2,7 @@ import { useMemo, type FC } from 'react'
 import Image from 'next/image';
 import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
-import { Grid, Typography, useTheme } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { MRadioGroup } from '~/components/shared/MRadioGroup';
 import { MSelect } from '~/components/shared/MSelect/MSelect';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
@@ -24,8 +24,6 @@ interface Props {
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
-
-    const theme = useTheme()
 
     const uniones = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnMount: false,
@@ -197,6 +195,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                     return undefined;
                                 })()}
                                 className={'form-input-md'}
+                                type='number'
                                 labelStyle={{ fontWeight: 400 }}
                                 labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.telefono : ''}

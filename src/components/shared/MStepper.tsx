@@ -1,7 +1,7 @@
 import { type CSSProperties, useEffect, useRef, useState, type FC, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import MotionDiv from '../layout/MotionDiv';
-import { Grid, Step, StepLabel, Stepper } from '@mui/material';
+import { Step, StepLabel, Stepper } from '@mui/material';
 import { MContainer } from '../layout/MContainer';
 
 interface Props {

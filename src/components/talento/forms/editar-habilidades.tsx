@@ -48,7 +48,6 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                         {habilidad.habilidades_especificas.map((he, j) => {
                             return <Chip
                                 onClick={() => {
-                                    console.log(state);
                                     if (state) {
                                         if (habilidades_especificas_seleccionadas_by_id) {
                                             if (habilidades_especificas_seleccionadas_by_id.includes(he.id)) {

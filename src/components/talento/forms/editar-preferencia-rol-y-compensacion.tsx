@@ -1,11 +1,8 @@
 import { useEffect, useState, type FC } from 'react'
-import { motion } from 'framer-motion'
 import { FormGroup } from '~/components';
 import { Alert, Divider, Grid, IconButton, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
-import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
-import Image from 'next/image';
-import { MCheckboxGroup, MSelect, MRadioGroup, AddButton } from '~/components/shared';
+import { MCheckboxGroup, MSelect, MRadioGroup, AddButton, Tag } from '~/components/shared';
 import { type TalentoFormPreferencias } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
@@ -25,8 +22,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
     const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
     const [locacionesAdicionalesSelect, setLocacionesAdicionalesSelect] = useState<string>('0')
 
-
-    console.log('estado', state);
     const [locacionPrincipalSelect, setLocacionPrincipalSelect] = useState<string>(state.id_estado_principal.toString())
 
     const [tieneAgenciaRepresentante, setTieneAgenciaRepresentante] = useState<boolean>(false)
@@ -212,7 +207,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
                                 value={locacionPrincipalSelect}
-                                labelStyle={{fontWeight: 400}}
+                                labelStyle={{ fontWeight: 400 }}
                                 onChange={(e) => {
                                     setLocacionPrincipalSelect(e.target.value)
                                     if (state.locaciones.some(locacion => locacion.es_principal)) {
@@ -236,7 +231,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                             <MSelect
                                 loading={is_loading}
                                 id='locacion-principal-select'
-                                labelStyle={{fontWeight: 400}}
+                                labelStyle={{ fontWeight: 400 }}
                                 options={(estados_republica.isSuccess && estados_republica.data) ? estados_republica.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
                                 style={{ width: 250 }}
                                 value={locacionesAdicionalesSelect}
@@ -462,12 +457,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             </Grid>
 
             <Grid item xs={12}>
-                <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'} sx={{marginBottom: 1}}>
+                <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'} sx={{ marginBottom: 1 }}>
                     Otras profesiones
-                    <MTooltip 
-                        text='Añade algún trabajo que hayas tenido o tengas fuera del medio ¡Tu habilidad podría estar siendo buscada ahora mismo para el rol de un proyecto!' 
-                        color='orange' 
-                        placement='right' 
+                    <MTooltip
+                        text='Añade algún trabajo que hayas tenido o tengas fuera del medio ¡Tu habilidad podría estar siendo buscada ahora mismo para el rol de un proyecto!'
+                        color='orange'
+                        placement='right'
                     />
                 </Typography>
                 <FormGroup
@@ -489,7 +484,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <MContainer direction='horizontal' styles={{ gap: 10, marginTop: 20 }}>
                     {
                         state.otras_profesiones.map(profesion => (
-                            <span key={profesion} style={{ backgroundColor: '#AAE2E9', padding: '5px 10px' }}>{profesion}</span>
+                            <Tag
+                                key={profesion}
+                                text={profesion}
+                                onRemove={() => {
+                                    onFormChange({
+                                        otras_profesiones: state.otras_profesiones.filter(p => p != profesion)
+                                    })
+                                }}
+                            />
                         ))
                     }
                 </MContainer>

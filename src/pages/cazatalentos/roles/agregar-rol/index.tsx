@@ -14,7 +14,8 @@ import { RequisitosRol } from '~/components/cazatalento/roles/agregar-rol/seccio
 import { SelfTapeRol } from '~/components/cazatalento/roles/agregar-rol/secciones/SelfTapeRol'
 import { api, parseErrorBody } from "~/utils/api";
 import useNotify from "~/hooks/useNotify";
-import { NewRol } from '~/server/api/routers/roles'
+import { NewRol } from '~/server/api/routers/roles';
+import { conversorFecha } from '~/utils/conversor-fecha';
 
 export type RolInformacionGeneralForm = {
     nombre: string,
@@ -237,16 +238,15 @@ const reducerRol = (state: RolForm, action: { type: string, value: { [key: strin
 const AgregarRolPage: NextPage = () => {
 
     const router = useRouter()
-    
-    const [state, dispatch] = useReducer(reducerRol, initialState);
+
     const [on_save_action, setOnSaveAction] = useState<'redirect-to-proyectos' | 'reset-form' | null>(null);
-    
+    const [state, dispatch] = useReducer(reducerRol, initialState)
     const { notify } = useNotify();
-    
+
     useEffect(() => {
         const id_proyecto = router.query['id-proyecto'];
         const id_rol = router.query['id-rol'];
-        dispatch({ type: 'update-form', value: {id_proyecto: (id_proyecto) ? parseInt(id_proyecto as string) : 0, id_rol: (id_rol) ? parseInt(id_rol as string) : 0}})
+        dispatch({ type: 'update-form', value: { id_proyecto: (id_proyecto) ? parseInt(id_proyecto as string) : 0, id_rol: (id_rol) ? parseInt(id_rol as string) : 0 } })
     }, [router.query]);
 
     const rol = api.roles.getCompleteById.useQuery(state.id_rol, {
@@ -262,99 +262,96 @@ const AgregarRolPage: NextPage = () => {
             const filtros_demo = rol.data.filtros_demograficos;
             const animal = (filtros_demo) ? filtros_demo.animal : null;
 
-            const fecha_requisitos = (rol.data.requisitos) ? `${rol.data.requisitos.presentacion_solicitud.toLocaleDateString('es-mx')}` : null;
-            const fecha_requisitos_exploded = (fecha_requisitos) ? fecha_requisitos.split('/') : [];
-            const fecha_requisitos_convertida = `${(fecha_requisitos_exploded[2]) ? fecha_requisitos_exploded[2] : ''}-${(fecha_requisitos_exploded[1]) ? (fecha_requisitos_exploded[1].length < 2) ? `0${fecha_requisitos_exploded[1]}` : fecha_requisitos_exploded[1] : ''}-${(fecha_requisitos_exploded[0]) ? (fecha_requisitos_exploded[0].length < 2) ? `0${fecha_requisitos_exploded[0]}` : fecha_requisitos_exploded[0] : ''}`; 
+            const fecha_requisitos = (rol.data.requisitos) ? conversorFecha(rol.data.requisitos.presentacion_solicitud) : '';
 
-            console.log(sueldo, 'sueldo');
-            dispatch({ type: 'update-form', value: {
-                informacion_general: {
-                    nombre: rol.data.nombre,
-                    id_tipo_rol: rol.data.id_tipo_rol,
-                    id_proyecto: rol.data.id_proyecto,
-                    rol_principal_secundario: (rol.data.tipo_rol.tipo.toUpperCase() === 'PRINCIPAL') ? 'Principal' : 'Extra'
-                },
-                compensacion: {
+            dispatch({
+                type: 'update-form', value: {
+                    informacion_general: {
+                        nombre: rol.data.nombre,
+                        id_tipo_rol: rol.data.id_tipo_rol,
+                        id_proyecto: rol.data.id_proyecto,
+                        rol_principal_secundario: (rol.data.tipo_rol.tipo.toUpperCase() === 'PRINCIPAL') ? 'Principal' : 'Extra'
+                    },
                     compensacion: {
-                        datos_adicionales: (compensaciones) ? compensaciones.datos_adicionales : '',
-                        suma_total_compensaciones_no_monetarias: (compensaciones) ? compensaciones.suma_total_compensaciones_no_monetarias : 0
-                    },
-                    sueldo: {
-                        cantidad_sueldo: (sueldo) ? sueldo.cantidad : 0,
-                        periodo_sueldo: (sueldo) ? `${sueldo.periodo.substring(0, 1)}${sueldo.periodo.substring(1, sueldo.periodo.length).toLowerCase()}` : 'Diario'
-                    },
-                    compensaciones_no_monetarias: compensaciones_no_monetarias.map(c => { return {
-                        id_compensacion: c.id_compensacion,
-                        descripcion_compensacion: c.descripcion_compensacion
-                    }}),
-            
-                    //extras para el formulario
-                    se_pagara_sueldo: (rol.data.compensaciones?.sueldo) ? 'Sí' : 'No',
-                    se_otorgaran_compensaciones: (compensaciones_no_monetarias.length > 0) ? 'Sí' : 'No',
-                    descripcion_otra_compensacion: (otra_compensacion) ? otra_compensacion.descripcion_compensacion : ''
-                },
-                filtros_demograficos: {
-                    generos: (filtros_demo) ? filtros_demo.generos.map(g => g.id_genero) : [],
-                    apariencias_etnias: (filtros_demo) ? filtros_demo.aparencias_etnicas.map(a => a.id_aparencia_etnica) : [],
-                    animal: {
-                        id: (animal) ? animal.id_animal : 0,
-                        descripcion: (animal) ? animal.descripcion : '',
-                        tamanio: (animal) ? animal.tamanio : ''
-                    },
-                    rango_edad_inicio: (filtros_demo) ? filtros_demo.rango_edad_inicio : 1,
-                    rango_edad_fin: (filtros_demo) ? filtros_demo.rango_edad_fin : 18,
-                    rango_edad_en_meses: (filtros_demo) ? filtros_demo.rango_edad_en_meses : false,
-                    id_pais: (filtros_demo) ? filtros_demo.id_pais : 0,
+                        compensacion: {
+                            datos_adicionales: (compensaciones) ? compensaciones.datos_adicionales : '',
+                            suma_total_compensaciones_no_monetarias: (compensaciones) ? compensaciones.suma_total_compensaciones_no_monetarias : 0
+                        },
+                        sueldo: {
+                            cantidad_sueldo: (sueldo) ? sueldo.cantidad : 0,
+                            periodo_sueldo: (sueldo) ? `${sueldo.periodo.substring(0, 1)}${sueldo.periodo.substring(1, sueldo.periodo.length).toLowerCase()}` : 'Diario'
+                        },
+                        compensaciones_no_monetarias: compensaciones_no_monetarias.map(c => {
+                            return {
+                                id_compensacion: c.id_compensacion,
+                                descripcion_compensacion: c.descripcion_compensacion
+                            }
+                        }),
 
-                    //extras
-                    genero_del_rol: (filtros_demo && filtros_demo.generos.length > 0) ? 'Género especificado' : 'No especificado',
-                    apariencia_etnica_del_rol: (filtros_demo && filtros_demo.aparencias_etnicas.length > 0) ? 'Especificado' : 'No especificado',
-                    es_mascota: animal != null,
-                },
-                descripcion_rol: {
-                    tiene_nsfw: (rol.data && rol.data.nsfw) ? 'Desnudos/Situaciones Sexuales' : 'No hay desnudos y/o situaciones sexuales',
-                    descripcion: (rol.data) ? rol.data.descripcion : '',
-                    detalles_adicionales: (rol.data) ? rol.data.detalles_adicionales : '',
-                    habilidades: (rol.data && rol.data.habilidades) ? rol.data.habilidades.habilidades_seleccionadas.map(h => h.id_habilidad) : [],
-                    especificacion_habilidad: (rol.data && rol.data.habilidades) ? rol.data.habilidades.especificacion : '',
-                    nsfw: {
-                        ids: (rol.data && rol.data.nsfw) ? rol.data.nsfw.nsfw_seleccionados.map(n => n.id_nsfw) : [],
-                        descripcion: (rol.data && rol.data.nsfw) ? rol.data.nsfw.descripcion : ''
-                    }
-                },
-                castings: {
-                    id_estado_republica: (rol.data.casting && rol.data.casting.length > 0) ? rol.data.casting[0]?.id_estado_republica : 0,
-                    tipo_fecha_selected: 'Rango de fechas',
-                    fechas: (rol.data.casting) ? rol.data.casting.map(c => {
-                        if (c.fecha_fin) {
-                            return `${c.fecha_inicio.toLocaleDateString('es-mx')} a ${c.fecha_fin.toLocaleDateString('es-mx')}`;
+                        //extras para el formulario
+                        se_pagara_sueldo: (rol.data.compensaciones?.sueldo) ? 'Sí' : 'No',
+                        se_otorgaran_compensaciones: (compensaciones_no_monetarias.length > 0) ? 'Sí' : 'No',
+                        descripcion_otra_compensacion: (otra_compensacion) ? otra_compensacion.descripcion_compensacion : ''
+                    },
+                    filtros_demograficos: {
+                        generos: (filtros_demo) ? filtros_demo.generos.map(g => g.id_genero) : [],
+                        apariencias_etnias: (filtros_demo) ? filtros_demo.aparencias_etnicas.map(a => a.id_aparencia_etnica) : [],
+                        animal: {
+                            id: (animal) ? animal.id_animal : 0,
+                            descripcion: (animal) ? animal.descripcion : '',
+                            tamanio: (animal) ? animal.tamanio : ''
+                        },
+                        rango_edad_inicio: (filtros_demo) ? filtros_demo.rango_edad_inicio : 1,
+                        rango_edad_fin: (filtros_demo) ? filtros_demo.rango_edad_fin : 18,
+                        rango_edad_en_meses: (filtros_demo) ? filtros_demo.rango_edad_en_meses : false,
+                        id_pais: (filtros_demo) ? filtros_demo.id_pais : 0,
+
+                        //extras
+                        genero_del_rol: (filtros_demo && filtros_demo.generos.length > 0) ? 'Género especificado' : 'No especificado',
+                        apariencia_etnica_del_rol: (filtros_demo && filtros_demo.aparencias_etnicas.length > 0) ? 'Especificado' : 'No especificado',
+                        es_mascota: animal != null,
+                    },
+                    descripcion_rol: {
+                        tiene_nsfw: (rol.data && rol.data.nsfw) ? 'Desnudos/Situaciones Sexuales' : 'No hay desnudos y/o situaciones sexuales',
+                        descripcion: (rol.data) ? rol.data.descripcion : '',
+                        detalles_adicionales: (rol.data) ? rol.data.detalles_adicionales : '',
+                        habilidades: (rol.data && rol.data.habilidades) ? rol.data.habilidades.habilidades_seleccionadas.map(h => h.id_habilidad) : [],
+                        especificacion_habilidad: (rol.data && rol.data.habilidades) ? rol.data.habilidades.especificacion : '',
+                        nsfw: {
+                            ids: (rol.data && rol.data.nsfw) ? rol.data.nsfw.nsfw_seleccionados.map(n => n.id_nsfw) : [],
+                            descripcion: (rol.data && rol.data.nsfw) ? rol.data.nsfw.descripcion : ''
                         }
-                        return c.fecha_inicio;
-                    }) : []
-                },
-                filmaciones: {
-                    id_estado_republica: (rol.data.filmaciones && rol.data.filmaciones.length > 0) ? rol.data.filmaciones[0]?.id_estado_republica : 0,
-                    tipo_fecha_selected: 'Rango de fechas',
-                    fechas: (rol.data.filmaciones) ? rol.data.filmaciones.map(c => {
-                        if (c.fecha_fin) {
-                            return `${c.fecha_inicio.toLocaleDateString('es-mx')} a ${c.fecha_fin.toLocaleDateString('en-us')}`;
-                        }
-                        return c.fecha_inicio;
-                    }) : []
-                },
-                requisitos: {
-                    fecha_presentacion: (rol.data.requisitos) ? fecha_requisitos_convertida : '',
-                    id_uso_horario: (rol.data.requisitos) ? rol.data.requisitos.id_uso_horario : 0,
-                    info_trabajo: (rol.data.requisitos) ? rol.data.requisitos.informacion : '',
-                    id_idioma: (rol.data.requisitos) ? rol.data.requisitos.id_idioma : 0,
-                    medios_multimedia_a_incluir: (rol.data.requisitos) ? rol.data.requisitos.medios_multimedia.map(m => m.id_medio_multimedia) : [],
-                    id_estado_donde_aceptan_solicitudes: (rol.data.requisitos) ? rol.data.requisitos.id_estado_republica : 0
-                },
-                selftape: {
-                    pedir_selftape: (rol.data.selftape) ? rol.data.selftape.pedir_selftape : false,
-                    indicaciones: (rol.data.selftape) ? rol.data.selftape.indicaciones : '',
+                    },
+                    castings: {
+                        id_estado_republica: (rol.data.casting && rol.data.casting.length > 0) ? rol.data.casting[0]?.id_estado_republica : 0,
+                        tipo_fecha_selected: 'Rango de fechas',
+                        fechas: (rol.data.casting) ? rol.data.casting.map(c => {
+                            return {
+                                inicio: c.fecha_inicio,
+                                fin: c.fecha_fin
+                            };
+                        }) : []
+                    },
+                    filmaciones: {
+                        id_estado_republica: (rol.data.filmaciones && rol.data.filmaciones.length > 0) ? rol.data.filmaciones[0]?.id_estado_republica : 0,
+                        tipo_fecha_selected: 'Rango de fechas',
+                        fechas: (rol.data.filmaciones) ? rol.data.filmaciones.map(c => {
+                            return {
+                                inicio: c.fecha_inicio,
+                                fin: c.fecha_fin
+                            };
+                        }) : []
+                    },
+                    requisitos: {
+                        fecha_presentacion: (rol.data.requisitos) ? fecha_requisitos : '',
+                        id_uso_horario: (rol.data.requisitos) ? rol.data.requisitos.id_uso_horario : 0,
+                        info_trabajo: (rol.data.requisitos) ? rol.data.requisitos.informacion : '',
+                        id_idioma: (rol.data.requisitos) ? rol.data.requisitos.id_idioma : 0,
+                        medios_multimedia_a_incluir: (rol.data.requisitos) ? rol.data.requisitos.medios_multimedia.map(m => m.id_medio_multimedia) : [],
+                        id_estado_donde_aceptan_solicitudes: (rol.data.requisitos) ? rol.data.requisitos.id_estado_republica : 0
+                    },
                 }
-            }})
+            })
         }
     }, [rol.data]);
 
@@ -408,10 +405,10 @@ const AgregarRolPage: NextPage = () => {
             error: null
         }
         if (!state.informacion_general.nombre || state.informacion_general.nombre.length < 2) {
-            return {...form, error: 'El nombre del rol es invalido'};
+            return { ...form, error: 'El nombre del rol es invalido' };
         }
         if (state.informacion_general.id_tipo_rol < 1) {
-            return {...form, error: 'El tipo del rol es invalido'};
+            return { ...form, error: 'El tipo del rol es invalido' };
         }
         form.data.info_gral = {
             nombre: state.informacion_general.nombre,
@@ -421,10 +418,11 @@ const AgregarRolPage: NextPage = () => {
 
         if (state.compensacion.se_pagara_sueldo === 'Sí') {
             if (state.compensacion.sueldo && state.compensacion.sueldo.cantidad_sueldo <= 0) {
-                return {...form, error: 'El sueldo no puede ser menor o igual a 0'};
+                return { ...form, error: 'El sueldo no puede ser menor o igual a 0' };
             }
+
             form.data.compensaciones = {
-                ...form.data.compensaciones, 
+                ...form.data.compensaciones,
                 sueldo: {
                     cantidad_sueldo: (state.compensacion.sueldo) ? parseFloat(`${state.compensacion.sueldo.cantidad_sueldo}`) : 0,
                     periodo_sueldo: (state.compensacion.sueldo) ? state.compensacion.sueldo.periodo_sueldo : ''
@@ -434,15 +432,16 @@ const AgregarRolPage: NextPage = () => {
 
         if (state.compensacion.se_otorgaran_compensaciones === 'Sí') {
             if (state.compensacion.compensaciones_no_monetarias && state.compensacion.compensaciones_no_monetarias.length === 0) {
-                return {...form, error: 'Debes seleccionar al menos una compensacion'};
+                return { ...form, error: 'Debes seleccionar al menos una compensacion' };
             }
+
             form.data.compensaciones = {
                 ...form.data.compensaciones, 
                 compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias
             }
         }
         form.data.compensaciones = {
-            ...form.data.compensaciones, 
+            ...form.data.compensaciones,
             compensacion: {
                 datos_adicionales: state.compensacion.compensacion.datos_adicionales,
                 suma_total_compensaciones_no_monetarias: (state.compensacion.compensacion.suma_total_compensaciones_no_monetarias) ? parseFloat(state.compensacion.compensacion.suma_total_compensaciones_no_monetarias.toString()) : 0
@@ -454,17 +453,21 @@ const AgregarRolPage: NextPage = () => {
                 return {...form, filtros_demograficos: undefined, error: 'Debes seleccionar al menos un genero'};
             }
             form.data.filtros_demograficos = {
-                ...form.data.filtros_demograficos, 
+                ...form.data.filtros_demograficos,
+                return { ...form, error: 'Debes seleccionar al menos un genero' };
+            }
+
                 generos: state.filtros_demograficos.generos
             }
         }
 
         if (state.filtros_demograficos.apariencia_etnica_del_rol === 'Especificado') {
             if (state.filtros_demograficos.generos.length === 0) {
-                return {...form, error: 'Debes seleccionar al menos una etnia'};
+                return { ...form, error: 'Debes seleccionar al menos una etnia' };
             }
+
             form.data.filtros_demograficos = {
-                ...form.data.filtros_demograficos, 
+                ...form.data.filtros_demograficos,
                 apariencias_etnias: state.filtros_demograficos.apariencias_etnias
             }
         }
@@ -475,20 +478,21 @@ const AgregarRolPage: NextPage = () => {
                     return {...form, error: 'No se especifico un animal valido'};
                 }
             } else {
-                return {...form, error: 'No se especifico un animal valido'};
+                return { ...form, error: 'No se especifico un animal valido' };
             }
+            
             form.data.filtros_demograficos = {
-                ...form.data.filtros_demograficos, 
+                ...form.data.filtros_demograficos,
                 animal: state.filtros_demograficos.animal
             }
         }
 
         if (state.filtros_demograficos.id_pais <= 0) {
-            return {...form, error: 'No se especifico la nacionalidad del rol'};
+            return { ...form, error: 'No se especifico la nacionalidad del rol' };
         }
 
         form.data.filtros_demograficos = {
-            ...form.data.filtros_demograficos, 
+            ...form.data.filtros_demograficos,
             rango_edad_inicio: state.filtros_demograficos.rango_edad_inicio,
             rango_edad_fin: state.filtros_demograficos.rango_edad_fin,
             rango_edad_en_meses: state.filtros_demograficos.rango_edad_en_meses,
@@ -496,7 +500,7 @@ const AgregarRolPage: NextPage = () => {
         }
 
         if (state.descripcion_rol.descripcion.length <= 0) {
-            return {...form, error: 'No se especifico la descripcion del rol'};
+            return { ...form, error: 'No se especifico la descripcion del rol' };
         }
 
         form.data.descripcion_rol = {
@@ -509,23 +513,24 @@ const AgregarRolPage: NextPage = () => {
 
         if (state.descripcion_rol.tiene_nsfw === 'Desnudos/Situaciones Sexuales') {
             if (state.descripcion_rol.nsfw.ids.length === 0) {
-                return {...form, error: 'No se especifico ningun tipo de escena NSFW'};
+                return { ...form, error: 'No se especifico ningun tipo de escena NSFW' };
             }
             if (state.descripcion_rol.nsfw.descripcion.length === 0) {
-                return {...form, error: 'No especificaste los detalles de las escenas NSFW'};
+                return { ...form, error: 'No especificaste los detalles de las escenas NSFW' };
             }
+
             form.data.descripcion_rol = {
-                ...form.data.descripcion_rol, 
+                ...form.data.descripcion_rol,
                 nsfw: state.descripcion_rol.nsfw
             }
         }
 
         if (state.castings.fechas.length === 0) {
-            return {...form, error: 'No se especifico ninguna fecha para los castings del rol'};
+            return { ...form, error: 'No se especifico ninguna fecha para los castings del rol' };
         }
 
         if (state.castings.id_estado_republica <= 0) {
-            return {...form, error: 'No se especifico estado para los castings del rol'};
+            return { ...form, error: 'No se especifico estado para los castings del rol' };
         }
 
         form.data.casting = {
@@ -535,11 +540,11 @@ const AgregarRolPage: NextPage = () => {
         }
 
         if (state.filmaciones.fechas.length === 0) {
-            return {...form, error: 'No se especifico ninguna fecha para las filmaciones del rol'};
+            return { ...form, error: 'No se especifico ninguna fecha para las filmaciones del rol' };
         }
 
         if (state.filmaciones.id_estado_republica <= 0) {
-            return {...form, error: 'No se especifico estado para las filmaciones del rol'};
+            return { ...form, error: 'No se especifico estado para las filmaciones del rol' };
         }
 
         form.data.filmaciones = {
@@ -547,29 +552,29 @@ const AgregarRolPage: NextPage = () => {
             id_estado_republica: state.filmaciones.id_estado_republica,
             fechas: state.filmaciones.fechas,
         }
-        
+
         if (state.requisitos.fecha_presentacion === '') {
-            return {...form, error: 'No se especifico la fecha de presentacion de solicitudes del rol'};
+            return { ...form, error: 'No se especifico la fecha de presentacion de solicitudes del rol' };
         }
 
         if (state.requisitos.info_trabajo.length === 0) {
-            return {...form, error: 'No se especifico la informacion del trabajo del rol'};
+            return { ...form, error: 'No se especifico la informacion del trabajo del rol' };
         }
 
         if (state.requisitos.medios_multimedia_a_incluir.length === 0) {
-            return {...form, error: 'No se especifico ningun medio multimedia del rol'};
+            return { ...form, error: 'No se especifico ningun medio multimedia del rol' };
         }
 
         if (state.requisitos.id_uso_horario <= 0) {
-            return {...form, error: 'No se especifico el uso de horario del rol'};
+            return { ...form, error: 'No se especifico el uso de horario del rol' };
         }
 
         if (state.requisitos.id_idioma <= 0) {
-            return {...form, error: 'No se especifico el idioma del rol'};
+            return { ...form, error: 'No se especifico el idioma del rol' };
         }
 
         if (state.requisitos.id_estado_donde_aceptan_solicitudes <= 0) {
-            return {...form, error: 'No se especifico estado donde aceptar las solicitudes'};
+            return { ...form, error: 'No se especifico estado donde aceptar las solicitudes' };
         }
 
         form.data.requisitos = {
@@ -586,7 +591,7 @@ const AgregarRolPage: NextPage = () => {
             indicaciones: state.selftape.indicaciones,
             pedir_selftape: state.selftape.pedir_selftape,
         }
-        form.complete = (state.informacion_general.nombre.length > 1 && state.informacion_general.id_tipo_rol > 0 && 
+        form.complete = (state.informacion_general.nombre.length > 1 && state.informacion_general.id_tipo_rol > 0 &&
             state.filtros_demograficos.rango_edad_inicio > 0 && state.filtros_demograficos.rango_edad_fin > 0 && state.filtros_demograficos.id_pais > 0 &&
             state.descripcion_rol.descripcion.length > 0 && state.castings.id_estado_republica > 0 && state.castings.fechas.length > 0 &&
             state.filmaciones.id_estado_republica > 0 && state.filmaciones.fechas.length > 0 && state.requisitos.fecha_presentacion !== '' &&
@@ -650,7 +655,7 @@ const AgregarRolPage: NextPage = () => {
     }, [state.filtros_demograficos]);
 
     const descripcion_rol = useMemo(() => {
-        return <DescripcionDelRol 
+        return <DescripcionDelRol
             state={state.descripcion_rol}
             onFormChange={(input) => {
                 dispatch({ type: 'update-descripcion-rol', value: input });
@@ -659,7 +664,7 @@ const AgregarRolPage: NextPage = () => {
     }, [state.descripcion_rol]);
 
     const info_casting = useMemo(() => {
-        return <InformacionCastingRol 
+        return <InformacionCastingRol
             state={state.castings}
             onFormChange={(input) => {
                 dispatch({ type: 'update-castings-rol', value: input });
@@ -668,7 +673,7 @@ const AgregarRolPage: NextPage = () => {
     }, [state.castings]);
 
     const info_filmaciones = useMemo(() => {
-        return <InformacionFilmacionRol 
+        return <InformacionFilmacionRol
             state={state.filmaciones}
             onFormChange={(input) => {
                 dispatch({ type: 'update-filmaciones-rol', value: input });
@@ -677,7 +682,7 @@ const AgregarRolPage: NextPage = () => {
     }, [state.filmaciones]);
 
     const requisitos = useMemo(() => {
-        return <RequisitosRol 
+        return <RequisitosRol
             state={state.requisitos}
             onFormChange={(input) => {
                 console.log(input);
@@ -687,7 +692,7 @@ const AgregarRolPage: NextPage = () => {
     }, [state.requisitos]);
 
     const selftape = useMemo(() => {
-        return <SelfTapeRol 
+        return <SelfTapeRol
             state={state.selftape}
             onFormChange={(input) => {
                 dispatch({ type: 'update-selftape-rol', value: input });
