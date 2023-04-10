@@ -1,21 +1,18 @@
 import { type NextPage } from "next";
-import Image from 'next/image';
 import Head from "next/head";
-import { motion } from 'framer-motion'
 
-import { Alertas, Destacados, Flotantes, MainLayout, MenuLateral } from "~/components";
+import { MainLayout } from "~/components";
 import { MStepper } from "~/components/shared/MStepper";
-import { useEffect, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import { EditarActivosTalento, EditarCreditosTalento, EditarFiltrosAparenciasTalento, EditarInfoBasicaTalento, EditarMediaTalento, EditarPreferenciaRolYCompensacionTalento } from "~/components/talento";
-import { Archivo } from "~/server/api/root";
+import { type Archivo } from "~/server/api/root";
 import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilidades";
 import { getSession } from "next-auth/react";
-import { GetServerSideProps } from "next/types";
+import { type GetServerSideProps } from "next/types";
 import { api, parseErrorBody } from "~/utils/api";
-import { Button, Typography } from "@mui/material";
-import { User } from 'next-auth';
+import { Typography } from "@mui/material";
+import { type User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
-import { string } from "zod";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { useRouter } from "next/router";
 
@@ -671,6 +668,71 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         }
     }, [talento.data]);
 
+    const editar_info_basica_talento = useMemo(() => {
+        return <EditarInfoBasicaTalento
+            state={state.info_gral}
+            talento_fetching={talento.isFetching}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-info-gral', value: input });
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.info_gral])
+
+    const editar_media_talento = useMemo(() => {
+        return <EditarMediaTalento
+            state={state.medios}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-medios', value: input });
+            }}
+        />
+    }, [state.medios])
+
+    const editar_creditos_talento = useMemo(() => {
+        return <EditarCreditosTalento
+            state={state.creditos}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-creditos', value: input });
+            }}
+        />
+    }, [state.creditos])
+
+    const editar_habilidades_talento = useMemo(() => {
+        return <EditarHabilidadesTalento
+            state={state.habilidades}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-habilidades', value: input });
+            }}
+        />
+    }, [state.habilidades])
+
+    const editar_activos_talento = useMemo(() => {
+        return <EditarActivosTalento
+            state={state.activos}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-activos', value: input });
+            }}
+        />
+    }, [state.activos])
+
+    const editar_preferencias_rol_y_compensacion_talento = useMemo(() => {
+        return <EditarPreferenciaRolYCompensacionTalento
+            state={state.preferencias}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-preferencia-rol', value: input });
+            }}
+        />
+    }, [state.preferencias])
+
+    const editar_filtros_apariencias_talento = useMemo(() => {
+        return <EditarFiltrosAparenciasTalento
+            state={state.filtros_apariencia}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-filtros-apariencia', value: input });
+            }}
+        />
+    }, [state.filtros_apariencia])
+
     return (
         <>
             <Head>
@@ -824,41 +886,19 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         }}
                     >
 
-                        <EditarInfoBasicaTalento
-                            state={state.info_gral}
-                            talento_fetching={talento.isFetching}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-info-gral', value: input });
-                            }}
-                        />
-                        <EditarMediaTalento state={state.medios}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-medios', value: input });
-                            }} />
-                        <EditarCreditosTalento state={state.creditos}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-creditos', value: input });
-                            }} />
-                        <EditarHabilidadesTalento state={state.habilidades}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-habilidades', value: input });
-                            }} />
-                        <EditarActivosTalento state={state.activos}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-activos', value: input });
-                            }} />
-                        <EditarPreferenciaRolYCompensacionTalento
-                            state={state.preferencias}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-preferencia-rol', value: input });
-                            }}
-                        />
-                        <EditarFiltrosAparenciasTalento
-                            state={state.filtros_apariencia}
-                            onFormChange={(input) => {
-                                dispatch({ type: 'update-filtros-apariencia', value: input });
-                            }}
-                        />
+                        {editar_info_basica_talento}
+
+                        {editar_media_talento}
+
+                        {editar_creditos_talento}
+
+                        {editar_habilidades_talento}
+
+                        {editar_activos_talento}
+
+                        {editar_preferencias_rol_y_compensacion_talento}
+
+                        {editar_filtros_apariencias_talento}
                     </MStepper>
                 </div>
             </MainLayout>

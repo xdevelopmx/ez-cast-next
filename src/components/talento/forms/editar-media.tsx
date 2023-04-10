@@ -15,7 +15,6 @@ interface Props {
 }
 
 export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
-    console.log(state);
     return (
         <Grid container justifyContent={'space-between'} spacing={2} mb={8}>
             <Grid item xs={12} md={8}>
