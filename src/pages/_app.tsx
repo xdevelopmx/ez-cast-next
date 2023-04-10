@@ -20,7 +20,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
-  const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
+  const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
   return (
     <SessionProvider session={session}>
       <DndProvider backend={HTML5Backend}>
