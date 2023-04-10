@@ -9,6 +9,87 @@ import {
 } from "~/server/api/trpc";
 import { TipoUsuario } from "~/enums";
 
+export type NewRol = {
+	id_rol: number,
+	info_gral: {
+		nombre: string, 
+		id_tipo_rol: number,
+		id_proyecto: number,
+	},
+	compensaciones: {
+		compensacion: {
+			datos_adicionales: string,
+			suma_total_compensaciones_no_monetarias?: number
+		},
+		sueldo?: {
+			cantidad_sueldo: number,
+			periodo_sueldo: string,
+		},
+		compensaciones_no_monetarias?: { id_compensacion: number, descripcion_compensacion: string }[]
+	},
+	filtros_demograficos: {
+		generos?: number[],
+		apariencias_etnias?: number[],
+		animal?: {
+			id: number,
+			descripcion: string,
+			tamanio: string
+		},
+		rango_edad_inicio: number,
+		rango_edad_fin: number,
+		rango_edad_en_meses: boolean,
+		id_pais: number
+	},
+	descripcion_rol: {
+		descripcion: string,
+		detalles_adicionales?: string,
+		habilidades: number[],
+		especificacion_habilidad: string,
+		nsfw?: {
+			ids: number[],
+			descripcion: string
+		},
+		lineas?: {
+			base64: string,
+			extension: string
+		},
+		foto_referencia?: {
+			base64: string,
+			extension: string
+		}
+	},
+	casting: {
+		id_estado_republica: number,
+		fechas: {
+			inicio: Date,
+			fin?: Date,
+		}[]
+	},
+	filmaciones: {
+		id_estado_republica: number,
+		fechas: {
+			inicio: Date,
+			fin?: Date,
+		}[]
+	},
+	requisitos: {
+		fecha_presentacion: string,
+		id_uso_horario: number,
+		info_trabajo: string,
+		id_idioma: number,
+		medios_multimedia_a_incluir: number[],
+		id_estado_donde_aceptan_solicitudes: number
+	},
+	selftape: {
+		indicaciones: string,
+		pedir_selftape: boolean,
+		lineas?: {
+			base64: string,
+			extension: string
+		}
+	}
+}
+
 export const RolesRouter = createTRPCRouter({
     getById: publicProcedure
 		.input(z.object({ id: z.number() }))
@@ -317,13 +398,13 @@ export const RolesRouter = createTRPCRouter({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
 						case 'too_small':
-							return { message: 'Debes seleccionar una nacionalidad' };
+							return { message: 'Debes seleccionar una nacionalidad en el apartado de filtros demograficos' };
 						default:
 							return { message: 'Formato de nacionalidad invalido' };
 						}
 					},
 				}).min(1),
-			}),
+			}).nullish(),
 			descripcion_rol: z.object({
 				descripcion: z.string({
 					errorMap: (issue, _ctx) => {
@@ -367,9 +448,10 @@ export const RolesRouter = createTRPCRouter({
 					fin: z.date().nullish(),
 				}), {
 					errorMap: (issue, _ctx) => {
+						console.log(issue);
 						switch (issue.code) {
 						case 'too_small':
-							return { message: 'Se debe definir al menos una fecha' };
+							return { message: 'Se debe definir al menos una fecha para castings' };
 						default:
 							return { message: 'Formato de fechas invalido' };
 						}
@@ -385,7 +467,7 @@ export const RolesRouter = createTRPCRouter({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
 						case 'too_small':
-							return { message: 'Se debe definir al menos una fecha' };
+							return { message: 'Se debe definir al menos una fecha para filmaciones' };
 						default:
 							return { message: 'Formato de fechas invalido' };
 						}
@@ -428,6 +510,7 @@ export const RolesRouter = createTRPCRouter({
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
+
 			const rol = await ctx.prisma.roles.upsert({
 				where: {
 					id: input.id_rol
@@ -447,14 +530,14 @@ export const RolesRouter = createTRPCRouter({
 
 			const compensaciones = await ctx.prisma.compensacionesPorRoles.upsert({
 				where: {
-					id_rol: input.id_rol
+					id_rol: rol.id
 				},
 				update: {
 					datos_adicionales: input.compensaciones.compensacion.datos_adicionales,
 					suma_total_compensaciones_no_monetarias: input.compensaciones.compensacion.suma_total_compensaciones_no_monetarias
 				},
 				create: {
-					id_rol: input.id_rol,
+					id_rol: rol.id,
 					datos_adicionales: input.compensaciones.compensacion.datos_adicionales,
 					suma_total_compensaciones_no_monetarias: input.compensaciones.compensacion.suma_total_compensaciones_no_monetarias
 				},
@@ -495,27 +578,14 @@ export const RolesRouter = createTRPCRouter({
 					});
 				}
 			} else {
-				const deleted_sueldo = await ctx.prisma.sueldosPorRoles.delete({where: {id_comp_por_rol: compensaciones.id}});
-				if (!deleted_sueldo) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo eliminar el sueldo del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
+				try {
+					await ctx.prisma.sueldosPorRoles.delete({where: {id_comp_por_rol: compensaciones.id}});
+				} catch (e) {}
 			}
-
-			const deleted_compensaciones = await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id }});
-			if (!deleted_compensaciones) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar las compensaciones no monetarias del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
+			try {
+				await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id }});
+			} catch (e) {}
+			
 			if (input.compensaciones.compensaciones_no_monetarias) {
 				const saved_compensaciones_no_monetarias = await ctx.prisma.compNoMonetariasPorRoles.createMany({
 					data: input.compensaciones.compensaciones_no_monetarias.map(c => {
@@ -534,109 +604,93 @@ export const RolesRouter = createTRPCRouter({
 			} 
 
 			// FILTROS DEMOGRAFICOS
+			if (input.filtros_demograficos) {
 
-			const filtros_demograficos = await ctx.prisma.filtrosDemoPorRoles.upsert({
-				where: {
-					id_rol: input.id_rol
-				},
-				update: {
-					rango_edad_inicio: input.filtros_demograficos.rango_edad_inicio,
-                    rango_edad_fin: input.filtros_demograficos.rango_edad_fin,
-                    rango_edad_en_meses: input.filtros_demograficos.rango_edad_en_meses,
-                    id_pais: input.filtros_demograficos.id_pais
-				},
-				create: {
-					id_rol: input.id_rol,
-					rango_edad_inicio: input.filtros_demograficos.rango_edad_inicio,
-                    rango_edad_fin: input.filtros_demograficos.rango_edad_fin,
-                    rango_edad_en_meses: input.filtros_demograficos.rango_edad_en_meses,
-                    id_pais: input.filtros_demograficos.id_pais
-				}
-			})
-
-			if (!filtros_demograficos) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo actualizar los filtros demograficos del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
-			const deleted_generos = await ctx.prisma.generosPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			if (!deleted_generos) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar los generos del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
-			if (input.filtros_demograficos.generos) {
-				const saved_generos = await ctx.prisma.generosPorRoles.createMany({
-					data: input.filtros_demograficos.generos.map(g => { return {id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id} })
-				});
-				if (!saved_generos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los generos del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-			}
-
-			const deleted_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			if (!deleted_etnias) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar las etnias del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
-			if (input.filtros_demograficos.apariencias_etnias) {
-				const saved_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.createMany({
-					data: input.filtros_demograficos.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id} })
-				});
-				if (!saved_etnias) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar las etnias del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-			}
-
-			const deleted_animal = await ctx.prisma.animalPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			if (!deleted_animal) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo eliminar el animal del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
-			if (input.filtros_demograficos.animal) {
-				const saved_animal = await ctx.prisma.animalPorRoles.create({
-					data: {
-						id_filtro_demo_por_rol: filtros_demograficos.id,
-						id_animal: input.filtros_demograficos.animal.id,
-						descripcion: input.filtros_demograficos.animal.descripcion,
-						tamanio: input.filtros_demograficos.animal.tamanio
+				const filtros_demograficos = await ctx.prisma.filtrosDemoPorRoles.upsert({
+					where: {
+						id_rol: rol.id
+					},
+					update: {
+						rango_edad_inicio: input.filtros_demograficos.rango_edad_inicio,
+						rango_edad_fin: input.filtros_demograficos.rango_edad_fin,
+						rango_edad_en_meses: input.filtros_demograficos.rango_edad_en_meses,
+						id_pais: input.filtros_demograficos.id_pais
+					},
+					create: {
+						id_rol: rol.id,
+						rango_edad_inicio: input.filtros_demograficos.rango_edad_inicio,
+						rango_edad_fin: input.filtros_demograficos.rango_edad_fin,
+						rango_edad_en_meses: input.filtros_demograficos.rango_edad_en_meses,
+						id_pais: input.filtros_demograficos.id_pais
 					}
-				});
-				if (!saved_animal) {
+				})
+	
+				if (!filtros_demograficos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo guardar el animal del rol en la base de datos',
+						message: 'No se pudo actualizar los filtros demograficos del rol en la base de datos',
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
+				}
+				
+				try {
+					await ctx.prisma.generosPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
+				} catch (e) {}
+	
+				if (input.filtros_demograficos.generos) {
+					const saved_generos = await ctx.prisma.generosPorRoles.createMany({
+						data: input.filtros_demograficos.generos.map(g => { return {id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id} })
+					});
+					if (!saved_generos) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'No se pudieron guardar los generos del rol en la base de datos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+	
+				try {
+					await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
+				} catch (e) {}
+				
+				if (input.filtros_demograficos.apariencias_etnias) {
+					const saved_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.createMany({
+						data: input.filtros_demograficos.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id} })
+					});
+					if (!saved_etnias) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'No se pudieron guardar las etnias del rol en la base de datos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+	
+				try {
+					await ctx.prisma.animalPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
+				} catch (e) {}
+				
+				if (input.filtros_demograficos.animal) {
+					const saved_animal = await ctx.prisma.animalPorRoles.create({
+						data: {
+							id_filtro_demo_por_rol: filtros_demograficos.id,
+							id_animal: input.filtros_demograficos.animal.id,
+							descripcion: input.filtros_demograficos.animal.descripcion,
+							tamanio: input.filtros_demograficos.animal.tamanio
+						}
+					});
+					if (!saved_animal) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'No se pudo guardar el animal del rol en la base de datos',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
 				}
 			}
 
@@ -658,7 +712,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 			const rol_updated = await ctx.prisma.roles.update({
 				where: {
-					id: input.id_rol
+					id: rol.id
 				},
 				include: {
 					habilidades: {
@@ -688,18 +742,11 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			if (rol_updated.habilidades && rol_updated.habilidades.habilidades_seleccionadas.length > 0) {
-				const deleted_habilidades = await ctx.prisma.habilidadesPorRoles.delete({where: {id_rol: rol.id}});
-				if (!deleted_habilidades) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar las habilidades del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
+				try {
+					await ctx.prisma.habilidadesPorRoles.delete({where: {id_rol: rol.id}});
+				} catch (e) {}
 			}
 
-			
 			const habilidades_por_rol = await ctx.prisma.habilidadesPorRoles.create({
 				data: {
 					id_rol: rol.id,
@@ -730,16 +777,9 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			if (rol_updated.nsfw && rol_updated.nsfw.nsfw_seleccionados.length > 0) {
-				const deleted_nsfw = await ctx.prisma.nSFWPorRoles.delete({where: {id_rol: rol.id}});
-	
-				if (!deleted_nsfw) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar los nsfw del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
+				try {
+					await ctx.prisma.nSFWPorRoles.delete({where: {id_rol: rol.id}});
+				} catch (e) {}
 			}
 
 			if (input.descripcion_rol.nsfw) {
@@ -771,20 +811,14 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			// CASTING
-
-			const deleted_fechas_casting = await ctx.prisma.castingPorRoles.deleteMany({where: {id_rol: input.id_rol}});
-			if (!deleted_fechas_casting) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar los datos de la fechas de castings',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
+			try {
+				await ctx.prisma.castingPorRoles.deleteMany({where: {id_rol: rol.id}});
+			} catch (e) {}
+			
 			const saved_fechas_casting = await ctx.prisma.castingPorRoles.createMany({
 				data: input.casting.fechas.map((dates) => {
 					return {
-						id_rol: input.id_rol,
+						id_rol: rol.id,
 						id_estado_republica: input.casting.id_estado_republica,
 						fecha_inicio: dates.inicio,
 						fecha_fin: dates.fin
@@ -801,20 +835,14 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			// FILMACIONES
-
-			const deleted_fechas_filmaciones = await ctx.prisma.filmacionPorRoles.deleteMany({where: {id_rol: input.id_rol}});
-			if (!deleted_fechas_filmaciones) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar los datos de la fechas de filmaciones',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
+			try {
+				await ctx.prisma.filmacionPorRoles.deleteMany({where: {id_rol: rol.id}});
+			} catch (e) {}
+			
 			const saved_fechas_filmaciones = await ctx.prisma.filmacionPorRoles.createMany({
 				data: input.filmaciones.fechas.map((dates) => {
 					return {
-						id_rol: input.id_rol,
+						id_rol: rol.id,
 						id_estado_republica: input.filmaciones.id_estado_republica,
 						fecha_inicio: dates.inicio,
 						fecha_fin: dates.fin
@@ -833,7 +861,7 @@ export const RolesRouter = createTRPCRouter({
 			// REQUISITOS
 			const requisitos = await ctx.prisma.requisitosPorRoles.upsert({
 				where: {
-					id_rol: input.id_rol
+					id_rol: rol.id
 				},
 				update: {
 					presentacion_solicitud: new Date(input.requisitos.fecha_presentacion),
@@ -846,7 +874,7 @@ export const RolesRouter = createTRPCRouter({
 					presentacion_solicitud: new Date(input.requisitos.fecha_presentacion),
 					informacion: input.requisitos.info_trabajo,
 					id_uso_horario: input.requisitos.id_uso_horario,
-					id_rol: input.id_rol,
+					id_rol: rol.id,
 					id_idioma: input.requisitos.id_idioma,
 					id_estado_republica: input.requisitos.id_estado_donde_aceptan_solicitudes
 				}
@@ -868,20 +896,11 @@ export const RolesRouter = createTRPCRouter({
 			})
 
 			if (medios_multimedia_por_rol.length > 0) {
-				const deleted_medios_multimedia_por_rol = await ctx.prisma.mediosMultimediaPorRoles.deleteMany({
+				await ctx.prisma.mediosMultimediaPorRoles.deleteMany({
 					where: {
 						id_requisitos_por_roles: requisitos.id
 					}
 				});
-
-				if (!deleted_medios_multimedia_por_rol) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar los medios del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
 			}
 
 			const saved_medios_multimedia_por_rol = await ctx.prisma.mediosMultimediaPorRoles.createMany({
@@ -909,7 +928,7 @@ export const RolesRouter = createTRPCRouter({
 
 			const selftape = await ctx.prisma.selftapePorRoles.upsert({
 				where: {
-					id_rol: input.id_rol
+					id_rol: rol.id
 				},
 				update: {
 					pedir_selftape: input.selftape.pedir_selftape,
@@ -917,7 +936,7 @@ export const RolesRouter = createTRPCRouter({
 					lineas: updated_selftape_lineas
 				},
 				create: {
-					id_rol: input.id_rol,
+					id_rol: rol.id,
 					pedir_selftape: input.selftape.pedir_selftape,
 					indicaciones: input.selftape.indicaciones,
 					lineas: updated_selftape_lineas
@@ -1042,27 +1061,15 @@ export const RolesRouter = createTRPCRouter({
 					});
 				}
 			} else {
-				const deleted_sueldo = await ctx.prisma.sueldosPorRoles.delete({where: {id_comp_por_rol: compensaciones.id}});
-				if (!deleted_sueldo) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo eliminar el sueldo del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
+				try {
+					await ctx.prisma.sueldosPorRoles.delete({where: {id_comp_por_rol: compensaciones.id}});
+				} catch (e) {}
 			}
 
-			const deleted_compensaciones = await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id }});
-			if (!deleted_compensaciones) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar las compensaciones no monetarias del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
+			try {
+				await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id }});
+			} catch (e) {}
+			
 			if (input.compensaciones_no_monetarias) {
 				const saved_compensaciones_no_monetarias = await ctx.prisma.compNoMonetariasPorRoles.createMany({
 					data: input.compensaciones_no_monetarias.map(c => {
@@ -1167,16 +1174,10 @@ export const RolesRouter = createTRPCRouter({
 				});
 			}
 
-			const deleted_generos = await ctx.prisma.generosPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			if (!deleted_generos) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar los generos del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
+			try {
+				await ctx.prisma.generosPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
+			} catch (e) {}
+			
 			if (input.generos) {
 				const saved_generos = await ctx.prisma.generosPorRoles.createMany({
 					data: input.generos.map(g => { return {id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id} })
@@ -1191,16 +1192,10 @@ export const RolesRouter = createTRPCRouter({
 				}
 			}
 
-			const deleted_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			if (!deleted_etnias) {
-				throw new TRPCError({
-					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron eliminar las etnias del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
-				});
-			}
-
+			try {
+				await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
+			} catch (e) {}
+			
 			if (input.apariencias_etnias) {
 				const saved_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.createMany({
 					data: input.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id} })

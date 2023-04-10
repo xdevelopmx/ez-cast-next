@@ -200,7 +200,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                 loading={nacionalidades.isFetching}
                                 labelStyle={{ marginTop: 32, fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
-                                label='Etnia/Nacionalidad'
+                                label='Etnia/Nacionalidad*'
                                 options={
                                     (nacionalidades.data)
                                         ? nacionalidades.data.map(s => { return { value: s.id.toString(), label: s.es } })
