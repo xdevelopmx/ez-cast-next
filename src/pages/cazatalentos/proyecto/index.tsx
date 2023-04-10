@@ -107,14 +107,14 @@ const Proyecto: NextPage = () => {
     const { mode, id } = useMemo(() => {
         const { id_proyecto } = router.query;
         if (id_proyecto) {
-            return {mode: 'EDIT', id: parseInt(id_proyecto as string)};
+            return { mode: 'EDIT', id: parseInt(id_proyecto as string) };
         }
-        return {mode: 'CREATE', id: 0};
+        return { mode: 'CREATE', id: 0 };
     }, [router.query]);
 
     const proyecto = api.proyectos.getById.useQuery(id, {
-		refetchOnWindowFocus: false
-	});
+        refetchOnWindowFocus: false
+    });
 
     useEffect(() => {
         if (proyecto.data) {
@@ -172,8 +172,8 @@ const Proyecto: NextPage = () => {
                     id_tipo_proyecto: state.id_tipo,
                     descripcion: state.tipo
                 },
-                proyecto: { 
-                    ...state, 
+                proyecto: {
+                    ...state,
                     nombre: (state.nombre) ? state.nombre : '',
                     director_casting: (state.director_casting) ? state.director_casting : '',
                     telefono_contacto: (state.telefono_contacto) ? state.telefono_contacto : '',
@@ -181,35 +181,104 @@ const Proyecto: NextPage = () => {
                 },
             })
         } else {
-            dispatch({ type: 'update-proyecto-form', value: {
+            dispatch({
+                type: 'update-proyecto-form', value: {
                     nombre: (state.nombre) ? state.nombre : '',
                     director_casting: (state.director_casting) ? state.director_casting : '',
                     telefono_contacto: (state.telefono_contacto) ? state.telefono_contacto : '',
                     email_contacto: (state.email_contacto) ? state.email_contacto : '',
                     email_contacto_confirmacion: (state.email_contacto_confirmacion) ? state.email_contacto_confirmacion : '',
-                } 
+                }
             });
             notify('warning', 'Por favor corrige los errores del formulario antes de guardar');
         }
     }
     useEffect(() => {
         if (state.hasErrors != null) {
-            const result = { 
+            const result = {
                 errors: {
                     nombre: (!state.nombre || state.nombre.length < 2) ? 'El nombre es demasiado corto' : undefined,
                     director: (!state.director_casting || state.director_casting.length < 2) ? 'El nombre es demasiado corto' : undefined,
                     telefono_contacto: (!state.telefono_contacto || (state.telefono_contacto.length < 10 || state.telefono_contacto.length > 12)) ? 'El telefono es invalido' : undefined,
                     email_contacto: !state.email_contacto || !Constants.PATTERNS.EMAIL.test(state.email_contacto) ? 'El email es invalido' : undefined,
                     email_contacto_confirmacion: state.email_contacto !== state.email_contacto_confirmacion ? 'El email no es el mismo' : undefined,
-                }, 
+                },
                 hasErrors: false
             }
             result.hasErrors = Object.entries(result.errors).filter(e => (e[1] != null)).length > 0;
-            dispatch({ type: 'update-proyecto-form', value: {errors: result.errors, hasErrors: result.hasErrors} })
+            dispatch({ type: 'update-proyecto-form', value: { errors: result.errors, hasErrors: result.hasErrors } })
         } else {
             dispatch({ type: 'update-proyecto-form', value: { hasErrors: true } })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.nombre, state.director_casting, state.telefono_contacto, state.email_contacto, state.email_contacto_confirmacion]);
+
+    const informacion_general = useMemo(() => {
+        return <InformacionGeneral
+            state={state}
+            onFormChange={(input: { [key: string]: unknown }) => {
+                dispatch({ type: 'update-proyecto-form', value: input });
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.nombre, state.id_sindicato, state.id_tipo, state.sindicato, state.tipo])
+
+    const contacto_casting = useMemo(() => {
+        return <ContactoCasting
+            state={state}
+            onFormChange={(input: { [key: string]: unknown }) => {
+                dispatch({ type: 'update-proyecto-form', value: input })
+                console.log(input);
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.director_casting, state.telefono_contacto, state.email_contacto, state.email_contacto_confirmacion])
+
+    const equipo_creativo = useMemo(() => {
+        return <EquipoCreativo
+            state={state}
+            onFormChange={(input: { [key: string]: unknown }) => {
+                dispatch({ type: 'update-proyecto-form', value: input })
+                console.log(input);
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.productor, state.casa_productora, state.director, state.agencia_publicidad])
+
+    const detalles_adicionales = useMemo(() => {
+        return <DetallesAdicionales
+            state={state}
+            onFormChange={(input: { [key: string]: unknown }) => {
+                dispatch({ type: 'update-proyecto-form', value: input })
+                console.log(input);
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.sinopsis, state.detalles_adicionales])
+
+    const locacion_proyecto = useMemo(() => {
+        return <LocacionProyecto
+            state={state}
+            onFormChange={(input: { [key: string]: unknown }) => {
+                dispatch({ type: 'update-proyecto-form', value: input })
+                console.log(input);
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.id_estado_republica])
+
+    const publicar_proyecto = useMemo(() => {
+        return <PublicarProyecto
+            state={state}
+            onFormChange={(input: { [key: string]: unknown }) => {
+                dispatch({ type: 'update-proyecto-form', value: input })
+                console.log(input);
+            }}
+        />
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state.compartir_nombre])
+
+    console.log({ state });
 
     return (
         <>
@@ -236,57 +305,29 @@ const Proyecto: NextPage = () => {
                                     <p style={{ marginLeft: 20 }} className="mb-0"><b>¡Comencemos!</b></p>
                                 </div>
                             </div>
-                            <InformacionGeneral
-                                state={state}
-                                onFormChange={(input: { [key: string]: unknown }) => {
-                                    dispatch({ type: 'update-proyecto-form', value: input });
-                                }}
-                            />
+
+                            {informacion_general}
                             <br />
-                            <ContactoCasting
-                                state={state}
-                                onFormChange={(input: { [key: string]: unknown }) => {
-                                    dispatch({ type: 'update-proyecto-form', value: input })
-                                    console.log(input);
-                                }}
-                            />
+
+                            {contacto_casting}
                             <br />
-                            <EquipoCreativo
-                                state={state}
-                                onFormChange={(input: { [key: string]: unknown }) => {
-                                    dispatch({ type: 'update-proyecto-form', value: input })
-                                    console.log(input);
-                                }}
-                            />
+
+                            {equipo_creativo}
                             <br />
-                            <DetallesAdicionales
-                                state={state}
-                                onFormChange={(input: { [key: string]: unknown }) => {
-                                    dispatch({ type: 'update-proyecto-form', value: input })
-                                    console.log(input);
-                                }}
-                            />
+
+                            {detalles_adicionales}
                             <br />
-                            <LocacionProyecto
-                                state={state}
-                                onFormChange={(input: { [key: string]: unknown }) => {
-                                    dispatch({ type: 'update-proyecto-form', value: input })
-                                    console.log(input);
-                                }}
-                            />
+
+                            {locacion_proyecto}
                             <br />
-                            <PublicarProyecto
-                                state={state}
-                                onFormChange={(input: { [key: string]: unknown }) => {
-                                    dispatch({ type: 'update-proyecto-form', value: input })
-                                    console.log(input);
-                                }}
-                            />
+
+                            {publicar_proyecto}
+
                             <div className="row mt-lg-4">
                                 <div className="col d-flex justify-content-center" >
                                     <div className="mr-3">
                                         <button
-                                            onClick={() => {handleSave('back')}}
+                                            onClick={() => { handleSave('back') }}
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >
@@ -295,8 +336,8 @@ const Proyecto: NextPage = () => {
                                     </div>
                                     <div>
                                         <button
-                                            onClick={() => {handleSave('roles')}}
-                                            className="btn btn-intro btn-price mb-2" 
+                                            onClick={() => { handleSave('roles') }}
+                                            className="btn btn-intro btn-price mb-2"
                                             type="submit"
                                         >
                                             <Typography>
