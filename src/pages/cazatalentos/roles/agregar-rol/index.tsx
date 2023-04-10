@@ -322,20 +322,20 @@ const AgregarRolPage: NextPage = () => {
                         id_estado_republica: (rol.data.casting && rol.data.casting.length > 0) ? rol.data.casting[0]?.id_estado_republica : 0,
                         tipo_fecha_selected: 'Rango de fechas',
                         fechas: (rol.data.casting) ? rol.data.casting.map(c => {
-                            if (c.fecha_fin) {
-                                return `${c.fecha_inicio.toLocaleDateString('es-mx')} a ${c.fecha_fin.toLocaleDateString('es-mx')}`;
-                            }
-                            return c.fecha_inicio;
+                            return {
+                                inicio: c.fecha_inicio,
+                                fin: c.fecha_fin
+                            };
                         }) : []
                     },
                     filmaciones: {
                         id_estado_republica: (rol.data.filmaciones && rol.data.filmaciones.length > 0) ? rol.data.filmaciones[0]?.id_estado_republica : 0,
                         tipo_fecha_selected: 'Rango de fechas',
                         fechas: (rol.data.filmaciones) ? rol.data.filmaciones.map(c => {
-                            if (c.fecha_fin) {
-                                return `${c.fecha_inicio.toLocaleDateString('es-mx')} a ${c.fecha_fin.toLocaleDateString('en-us')}`;
-                            }
-                            return c.fecha_inicio;
+                            return {
+                                inicio: c.fecha_inicio,
+                                fin: c.fecha_fin
+                            };
                         }) : []
                     },
                     requisitos: {
