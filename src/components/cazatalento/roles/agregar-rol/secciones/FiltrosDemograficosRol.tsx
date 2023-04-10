@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useReducer } from 'react';
 import Image from 'next/image'
 import { Box, Button, Grid, Typography } from "@mui/material"
 import { MContainer } from "~/components/layout/MContainer"
@@ -8,12 +8,11 @@ import { MTooltip } from '~/components/shared/MTooltip';
 import { type FiltrosDemograficosRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 
 interface Props {
-    state: FiltrosDemograficosRolForm;
+    state: FiltrosDemograficosRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
 }
 
-export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
 
     const generos = api.catalogos.getGeneros.useQuery(undefined, {
         refetchOnMount: false,
@@ -43,8 +42,6 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange, onSaveC
                     subtitle='Filtros demográficos'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
                 />
             </Grid>
 

@@ -234,7 +234,6 @@ const AgregarRolPage: NextPage = () => {
 
     const router = useRouter()
     
-    
     const [state, dispatch] = useReducer(reducerRol, initialState)
     
     const { notify } = useNotify();
@@ -354,6 +353,199 @@ const AgregarRolPage: NextPage = () => {
         }
     }, [rol.data]);
 
+    const form_validate = useMemo(() => {
+        const form: {data: {[key: string]: unknown}, complete: boolean, error: null | string} = {
+            data: {},
+            complete: false,
+            error: null
+        }
+        if (!state.informacion_general.nombre || state.informacion_general.nombre.length < 2) {
+            return {...form, error: 'El nombre del rol es invalido'};
+        }
+        if (state.informacion_general.id_tipo_rol < 1) {
+            return {...form, error: 'El tipo del rol es invalido'};
+        }
+        form.data['info_gral'] = {
+            nombre: state.informacion_general.nombre,
+            id_tipo_rol: state.informacion_general.id_tipo_rol,
+            id_proyecto: state.id_proyecto
+        }
+
+        if (state.compensacion.se_pagara_sueldo === 'Sí') {
+            if (state.compensacion.sueldo && state.compensacion.sueldo.cantidad_sueldo <= 0) {
+                return {...form, error: 'El sueldo no puede ser menor o igual a 0'};
+            }
+            form.data['compensaciones'] = {
+                ...form.data['compensaciones'] as object, 
+                sueldo: {
+                    cantidad_sueldo: (state.compensacion.sueldo) ? parseFloat(`${state.compensacion.sueldo.cantidad_sueldo}`) : 0,
+                    periodo_sueldo: (state.compensacion.sueldo) ? state.compensacion.sueldo.periodo_sueldo : ''
+                }
+            }
+        }
+
+        if (state.compensacion.se_otorgaran_compensaciones === 'Sí') {
+            if (state.compensacion.compensaciones_no_monetarias && state.compensacion.compensaciones_no_monetarias.length === 0) {
+                return {...form, error: 'Debes seleccionar al menos una compensacion'};
+            }
+            form.data['compensaciones'] = {
+                ...form.data['compensaciones'] as object, 
+                compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias
+            }
+        }
+        form.data['compensaciones'] = {
+            ...form.data['compensaciones'] as object, 
+            compensacion: {
+                datos_adicionales: state.compensacion.compensacion.datos_adicionales,
+                suma_total_compensaciones_no_monetarias: (state.compensacion.compensacion.suma_total_compensaciones_no_monetarias) ? parseFloat(state.compensacion.compensacion.suma_total_compensaciones_no_monetarias.toString()) : 0
+            },
+        }
+
+        if (state.filtros_demograficos.genero_del_rol === 'Género especificado') {
+            if (state.filtros_demograficos.generos.length === 0) {
+                return {...form, error: 'Debes seleccionar al menos un genero'};
+            }
+            form.data['filtros_demograficos'] = {
+                ...form.data['filtros_demograficos'] as object, 
+                generos: state.filtros_demograficos.generos
+            }
+        }
+
+        if (state.filtros_demograficos.apariencia_etnica_del_rol === 'Especificado') {
+            if (state.filtros_demograficos.generos.length === 0) {
+                return {...form, error: 'Debes seleccionar al menos una etnia'};
+            }
+            form.data['filtros_demograficos'] = {
+                ...form.data['filtros_demograficos'] as object, 
+                apariencias_etnias: state.filtros_demograficos.apariencias_etnias
+            }
+        }
+
+        if (state.filtros_demograficos.es_mascota) {
+            if (state.filtros_demograficos.animal) {
+                if (state.filtros_demograficos.animal.id <= 0 || state.filtros_demograficos.animal.tamanio.length === 0) {
+                    return {...form, error: 'No se especifico un animal valido'};
+                }
+            } else {
+                return {...form, error: 'No se especifico un animal valido'};
+            }
+            form.data['filtros_demograficos'] = {
+                ...form.data['filtros_demograficos'] as object, 
+                animal: state.filtros_demograficos.animal
+            }
+        }
+
+        if (state.filtros_demograficos.id_pais <= 0) {
+            return {...form, error: 'No se especifico la nacionalidad del rol'};
+        }
+
+        form.data['filtros_demograficos'] = {
+            ...form.data['filtros_demograficos'] as object, 
+            rango_edad_inicio: state.filtros_demograficos.rango_edad_inicio,
+            rango_edad_fin: state.filtros_demograficos.rango_edad_fin,
+            rango_edad_en_meses: state.filtros_demograficos.rango_edad_en_meses,
+            id_pais: state.filtros_demograficos.id_pais
+        }
+
+        if (state.descripcion_rol.descripcion.length <= 0) {
+            return {...form, error: 'No se especifico la descripcion del rol'};
+        }
+
+        form.data['descripcion_rol'] = {
+            descripcion: state.descripcion_rol.descripcion,
+            detalles_adicionales: (state.descripcion_rol.detalles_adicionales.length > 0) ? state.descripcion_rol.detalles_adicionales : null,
+            habilidades: state.descripcion_rol.habilidades,
+            especificacion_habilidad: state.descripcion_rol.especificacion_habilidad,
+        }
+
+        if (state.descripcion_rol.tiene_nsfw === 'Desnudos/Situaciones Sexuales') {
+            if (state.descripcion_rol.nsfw.ids.length === 0) {
+                return {...form, error: 'No se especifico ningun tipo de escena NSFW'};
+            }
+            if (state.descripcion_rol.nsfw.descripcion.length === 0) {
+                return {...form, error: 'No especificaste los detalles de las escenas NSFW'};
+            }
+            form.data['descripcion_rol'] = {
+                ...form.data['descripcion_rol'] as object, 
+                nsfw: state.descripcion_rol.nsfw
+            }
+        }
+
+        if (state.castings.fechas.length === 0) {
+            return {...form, error: 'No se especifico ninguna fecha para los castings del rol'};
+        }
+
+        if (state.castings.id_estado_republica <= 0) {
+            return {...form, error: 'No se especifico estado para los castings del rol'};
+        }
+
+        form.data['casting'] = {
+            id_estado_republica: state.castings.id_estado_republica,
+            fechas: state.castings.fechas,
+        }
+
+        if (state.filmaciones.fechas.length === 0) {
+            return {...form, error: 'No se especifico ninguna fecha para las filmaciones del rol'};
+        }
+
+        if (state.filmaciones.id_estado_republica <= 0) {
+            return {...form, error: 'No se especifico estado para las filmaciones del rol'};
+        }
+
+        form.data['filmaciones'] = {
+            id_estado_republica: state.filmaciones.id_estado_republica,
+            fechas: state.filmaciones.fechas,
+        }
+        
+        if (state.requisitos.fecha_presentacion === '') {
+            return {...form, error: 'No se especifico la fecha de presentacion de solicitudes del rol'};
+        }
+
+        if (state.requisitos.info_trabajo.length === 0) {
+            return {...form, error: 'No se especifico la informacion del trabajo del rol'};
+        }
+
+        if (state.requisitos.medios_multimedia_a_incluir.length === 0) {
+            return {...form, error: 'No se especifico ningun medio multimedia del rol'};
+        }
+
+        if (state.requisitos.id_uso_horario <= 0) {
+            return {...form, error: 'No se especifico el uso de horario del rol'};
+        }
+
+        if (state.requisitos.id_idioma <= 0) {
+            return {...form, error: 'No se especifico el idioma del rol'};
+        }
+
+        if (state.requisitos.id_estado_donde_aceptan_solicitudes <= 0) {
+            return {...form, error: 'No se especifico estado donde aceptar las solicitudes'};
+        }
+
+        form.data['requisitos'] = {
+            fecha_presentacion: state.requisitos.fecha_presentacion,
+            id_uso_horario: state.requisitos.id_uso_horario,
+            info_trabajo: state.requisitos.info_trabajo,
+            id_idioma: state.requisitos.id_idioma,
+            medios_multimedia_a_incluir: state.requisitos.medios_multimedia_a_incluir,
+            id_estado_donde_aceptan_solicitudes: state.requisitos.id_estado_donde_aceptan_solicitudes
+        }
+
+        form.data['selftape'] = {
+            indicaciones: state.selftape.indicaciones,
+            pedir_selftape: state.selftape.pedir_selftape,
+            lineas: null
+        }
+        form.complete = (state.informacion_general.nombre.length > 1 && state.informacion_general.id_tipo_rol > 0 && 
+            state.filtros_demograficos.rango_edad_inicio > 0 && state.filtros_demograficos.rango_edad_fin > 0 && state.filtros_demograficos.id_pais > 0 &&
+            state.descripcion_rol.descripcion.length > 0 && state.castings.id_estado_republica > 0 && state.castings.fechas.length > 0 &&
+            state.filmaciones.id_estado_republica > 0 && state.filmaciones.fechas.length > 0 && state.requisitos.fecha_presentacion !== '' &&
+            state.requisitos.id_uso_horario > 0 && state.requisitos.id_idioma > 0 && state.requisitos.medios_multimedia_a_incluir.length > 0 &&
+            state.requisitos.id_estado_donde_aceptan_solicitudes > 0 && state.requisitos.info_trabajo.length > 0);
+        return form;
+    }, [state]);
+
+    console.log('FORM', form_validate)
+
     const saveInfoGral = api.roles.saveInfoGral.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo la informacion general con exito');
@@ -424,6 +616,80 @@ const AgregarRolPage: NextPage = () => {
 
     console.log({ state });
 
+
+    const info_gral = useMemo(() => {
+        return <InformacionGeneralRol
+            state={state.informacion_general}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-info-gral', value: input });
+            }}
+        />
+    }, [state.informacion_general]);
+
+    const compensacion = useMemo(() => {
+        return <CompensacionRol
+            state={state.compensacion}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-compensacion', value: input });
+            }}
+        />
+    }, [state.compensacion]);
+
+    const filtros_demograficos = useMemo(() => {
+        return <FiltrosDemograficosRol
+            state={state.filtros_demograficos}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-filtros-demograficos', value: input });
+            }}
+        />
+    }, [state.filtros_demograficos]);
+
+    const descripcion_rol = useMemo(() => {
+        return <DescripcionDelRol 
+            state={state.descripcion_rol}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-descripcion-rol', value: input });
+            }}
+        />
+    }, [state.descripcion_rol]);
+
+    const info_casting = useMemo(() => {
+        return <InformacionCastingRol 
+            state={state.castings}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-castings-rol', value: input });
+            }}
+        />
+    }, [state.castings]);
+
+    const info_filmaciones = useMemo(() => {
+        return <InformacionFilmacionRol 
+            state={state.filmaciones}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-filmaciones-rol', value: input });
+            }}
+        />
+    }, [state.filmaciones]);
+
+    const requisitos = useMemo(() => {
+        return <RequisitosRol 
+            state={state.requisitos}
+            onFormChange={(input) => {
+                console.log(input);
+                dispatch({ type: 'update-requisitos-rol', value: input });
+            }}
+        />
+    }, [state.requisitos]);
+
+    const selftape = useMemo(() => {
+        return <SelfTapeRol 
+            state={state.selftape}
+            onFormChange={(input) => {
+                dispatch({ type: 'update-selftape-rol', value: input });
+            }}
+        />
+    }, [state.selftape]);
+
     return (
         <>
             <Head>
@@ -448,183 +714,25 @@ const AgregarRolPage: NextPage = () => {
                                     <p style={{ marginLeft: 20 }} className="color_a h4 font-weight-bold mb-0"><b>Agregar rol</b></p>
                                 </div>
                             </div>
-                            <InformacionGeneralRol
-                                state={state.informacion_general}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-info-gral', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    saveInfoGral.mutate({
-                                        id_rol: state.id_rol,
-                                        nombre: state.informacion_general.nombre,
-                                        id_tipo_rol: state.informacion_general.id_tipo_rol,
-                                        id_proyecto: state.id_proyecto
-                                    })
-                                }}
-                            />
-                            <CompensacionRol
-                                state={state.compensacion}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-compensacion', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    saveCompensacion.mutate({
-                                        id_rol: state.id_rol,
-                                        compensacion: {
-                                            ...state.compensacion.compensacion,
-                                            suma_total_compensaciones_no_monetarias: (state.compensacion.compensacion.suma_total_compensaciones_no_monetarias) ? parseFloat(state.compensacion.compensacion.suma_total_compensaciones_no_monetarias.toString()) : 0
-                                        },
-                                        compensaciones_no_monetarias: state.compensacion.compensaciones_no_monetarias,
-                                        sueldo: {
-                                            cantidad_sueldo: (state.compensacion.sueldo) ? parseFloat(`${state.compensacion.sueldo.cantidad_sueldo}`) : 0,
-                                            periodo_sueldo: (state.compensacion.sueldo) ? state.compensacion.sueldo.periodo_sueldo : ''
-                                        }
-                                    })
-                                }}
-                            />
-                            <FiltrosDemograficosRol
-                                state={state.filtros_demograficos}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-filtros-demograficos', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    if (state.filtros_demograficos.rango_edad_inicio > 0 && state.filtros_demograficos.rango_edad_fin < 110 && state.filtros_demograficos.id_pais > 0) {
-                                        saveFiltroDemografico.mutate({
-                                            id_rol: state.id_rol,
-                                            generos: (state.filtros_demograficos.generos.length > 0) ? state.filtros_demograficos.generos : null,
-                                            apariencias_etnias: (state.filtros_demograficos.apariencias_etnias.length > 0) ? state.filtros_demograficos.apariencias_etnias : null,
-                                            animal: state.filtros_demograficos.animal,
-                                            rango_edad_inicio: state.filtros_demograficos.rango_edad_inicio,
-                                            rango_edad_fin: state.filtros_demograficos.rango_edad_fin,
-                                            rango_edad_en_meses: state.filtros_demograficos.rango_edad_en_meses,
-                                            id_pais: state.filtros_demograficos.id_pais
-                                        })
-                                    } else {
-                                        notify('warning', 'Por favor ingresa datos validos');
-                                    }
-                                }}
-                            />
-                            <DescripcionDelRol 
-                                state={state.descripcion_rol}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-descripcion-rol', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    if (state.descripcion_rol.habilidades.length > 0) {
-                                        saveDescripcionRol.mutate({
-                                            id_rol: state.id_rol,
-                                            descripcion: state.descripcion_rol.descripcion,
-                                            detalles_adicionales: (state.descripcion_rol.detalles_adicionales.length > 0) ? state.descripcion_rol.detalles_adicionales : null,
-                                            habilidades: state.descripcion_rol.habilidades,
-                                            especificacion_habilidad: state.descripcion_rol.especificacion_habilidad,
-                                            nsfw: (state.descripcion_rol.nsfw.ids.length > 0) ? state.descripcion_rol.nsfw : null,
-                                        })
-                                    } else {
-                                        notify('warning', 'Por favor ingresa al menos una habilidad');
-                                    }
-                                }}
-                            />
-                            <InformacionCastingRol 
-                                state={state.castings}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-castings-rol', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    if (state.castings.fechas.length > 0) {
-                                        saveCastingsYFilmacionesRol.mutate({
-                                            id_rol: state.id_rol,
-                                            id_estado_republica: state.castings.id_estado_republica,
-                                            fechas: state.castings.fechas,
-                                            action: 'casting'
-                                        })
-                                    } else {
-                                        notify('warning', 'Por favor ingresa al menos una fecha para castings');
-                                    }
-                                }}
-                            />
-                            <InformacionFilmacionRol 
-                                state={state.filmaciones}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-filmaciones-rol', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    if (state.filmaciones.fechas.length > 0) {
-                                        saveCastingsYFilmacionesRol.mutate({
-                                            id_rol: state.id_rol,
-                                            id_estado_republica: state.filmaciones.id_estado_republica,
-                                            fechas: state.filmaciones.fechas,
-                                            action: 'filmaciones'
-                                        })
-                                    } else {
-                                        notify('warning', 'Por favor ingresa al menos una fecha para filmaciones');
-                                    }
-                                }}
-                            />
-                            <RequisitosRol 
-                                state={state.requisitos}
-                                onFormChange={(input) => {
-                                    console.log(input);
-                                    dispatch({ type: 'update-requisitos-rol', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    if (state.requisitos.fecha_presentacion.length > 0 &&
-                                        state.requisitos.id_uso_horario > 0 &&
-                                        state.requisitos.id_idioma > 0 &&
-                                        state.requisitos.id_estado_donde_aceptan_solicitudes > 0) {
-                                            saveRequisitosRol.mutate({
-                                                id_rol: state.id_rol,
-                                                fecha_presentacion: state.requisitos.fecha_presentacion,
-                                                id_uso_horario: state.requisitos.id_uso_horario,
-                                                info_trabajo: state.requisitos.info_trabajo,
-                                                id_idioma: state.requisitos.id_idioma,
-                                                medios_multimedia_a_incluir: state.requisitos.medios_multimedia_a_incluir,
-                                                id_estado_donde_aceptan_solicitudes: state.requisitos.id_estado_donde_aceptan_solicitudes
-                                            })
-                                        } else {
-                                            notify('warning', 'Por favor ingresa datos validos');
-                                        }
-                                }}
-                            />
-                            <SelfTapeRol 
-                                state={state.selftape}
-                                onFormChange={(input) => {
-                                    dispatch({ type: 'update-selftape-rol', value: input });
-                                }}
-                                onSaveChanges={() => {
-                                    saveSeltapeRol.mutate({
-                                        id_rol: state.id_rol,
-                                        indicaciones: state.selftape.indicaciones,
-                                        pedir_selftape: state.selftape.pedir_selftape,
-                                        lineas: null
-                                    })
-                                    
-                                }}
-                            />
-
+                            {info_gral}
+                            {compensacion}
+                            {filtros_demograficos}
+                            {descripcion_rol}
+                            {info_casting}
+                            {info_filmaciones}
+                            {requisitos}
+                            {selftape}
                             <div className="row mt-lg-4">
                                 <div className="col d-flex justify-content-center" >
                                     <div className="mr-3">
                                         <button
                                             onClick={() => {
-                                                void router.push('/cazatalentos/dashboard');
-                                                
-                                                
-                                                /* updateProyecto.mutate({
-                                                    sindicato: {
-                                                        id_sindicato: state.id_sindicato,
-                                                        descripcion: state.sindicato,
-                                                    },
-                                                    tipo_proyecto: {
-                                                        id_tipo_proyecto: state.id_tipo,
-                                                        descripcion: state.tipo
-                                                    },
-                                                    proyecto: { ...state },
-                                                }) */
+                                                console.log('xd')
                                             }}
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >
-                                            <Typography>Guardar e ir a proyectos</Typography>
+                                            <Typography>Guardar {`${form_validate.complete ? '' : 'borrador'}`} e ir a proyectos</Typography>
                                         </button>
                                     </div>
                                     <div>

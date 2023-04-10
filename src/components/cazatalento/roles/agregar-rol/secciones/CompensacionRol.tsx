@@ -1,5 +1,5 @@
 import { Checkbox, FormControlLabel, Grid } from '@mui/material'
-import { type FC } from 'react';
+import { type FC, useReducer } from 'react';
 import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from '~/components/shared'
@@ -8,13 +8,11 @@ import { type RolCompensacionForm } from '~/pages/cazatalentos/roles/agregar-rol
 import { api } from '~/utils/api';
 
 interface Props {
-    state: RolCompensacionForm;
-    onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
+    state: RolCompensacionForm,
+    onFormChange: (input: { [id: string]: unknown }) => void
 }
 
-export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
-
+export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
     const tipos_compensaciones_no_monetarias = api.catalogos.getTiposCompensacionesNoMonetarias.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
@@ -28,8 +26,6 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange, onSaveChanges 
                     subtitle='Compensación'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid container item xs={12} mt={4}>

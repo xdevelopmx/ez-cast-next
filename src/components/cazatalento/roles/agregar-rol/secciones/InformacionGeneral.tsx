@@ -1,17 +1,18 @@
 import { Grid, Typography } from "@mui/material"
-import { type FC } from "react";
+import { type FC, useReducer } from "react";
 import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import { MTooltip } from "~/components/shared/MTooltip"
 import { type RolInformacionGeneralForm } from "~/pages/cazatalentos/roles/agregar-rol";
 import { api } from '~/utils/api';
 
+
 interface Props {
-    state: RolInformacionGeneralForm;
+    state: RolInformacionGeneralForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
+    //onSaveChanges: (...args: unknown[]) => unknown;
 }
 
-export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange }) => {
 
     const tipos_roles = api.catalogos.getTiposRoles.useQuery(undefined, {
         refetchOnMount: false,
@@ -26,8 +27,8 @@ export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange, onSaveCh
                     subtitle='Información General'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
+                    //textButton="Guardar y terminar más tarde"
+                    //onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item xs={12} mt={8}>

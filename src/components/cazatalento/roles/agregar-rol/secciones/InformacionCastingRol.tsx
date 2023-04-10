@@ -1,17 +1,16 @@
 import { Grid } from '@mui/material'
-import React, { FC } from 'react'
+import React, { FC, useReducer } from 'react'
 import { SectionTitle, StateNDates } from '~/components/shared'
 import { CastingsRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
 interface Props {
-    state: CastingsRolForm;
+    state: CastingsRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
 }
 
 
-export const InformacionCastingRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+export const InformacionCastingRol: FC<Props> = ({ state, onFormChange }) => {
 
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
@@ -23,13 +22,11 @@ export const InformacionCastingRol: FC<Props> = ({ state, onFormChange, onSaveCh
                 <SectionTitle title='Paso 5' subtitle='Información de Casting'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item xs={12} mt={4}>
                 <StateNDates
-                    title='Locación de Casting y fecha:'
+                    title='Locación de Casting y fecha*:'
 
                     valueSelect={state.id_estado_republica.toString()}
                     nameSelect='casting_select'

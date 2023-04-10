@@ -17,6 +17,7 @@ import { User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
 import { string } from "zod";
 import { MTooltip } from "~/components/shared/MTooltip";
+import { useRouter } from "next/router";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -395,9 +396,8 @@ type EditarTalentoPageProps = {
 }
 
 const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => {
-
-    const [state, dispatch] = useReducer(reducer, { ...initialState, step_active: step });
-
+    const router = useRouter();
+    const [state, dispatch] = useReducer(reducer, { ...initialState, step_active: (router.query['step']) ? parseInt(router.query['step'] as string) : 1 });
     const { notify } = useNotify();
 
     const talento = api.talentos.getCompleteById.useQuery({ id: parseInt(user.id) }, {

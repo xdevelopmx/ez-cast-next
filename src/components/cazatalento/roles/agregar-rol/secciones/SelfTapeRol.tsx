@@ -3,23 +3,21 @@ import { Grid, Typography } from "@mui/material"
 import { FormGroup, MCheckboxGroup, SectionTitle } from "~/components/shared"
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop"
 import { SelftapeRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
-import { FC } from 'react';
+import { FC, useReducer } from 'react';
 
 interface Props {
-    state: SelftapeRolForm;
+    state: SelftapeRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
 }
 
-export const SelfTapeRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
+
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
                 <SectionTitle title='Paso 8' subtitle='Self-Tape (opcional)'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item xs={12} mt={2}>

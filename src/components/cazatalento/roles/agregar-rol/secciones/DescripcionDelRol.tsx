@@ -5,22 +5,23 @@ import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from '~
 import { MTooltip } from '~/components/shared/MTooltip';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { DescripcionDelRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
-import { FC } from 'react';
+import { FC, useReducer} from 'react';
 
 interface Props {
-    state: DescripcionDelRolForm;
+    state: DescripcionDelRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
 }
 
-export const DescripcionDelRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
 
     const habilidades = api.catalogos.getHabilidades.useQuery({ include_subcategories: false }, {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
     })
 
     const tipos_nsfw = api.catalogos.getTiposNSFW.useQuery(undefined, {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
     })
 
     return (
@@ -29,8 +30,6 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange, onSaveChange
                 <SectionTitle title='Paso 4' subtitle='Descripción del rol'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item container xs={12} mt={4}>
@@ -48,7 +47,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange, onSaveChange
                                     descripcion: e.target.value
                                 }) 
                             }}
-                            label='Descripción del rol'
+                            label='Descripción del rol*'
                         />
                     </Grid>
                     <Grid item xs={12} mb={4}>
@@ -171,7 +170,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange, onSaveChange
                 <Grid item container xs={6}>
                     <Grid item xs={12}>
                         <MRadioGroup
-                            label='Desnudos/Situaciones Sexuales'
+                            label='Desnudos/Situaciones Sexuales*'
                             labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                             style={{ gap: 0 }}
                             styleRoot={{ marginTop: 1 }}

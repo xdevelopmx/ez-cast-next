@@ -1,17 +1,16 @@
 import { Grid } from '@mui/material'
-import { FC } from 'react';
+import { FC, useReducer } from 'react';
 import { FormGroup, MCheckboxGroup, MSelect, SectionTitle } from '~/components/shared'
 import { RequisitosRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
 interface Props {
-    state: RequisitosRolForm;
+    state: RequisitosRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
-    onSaveChanges: (...args: unknown[]) => unknown;
 }
 
 
-export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges }) => {
+export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
 
     const usos_horarios = api.catalogos.getUsosDeHorario.useQuery(undefined, {
         refetchOnMount: false,
@@ -19,15 +18,18 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
     });
 
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
 
     const idiomas = api.catalogos.getIdiomas.useQuery(undefined, {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
 
     const medios_multimedia_a_incluir = api.catalogos.getTiposMultimedia.useQuery(undefined, {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
 
     return (
@@ -36,8 +38,6 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
                 <SectionTitle title='Paso 7' subtitle='Requisitos'
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
-                    textButton="Guardar y terminar más tarde"
-                    onClickButton={onSaveChanges}
                 />
             </Grid>
             <Grid item container xs={6} mt={4}>
@@ -53,7 +53,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
                                 fecha_presentacion: e.target.value
                             })
                         }}
-                        label='Presentación de solicitud'
+                        label='Presentación de solicitud*'
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -72,7 +72,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
                                 id_uso_horario: parseInt(e.target.value)
                             })
                         }}
-                        label='Uso horario'
+                        label='Uso horario*'
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -88,7 +88,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
                                 info_trabajo: e.target.value
                             })
                         }}
-                        label='Información/notas del trabajo'
+                        label='Información/notas del trabajo*'
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -107,7 +107,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
                                 id_idioma: parseInt(e.target.value)
                             })
                         }}
-                        label='Añadir Idioma'
+                        label='Añadir Idioma*'
                     />
                 </Grid>
             </Grid>
@@ -115,7 +115,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
             <Grid item xs={6} mt={4}>
                 <Grid item xs={6}>
                     <MCheckboxGroup
-                        title='El talento deberá incluir:'
+                        title='El talento deberá incluir*:'
                         onChange={(e, i) => {
                             const medio = medios_multimedia_a_incluir.data?.filter((_, index) => index === i)[0];
                             if (medio) {
@@ -151,7 +151,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange, onSaveChanges })
                                 id_estado_donde_aceptan_solicitudes: parseInt(e.target.value)
                             })
                         }}
-                        label='Aceptando aplicaciones desde'
+                        label='Aceptando aplicaciones desde*'
                     />
                 </Grid>
             </Grid>
