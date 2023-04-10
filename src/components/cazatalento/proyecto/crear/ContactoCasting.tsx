@@ -64,6 +64,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                     error={(state.errors.email_contacto && state.email_contacto != null) ? state.errors.email_contacto : undefined}
                     show_error_message
                     className={'form-input-md'}
+                    type='email'
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
                     value={(state.email_contacto) ? state.email_contacto : ''}
@@ -80,6 +81,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                     error={(state.errors.email_contacto_confirmacion && state.email_contacto_confirmacion != null) ? state.errors.email_contacto_confirmacion : undefined}
                     show_error_message
                     className={'form-input-md'}
+                    type='email'
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
                     value={(state.email_contacto_confirmacion) ? state.email_contacto_confirmacion : ''}

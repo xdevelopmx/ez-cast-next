@@ -221,25 +221,23 @@ const Proyecto: NextPage = () => {
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.nombre, state.id_sindicato, state.id_tipo, state.sindicato, state.tipo])
+    }, [state.nombre, state.id_sindicato, state.id_tipo, state.sindicato, state.tipo, state.errors.nombre])
 
     const contacto_casting = useMemo(() => {
         return <ContactoCasting
             state={state}
             onFormChange={(input: { [key: string]: unknown }) => {
                 dispatch({ type: 'update-proyecto-form', value: input })
-                console.log(input);
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.director_casting, state.telefono_contacto, state.email_contacto, state.email_contacto_confirmacion])
+    }, [state.director_casting, state.telefono_contacto, state.email_contacto, state.email_contacto_confirmacion, state.errors.email_contacto, state.errors.email_contacto_confirmacion, state.errors.director, state.errors.telefono_contacto])
 
     const equipo_creativo = useMemo(() => {
         return <EquipoCreativo
             state={state}
             onFormChange={(input: { [key: string]: unknown }) => {
                 dispatch({ type: 'update-proyecto-form', value: input })
-                console.log(input);
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,7 +248,6 @@ const Proyecto: NextPage = () => {
             state={state}
             onFormChange={(input: { [key: string]: unknown }) => {
                 dispatch({ type: 'update-proyecto-form', value: input })
-                console.log(input);
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -261,7 +258,6 @@ const Proyecto: NextPage = () => {
             state={state}
             onFormChange={(input: { [key: string]: unknown }) => {
                 dispatch({ type: 'update-proyecto-form', value: input })
-                console.log(input);
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -272,13 +268,10 @@ const Proyecto: NextPage = () => {
             state={state}
             onFormChange={(input: { [key: string]: unknown }) => {
                 dispatch({ type: 'update-proyecto-form', value: input })
-                console.log(input);
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.compartir_nombre])
-
-    console.log({ state });
 
     return (
         <>
