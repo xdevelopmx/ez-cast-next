@@ -349,6 +349,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     </ul>
                                 </div>
                                 <MTable
+                                    styleTableRow={{ cursor: 'pointer' }}
                                     alternate_colors={false}
                                     columnsHeader={[
                                         <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>

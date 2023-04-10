@@ -1,6 +1,6 @@
 import { useMemo, type FC } from 'react'
 import { AddButton, FormGroup } from '~/components';
-import { Button, Divider, Grid, IconButton, Typography } from '@mui/material';
+import { Button, Divider, Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import { MSelect } from '~/components/shared/MSelect/MSelect';
 import { MCheckboxGroup } from '~/components/shared/MCheckboxGroup';
@@ -8,7 +8,6 @@ import { MTable } from '~/components/shared/MTable/MTable';
 import { type TalentoFormActivos } from '~/pages/talento/editar-perfil';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
-import CloseIcon from '@mui/icons-material/Close';
 import useNotify from '~/hooks/useNotify';
 import { Close } from '@mui/icons-material';
 
@@ -144,8 +143,13 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                             state.vehiculo.marca.length > 0 &&
                                             state.vehiculo.modelo.length > 0 &&
                                             state.vehiculo.color.length > 0 &&
-                                            state.vehiculo.id_tipo_vehiculo > 0) {
-                                            onFormChange({ vehiculos: state.vehiculos.concat([state.vehiculo]) });
+                                            state.vehiculo.id_tipo_vehiculo > 0
+                                        ) {
+                                            if (state.vehiculos.length < 5) {
+                                                onFormChange({ vehiculos: state.vehiculos.concat([state.vehiculo]) });
+                                            } else {
+                                                notify('warning', 'Solo puedes tener hasta 5 vehículos, si deseas agregar otro por favor borra algún vehículo');
+                                            }
                                         } else {
                                             notify('warning', 'Por favor llena todos los campos antes de intentar guardar el activo');
                                         }
@@ -258,11 +262,16 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     if (state.mascotas) {
                                         if (state.mascota &&
                                             state.mascota.id_tipo_mascota > 0 &&
-                                            state.mascota.tamanio.length > 0) {
-                                            if (state.mascota.id_tipo_mascota === 5 && state.mascota.id_raza > 0 || state.mascota.id_tipo_mascota !== 5) {
-                                                onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
-                                            } else {
-                                                notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                            state.mascota.tamanio.length > 0
+                                        ) {
+                                            if(state.mascotas.length < 5){
+                                                if (state.mascota.id_tipo_mascota === 5 && state.mascota.id_raza > 0 || state.mascota.id_tipo_mascota !== 5) {
+                                                    onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
+                                                } else {
+                                                    notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                                }
+                                            }else{
+                                                notify('warning', 'Solo puedes tener hasta 5 mascotas, si deseas agregar otra por favor borra alguna otra mascota');
                                             }
                                         } else {
                                             notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
@@ -558,7 +567,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onClick={() => {
                                     if (state.equipos_deportivos) {
                                         if (state.equipo_deportivo && state.equipo_deportivo.id_tipo_equipo_deportivo > 0 && state.equipo_deportivo.descripcion.length > 0) {
-                                            onFormChange({ equipos_deportivos: state.equipos_deportivos.concat([state.equipo_deportivo]) });
+                                            if(state.equipos_deportivos.length < 5){
+                                                onFormChange({ equipos_deportivos: state.equipos_deportivos.concat([state.equipo_deportivo]) });
+                                            }else{
+                                                notify('warning', 'Solo puedes tener hasta 5 equipos deportivos, si deseas agregar otro por favor borra algún otro equipo deportivo');
+                                            }
                                         } else {
                                             notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
                                         }

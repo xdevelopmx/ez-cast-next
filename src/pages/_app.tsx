@@ -20,6 +20,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
+  const [isLoadingData, setIsLoadingData] = useState<boolean>(true);
   return (
     <SessionProvider session={session}>
       <DndProvider backend={HTML5Backend}>
@@ -27,7 +28,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
           alerts: app_alerts,
           setAlerts: (alerts: Map<string, AppAlert>) => {
             setAppAlerts(new Map(alerts));
-          }
+          },
+
+          isLoadingData: isLoadingData,
+          setIsloadingData: setIsLoadingData,
         }}>
           <CustomThemeProvider>
             <CssBaseline />

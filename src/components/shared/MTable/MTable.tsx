@@ -24,6 +24,7 @@ interface MTableProps {
 	alternate_colors?: boolean,
 	styleHeaderRow?: CSSProperties,
 	styleHeaderTableCell?: CSSProperties,
+	styleTableRow?: CSSProperties,
 	accordionContent?: (element_index: number, container_width: number) => JSX.Element | null,
 	noDataContent?: JSX.Element
 }
@@ -32,7 +33,7 @@ interface MTableProps {
 
 export const MTable: FC<MTableProps> = ({
 	noDataContent, accordionContent, disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
-	backgroundColorHeader = '#EBEBEB', style = {}, alternate_colors = true, styleHeaderRow = {}, styleHeaderTableCell = {}
+	backgroundColorHeader = '#EBEBEB', style = {}, alternate_colors = true, styleHeaderRow = {}, styleHeaderTableCell = {}, styleTableRow = {}
 }) => {
 	const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
 	const [expanded_rows, setExpandedRows] = useState<string[]>([]);
@@ -100,23 +101,24 @@ export const MTable: FC<MTableProps> = ({
 								<>
 
 									{!disable_animation &&
-									
+
 										<motion.tr
 											style={{
 												backgroundColor: alternate_colors
 													? ((i % 2) ? backgroundColorData : 'white')
 													: backgroundColorData,
+												...styleTableRow
 											}}
 											key={i}
 											layout={true}
 											onClick={() => {
 												if (accordionContent) {
-													setExpandedRows(prev => { 
+													setExpandedRows(prev => {
 														if (prev.includes(`panel${i}`)) {
 															return prev.filter(p => p !== `panel${i}`);
-														} 
+														}
 														return prev.concat([`panel${i}`]);
-													 }) 
+													})
 												}
 											}}
 											initial={{ opacity: 0, y: 100 }}
@@ -144,6 +146,7 @@ export const MTable: FC<MTableProps> = ({
 									}
 									{disable_animation &&
 										<TableRow style={{
+											...styleTableRow,
 											position: 'relative',
 											backgroundColor: alternate_colors
 												? ((i % 2) ? backgroundColorData : 'white')
@@ -165,20 +168,22 @@ export const MTable: FC<MTableProps> = ({
 												}
 												return <TableCell key={i} align='center'>{val[1]}</TableCell>
 											})}
-											
+
 										</TableRow>
 									}
-									<TableRow style={{borderWidth: 1, borderColor: 'gray', borderStyle: (accordionContent != null && expanded_rows.includes(`panel${i}`)) ? 'solid' : 'unset'}}>
-										<MotionDiv  show={accordionContent != null && expanded_rows.includes(`panel${i}`)} animation="fade">
-											<div style={{position: 'relative', width: 100}}>
-												<div style={{ position: 'absolute', width: accordion_content_width - 8}}>
-													<IconButton onClick={() => { setExpandedRows(prev => { 
-														if (prev.includes(`panel${i}`)) {
-															return prev.filter(p => p !== `panel${i}`);
-														} 
-														return prev.concat([`panel${i}`]);
-													}) }} style={{position: 'absolute', width: 16, top: -8, right: 8}} color="primary" aria-label="expandir" component="label">
-														{(expanded_rows.includes(`panel${i}`)) ? <DownIcon sx={{color: '#928F8F'}} /> : <UpIcon sx={{color: '#928F8F'}} />}
+									<TableRow style={{ ...styleTableRow, borderWidth: 1, borderColor: 'gray', borderStyle: (accordionContent != null && expanded_rows.includes(`panel${i}`)) ? 'solid' : 'unset' }}>
+										<MotionDiv show={accordionContent != null && expanded_rows.includes(`panel${i}`)} animation="fade">
+											<div style={{ position: 'relative', width: 100 }}>
+												<div style={{ position: 'absolute', width: accordion_content_width - 8 }}>
+													<IconButton onClick={() => {
+														setExpandedRows(prev => {
+															if (prev.includes(`panel${i}`)) {
+																return prev.filter(p => p !== `panel${i}`);
+															}
+															return prev.concat([`panel${i}`]);
+														})
+													}} style={{ position: 'absolute', width: 16, top: -8, right: 8 }} color="primary" aria-label="expandir" component="label">
+														{(expanded_rows.includes(`panel${i}`)) ? <DownIcon sx={{ color: '#928F8F' }} /> : <UpIcon sx={{ color: '#928F8F' }} />}
 													</IconButton>
 												</div>
 												{accordionContent && accordionContent(i, accordion_content_width - 8)}
@@ -201,9 +206,9 @@ export const MTable: FC<MTableProps> = ({
 									</TableRow>
 								}
 							</>
-								
+
 						}
-						
+
 					</TableBody>
 				</Table>
 				{noDataContent &&
