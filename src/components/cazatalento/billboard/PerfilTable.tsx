@@ -53,12 +53,12 @@ export const PerfilTable = () => {
                 </Grid>
 
                 <Grid xs={3}>
-                    <Typography sx={{ color: '#fff' }}>0 resultados totales</Typography>
+                    <Typography sx={{ color: '#fff', textAlign: 'center' }}>0 resultados totales</Typography>
                 </Grid>
 
                 <Grid xs={9}>
                     <MContainer direction='horizontal' styles={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Typography>Ver <Typography component={'span'}>25</Typography> resultados por página</Typography>
+                        <Typography>Ver <Typography component={'span'}>25</Typography> resultados</Typography>
                         <Button sx={{ width: '20px', padding: 0 }}>
                             <Image src="/assets/img/iconos/arrow_l_white.svg" width={20} height={20} alt="" />
                         </Button>
