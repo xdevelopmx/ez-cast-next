@@ -9,16 +9,25 @@ import { api } from "~/utils/api";
 import { getSession } from "next-auth/react";
 import { type User } from "next-auth";
 import { useEffect, useState } from "react";
+import type {
+    Roles, CatalogoTiposRoles, FiltrosDemoPorRoles, GenerosPorRoles, CatalogoGeneros,
+    AparenciasEtnicasPorRoles, CatalogoAparenciasEtnicas
+} from '@prisma/client'
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
 }
 
-import type { Roles, CatalogoTiposRoles, FiltrosDemoPorRoles, GenerosPorRoles, CatalogoGeneros } from '@prisma/client'
 
 export interface RolCompleto extends Roles {
     tipo_rol?: CatalogoTiposRoles;
-    filtros_demograficos?: FiltrosDemoPorRoles & { generos?: (GenerosPorRoles & { genero?: CatalogoGeneros })[] };
+    filtros_demograficos?: FiltrosDemoPorRoles
+    & {
+        generos?: (GenerosPorRoles
+            & { genero?: CatalogoGeneros })[]
+    }
+    & { aparencias_etnicas?: (AparenciasEtnicasPorRoles & { aparencia_etnica: CatalogoAparenciasEtnicas })[] };
+
 }
 
 const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
@@ -107,7 +116,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <PerfilTable
-                                        rol={roles.data?.find(r => `${r.id}` === rolSeleccionado)}
+                                        rol={roles.data?.find(r => `${r.id}` === rolSeleccionado) as unknown as RolCompleto}
                                     />
                                 </Grid>
                             </Grid>

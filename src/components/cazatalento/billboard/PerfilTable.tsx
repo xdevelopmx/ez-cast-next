@@ -101,19 +101,32 @@ export const PerfilTable: FC<Props> = ({ rol }) => {
 
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography>Protagonista</Typography>
+                        <Typography>{rol?.tipo_rol?.tipo || 'No especificado'}</Typography>
                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography>25-30</Typography>
+                        <Typography>{`${rol?.filtros_demograficos?.rango_edad_inicio || 'na'}-${rol?.filtros_demograficos?.rango_edad_fin || 'na'}`}</Typography>
                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                     </Box>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography>Latino/Hispano</Typography>
-                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {
+                            rol?.filtros_demograficos && rol?.filtros_demograficos?.aparencias_etnicas && rol?.filtros_demograficos?.aparencias_etnicas.length > 0
+                                ? rol?.filtros_demograficos.aparencias_etnicas.map(ae => (
+                                    <Fragment key={ae.id}>
+                                        <Typography>{ae.aparencia_etnica.nombre}</Typography>
+                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                    </Fragment>
+                                ))
+                                : <>
+                                    <Typography>No especificado</Typography>
+                                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                </>
+                        }
                     </Box>
                     <Box sx={{ display: 'flex' }}>
-                        <Typography fontWeight={100} fontStyle={'italic'}>Description breve del personaje</Typography>
+                        <Typography fontWeight={100} fontStyle={'italic'}>
+                            {rol?.descripcion || 'No especificado'}
+                        </Typography>
                     </Box>
                 </Box>
             </Grid>
