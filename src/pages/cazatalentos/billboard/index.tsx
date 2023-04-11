@@ -37,6 +37,14 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
         setIdProyectoSeleccionado(proyectos.data[0]?.id || 0)
     }, [proyectos.data])
 
+    useEffect(() => {
+        if (proyectoSeleccionado === '0') return;
+        if (!proyectos.data) return;
+        const idProyecto = proyectos.data.find(p => p.id === parseInt(proyectoSeleccionado))?.id || 0
+        if (!idProyecto) return;
+        setIdProyectoSeleccionado(idProyecto)
+    }, [proyectoSeleccionado, proyectos.data])
+
     return (
         <>
             <Head>
@@ -62,7 +70,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             id="nombre-proyecto-select"
                                             loading={loading}
                                             options={proyectos.data?.map(p => ({
-                                                value: p.nombre,
+                                                value: `${p.id}`,
                                                 label: p.nombre,
                                             })) || []}
                                             className={'form-input-md'}
