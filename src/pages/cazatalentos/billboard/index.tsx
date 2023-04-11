@@ -1,11 +1,42 @@
+import { type GetServerSideProps } from "next";
 import { Divider, Grid, Typography } from "@mui/material";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { Alertas, MSelect, MainLayout, MenuLateral } from "~/components";
 import { PerfilTable } from "~/components/cazatalento/billboard/PerfilTable";
 import { MContainer } from "~/components/layout/MContainer";
+import { api } from "~/utils/api";
+import { getSession } from "next-auth/react";
+import { type User } from "next-auth";
+import { useEffect, useState } from "react";
 
-const BillboardPage: NextPage = () => {
+type DashBoardCazaTalentosPageProps = {
+    user: User,
+}
+
+const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
+
+    const [proyectoSeleccionado, setProyectoSeleccionado] = useState('0')
+    const [idProyectoSeleccionado, setIdProyectoSeleccionado] = useState(0)
+    const [rolSeleccionado, setRolSeleccionado] = useState('0')
+
+    const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
+        refetchOnWindowFocus: false
+    })
+
+    const roles = api.roles.getAllCompleteByProyecto.useQuery(idProyectoSeleccionado, {
+        refetchOnWindowFocus: false
+    });
+
+    const loading = proyectos.isFetching || roles.isFetching
+
+    useEffect(() => {
+        if (!proyectos.data) return;
+        if (proyectos.data.length === 0) return;
+        setProyectoSeleccionado(proyectos.data[0]?.nombre || '')
+        setIdProyectoSeleccionado(proyectos.data[0]?.id || 0)
+    }, [proyectos.data])
+
     return (
         <>
             <Head>
@@ -29,34 +60,30 @@ const BillboardPage: NextPage = () => {
                                     <MContainer direction="horizontal">
                                         <MSelect
                                             id="nombre-proyecto-select"
-                                            options={[
-                                                { value: 'Nombre de Proyecto', label: 'Nombre de Proyecto' },
-                                                { value: 'Nombre de Proyecto 2', label: 'Nombre de Proyecto 2' },
-                                                { value: 'Nombre de Proyecto 3', label: 'Nombre de Proyecto 3' }
-                                            ]}
+                                            loading={loading}
+                                            options={proyectos.data?.map(p => ({
+                                                value: p.nombre,
+                                                label: p.nombre,
+                                            })) || []}
                                             className={'form-input-md'}
-                                            value={'Nombre de Proyecto'}
+                                            value={proyectoSeleccionado}
                                             onChange={(e) => {
-                                                /* onFormChange({
-                                                    id_sindicato: parseInt(e.target.value)
-                                                }) */
+                                                setProyectoSeleccionado(e.target.value)
                                             }}
                                             label=''
                                         />
                                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                         <MSelect
                                             id="nombre-personaje-select"
-                                            options={[
-                                                { value: 'Nombre de personaje', label: 'Nombre de personaje' },
-                                                { value: 'Nombre de personaje 2', label: 'Nombre de personaje 2' },
-                                                { value: 'Nombre de personaje 3', label: 'Nombre de personaje 3' }
-                                            ]}
+                                            loading={loading}
+                                            options={roles.data?.map(r => ({
+                                                label: r.nombre,
+                                                value: r.nombre,
+                                            })) || []}
                                             className={'form-input-md'}
-                                            value={'Nombre de personaje'}
+                                            value={rolSeleccionado}
                                             onChange={(e) => {
-                                                /* onFormChange({
-                                                    id_sindicato: parseInt(e.target.value)
-                                                }) */
+                                                setRolSeleccionado(e.target.value)
                                             }}
                                             label=''
                                         />
@@ -73,6 +100,23 @@ const BillboardPage: NextPage = () => {
             </MainLayout>
         </>
     )
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const session = await getSession(context);
+    if (session && session.user) {
+        return {
+            props: {
+                user: session.user,
+            }
+        }
+    }
+    return {
+        redirect: {
+            destination: '/',
+            permanent: true,
+        },
+    }
 }
 
 export default BillboardPage

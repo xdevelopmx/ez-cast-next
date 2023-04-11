@@ -1,8 +1,7 @@
+import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
-import React from 'react'
 import { MContainer } from '~/components/layout/MContainer'
 import { MSelect } from '~/components/shared'
-import Image from 'next/image'
 import { TalentoTableItem } from './TalentoTableItem'
 
 export const PerfilTable = () => {
@@ -102,6 +101,25 @@ export const PerfilTable = () => {
                         <TalentoTableItem key={i} />
                     ))
                 }
+            </Grid>
+            <Grid xs={12} mt={4}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Button sx={{ textTransform: 'none' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
+                            <Typography fontWeight={600}>Página previa</Typography>
+                        </Box>
+                    </Button>
+
+                    <Typography sx={{ color: '#069cb1' }} fontWeight={600} >1 de 1</Typography>
+
+                    <Button sx={{ textTransform: 'none' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography fontWeight={600}>Siguiente página</Typography>
+                            <Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
+                        </Box>
+                    </Button>
+                </Box>
             </Grid>
         </Grid>
     )
