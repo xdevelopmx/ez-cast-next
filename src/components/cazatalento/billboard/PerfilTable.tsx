@@ -1,4 +1,4 @@
-import { Button, Grid, Typography } from '@mui/material'
+import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React from 'react'
 import { MContainer } from '~/components/layout/MContainer'
 import { MSelect } from '~/components/shared'
@@ -68,6 +68,33 @@ export const PerfilTable = () => {
                         </Button>
                     </MContainer>
                 </Grid>
+            </Grid>
+            <Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px' }}>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Typography>Cortometraje</Typography>
+                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Typography>Hombre</Typography>
+                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Typography>Protagonista</Typography>
+                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Typography>25-30</Typography>
+                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Typography>Latino/Hispano</Typography>
+                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    </Box>
+                    <Box sx={{ display: 'flex' }}>
+                        <Typography fontWeight={100} fontStyle={'italic'}>Description breve del personaje</Typography>
+                    </Box>
+                </Box>
             </Grid>
             <Grid container item xs={12} gap={1} sx={{ justifyContent: 'space-between' }} mt={1}>
                 {

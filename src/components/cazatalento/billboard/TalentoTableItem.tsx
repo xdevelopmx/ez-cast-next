@@ -47,6 +47,12 @@ export const TalentoTableItem = () => {
                         </Grid>
                     </Grid>
                 </Box>
+                <Box sx={{ display: 'flex', gap: 1.5, marginTop: 1 }}>
+                    <Image src="/assets/img/iconos/play-video.svg" width={20} height={20} alt="" />
+                    <Image src="/assets/img/iconos/documento.svg" width={20} height={20} alt="" />
+                    <Image src="/assets/img/iconos/icono_camara_cart_blue.svg" width={20} height={20} alt="" />
+                    <Image src="/assets/img/iconos/icono_web_site_blue.svg" width={20} height={20} alt="" />
+                </Box>
             </Box>
         </Box>
     )
