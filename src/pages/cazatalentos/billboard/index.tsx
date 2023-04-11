@@ -14,6 +14,13 @@ type DashBoardCazaTalentosPageProps = {
     user: User,
 }
 
+import type { Roles, CatalogoTiposRoles, FiltrosDemoPorRoles, GenerosPorRoles, CatalogoGeneros } from '@prisma/client'
+
+export interface RolCompleto extends Roles {
+    tipo_rol?: CatalogoTiposRoles;
+    filtros_demograficos?: FiltrosDemoPorRoles & { generos?: (GenerosPorRoles & { genero?: CatalogoGeneros })[] };
+}
+
 const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
 
     const [proyectoSeleccionado, setProyectoSeleccionado] = useState('0')
@@ -86,7 +93,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             loading={loading}
                                             options={roles.data?.map(r => ({
                                                 label: r.nombre,
-                                                value: r.nombre,
+                                                value: `${r.id}`,
                                             })) || []}
                                             className={'form-input-md'}
                                             value={rolSeleccionado}
@@ -99,7 +106,9 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                     <Divider style={{ borderWidth: 1, marginTop: '10px' }} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                    <PerfilTable />
+                                    <PerfilTable
+                                        rol={roles.data?.find(r => `${r.id}` === rolSeleccionado)}
+                                    />
                                 </Grid>
                             </Grid>
                         </div>

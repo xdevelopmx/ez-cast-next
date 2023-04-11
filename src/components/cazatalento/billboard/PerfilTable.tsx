@@ -3,8 +3,18 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import { MContainer } from '~/components/layout/MContainer'
 import { MSelect } from '~/components/shared'
 import { TalentoTableItem } from './TalentoTableItem'
+import { Fragment, type FC } from 'react'
+import { type RolCompleto } from '~/pages/cazatalentos/billboard'
 
-export const PerfilTable = () => {
+interface Props {
+    rol?: RolCompleto;
+}
+
+export const PerfilTable: FC<Props> = ({ rol }) => {
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    console.log({ rol });
+
     return (
         <Grid container item xs={12} mt={1}>
             <Grid container item xs={20} sx={{ backgroundColor: '#069cb1', padding: '20px 10px' }} columns={20}>
@@ -69,14 +79,26 @@ export const PerfilTable = () => {
                 </Grid>
             </Grid>
             <Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px' }}>
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography>Cortometraje</Typography>
+                        <Typography>{rol?.tipo_rol?.tipo || 'No especificado'}</Typography>
                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Typography>Hombre</Typography>
-                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                        {
+                            rol?.filtros_demograficos && rol?.filtros_demograficos.generos && rol?.filtros_demograficos.generos.length > 0
+                                ? rol?.filtros_demograficos.generos.map(g => (
+                                    <Fragment key={g.id}>
+                                        <Typography>{g.genero?.es}</Typography>
+                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                    </Fragment>
+                                ))
+                                : <>
+                                    <Typography>No especificado</Typography>
+                                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                </>
+                        }
+
                     </Box>
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         <Typography>Protagonista</Typography>
