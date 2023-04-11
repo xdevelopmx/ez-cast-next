@@ -67,11 +67,11 @@ export const PerfilTable: FC<Props> = ({ rol }) => {
 
                 <Grid xs={9}>
                     <MContainer direction='horizontal' styles={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Typography>Ver <Typography component={'span'}>25</Typography> resultados</Typography>
+                        <Typography>Ver <Typography component={'span'} sx={{ backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>25</Typography> resultados</Typography>
                         <Button sx={{ width: '20px', padding: 0 }}>
                             <Image src="/assets/img/iconos/arrow_l_white.svg" width={20} height={20} alt="" />
                         </Button>
-                        <Typography>Página <Typography component={'span'}>1</Typography> de 1</Typography>
+                        <Typography>Página <Typography component={'span'} sx={{ backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>1</Typography> de 1</Typography>
                         <Button sx={{ width: '20px', padding: 0 }}>
                             <Image src="/assets/img/iconos/arrow_r_white.svg" width={20} height={20} alt="" />
                         </Button>

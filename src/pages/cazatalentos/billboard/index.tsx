@@ -18,7 +18,6 @@ type DashBoardCazaTalentosPageProps = {
     user: User,
 }
 
-
 export interface RolCompleto extends Roles {
     tipo_rol?: CatalogoTiposRoles;
     filtros_demograficos?: FiltrosDemoPorRoles
@@ -44,12 +43,10 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
         refetchOnWindowFocus: false
     });
 
-    const loading = proyectos.isFetching || roles.isFetching
-
     useEffect(() => {
         if (!proyectos.data) return;
         if (proyectos.data.length === 0) return;
-        setProyectoSeleccionado(proyectos.data[0]?.nombre || '')
+        setProyectoSeleccionado(`${proyectos.data[0]?.id || '0'}` || '0')
         setIdProyectoSeleccionado(proyectos.data[0]?.id || 0)
     }, [proyectos.data])
 
@@ -84,7 +81,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                     <MContainer direction="horizontal">
                                         <MSelect
                                             id="nombre-proyecto-select"
-                                            loading={loading}
+                                            loading={proyectos.isFetching}
                                             options={proyectos.data?.map(p => ({
                                                 value: `${p.id}`,
                                                 label: p.nombre,
@@ -99,7 +96,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                         <MSelect
                                             id="nombre-personaje-select"
-                                            loading={loading}
+                                            loading={roles.isFetching}
                                             options={roles.data?.map(r => ({
                                                 label: r.nombre,
                                                 value: `${r.id}`,
