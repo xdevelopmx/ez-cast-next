@@ -4,6 +4,7 @@ import { FormGroup } from "./FormGroup"
 import { useState } from "react"
 import { MCheckboxGroup } from "./MCheckboxGroup"
 import { api } from "~/utils/api"
+import { ProjectPreview } from "./ProjectPreview"
 
 
 export const ProjectsTable = () => {
@@ -46,11 +47,12 @@ export const ProjectsTable = () => {
         refetchOnMount: false
     })
 
+
     const loading = estados.isFetching || uniones.isFetching || tipos_roles.isFetching || tipos_proyectos.isFetching || generos_rol.isFetching || apariencias_etnicas.isFetching || preferencias_pago.isFetching
 
     return (
         <Grid container mt={4}>
-            <Grid container xs={12}>
+            <Grid item container xs={12}>
                 <Grid xs={2}>
                     <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '1.1rem' }}>Filtros</Typography>
                 </Grid>
@@ -68,12 +70,12 @@ export const ProjectsTable = () => {
                     </Typography>
                 </Grid>
             </Grid>
-            <Grid xs={12}>
+            <Grid item xs={12}>
                 <Divider sx={{ borderColor: '#069cb1', borderWidth: 1 }} />
             </Grid>
 
-            <Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px 20px' }} mt={4}>
-                <Grid container xs={12}>
+            <Grid item container xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px 20px' }} mt={4}>
+                <Grid item container xs={12}>
                     <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Typography>Buscar:</Typography>
@@ -85,6 +87,7 @@ export const ProjectsTable = () => {
                                     { value: '3', label: 'Por proyecto' },
                                 ]}
                                 styleRoot={{ width: '100px' }}
+                                style={{width: '100%'}}
                                 value={'0'}
                                 onChange={(e) => {
                                     /* onFormChange({
@@ -96,7 +99,7 @@ export const ProjectsTable = () => {
                             <FormGroup
                                 className={'form-input-md'}
                                 type="search"
-                                rootStyle={{ margin: 0, width: '150px' }}
+                                rootStyle={{ margin: 0, width: '130px' }}
                                 style={{ border: 'none', width: '100%' }}
                                 value={searchInput}
                                 onChange={(e) => {
@@ -141,7 +144,8 @@ export const ProjectsTable = () => {
                             label: e.es,
                             value: `${e.id}`
                         })) || []}
-                        styleRoot={{ width: '150px' }}
+                        styleRoot={{ width: '130px' }}
+                        style={{width: '100%'}}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -156,7 +160,8 @@ export const ProjectsTable = () => {
                             label: u.es,
                             value: `${u.id}`
                         })) || []}
-                        styleRoot={{ width: '150px' }}
+                        styleRoot={{ width: '130px' }}
+                        style={{width: '100%'}}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -172,7 +177,8 @@ export const ProjectsTable = () => {
                             label: tr.es,
                             value: `${tr.id}`
                         })) || []}
-                        styleRoot={{ width: '150px' }}
+                        styleRoot={{ width: '130px' }}
+                        style={{width: '100%'}}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -188,7 +194,8 @@ export const ProjectsTable = () => {
                             label: tp.es,
                             value: `${tp.id}`
                         })) || []}
-                        styleRoot={{ width: '150px' }}
+                        styleRoot={{ width: '130px' }}
+                        style={{width: '100%'}}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -204,7 +211,8 @@ export const ProjectsTable = () => {
                             label: g.es,
                             value: `${g.id}`
                         })) || []}
-                        styleRoot={{ width: '150px' }}
+                        styleRoot={{ width: '130px' }}
+                        style={{width: '100%'}}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -220,7 +228,8 @@ export const ProjectsTable = () => {
                             label: g.es,
                             value: `${g.id}`
                         })) || []}
-                        styleRoot={{ width: '150px' }}
+                        styleRoot={{ width: '130px' }}
+                        style={{width: '100%'}}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -229,6 +238,18 @@ export const ProjectsTable = () => {
                         }}
                     />
                 </Grid>
+
+                <Grid xs={12}>
+
+                </Grid>
+            </Grid>
+
+            <Grid xs={12} container gap={2} mt={4}>
+                {
+                    Array.from({ length: 2 }).map((_, i) => (
+                        <ProjectPreview key={i} />
+                    ))
+                }
             </Grid>
         </Grid>
     )
