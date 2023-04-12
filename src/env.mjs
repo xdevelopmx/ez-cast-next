@@ -9,6 +9,10 @@ const server = z.object({
   FILES_ROOT_FOLDER: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
   APP_URL: z.string(),
+  BUCKET_NAME: z.string(),
+  AWSDEFAULTREGION: z.string(),
+  AWSACCESSKEYID: z.string(),
+  AWSSECRETACCESSKEY: z.string(),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)
@@ -45,7 +49,11 @@ const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-  FILES_ROOT_FOLDER: process.env.FILES_ROOT_FOLDER
+  FILES_ROOT_FOLDER: process.env.FILES_ROOT_FOLDER,
+  BUCKET_NAME: process.env.BUCKET_NAME,
+  AWSDEFAULTREGION: process.env.AWSDEFAULTREGION,
+  AWSACCESSKEYID: process.env.AWSACCESSKEYID,
+  AWSSECRETACCESSKEY: process.env.AWSSECRETACCESSKEY
   //DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   //DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,

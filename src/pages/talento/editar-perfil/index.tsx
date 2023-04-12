@@ -15,6 +15,7 @@ import { type User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { useRouter } from "next/router";
+import { FileManagerFront } from "~/utils/file-manager-front";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -37,10 +38,6 @@ export type TalentoFormInfoGral = {
     files: {
         carta_responsiva?: Archivo,
         cv?: Archivo,
-        urls: {
-            carta_responsiva: string | null,
-            cv: string | null,
-        }
     },
     redes_sociales: { [nombre: string]: string }
 }
@@ -245,12 +242,7 @@ const initialState: TalentoForm = {
         altura: 170,
         biografia: '',
         redes_sociales: {},
-        files: {
-            urls: {
-                cv: null,
-                carta_responsiva: null
-            }
-        }
+        files: {}
     },
     medios: {
         fotos: [],
@@ -402,6 +394,19 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         refetchOnWindowFocus: false
     });
 
+    const saveInfoGralMedia = api.talentos.saveInfoGralMedia.useMutation({
+        onSuccess(input) {
+            saveInfoGral.mutate({
+                ...state.info_gral,
+                redes_sociales: Array.from(Object.entries(state.info_gral.redes_sociales)).map((e) => { return { nombre: e[0], url: e[1] } }),
+                media: input
+            });
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
+
     const saveInfoGral = api.talentos.saveInfoGral.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo la informacion general con exito');
@@ -479,6 +484,51 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         }
     });
 
+    const handleInfoGral = async () => {
+        const urls: {cv: string | null, carta: string | null} = { cv: null, carta: null };
+        const to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+        if (state.info_gral.files.cv) {
+            to_be_saved.push({path: `talentos/${user.id}/cv`, name: `cv`, file: state.info_gral.files.cv.file, base64: state.info_gral.files.cv.base64});
+        }
+        if (state.info_gral.files.carta_responsiva) {
+            to_be_saved.push({path: `talentos/${user.id}/carta-responsiva`, name: 'carta', file: state.info_gral.files.carta_responsiva.file, base64: state.info_gral.files.carta_responsiva.base64});
+        }
+        if (to_be_saved.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(to_be_saved);
+            if (urls_saved) {
+                urls_saved.forEach((u) => {
+                    console.log('jiji', u);
+                    if (u['cv']) {
+                        console.log('jeje', u);
+                        urls.cv = u['cv'].url;
+                    }
+                    if (u['carta']) {
+                        console.log('juju', u);
+                        urls.carta = u['carta'].url;
+                    }
+                })
+            }
+        }
+        saveInfoGralMedia.mutate({
+            cv: (!state.info_gral.files.cv || !urls.cv) ? null : {
+                nombre: 'cv',
+                type: state.info_gral.files.cv.file.type,
+                url: urls.cv,
+                clave: `talentos/${user.id}/cv/cv`,
+                referencia: `talento-info-gral`,
+                identificador: `talento-cv`
+            },
+            carta_responsiva: (!state.info_gral.files.carta_responsiva || !urls.carta) ? null : {
+                nombre: 'carta',
+                type: state.info_gral.files.carta_responsiva.file.type,
+                url: urls.carta,
+                clave: `talentos/${user.id}/carta-responsiva/carta`,
+                referencia: `talento-info-gral`,
+                identificador: `talento-carta-responsiva`
+            },
+        })
+    }
+
     useEffect(() => {
         if (talento.data) {
             const redes_sociales: { [nombre: string]: string } = {};
@@ -487,8 +537,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                     redes_sociales[red.nombre] = red.url;
                 })
             }
+            console.log(talento.data, 'talento data');
             if (talento.data.info_basica) {
-
                 dispatch({
                     type: 'update-info-gral', value: {
                         nombre: talento.data.nombre,
@@ -512,10 +562,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         files: {
                             carta_responsiva: null,
                             cv: null,
-                            urls: {
-                                carta_responsiva: (!talento.data.representante?.url_carta_responsiva) ? null : talento.data.representante.url_carta_responsiva,
-                                cv: (!talento.data.info_basica.url_cv) ? null : talento.data.info_basica.url_cv,
-                            }
                         },
                     }
                 });
@@ -677,7 +723,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.info_gral])
+    }, [state.info_gral, talento.isFetching])
 
     const editar_media_talento = useMemo(() => {
         return <EditarMediaTalento
@@ -759,39 +805,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         onStepSave={(step: number) => {
                             switch (step) {
                                 case 1: {
-                                    const files: { urls: { cv: string | null, carta_responsiva: string | null }, cv: { base64: string, extension: string } | null, carta_responsiva: { base64: string, extension: string } | null } = {
-                                        cv: null,
-                                        carta_responsiva: null,
-                                        urls: {
-                                            cv: state.info_gral.files.urls.cv,
-                                            carta_responsiva: state.info_gral.files.urls.carta_responsiva
-                                        }
-                                    }
-
-                                    if (state.info_gral.files.cv) {
-                                        const file_name_exploded = state.info_gral.files.cv.file.type.split('/');
-                                        if (file_name_exploded[1]) {
-                                            files.cv = {
-                                                base64: state.info_gral.files.cv.base64,
-                                                extension: file_name_exploded[1]
-                                            }
-                                        }
-                                    }
-
-                                    if (state.info_gral.files.carta_responsiva) {
-                                        const file_name_exploded = state.info_gral.files.carta_responsiva.file.type.split('/');
-                                        if (file_name_exploded[1]) {
-                                            files.carta_responsiva = {
-                                                base64: state.info_gral.files.carta_responsiva.base64,
-                                                extension: file_name_exploded[1]
-                                            }
-                                        }
-                                    }
-                                    saveInfoGral.mutate({
-                                        ...state.info_gral,
-                                        redes_sociales: Array.from(Object.entries(state.info_gral.redes_sociales)).map((e) => { return { nombre: e[0], url: e[1] } }),
-                                        files: { ...files }
-                                    });
+                                    void handleInfoGral();
                                     break;
                                 }
 

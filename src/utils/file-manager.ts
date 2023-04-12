@@ -1,8 +1,85 @@
 import fs from 'fs';
-import path from 'path';
+//import path from 'path';
 const VALID_EXTENSIONS = ['png','jpg','jpeg','gif','webp','txt','docx','doc','pdf', 'mp4', 'mov', 'mp3', 'wav'];
 
 export const FileManager = {
+    S3: {
+        saveFiles: async (to_be_saved: {path: string, base64: string, name: string, type: string}[]) => {            
+            const result = await Promise.all(to_be_saved.map(async (file) => {
+                let url: string | undefined = undefined;
+                try {
+                    const result = await (await fetch(`${(process.env.APP_URL) ? process.env.APP_URL : ''}/api/s3/upload`, {
+                        method: 'POST',
+                        //body: JSON.stringify({path: file.path, name: file.name, type: file.type, action: 'putObject'})
+                        body: JSON.stringify({path: file.path, name: file.name, type: file.type, action: 'putObject'})
+                    })).json() as {url: string};
+                    if (result.url) {
+                        url = result.url;
+                    }
+                } catch (e) {
+                    console.log('error get url s3', e);
+                }
+                if (url) {
+                    try {
+                        const base64String = file.base64.replace(/^data:image\/\w+;base64,/, '');
+                        const buff = new Buffer(base64String, 'base64');
+                        await fs.promises.writeFile(`temp`, buff, {encoding: 'base64'});
+                        const temp = await fs.promises.readFile('temp');
+
+                        await fetch(`${url}`, {
+                            method: 'PUT',
+                            headers: {
+                                "Content-Type": file.type,
+                                //'Content-Encoding': 'base64',
+                                "Access-Control-Allow-Origin": "*",
+                            },
+                            //body: buff
+                            body: temp
+                        })
+                    } catch (e) {
+                        url = undefined;
+                        console.log('error uploading file s3', e);
+                    }
+                }
+                return url;
+            }));
+            console.log(result);
+            return result;
+        },
+        deleteFiles: async (paths: string[]) => {
+            const result = await Promise.all(paths.map(async (path) => {
+                let url: string | undefined = undefined;
+                try {
+                    const result = await (await fetch(`${(process.env.APP_URL) ? process.env.APP_URL : ''}/api/s3/upload`, {
+                        method: 'POST',
+                        body: JSON.stringify({path: path, action: 'deleteObject'})
+                    })).json() as {url: string};
+                    if (result.url) {
+                        url = result.url;
+                    }
+                } catch (e) {
+                    console.log('error get url s3', e);
+                }
+                
+                if (url) {
+                    try {
+                        await fetch(`${url}`, {
+                            method: 'DELETE',
+                            headers: {
+                                "Access-Control-Allow-Origin": "*",
+                            }
+                        })
+                    } catch (e) {
+                        url = undefined;
+                        console.log('error deleting file s3', e);
+                    }
+                }
+                return url;
+            }));
+            return result;
+        }  
+    },
+    /*
     saveFile: async (file_name: string, file_in_base64: string, pathname: string) => {
         if (process.env.FILES_ROOT_FOLDER) {
             const exploded_filename = file_name.split('.');    
@@ -85,4 +162,5 @@ export const FileManager = {
         }
         return { result: true, error: null};
     }
+    */
 }

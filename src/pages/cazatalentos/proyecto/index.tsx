@@ -13,6 +13,7 @@ import useNotify from '~/hooks/useNotify'
 import { Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
+import { FileManager } from '~/utils/file-manager'
 
 export type ProyectoForm = {
     id?: number,
@@ -35,13 +36,15 @@ export type ProyectoForm = {
     compartir_nombre: boolean,
     estatus: string,
     files: {
-        archivo: {
+        archivo?: {
             base64: string,
-            extension: string
+            name: string, 
+            type: string
         },
-        foto_portada: {
+        foto_portada?: {
             base64: string,
-            extension: string
+            name: string, 
+            type: string
         }
     },
     errors: {
@@ -73,18 +76,9 @@ const initialState: ProyectoForm = {
     id_estado_republica: 0,
     compartir_nombre: true,
     estatus: '',
-    files: {
-        archivo: {
-            base64: '',
-            extension: ''
-        },
-        foto_portada: {
-            base64: '',
-            extension: ''
-        }
-    },
     errors: {},
     hasErrors: null,
+    files: {}
 }
 
 function reducer(state: ProyectoForm, action: { type: string, value: { [key: string]: unknown } }) {
@@ -179,6 +173,10 @@ const Proyecto: NextPage = () => {
                     telefono_contacto: (state.telefono_contacto) ? state.telefono_contacto : '',
                     email_contacto: (state.email_contacto) ? state.email_contacto : ''
                 },
+                files: {
+                    archivo: state.files.archivo,
+                    foto_portada: state.files.foto_portada
+                }
             })
         } else {
             dispatch({
@@ -320,7 +318,10 @@ const Proyecto: NextPage = () => {
                                 <div className="col d-flex justify-content-center" >
                                     <div className="mr-3">
                                         <button
-                                            onClick={() => { handleSave('back') }}
+                                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                                            onClick={() => { 
+                                                handleSave('back') 
+                                            }}
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >

@@ -415,6 +415,107 @@ export const TalentosRouter = createTRPCRouter({
 			//return exclude(talento, ['contrasenia'])
 		}
 	),
+	saveInfoGralMedia: protectedProcedure
+    	.input(z.object({ 
+			cv: z.object({
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish(),
+			carta_responsiva: z.object({
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			console.log('INPUT saveInfoGralMedia', input)
+			const user = ctx.session.user; 
+			const saved_files: {id_cv: number | null, id_carta_responsiva: number | null} = {id_cv: null, id_carta_responsiva: null};
+			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+
+				const info_gral = await ctx.prisma.infoBasicaPorTalentos.findFirst({
+					where: {
+						id_talento: parseInt(user.id)
+					}
+				});
+
+				if (info_gral && info_gral.id_media_cv) {
+					// eliminamos el archivo que ya existe en s3
+					const media_cv = await ctx.prisma.media.findFirst({
+						where: {
+							id: info_gral.id_media_cv
+						}
+					})
+
+					if (media_cv) {
+						await ctx.prisma.media.delete({
+							where: {
+								id: media_cv.id
+							}
+						})
+					}
+				}
+
+				if (input.cv) {
+					const media_cv_saved = await ctx.prisma.media.create({
+						data: input.cv
+					});
+	
+					if (media_cv_saved) {
+						saved_files.id_cv = media_cv_saved.id;
+					}
+				}
+
+				const representante = await ctx.prisma.representantesPorTalentos.findFirst({
+					where: {
+						id_talento: parseInt(user.id)
+					}
+				})
+
+				if (representante && representante.id_media_carta_responsiva) {
+					// eliminamos la carta responsiva que ya existia
+					const media_carta_representativa = await ctx.prisma.media.findFirst({
+						where: {
+							id: representante.id_media_carta_responsiva
+						}
+					})
+
+					if (media_carta_representativa) {
+						await ctx.prisma.media.delete({
+							where: {
+								id: media_carta_representativa.id
+							}
+						})
+					}
+				}
+
+				if (input.carta_responsiva) {
+					const media_carta_saved = await ctx.prisma.media.create({
+						data: input.carta_responsiva
+					})
+	
+					if (media_carta_saved) {
+						saved_files.id_carta_responsiva = media_carta_saved.id;
+					}
+				}
+
+				return saved_files;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de talento puede modificar la informacion general',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
 	updatePerfil: protectedProcedure
     	.input(z.object({ 
 			nombre: z.string(),
@@ -468,7 +569,7 @@ export const TalentosRouter = createTRPCRouter({
 						altura: 176,
 						biografia: input.biografia,
 						id_estado_republica: 1,
-						url_cv: null,
+						id_media_cv: null,
 						id_talento: parseInt(user.id)
 					},
 				});
@@ -545,19 +646,9 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				},
 			}).max(500),
-			files: z.object({
-				carta_responsiva: z.object({
-					base64: z.string(),
-					extension: z.string(),
-				}).nullish(),
-				cv: z.object({
-					base64: z.string(),
-					extension: z.string(),
-				}).nullish(),
-				urls: z.object({
-					cv: z.string().nullish(),
-					carta_responsiva: z.string().nullish()
-				})
+			media: z.object({
+				id_cv: z.number().nullish(),
+				id_carta_representante: z.number().nullish()
 			}),
 			representante: z.object({
 				nombre: z.string().min(2),
@@ -571,6 +662,7 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			console.log('INPUT saveInfoGral', input)
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 
@@ -583,7 +675,7 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 
-				if (input.edad < 18 && (!input.files.carta_responsiva && !input.files.urls.carta_responsiva)) {
+				if (input.edad < 18 && !input.media.id_carta_representante) {
 					throw new TRPCError({
 						code: 'PRECONDITION_FAILED',
 						message: 'Si se es menor de edad la carta responsiva y el representante son obligatorios',
@@ -608,21 +700,6 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 
-				let file_path_cv: string | null = null;
-				if (input.files.cv) {
-					const save_result = await FileManager.saveFile(`cv.${input.files.cv.extension}`, input.files.cv.base64, `talentos/${user.id}/info-gral/cv/`);
-					if (!save_result.error) {
-						file_path_cv = save_result.result;
-					} 
-					if (save_result.error) {
-						console.log(save_result.error);
-					}
-				} else {
-					if (input.files && input.files.urls && input.files.urls.cv) {
-						file_path_cv = input.files.urls.cv;
-					}
-				}
-
 				const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
 					where: {
 						id_talento: parseInt(user.id)
@@ -633,7 +710,7 @@ export const TalentosRouter = createTRPCRouter({
 						altura: input.altura,
 						biografia: input.biografia,
 						id_estado_republica: input.id_estado_republica,
-						url_cv: file_path_cv
+						id_media_cv: input.media.id_cv
 					},
 					create: {
 						edad: input.edad,
@@ -641,7 +718,7 @@ export const TalentosRouter = createTRPCRouter({
 						altura: input.altura,
 						biografia: input.biografia,
 						id_estado_republica: input.id_estado_republica,
-						url_cv: file_path_cv,
+						id_media_cv: input.media.id_cv,
 						id_talento: parseInt(user.id)
 					},
 				});
@@ -714,24 +791,12 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.edad < 18) {
 					if (input.representante) {
-						let file_path_carta_responsiva: string | null = null;
-						if (input.files.carta_responsiva) {
-							const save_result = await FileManager.saveFile(`carta-responsiva.${input.files.carta_responsiva.extension}`, input.files.carta_responsiva.base64, `talentos/${user.id}/info-gral/carta-responsiva/`);
-							if (!save_result.error) {
-								file_path_carta_responsiva = save_result.result;
-							}
-						} else {
-							if (input.files && input.files.urls && input.files.urls.carta_responsiva) {
-								file_path_carta_responsiva = input.files.urls.carta_responsiva;
-							}
-						}
-	
 						const saved_representante = await ctx.prisma.representantesPorTalentos.upsert({
 							where: {
 								id_talento: parseInt(user.id)
 							},
 							update: {
-								url_carta_responsiva: file_path_carta_responsiva,
+								id_media_carta_responsiva: input.media.id_carta_representante,
 								nombre: input.representante.nombre,
 								agencia: input.representante.agencia,
 								email: input.representante.email,
@@ -742,7 +807,7 @@ export const TalentosRouter = createTRPCRouter({
 								agencia: input.representante.agencia,
 								email: input.representante.email,
 								telefono: input.representante.telefono,
-								url_carta_responsiva: file_path_carta_responsiva,
+								id_media_carta_responsiva: input.media.id_carta_representante,
 								id_talento: parseInt(user.id)
 							},
 						});
@@ -809,7 +874,7 @@ export const TalentosRouter = createTRPCRouter({
 				}
 			)),
 		}))
-		.mutation(async ({ input, ctx }) => {
+		.mutation( ({ input, ctx }) => {
 			console.log('INPUT SAVE MEDIOS: ', input)
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
@@ -822,154 +887,7 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 				
-				const media_por_talentos_to_be_deleted = await ctx.prisma.mediaPorTalentos.findMany({
-					where: {
-						referencia: {
-							in: ['FOTOS_PERFIL_TALENTO', 'AUDIOS_TALENTO', 'VIDEOS_TALENTO'],
-						},
-						id_talento: parseInt(user.id)
-					},
-					include: {
-						media: true
-					}
-				})
-				
-				const ids_to_delete = await Promise.all(media_por_talentos_to_be_deleted.map(async (m) => {
-
-					const deleted_file = await FileManager.deleteFile(m.media.path);
-					if (deleted_file.error) {
-						console.log(deleted_file.error);
-					}
-					return m.id;
-				}));
-
-				await ctx.prisma.mediaPorTalentos.deleteMany({
-					where: {
-						id: {
-							in: ids_to_delete
-						}
-					}
-				});
-
-
-
-				/*
-					referencia: 'VIDEOS_TALENTO',
-					identificador: `VIDEO_${key}`,
-					nombre: file.name,
-					pathname: `talentos/${this.talento_profile?.id}/videos-perfil/`
-				*/
-				/*
-				if (m.identificador === 'FOTO_PERFIL') {
-					if (talento.dataValues.profile_img_url) {
-						const deleted_file = await fileManager.deleteFile(talento.dataValues.profile_img_url);
-						if (deleted_file.error) {
-							throw new Error(deleted_file.error.detailed_msg);
-						}
-					}
-				}
-				*/
-				if (input.fotos.length > 0) {
-					const uploaded_fotos_result = await Promise.all(input.fotos.map(async (foto) => {
-						const name_exploded = foto.nombre.split('.');
-						const extension = name_exploded[name_exploded.length - 1];
-						name_exploded.splice(name_exploded.length - 1);
-						if (extension) {
-
-							const name = `${name_exploded.join('_')}.${extension}`;      
-							
-							const save_result = await FileManager.saveFile(`${foto.identificador}.${extension}`, foto.base64, `talentos/${user.id}/fotos-perfil/`);
-							if (!save_result.error) {
-								const saved_media = await ctx.prisma.media.create({
-									data: {
-										nombre: name,
-										extension: extension,
-										path: save_result.result
-									}
-								})
-								const saved_media_por_talento = await ctx.prisma.mediaPorTalentos.create({
-									data: {
-										referencia: 'FOTOS_PERFIL',
-										identificador: foto.identificador,
-										id_media: saved_media.id,
-										id_talento: parseInt(user.id)
-									}
-								})
-								return (saved_media_por_talento);
-							}
-						}
-						return false;
-					}));
-					console.log('saved_fotos', uploaded_fotos_result);
-				}
-
-				if (input.audios.length > 0) {
-					const uploaded_audios_result = await Promise.all(input.fotos.map(async (audio) => {
-						const name_exploded = audio.nombre.split('.');
-						const extension = name_exploded[name_exploded.length - 1];
-						name_exploded.splice(name_exploded.length - 1);
-						if (extension) {
-
-							const name = `${name_exploded.join('_')}.${extension}`;      
-							
-							const save_result = await FileManager.saveFile(`${audio.identificador}.${extension}`, audio.base64, `talentos/${user.id}/audios-perfil/`);
-							if (!save_result.error) {
-								const saved_media = await ctx.prisma.media.create({
-									data: {
-										nombre: name,
-										extension: extension,
-										path: save_result.result
-									}
-								})
-								const saved_media_por_talento = await ctx.prisma.mediaPorTalentos.create({
-									data: {
-										referencia: 'AUDIOS_PERFIL',
-										identificador: audio.identificador,
-										id_media: saved_media.id,
-										id_talento: parseInt(user.id)
-									}
-								})
-								return (saved_media_por_talento);
-							}
-						}
-						return false;
-					}));
-					console.log('saved_audios', uploaded_audios_result);
-				}
-
-				if (input.videos.length > 0) {
-					const uploaded_videos_result = await Promise.all(input.fotos.map(async (video) => {
-						const name_exploded = video.nombre.split('.');
-						const extension = name_exploded[name_exploded.length - 1];
-						name_exploded.splice(name_exploded.length - 1);
-						if (extension) {
-
-							const name = `${name_exploded.join('_')}.${extension}`;      
-							
-							const save_result = await FileManager.saveFile(`${video.identificador}.${extension}`, video.base64, `talentos/${user.id}/videos-perfil/`);
-							if (!save_result.error) {
-								const saved_media = await ctx.prisma.media.create({
-									data: {
-										nombre: name,
-										extension: extension,
-										path: save_result.result
-									}
-								})
-								const saved_media_por_talento = await ctx.prisma.mediaPorTalentos.create({
-									data: {
-										referencia: 'VIDEOS_PERFIL',
-										identificador: video.identificador,
-										id_media: saved_media.id,
-										id_talento: parseInt(user.id)
-									}
-								})
-								return (saved_media_por_talento);
-							}
-						}
-						return false;
-					}));
-					console.log('saved_videos', uploaded_videos_result);
-				}
+			
 				return true;
 			}
 			throw new TRPCError({

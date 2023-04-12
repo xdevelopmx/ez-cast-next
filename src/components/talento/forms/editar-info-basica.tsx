@@ -145,7 +145,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
                             <FormGroup
                                 error={(() => {
-                                    if (state.representante) {
+                                    if (state.representante && state.representante.nombre) {
                                         if (state.representante.nombre.length === 0) {
                                             return 'El nombre no debe estar vacio';
                                         }
@@ -161,7 +161,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             />
                             <FormGroup
                                 error={(() => {
-                                    if (state.representante) {
+                                    if (state.representante && state.representante.email) {
                                         if (!EMAIL_PATTERN.test(state.representante.email)) {
                                             return 'El email es invalido';
                                         }
@@ -187,7 +187,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             />
                             <FormGroup
                                 error={(() => {
-                                    if (state.representante) {
+                                    if (state.representante && state.representante.telefono) {
                                         if (state.representante.telefono.length < 10 || state.representante.telefono.length > 12) {
                                             return 'El telefono es invalido';
                                         }
@@ -210,9 +210,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                 <MotionDiv show={(state) ? state.edad < 18 : false} animation='fade'>
                     <DragNDrop
                         id='id-drag-n-drop-carta-responsiva'
-                        show_download_url={(state.files.urls.carta_responsiva) ? state.files.urls.carta_responsiva : undefined}
+                        show_download_url={undefined}
                         label='Carta Responsiva'
-                        text_label_download='Descargar carta responsiva'
                         files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
                         height={100}
@@ -302,7 +301,6 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             <Grid item xs={12} md={4} className='mt-4' justifyContent={'end'}>
                 <DragNDrop
                     id='id-drag-n-drop-cv'
-                    show_download_url={(state.files.urls.cv) ? state.files.urls.cv : undefined}
                     label='Subir CV'
                     tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'orange', placement: 'top' }}
                     height={100}

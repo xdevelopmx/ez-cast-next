@@ -3,6 +3,7 @@ import { type FC } from 'react'
 import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from '~/components'
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
+import { FileManager } from '~/utils/file-manager';
 import { FileManagerFront } from '~/utils/file-manager-front';
 
 interface Props {
@@ -27,7 +28,7 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     label={<Typography fontWeight={600}>Agregar una foto de portada para tu proyecto</Typography>}
                     text_label_download='Descargar foto'
                     files={[]}
-                    filetypes={['pdf', 'doc', 'docx']}
+                    filetypes={['png', 'jpg', 'jpeg', 'mp4']}
                     maxWidth={400}
                     height={100}
                     onChange={(files: File[]) => {
@@ -36,7 +37,15 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                             return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {
-                            console.log(files_conv)
+                            const file = files_conv[0];
+                            if (file) {
+                                onFormChange({
+                                    files: {
+                                        ...state.files,
+                                        foto_portada: { base64: file.base64, name: file.file.name, type: file.file.type }
+                                    }    
+                                })
+                            }
                             // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
                         }).catch((err) => {
                             console.log(err);

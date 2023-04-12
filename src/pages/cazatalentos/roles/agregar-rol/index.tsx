@@ -16,6 +16,7 @@ import { api, parseErrorBody } from "~/utils/api";
 import useNotify from "~/hooks/useNotify";
 import { NewRol } from '~/server/api/routers/roles';
 import { conversorFecha } from '~/utils/conversor-fecha';
+import { MContainer } from '~/components/layout/MContainer'
 
 export type RolInformacionGeneralForm = {
     nombre: string,
@@ -240,7 +241,7 @@ const AgregarRolPage: NextPage = () => {
     const router = useRouter()
 
     const [on_save_action, setOnSaveAction] = useState<'redirect-to-proyectos' | 'reset-form' | null>(null);
-    const [state, dispatch] = useReducer(reducerRol, initialState)
+    const [state, dispatch] = useReducer(reducerRol, initialState);
     const { notify } = useNotify();
 
     useEffect(() => {
@@ -454,9 +455,6 @@ const AgregarRolPage: NextPage = () => {
             }
             form.data.filtros_demograficos = {
                 ...form.data.filtros_demograficos,
-                return { ...form, error: 'Debes seleccionar al menos un genero' };
-            }
-
                 generos: state.filtros_demograficos.generos
             }
         }
@@ -474,7 +472,7 @@ const AgregarRolPage: NextPage = () => {
 
         if (state.filtros_demograficos.es_mascota) {
             if (state.filtros_demograficos.animal) {
-                if (!state.filtros_demograficos.animal || state.filtros_demograficos.animal.id <= 0 || state.filtros_demograficos.animal.tamanio.length === 0) {
+                if (state.filtros_demograficos.animal.id <= 0 || (state.filtros_demograficos.animal && state.filtros_demograficos.animal.tamanio.length === 0)) {
                     return {...form, error: 'No se especifico un animal valido'};
                 }
             } else {
@@ -734,9 +732,12 @@ const AgregarRolPage: NextPage = () => {
                             {selftape}
                             <div className="row mt-lg-4">
                                 {!form_validate.complete &&
-                                    <Alert style={{ marginLeft: '40%', textAlign: 'center'}} icon={false} severity='info'>
-                                        Por favor llena los campos obligatorios *
-                                    </Alert>
+                                    <MContainer direction='vertical' styles={{width: '100%', alignContent: 'center'}}>
+                                        <Alert  icon={false} severity='warning'>
+                                    
+                                            <Typography style={{textAlign: 'center', width: 'inherit'}}>Por favor llena los campos obligatorios * </Typography>
+                                        </Alert>
+                                    </MContainer>
                                 }
                                 
                                 <div className="col d-flex justify-content-center" >

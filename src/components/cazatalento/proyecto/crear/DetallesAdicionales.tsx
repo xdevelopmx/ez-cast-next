@@ -4,11 +4,12 @@ import { FormGroup, SectionTitle } from '~/components'
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
+import { FileManager } from '~/utils/file-manager';
 import { FileManagerFront } from '~/utils/file-manager-front';
 
 interface Props {
     state: ProyectoForm;
-    onFormChange: (input: { [id: string]: (string | number) }) => void;
+    onFormChange: (input: { [id: string]: unknown }) => void;
 }
 
 export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
@@ -65,9 +66,9 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                                 <Typography fontSize={14} fontWeight={600}>(Guión, Storyboard o Contrato)</Typography>
                             </>
                         }
-                        text_label_download='Descargar carta responsiva'
+                        text_label_download='Descargar archivo'
                         files={[]}
-                        filetypes={['pdf', 'doc', 'docx']}
+                        filetypes={['pdf', 'doc', 'docx', 'mp4']}
                         height={100}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
@@ -75,7 +76,15 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                                 return { base64: base64, name: f.name, file: f };
                             }));
                             files_converted.then((files_conv) => {
-                                console.log(files_conv)
+                                const file = files_conv[0];
+                                if (file) {
+                                    onFormChange({
+                                        files: {
+                                            ...state.files,
+                                            archivo: { base64: file.base64, name: file.file.name, type: file.file.type }
+                                        }    
+                                    })
+                                }
                                 // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
                             }).catch((err) => {
                                 console.log(err);
