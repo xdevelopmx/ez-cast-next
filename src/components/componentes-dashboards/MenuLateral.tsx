@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import Link from 'next/link'
 import { Grid, IconButton, Button, Typography, Skeleton, Box } from '@mui/material'
 import { motion } from 'framer-motion'
 import { CameraAlt, Close } from '@mui/icons-material';
@@ -884,7 +885,7 @@ export const MenuLateral = () => {
 						{!is_fetching && <p onClick={() => setEditMode(edit => !edit)} className="mt-2 mb-5 text-white open_popup" data-popup="box_editprofile">Editar perfil</p>}
 						<div className="sub_menu">
 							<a href="#" className="active">Perfil</a>
-							<a href="#">Casting Billboard</a>
+							<Link href="/cazatalentos/billboard">Casting Billboard</Link>
 							<a href="#">Tus Aplicaciones</a>
 							<a href="#">Media Bank</a>
 							<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>

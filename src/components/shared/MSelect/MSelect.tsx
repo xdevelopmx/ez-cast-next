@@ -19,11 +19,12 @@ interface Props {
     disabled?: boolean,
     tooltip?: ReactNode,
     inferiorBlueText?: ReactNode,
+    styleMenuProps?: CSSProperties,
 }
 
 export const MSelect: FC<Props> = ({
     disabled, loading, className, icon, labelClassName, label, id, onChange, value, labelStyle, style, options, tooltip,
-    inferiorBlueText, styleRoot = {},
+    inferiorBlueText, styleRoot = {}, styleMenuProps = {}
 }) => {
     let label_element: JSX.Element | null = null;
     if (label) {
@@ -71,14 +72,14 @@ export const MSelect: FC<Props> = ({
                             '&ul': {
                                 maxHeight: 100
                             },
+                            ...style
                         }}
                         labelId={id}
                         id={id}
                         value={value}
-                        style={{ ...style }}
                         className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
                         onChange={onChange}
-                        MenuProps={{ classes: { paper: 'select-children' } }}
+                        MenuProps={{ classes: { paper: 'select-children' }, style: styleMenuProps }}
                     >
                         {[{ value: default_value, label: 'Selecciona una opcion' }].concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
                     </Select>
