@@ -1129,7 +1129,7 @@ footer {
   padding: 0 5rem 5rem;
   padding-top: 70px;
   overflow: hidden;
-  max-width: 1225px;
+  /*max-width: 1225px;*/
   width: 80%;
   margin: 0 auto;
 }
@@ -3353,4 +3353,34 @@ p.edo_pendiente {
 .label-black-md {
   font-weight: 600;
   font-size: 1rem;
+}
+
+@media screen and (min-width: 300px) {
+  [class*="wd-carousel-spacing-"] .owl-nav>div[class*="next"] {
+    right: calc(-30px + var(--wd-car-sp) / 2);
+  }
+
+  [class*="wd-carousel-spacing-"] .owl-nav>div[class*="prev"] {
+    left: calc(-30px + var(--wd-car-sp) / 2);
+  }
+}
+
+@media screen and (min-width: 1030px) {
+  [class*="wd-carousel-spacing-"] .owl-nav>div[class*="next"] {
+    right: calc(0px + var(--wd-car-sp) / 2);
+  }
+
+  [class*="wd-carousel-spacing-"] .owl-nav>div[class*="prev"] {
+    left: calc(0px + var(--wd-car-sp) / 2);
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  [class*="wd-carousel-spacing-"] .owl-nav>div[class*="next"] {
+    right: calc(-80px + var(--wd-car-sp) / 2);
+  }
+
+  [class*="wd-carousel-spacing-"] .owl-nav>div[class*="prev"] {
+    left: calc(-80px + var(--wd-car-sp) / 2);
+  }
 }
