@@ -26,7 +26,6 @@ type LoginForm = {
 
 function reducer(state: LoginForm, action: { type: string, value: { [key: string]: unknown } }) {
 	if (action.type === 'update-form') {
-		console.log(state)
 		return { ...state, ...action.value }
 	}
 	throw Error(`Accion no definida ${action.type}`)
