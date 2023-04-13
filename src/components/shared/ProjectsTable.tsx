@@ -5,6 +5,7 @@ import { useState } from "react"
 import { MCheckboxGroup } from "./MCheckboxGroup"
 import { api } from "~/utils/api"
 import { ProjectPreview } from "./ProjectPreview"
+import Image from 'next/image'
 
 
 export const ProjectsTable = () => {
@@ -87,7 +88,7 @@ export const ProjectsTable = () => {
                                     { value: '3', label: 'Por proyecto' },
                                 ]}
                                 styleRoot={{ width: '100px' }}
-                                style={{width: '100%'}}
+                                style={{ width: '100%' }}
                                 value={'0'}
                                 onChange={(e) => {
                                     /* onFormChange({
@@ -145,7 +146,7 @@ export const ProjectsTable = () => {
                             value: `${e.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -161,7 +162,7 @@ export const ProjectsTable = () => {
                             value: `${u.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -178,7 +179,7 @@ export const ProjectsTable = () => {
                             value: `${tr.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -195,7 +196,7 @@ export const ProjectsTable = () => {
                             value: `${tp.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -212,7 +213,7 @@ export const ProjectsTable = () => {
                             value: `${g.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -229,7 +230,7 @@ export const ProjectsTable = () => {
                             value: `${g.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -250,6 +251,26 @@ export const ProjectsTable = () => {
                         <ProjectPreview key={i} />
                     ))
                 }
+            </Grid>
+
+            <Grid xs={12} mt={4}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Button sx={{ textTransform: 'none' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
+                            <Typography fontWeight={600}>Página previa</Typography>
+                        </Box>
+                    </Button>
+
+                    <Typography sx={{ color: '#069cb1' }} fontWeight={600} >1 de 1</Typography>
+
+                    <Button sx={{ textTransform: 'none' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography fontWeight={600}>Siguiente página</Typography>
+                            <Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
+                        </Box>
+                    </Button>
+                </Box>
             </Grid>
         </Grid>
     )
