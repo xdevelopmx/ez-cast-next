@@ -2,20 +2,20 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
+	createTRPCRouter,
+	protectedProcedure,
+	publicProcedure,
 } from "~/server/api/trpc";
 import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
 
 export const ProyectosRouter = createTRPCRouter({
-    getAllByIdCazatalentos: publicProcedure
+	getAllByIdCazatalentos: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			const proyectos = await ctx.prisma.proyecto.findMany({
-				where: {id_cazatalentos: input.id},
+				where: { id_cazatalentos: input.id },
 				include: {
 					tipo: {
 						include: {
@@ -31,13 +31,13 @@ export const ProyectosRouter = createTRPCRouter({
 			});
 			return proyectos;
 		}
-	),
+		),
 	getById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
 			if (input <= 0) return null;
 			const proyecto = await ctx.prisma.proyecto.findUnique({
-				where: {id: input},
+				where: { id: input },
 				include: {
 					sindicato: {
 						include: {
@@ -54,7 +54,7 @@ export const ProyectosRouter = createTRPCRouter({
 			});
 			return proyecto;
 		}
-	),
+		),
 	deleteProyecto: protectedProcedure
 		.input(z.number())
 		.mutation(async ({ input, ctx }) => {
@@ -82,9 +82,9 @@ export const ProyectosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	updateEstadoProyecto: protectedProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id: z.number(),
 			estatus: z.string(),
 		}))
@@ -116,9 +116,9 @@ export const ProyectosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
-  	updateProyecto: protectedProcedure
-    	.input(z.object({ 
+		),
+	updateProyecto: protectedProcedure
+		.input(z.object({
 			id: z.number().nullish(),
 			sindicato: z.object({
 				id_sindicato: z.number().min(1),
@@ -165,7 +165,7 @@ export const ProyectosRouter = createTRPCRouter({
 						id: (input.id) ? input.id : 0
 					},
 					update: input.proyecto,
-					create: {...input.proyecto, id_cazatalentos: parseInt(ctx.session.user.id), estatus: 'Por Validar'},
+					create: { ...input.proyecto, id_cazatalentos: parseInt(ctx.session.user.id), estatus: 'Por Validar' },
 				});
 				if (!proyecto) {
 					throw new TRPCError({
@@ -180,8 +180,8 @@ export const ProyectosRouter = createTRPCRouter({
 					where: {
 						id_proyecto: proyecto.id
 					},
-					update: {...input.tipo_proyecto},
-					create: {...input.tipo_proyecto, id_proyecto: proyecto.id},
+					update: { ...input.tipo_proyecto },
+					create: { ...input.tipo_proyecto, id_proyecto: proyecto.id },
 				});
 				if (!tipo_por_proyecto) {
 					throw new TRPCError({
@@ -196,8 +196,8 @@ export const ProyectosRouter = createTRPCRouter({
 					where: {
 						id_proyecto: proyecto.id
 					},
-					update: {...input.sindicato},
-					create: {...input.sindicato, id_proyecto: proyecto.id},
+					update: { ...input.sindicato },
+					create: { ...input.sindicato, id_proyecto: proyecto.id },
 				});
 				if (!sindicato_por_proyecto) {
 					throw new TRPCError({
@@ -216,18 +216,18 @@ export const ProyectosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	deleteById: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			id: z.number(),
 		}))
 		.mutation(async ({ input, ctx }) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				const proyecto: Proyecto | null = await ctx.prisma.proyecto.findUnique({where: {id: input.id}});
+				const proyecto: Proyecto | null = await ctx.prisma.proyecto.findUnique({ where: { id: input.id } });
 				if (proyecto) {
 
-					const deleted_proyecto = await ctx.prisma.proyecto.delete({where: {id: proyecto.id}});
+					const deleted_proyecto = await ctx.prisma.proyecto.delete({ where: { id: proyecto.id } });
 					if (!deleted_proyecto) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
@@ -247,5 +247,45 @@ export const ProyectosRouter = createTRPCRouter({
 				});
 			}
 		}
-	),
+		),
+
+
+	getAll: publicProcedure
+		.input(z.object({
+			limit: z.number().min(1).max(100).nullish(),
+			cursor: z.number().nullish(),
+			take: z.number(),
+		}))
+		.query(async ({ input, ctx }) => {
+
+			const limit = input.limit ?? 50;
+			const { cursor, take } = input;
+
+			const proyectos = await ctx.prisma.proyecto.findMany({
+				take: take * (limit + 1),
+				include: {
+					tipo: {
+						include: {
+							tipo_proyecto: true
+						}
+					},
+					sindicato: {
+						include: {
+							sindicato: true
+						}
+					},
+					rol: {
+						include: {
+							tipo_rol: true
+						}
+					}
+				},
+				cursor: cursor ? { id: cursor } : undefined,
+				orderBy: {
+					id: 'asc',
+				},
+			});
+			return proyectos;
+		}
+		),
 });

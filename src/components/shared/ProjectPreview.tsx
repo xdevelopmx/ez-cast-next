@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties } from 'react'
 import { MContainer } from '../layout/MContainer'
+import { type ProyectoCompleto } from './ProjectsTable';
 
 interface PropsIndividualData {
     title: ReactNode;
@@ -27,7 +28,11 @@ const IndividualData: FC<PropsIndividualData> = ({ title, children, stylesContai
     )
 }
 
-export const ProjectPreview = () => {
+interface PropsProject {
+    proyecto: ProyectoCompleto
+}
+
+export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
     return (
         <Grid item container xs={12} sx={{ border: '2px solid #928F8F' }}>
             <Grid container item xs={12} sx={{ alignItems: 'flex-start' }}>
@@ -39,7 +44,7 @@ export const ProjectPreview = () => {
                 <Grid container item xs={8} sx={{ padding: '20px' }}>
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
-                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>Título proyecto</Typography>
+                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{proyecto.nombre} id:{proyecto.id}</Typography>
                         </Grid>
                         <Grid item xs={3}>
                             <Button
@@ -76,7 +81,7 @@ export const ProjectPreview = () => {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src="/assets/img/slider_modelo_01.png" width={30} height={30} alt="" />
 
-                                <Typography sx={{ fontSize: '1rem' }}>Proyecto por: Iván Águila Orea</Typography>
+                                <Typography sx={{ fontSize: '1rem' }}>Proyecto por: {proyecto.productor}</Typography>
 
                                 <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1 }}>
                                     <Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" />
@@ -90,7 +95,7 @@ export const ProjectPreview = () => {
                         <Grid xs={12}>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    Comercial web
+                                    {proyecto.tipo.tipo_proyecto.es}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 

@@ -6,12 +6,21 @@ import { MCheckboxGroup } from "./MCheckboxGroup"
 import { api } from "~/utils/api"
 import { ProjectPreview } from "./ProjectPreview"
 import Image from 'next/image'
+import type { CatalogoTipoProyectos, Proyecto, TipoProyectoPorProyecto, Roles } from "@prisma/client"
 
+export interface ProyectoCompleto extends Proyecto{
+    tipo: TipoProyectoPorProyecto & {
+        tipo_proyecto: CatalogoTipoProyectos
+    };
+    rol: Roles[];
+}
 
 export const ProjectsTable = () => {
 
     const [searchInput, setSearchInput] = useState('')
     const [autorellenar, setAutorellenar] = useState([false])
+    const [page, setPage] = useState(0)
+    const [directionPage, setDirectionPage] = useState(1)
 
     const estados = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false,
@@ -48,8 +57,15 @@ export const ProjectsTable = () => {
         refetchOnMount: false
     })
 
+    const proyectos = api.proyectos.getAll.useQuery({
+        limit: 100,
+        cursor: page,
+        take: directionPage
+    })
 
     const loading = estados.isFetching || uniones.isFetching || tipos_roles.isFetching || tipos_proyectos.isFetching || generos_rol.isFetching || apariencias_etnicas.isFetching || preferencias_pago.isFetching
+
+    console.log({ proyectos: proyectos.data });
 
     return (
         <Grid container mt={4}>
@@ -247,15 +263,22 @@ export const ProjectsTable = () => {
 
             <Grid xs={12} container gap={2} mt={4}>
                 {
-                    Array.from({ length: 2 }).map((_, i) => (
-                        <ProjectPreview key={i} />
-                    ))
+                    proyectos.data
+                        ? proyectos.data.map(proyecto => (
+                            <ProjectPreview key={proyecto.id} proyecto={proyecto as unknown as ProyectoCompleto} />
+                        ))
+                        : <h1>Loading...</h1>
                 }
             </Grid>
 
             <Grid xs={12} mt={4}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Button sx={{ textTransform: 'none' }}>
+                    <Button
+                        sx={{ textTransform: 'none' }}
+                        onClick={() => {
+                            setDirectionPage(-1)
+                            setPage(proyectos.data ? proyectos.data[0]?.id || 0 : 0)
+                        }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
                             <Typography fontWeight={600}>Página previa</Typography>
@@ -264,7 +287,12 @@ export const ProjectsTable = () => {
 
                     <Typography sx={{ color: '#069cb1' }} fontWeight={600} >1 de 1</Typography>
 
-                    <Button sx={{ textTransform: 'none' }}>
+                    <Button
+                        sx={{ textTransform: 'none' }}
+                        onClick={() => {
+                            setDirectionPage(1)
+                            setPage(proyectos.data ? proyectos.data[proyectos.data.length - 1]?.id || 0 : 0)
+                        }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Typography fontWeight={600}>Siguiente página</Typography>
                             <Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
