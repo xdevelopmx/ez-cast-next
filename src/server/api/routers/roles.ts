@@ -1721,6 +1721,12 @@ export const RolesRouter = createTRPCRouter({
 					},
 					selftape: true,
 					tipo_rol: true,
+
+					proyecto: {
+						include: {
+							tipo: true
+						}
+					}
 				}
 			});
 			return rol;

@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties, useState } from 'react'
 import { MContainer } from '../layout/MContainer'
-import { type ProyectoCompleto } from './ProjectsTable';
 import { AnimatePresence, motion } from 'framer-motion';
+import { RolCompletoPreview } from './RolesTable';
 
 interface PropsIndividualData {
     title: ReactNode;
@@ -29,11 +29,12 @@ const IndividualData: FC<PropsIndividualData> = ({ title, children, stylesContai
     )
 }
 
-interface PropsProject {
-    proyecto: ProyectoCompleto
+interface PropsRol {
+    rol: RolCompletoPreview;
 }
 
 const GridMotion = motion(Grid)
+const MotionImage = motion(Image)
 
 const containerVariants = {
     closed: {
@@ -48,7 +49,7 @@ const containerVariants = {
     }
 };
 
-export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
+export const RolPreview: FC<PropsRol> = ({ rol }) => {
 
     const [showPreview, setShowPreview] = useState(false)
 
@@ -60,10 +61,12 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                         <Image src="/assets/img/granja.jpg" style={{ objectFit: 'cover' }} fill alt="" />
                     </Box>
                 </Grid>
-                <Grid container item xs={8} sx={{ padding: '20px', cursor: 'pointer' }} onClick={() => setShowPreview(v => !v)}>
+                <Grid
+                    container item xs={8} sx={{ padding: '20px' }}
+                >
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
-                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{proyecto.nombre} id:{proyecto.id}</Typography>
+                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{rol.proyecto.nombre}</Typography>
                         </Grid>
                         <Grid item xs={3}>
                             <Button
@@ -100,7 +103,7 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src="/assets/img/slider_modelo_01.png" width={30} height={30} alt="" />
 
-                                <Typography sx={{ fontSize: '1rem' }}>Proyecto por: {proyecto.productor}</Typography>
+                                <Typography sx={{ fontSize: '1rem' }}>Proyecto por: {rol.proyecto.productor}</Typography>
 
                                 <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1 }}>
                                     <Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" />
@@ -114,7 +117,7 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                         <Grid xs={12}>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    {proyecto.tipo.tipo_proyecto.es}
+                                    { }
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 
@@ -127,6 +130,17 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                                     Sin unión
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                <Button onClick={() => setShowPreview(v => !v)}>
+                                    <MotionImage
+                                        src="/assets/img/iconos/arrow_d_blue.svg"
+                                        width={20}
+                                        height={20}
+                                        alt=""
+                                        animate={{
+                                            rotate: showPreview ? '180deg' : '0'
+                                        }}
+                                    />
+                                </Button>
                             </Box>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
@@ -156,6 +170,7 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                                 entesque ut purus at malesuada. Pellentesque at metus at felis egestas
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pell
                             </Typography>
+
                         </Grid>
                     </Grid>
                 </Grid>

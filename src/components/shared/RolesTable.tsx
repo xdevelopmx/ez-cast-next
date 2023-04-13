@@ -4,18 +4,15 @@ import { FormGroup } from "./FormGroup"
 import { useState } from "react"
 import { MCheckboxGroup } from "./MCheckboxGroup"
 import { api } from "~/utils/api"
-import { ProjectPreview } from "./ProjectPreview"
+import { RolPreview } from "./RolPreview"
 import Image from 'next/image'
-import type { CatalogoTipoProyectos, Proyecto, TipoProyectoPorProyecto, Roles } from "@prisma/client"
+import type { Proyecto, Roles } from "@prisma/client"
 
-export interface ProyectoCompleto extends Proyecto{
-    tipo: TipoProyectoPorProyecto & {
-        tipo_proyecto: CatalogoTipoProyectos
-    };
-    rol: Roles[];
+export interface RolCompletoPreview extends Roles {
+    proyecto: Proyecto;
 }
 
-export const ProjectsTable = () => {
+export const RolesTable = () => {
 
     const [searchInput, setSearchInput] = useState('')
     const [autorellenar, setAutorellenar] = useState([false])
@@ -57,15 +54,11 @@ export const ProjectsTable = () => {
         refetchOnMount: false
     })
 
-    const proyectos = api.proyectos.getAll.useQuery({
-        limit: 100,
-        cursor: page,
-        take: directionPage
-    })
+    const roles = api.roles.getAllComplete.useQuery(undefined)
 
     const loading = estados.isFetching || uniones.isFetching || tipos_roles.isFetching || tipos_proyectos.isFetching || generos_rol.isFetching || apariencias_etnicas.isFetching || preferencias_pago.isFetching
 
-    console.log({ proyectos: proyectos.data });
+    console.log({ roles: roles.data });
 
     return (
         <Grid container mt={4}>
@@ -263,9 +256,9 @@ export const ProjectsTable = () => {
 
             <Grid xs={12} container gap={2} mt={4}>
                 {
-                    proyectos.data
-                        ? proyectos.data.map(proyecto => (
-                            <ProjectPreview key={proyecto.id} proyecto={proyecto as unknown as ProyectoCompleto} />
+                    roles.data
+                        ? roles.data.map(rol => (
+                            <RolPreview key={rol.id} rol={rol as unknown as RolCompletoPreview} />
                         ))
                         : <h1>Loading...</h1>
                 }
@@ -276,8 +269,8 @@ export const ProjectsTable = () => {
                     <Button
                         sx={{ textTransform: 'none' }}
                         onClick={() => {
-                            setDirectionPage(-1)
-                            setPage(proyectos.data ? proyectos.data[0]?.id || 0 : 0)
+                            /* setDirectionPage(-1)
+                            setPage(proyectos.data ? proyectos.data[0]?.id || 0 : 0) */
                         }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
@@ -290,8 +283,8 @@ export const ProjectsTable = () => {
                     <Button
                         sx={{ textTransform: 'none' }}
                         onClick={() => {
-                            setDirectionPage(1)
-                            setPage(proyectos.data ? proyectos.data[proyectos.data.length - 1]?.id || 0 : 0)
+                            /* setDirectionPage(1)
+                            setPage(proyectos.data ? proyectos.data[proyectos.data.length - 1]?.id || 0 : 0) */
                         }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Typography fontWeight={600}>Siguiente página</Typography>
