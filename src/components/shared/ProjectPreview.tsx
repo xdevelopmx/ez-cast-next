@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
-import React, { type ReactNode, type FC, type CSSProperties } from 'react'
+import React, { type ReactNode, type FC, type CSSProperties, useState } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { type ProyectoCompleto } from './ProjectsTable';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface PropsIndividualData {
     title: ReactNode;
@@ -32,16 +33,34 @@ interface PropsProject {
     proyecto: ProyectoCompleto
 }
 
+const GridMotion = motion(Grid)
+
+const containerVariants = {
+    closed: {
+        height: 0,
+        opacity: 0,
+        padding: 0
+    },
+    open: {
+        height: "auto",
+        opacity: 1,
+        padding: '20px'
+    }
+};
+
 export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
+
+    const [showPreview, setShowPreview] = useState(false)
+
     return (
         <Grid item container xs={12} sx={{ border: '2px solid #928F8F' }}>
-            <Grid container item xs={12} sx={{ alignItems: 'flex-start' }}>
+            <GridMotion container item xs={12} sx={{ alignItems: 'flex-start' }}>
                 <Grid item xs={4}>
                     <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/12' }}>
                         <Image src="/assets/img/granja.jpg" style={{ objectFit: 'cover' }} fill alt="" />
                     </Box>
                 </Grid>
-                <Grid container item xs={8} sx={{ padding: '20px' }}>
+                <Grid container item xs={8} sx={{ padding: '20px', cursor: 'pointer' }} onClick={() => setShowPreview(v => !v)}>
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
                             <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{proyecto.nombre} id:{proyecto.id}</Typography>
@@ -140,8 +159,14 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
-            <Grid item container xs={12} sx={{ padding: '20px' }}>
+            </GridMotion>
+            <GridMotion
+                item container xs={12}
+                variants={containerVariants}
+                initial="closed"
+                animate={showPreview ? "open" : "closed"}
+                transition={{ duration: 0.3 }}
+            >
 
                 <IndividualData title={'Habilidades:'}>
                     <Typography component={'span'} sx={{ color: '#928F8F' }}>Danza</Typography>
@@ -198,7 +223,7 @@ export const ProjectPreview: FC<PropsProject> = ({ proyecto }) => {
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia1.jpg</Typography>
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia2.jpg</Typography>
                 </IndividualData>
-            </Grid>
+            </GridMotion>
         </Grid>
     )
 }
