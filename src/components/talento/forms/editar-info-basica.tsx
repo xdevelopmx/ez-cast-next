@@ -25,6 +25,7 @@ const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
 
+    console.log('TALENTO STATE', state);
     const uniones = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
@@ -210,7 +211,21 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                 <MotionDiv show={(state) ? state.edad < 18 : false} animation='fade'>
                     <DragNDrop
                         id='id-drag-n-drop-carta-responsiva'
-                        show_download_url={undefined}
+                        max_file_size={5120}
+                        download_url={state.files.urls.carta_responsiva}
+                        onDownloadUrlRemove={(url) => {
+                            if (url === state.files.urls.carta_responsiva) {
+                                onFormChange({ 
+                                    files: { 
+                                        ...state.files, 
+                                        urls: {
+                                            ...state.files.urls,
+                                            carta_responsiva: undefined
+                                        }
+                                    } 
+                                })
+                            }
+                        }}
                         label='Carta Responsiva'
                         files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
@@ -302,6 +317,21 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                 <DragNDrop
                     id='id-drag-n-drop-cv'
                     label='Subir CV'
+                    max_file_size={5120}
+                    download_url={state.files.urls.cv}
+                    onDownloadUrlRemove={(url: string) => {
+                        if (url === state.files.urls.cv) {
+                            onFormChange({ 
+                                files: { 
+                                    ...state.files, 
+                                    urls: {
+                                        ...state.files.urls,
+                                        cv: undefined
+                                    }
+                                } 
+                            })
+                        }
+                    }}
                     tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'orange', placement: 'top' }}
                     height={100}
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}

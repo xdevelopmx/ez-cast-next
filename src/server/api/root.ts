@@ -7,10 +7,23 @@ import { TalentosRouter } from "./routers/talentos";
 import { CazatalentosRouter } from "./routers/cazatalentos";
 
 export type Archivo = {
+  id?: number,
   base64: string,
   name: string,
-  file: File
+  file: File,
+  url?: string
 }
+
+export type NewMedia = {
+  id?: number,
+  nombre: string,
+  type: string,
+  url: string,
+  clave: string,
+  referencia: string,
+  identificador: string
+}
+
 
 /**
  * This is the primary router for your server.

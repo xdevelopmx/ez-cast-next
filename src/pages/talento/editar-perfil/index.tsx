@@ -5,7 +5,7 @@ import { MainLayout } from "~/components";
 import { MStepper } from "~/components/shared/MStepper";
 import { useEffect, useMemo, useReducer } from "react";
 import { EditarActivosTalento, EditarCreditosTalento, EditarFiltrosAparenciasTalento, EditarInfoBasicaTalento, EditarMediaTalento, EditarPreferenciaRolYCompensacionTalento } from "~/components/talento";
-import { type Archivo } from "~/server/api/root";
+import { NewMedia, type Archivo } from "~/server/api/root";
 import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilidades";
 import { getSession } from "next-auth/react";
 import { type GetServerSideProps } from "next/types";
@@ -16,6 +16,8 @@ import useNotify from "~/hooks/useNotify";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { useRouter } from "next/router";
 import { FileManagerFront } from "~/utils/file-manager-front";
+import { TalentosRouter } from "~/server/api/routers/talentos";
+import { Media } from "@prisma/client";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -38,6 +40,10 @@ export type TalentoFormInfoGral = {
     files: {
         carta_responsiva?: Archivo,
         cv?: Archivo,
+        urls: {
+            carta_responsiva?: string,
+            cv?: string,
+        }
     },
     redes_sociales: { [nombre: string]: string }
 }
@@ -45,7 +51,7 @@ export type TalentoFormInfoGral = {
 export type TalentoFormMedios = {
     fotos: Archivo[],
     videos: Archivo[],
-    audios: Archivo[]
+    audios: Archivo[],
 }
 
 export type TalentoFormCreditos = {
@@ -242,12 +248,14 @@ const initialState: TalentoForm = {
         altura: 170,
         biografia: '',
         redes_sociales: {},
-        files: {}
+        files: {
+            urls: {}
+        }
     },
     medios: {
         fotos: [],
         videos: [],
-        audios: []
+        audios: [],
     },
     creditos: {
         mostrar_anio_en_perfil: false,
@@ -394,6 +402,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         refetchOnWindowFocus: false
     });
 
+    console.log('TALENTO DATA', talento.data);
+
     const saveInfoGralMedia = api.talentos.saveInfoGralMedia.useMutation({
         onSuccess(input) {
             saveInfoGral.mutate({
@@ -510,6 +520,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }
         saveInfoGralMedia.mutate({
+            cv_url: state.info_gral.files.urls.cv,
             cv: (!state.info_gral.files.cv || !urls.cv) ? null : {
                 nombre: 'cv',
                 type: state.info_gral.files.cv.file.type,
@@ -518,6 +529,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 referencia: `talento-info-gral`,
                 identificador: `talento-cv`
             },
+            carta_responsiva_url: state.info_gral.files.urls.carta_responsiva,
             carta_responsiva: (!state.info_gral.files.carta_responsiva || !urls.carta) ? null : {
                 nombre: 'carta',
                 type: state.info_gral.files.carta_responsiva.file.type,
@@ -526,6 +538,150 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 referencia: `talento-info-gral`,
                 identificador: `talento-carta-responsiva`
             },
+        })
+    }
+
+    const initMediaFiles = async (foto_perfil: Media | undefined, fotos: Media[], audios: Media[], videos: Media[]) => {
+        const fotos_talento: Archivo[] = [];
+        if (foto_perfil) {
+            const foto_file = await FileManagerFront.convertUrlToFile(foto_perfil.url, foto_perfil.type);
+            const foto_file_base_64 = await FileManagerFront.convertFileToBase64(foto_file);
+            fotos_talento.push({
+                id: foto_perfil.id,
+                base64: foto_file_base_64,
+                name: foto_perfil.nombre,
+                file: foto_file,
+                url: foto_perfil.url
+            })
+        }
+        const fotos_perfil = await Promise.all(fotos.map(async (f) => {
+            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.type);
+            const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
+            return {
+                id: f.id,
+                base64: f_file_base_64,
+                name: f.nombre,
+                file: f_file,
+                url: f.url
+            }
+        }));
+        const audios_perfil = await Promise.all(audios.map(async (f) => {
+            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.type);
+            const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
+            return {
+                id: f.id,
+                base64: f_file_base_64,
+                name: f.nombre,
+                file: f_file,
+                url: f.url
+            }
+        }));
+        const videos_perfil = await Promise.all(videos.map(async (f) => {
+            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.type);
+            const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
+            return {
+                id: f.id,
+                base64: f_file_base_64,
+                name: f.nombre,
+                file: f_file,
+                url: f.url
+            }
+        }));
+        dispatch({ type: 'update-medios', value: {
+            ...state.medios,
+            fotos: fotos_talento.concat(fotos_perfil),
+            audios: audios_perfil,
+            videos: videos_perfil
+        }})
+    }
+
+    const handleMedia = async () => {
+        const media: {fotos: NewMedia[], videos: NewMedia[], audios: NewMedia[] } = { fotos: [], videos: [], audios: [] };
+        if (state.medios.fotos.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(state.medios.fotos.map((f, i) => {
+                return {path: `talentos/${user.id}/fotos-perfil`, name: `${(i === 0) ? 'foto-perfil' : `foto-${i}`}`, file: f.file, base64: f.base64}
+            }));
+            if (urls_saved.length > 0) {
+                urls_saved.forEach((res) => {
+                    Object.entries(res).forEach((e, i) => {
+                        const url = e[1].url;  
+                        const type = state.medios.fotos[i]?.file.type;
+                        const original_name = state.medios.fotos[i]?.file.name;
+                        if (url) {
+                            media.fotos.push({
+                                nombre: e[0],
+                                type: (type) ? type : '',
+                                url: (url) ? url : '',
+                                clave: `talentos/${user.id}/fotos-perfil/${e[0]}`,
+                                referencia: `FOTOS-PERFIL-TALENTO-${user.id}`,
+                                identificador: `${e[0]}`
+                            })  
+                        } else {
+                            notify('error', `${(original_name) ? `La imagen ${original_name} no se pudo subir` : 'Una imagen no se pudo subir'}`);
+                        }
+                    })
+                });
+            }
+        }
+
+        if (state.medios.videos.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(state.medios.videos.map((f, i) => {
+                return {path: `talentos/${user.id}/videos`, name: `video-${i}`, file: f.file, base64: f.base64}
+            }));
+            if (urls_saved.length > 0) {
+                urls_saved.forEach((res) => {
+                    Object.entries(res).forEach((e, i) => {
+                        const url = e[1].url;  
+                        const type = state.medios.videos[i]?.file.type;
+                        const original_name = state.medios.fotos[i]?.file.name;
+                        if (url) {
+                            media.videos.push({
+                                nombre: e[0],
+                                type: (type) ? type : '',
+                                url: (url) ? url : '',
+                                clave: `talentos/${user.id}/videos/${e[0]}`,
+                                referencia: `VIDEOS-TALENTO-${user.id}`,
+                                identificador: `${e[0]}`
+                            })  
+                        } else {
+                            notify('error', `${(original_name) ? `El video ${original_name} no se pudo subir` : 'Un video no se pudo subir'}`);
+                        }
+                    })
+                });
+            }
+        }
+
+        if (state.medios.audios.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(state.medios.audios.map((f, i) => {
+                return {path: `talentos/${user.id}/audios`, name: `audio-${i}`, file: f.file, base64: f.base64}
+            }));
+            if (urls_saved.length > 0) {
+                urls_saved.forEach((res) => {
+                    Object.entries(res).forEach((e, i) => {
+                        const url = e[1].url;  
+                        const type = state.medios.audios[i]?.file.type;
+                        const original_name = state.medios.fotos[i]?.file.name;
+                        if (url) {
+                            media.audios.push({
+                                nombre: e[0],
+                                type: (type) ? type : '',
+                                url: (url) ? url : '',
+                                clave: `talentos/${user.id}/audios/${e[0]}`,
+                                referencia: `AUDIOS-TALENTO-${user.id}`,
+                                identificador: `${e[0]}`
+                            })  
+                        } else {
+                            notify('error', `${(original_name) ? `El audio ${original_name} no se pudo subir` : 'Un audio no se pudo subir'}`);
+                        }
+                    })
+                });
+            }
+        }
+
+        saveMedios.mutate({
+            fotos: media.fotos,
+            videos: media.videos,
+            audios: media.audios
         })
     }
 
@@ -562,9 +718,21 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         files: {
                             carta_responsiva: null,
                             cv: null,
+                            urls: {
+                                carta_responsiva: talento.data.representante?.media?.url,
+                                cv: talento.data.info_basica.media?.url,
+                            }
                         },
                     }
                 });
+            }
+
+            if (talento.data.media) {
+                const foto_perfil = talento.data.media.filter(m => m.media.nombre === 'foto-perfil')[0];
+                const fotos = talento.data.media.filter(m => m.media.type.includes('image') && m.media.nombre !== 'foto-perfil').map(a => a.media);
+                const audios = talento.data.media.filter(m => m.media.type.includes('audio')).map(a => a.media);
+                const videos = talento.data.media.filter(m => m.media.type.includes('video')).map(a => a.media);
+                void initMediaFiles((foto_perfil) ? foto_perfil.media : undefined, fotos, audios, videos);
             }
 
             if (talento.data.creditos) {
@@ -810,12 +978,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                 }
 
                                 case 2: {
-                                    saveMedios.mutate({
-                                        fotos: state.medios.fotos.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: (i === 0) ? 'FOTO_PERFIL' : `FOTO_${i}` } }),
-                                        audios: state.medios.audios.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: `AUDIO_${i}` } }),
-                                        videos: state.medios.videos.map((a, i) => { return { nombre: a.file.name, base64: a.base64, identificador: `VIDEO_${i}` } })
-                                    })
-
+                                    void handleMedia();
                                     break;
                                 }
 

@@ -68,11 +68,12 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                     />
                     <DragNDrop
                         id='id-drag-n-drop-fotos'
-                        filetypes={['PNG', 'JPG']}
+                        filetypes={['PNG', 'JPG', 'JPEG']}
                         max_files={5}
                         maxWidth={'80%'}
                         files={state.fotos}
                         height={'130px'}
+                        max_file_size={5120}
                         hide_selected
                         text_button='Añadir foto'
                         onChange={(files: File[]) => {
@@ -126,6 +127,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 files={state.videos}
                                 filetypes={['MP4', 'MOV']}
                                 max_files={3}
+                                max_file_size={5120}
                                 assign_selected_files_height
                                 text_button='Añadir Video'
                                 onChange={(files: File[]) => {
@@ -161,6 +163,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 files={state.audios}
                                 filetypes={['MP3', 'WAV']}
                                 max_files={3}
+                                max_file_size={5120}
                                 assign_selected_files_height
                                 text_button='Añadir Audio Clip'
                                 onChange={(files: File[]) => {

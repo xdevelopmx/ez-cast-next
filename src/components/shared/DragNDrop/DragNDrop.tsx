@@ -8,8 +8,9 @@ import classes from './DragNDrop.module.css';
 import MotionDiv from "../../layout/MotionDiv";
 import { type Archivo } from "~/server/api/root";
 import { Tag } from "../Tag";
-import { QuestionMark } from "@mui/icons-material";
+import { Close, QuestionMark } from "@mui/icons-material";
 import { MTooltip } from "../MTooltip";
+import { MContainer } from "~/components/layout/MContainer";
 
 const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
@@ -21,11 +22,12 @@ interface Props {
     tooltip?: { color: 'blue' | 'orange', text: string, placement: 'top-start' | 'top' | 'top-end' | 'left-start' | 'left' | 'left-end' | 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom' | 'bottom-end' },
     filetypes: string[],
     max_files?: number,
+    max_file_size?: number,
     hide_selected?: boolean,
     assign_selected_files_height?: boolean,
     onChange: (files: File[]) => void,
-    show_download_url?: string,
-
+    download_url?: string,
+    onDownloadUrlRemove?: (url: string) => void,
     text_label_download?: string,
     maxWidth?: string | number,
     height?: string | number,
@@ -38,7 +40,7 @@ interface Props {
 
 function DragNDrop(props: Props) {
     const [files, setFiles] = useState<Map<string, File>>(new Map());
-    const [error, setError] = useState<{ type: 'MAX_FILES_REACHED', message: string } | null>(null);
+    const [error, setError] = useState<{ type: 'MAX_FILES_REACHED' | 'MAX_SIZE_REACHED', message: string } | null>(null);
     const hide_error_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
     useEffect(() => {
         if (hide_error_time_ref.current) {
@@ -68,7 +70,14 @@ function DragNDrop(props: Props) {
         const current_files_size = files.size + selected_files.length;
         if (current_files_size <= max_files) {
             setError(null);
-            Object.entries(selected_files).forEach(f => {
+            Object.entries(selected_files).every(f => {
+                const file_size = Math.round((f[1].size / 1024));
+        
+                if (props.max_file_size && file_size > props.max_file_size) {
+                    const max_size = props.max_file_size; 
+                    setError({ type: 'MAX_SIZE_REACHED', message: `El archivo super el limite maximo de espacio de ${(max_size) ? max_size : 0} kb`});
+                    return false;
+                }
                 files.set(`${f[1].name}-${f[1].size}-${f[1].type}`, f[1]);
 
                 setFiles(new Map(files));
@@ -107,22 +116,36 @@ function DragNDrop(props: Props) {
             animation="fade"
         >
             <>
-                {/* {props.show_download_url &&
-                    <Button
-                        size='small'
-                        className='font-weight-bold color_a'
-                        onClick={() => {
-                            window.open(props.show_download_url)
-                        }} variant="text"
-                        sx={{ textTransform: 'capitalize', textDecoration: 'underline', '&:hover': { textDecoration: 'underline' } }}>
-                        {props.text_label_download || 'Descargar Archivo'}
-                    </Button>
-                } */}
+                {props.download_url &&
+                    <MContainer direction="horizontal" justify='space-between' styles={{width: '100%'}}>
+                        <Button
+                            size='small'
+                            className='font-weight-bold color_a'
+                            onClick={() => {
+                                window.open(props.download_url)
+                            }} variant="text"
+                            sx={{ textTransform: 'capitalize', textDecoration: 'underline', '&:hover': { textDecoration: 'underline' } }}>
+                            {props.text_label_download || 'Descargar Archivo'}
+                        </Button>
+                        {props.onDownloadUrlRemove &&
+                            <IconButton
+                                aria-label="eliminar archivo"
+                                size='small'
+                                onClick={() => {
+                                    if (props.onDownloadUrlRemove && props.download_url) {
+                                        props.onDownloadUrlRemove(props.download_url);
+                                    }
+                                }}
+                            >
+                                <Close style={{color: '#069cb1'}} />
+                            </IconButton>
+                        }
+                    </MContainer>
+                }
                 <FileUploader classes={`root ${props.id}`} multiple handleChange={handleChange} name="file" types={props.filetypes} >
                     <div className="form-group">
                         <MotionDiv show={error != null} animation="fade">
                             <Alert
-                                className={classes['alert']}
                                 icon={false}
                                 variant='filled'
                                 color='error'>{(error) ? error.message : ''}

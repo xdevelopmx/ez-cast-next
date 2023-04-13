@@ -257,6 +257,7 @@ export const TalentosRouter = createTRPCRouter({
 					info_basica: {
 						include: {
 							union: true,
+							media: true
 						}
 					},
 					creditos: {
@@ -265,7 +266,11 @@ export const TalentosRouter = createTRPCRouter({
 						}
 					},
 					habilidades: true,
-					representante: true,
+					representante: {
+						include: {
+							media: true
+						}
+					},
 					redes_sociales: true,
 					media: {
 						include: {
@@ -417,6 +422,7 @@ export const TalentosRouter = createTRPCRouter({
 	),
 	saveInfoGralMedia: protectedProcedure
     	.input(z.object({ 
+			cv_url: z.string().nullish(),
 			cv: z.object({
 				nombre: z.string(),
 				type: z.string(),
@@ -425,6 +431,7 @@ export const TalentosRouter = createTRPCRouter({
 				referencia: z.string(),
 				identificador: z.string()
 			}).nullish(),
+			carta_responsiva_url: z.string().nullish(),
 			carta_responsiva: z.object({
 				nombre: z.string(),
 				type: z.string(),
@@ -446,30 +453,32 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				});
 
-				if (info_gral && info_gral.id_media_cv) {
-					// eliminamos el archivo que ya existe en s3
-					const media_cv = await ctx.prisma.media.findFirst({
-						where: {
-							id: info_gral.id_media_cv
-						}
-					})
-
-					if (media_cv) {
+				if (input.cv) {
+					if (info_gral && info_gral.id_media_cv) {
 						await ctx.prisma.media.delete({
 							where: {
-								id: media_cv.id
+								id: info_gral.id_media_cv
 							}
 						})
 					}
-				}
-
-				if (input.cv) {
 					const media_cv_saved = await ctx.prisma.media.create({
 						data: input.cv
 					});
 	
 					if (media_cv_saved) {
 						saved_files.id_cv = media_cv_saved.id;
+					}
+				} else {
+					if (info_gral && info_gral.id_media_cv) {
+						if (!input.cv_url) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: info_gral.id_media_cv
+								}
+							})
+						} else {
+							saved_files.id_cv = info_gral.id_media_cv;
+						}
 					}
 				}
 
@@ -479,30 +488,32 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				})
 
-				if (representante && representante.id_media_carta_responsiva) {
-					// eliminamos la carta responsiva que ya existia
-					const media_carta_representativa = await ctx.prisma.media.findFirst({
-						where: {
-							id: representante.id_media_carta_responsiva
-						}
-					})
-
-					if (media_carta_representativa) {
+				if (input.carta_responsiva) {
+					if (representante && representante.id_media_carta_responsiva) {
 						await ctx.prisma.media.delete({
 							where: {
-								id: media_carta_representativa.id
+								id: representante.id_media_carta_responsiva
 							}
 						})
 					}
-				}
-
-				if (input.carta_responsiva) {
 					const media_carta_saved = await ctx.prisma.media.create({
 						data: input.carta_responsiva
-					})
+					});
 	
 					if (media_carta_saved) {
 						saved_files.id_carta_responsiva = media_carta_saved.id;
+					}
+				} else {
+					if (representante && representante.id_media_carta_responsiva) {
+						if (!input.carta_responsiva_url) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: representante.id_media_carta_responsiva
+								}
+							})
+						} else {
+							saved_files.id_carta_responsiva = representante.id_media_carta_responsiva;
+						}
 					}
 				}
 
@@ -648,13 +659,13 @@ export const TalentosRouter = createTRPCRouter({
 			}).max(500),
 			media: z.object({
 				id_cv: z.number().nullish(),
-				id_carta_representante: z.number().nullish()
+				id_carta_responsiva: z.number().nullish()
 			}),
 			representante: z.object({
 				nombre: z.string().min(2),
 				email: z.string().email(),
 				agencia: z.string().min(2),
-				telefono: z.string().min(10).max(10)
+				telefono: z.string().min(10).max(12)
 			}).nullish(),
 			redes_sociales: z.array(z.object({
 				nombre: z.string(),
@@ -675,7 +686,7 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 
-				if (input.edad < 18 && !input.media.id_carta_representante) {
+				if (input.edad < 18 && !input.media.id_carta_responsiva) {
 					throw new TRPCError({
 						code: 'PRECONDITION_FAILED',
 						message: 'Si se es menor de edad la carta responsiva y el representante son obligatorios',
@@ -796,7 +807,7 @@ export const TalentosRouter = createTRPCRouter({
 								id_talento: parseInt(user.id)
 							},
 							update: {
-								id_media_carta_responsiva: input.media.id_carta_representante,
+								id_media_carta_responsiva: input.media.id_carta_responsiva,
 								nombre: input.representante.nombre,
 								agencia: input.representante.agencia,
 								email: input.representante.email,
@@ -807,7 +818,7 @@ export const TalentosRouter = createTRPCRouter({
 								agencia: input.representante.agencia,
 								email: input.representante.email,
 								telefono: input.representante.telefono,
-								id_media_carta_responsiva: input.media.id_carta_representante,
+								id_media_carta_responsiva: input.media.id_carta_responsiva,
 								id_talento: parseInt(user.id)
 							},
 						});
@@ -851,44 +862,229 @@ export const TalentosRouter = createTRPCRouter({
 		}
 	),
 	saveMedios: protectedProcedure
-    	.input(z.object({ 
-			fotos: z.array(
-				z.object({
-					base64: z.string(),
-					nombre: z.string(),
-					identificador: z.string(),
-				}
-			)),
-			videos: z.array(
-				z.object({
-					base64: z.string(),
-					nombre: z.string(),
-					identificador: z.string(),
-				}
-			)),
-			audios: z.array(
-				z.object({
-					base64: z.string(),
-					nombre: z.string(),
-					identificador: z.string(),
-				}
-			)),
+		.input(z.object({ 
+			fotos: z.array(z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			})),
+			videos: z.array(z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			})),
+			audios: z.array(z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			})),
 		}))
-		.mutation( ({ input, ctx }) => {
-			console.log('INPUT SAVE MEDIOS: ', input)
+		.mutation(async ({ input, ctx }) => {
+			console.log('INPUT saveMedios', input)
 			const user = ctx.session.user; 
+			const saved_files: {ids_fotos: number[], ids_videos: number[], ids_audios: number[]} = {ids_fotos: [], ids_videos: [], ids_audios: []};
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				if (input.fotos.length === 0) {
-					throw new TRPCError({
-						code: 'PRECONDITION_FAILED',
-						message: 'Se debe enviar al menos una foto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
+				// obtenemos todas las imagenes de perfil del talento 
+				const fotos = await ctx.prisma.mediaPorTalentos.findMany({
+					where: {
+						media: {
+							referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
+						}
+					},
+					include: {
+						media: true
+					}
+				})
+
+				// si hay fotos en almacenadas en la bd
+				if (fotos.length > 0) {
+					const ids_fotos_to_be_deleted = fotos.map((foto) => {
+						if (input.fotos.some(f => f.id && f.id === foto.id_media)) {
+							// si la foto que se esta agregando tiene un id entonces significa que ya ha sido guardado anteriormente
+							// por lo que nos lo brincamos en la parte de eliminar y guardamos el id
+							saved_files.ids_fotos.push(foto.id_media);
+							return 0;
+						}
+						return foto.id;
+					}).filter(f => f > 0);
+
+					// si hay fotos que eliminar entonces entra a eliminar todos los ids que no se encuentren en las nuevas fotos
+					if (ids_fotos_to_be_deleted.length > 0) {
+						await ctx.prisma.media.deleteMany({
+							where: {
+								id: {
+									in: ids_fotos_to_be_deleted
+								}
+							}
+						})
+					}
 				}
+
+				// si se agregaron fotos y no estan ya guardadas anteriorimente entonces guardamos
+				const fotos_to_save = input.fotos.filter(e => {
+					return e.id == null
+				})
 				
-			
-				return true;
+				const media_fotos_saved = await Promise.all(fotos_to_save.map(async (f) => {
+					const saved = await ctx.prisma.media.create({
+						data: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						}
+					});
+					return saved.id;
+				}));
+
+				if (media_fotos_saved.length > 0) {
+					saved_files.ids_fotos.push(...media_fotos_saved);
+				}
+
+				const videos = await ctx.prisma.mediaPorTalentos.findMany({
+					where: {
+						media: {
+							referencia: `VIDEOS-TALENTO-${user.id}`
+						}
+					},
+					include: {
+						media: true
+					}
+				})
+
+				if (videos.length > 0) {
+					const ids_videos_to_be_deleted = videos.map((video) => {
+						if (input.videos.some(f => f.id && f.id === video.id_media)) {
+							saved_files.ids_videos.push(video.id_media);
+							return 0;
+						}
+						return video.id;
+					}).filter(f => f > 0);
+
+					if (ids_videos_to_be_deleted.length > 0) {
+						await ctx.prisma.media.deleteMany({
+							where: {
+								id: {
+									in: ids_videos_to_be_deleted
+								}
+							}
+						})
+					}
+				}
+
+				// si se agregaron videos y no estan ya guardadas anteriorimente entonces guardamos
+				const videos_to_save = input.videos.filter(e => {
+					return e.id == null
+				})
+				
+				const media_videos_saved = await Promise.all(videos_to_save.map(async (v) => {
+					const saved = await ctx.prisma.media.create({
+						data: {
+							nombre: v.nombre,
+							type: v.type,
+							url: v.url,
+							clave: v.clave,
+							referencia: v.referencia,
+							identificador: v.identificador
+						}
+					});
+					return saved.id;
+				}));
+
+				if (media_videos_saved.length > 0) {
+					saved_files.ids_videos.push(...media_videos_saved);
+				}
+
+				const audios = await ctx.prisma.mediaPorTalentos.findMany({
+					where: {
+						media: {
+							referencia: `AUDIOS-TALENTO-${user.id}`
+						}
+					},
+					include: {
+						media: true
+					}
+				})
+
+				if (audios.length > 0) {
+					const ids_audios_to_be_deleted = audios.map((audio) => {
+						if (input.audios.some(f => f.id && f.id === audio.id_media)) {
+							saved_files.ids_audios.push(audio.id_media);
+							return 0;
+						}
+						return audio.id;
+					}).filter(f => f > 0);
+
+					if (ids_audios_to_be_deleted.length > 0) {
+						await ctx.prisma.media.deleteMany({
+							where: {
+								id: {
+									in: ids_audios_to_be_deleted
+								}
+							}
+						})
+					}
+				}
+
+				// si se agregaron audios y no estan ya guardadas anteriorimente entonces guardamos
+				const audios_to_save = input.audios.filter(e => {
+					return e.id == null
+				})
+				
+				const media_audios_saved = await Promise.all(audios_to_save.map(async (a) => {
+					const saved = await ctx.prisma.media.create({
+						data: {
+							nombre: a.nombre,
+							type: a.type,
+							url: a.url,
+							clave: a.clave,
+							referencia: a.referencia,
+							identificador: a.identificador
+						}
+					});
+					return saved.id;
+				}));
+
+				if (media_audios_saved.length > 0) {
+					saved_files.ids_audios.push(...media_audios_saved);
+				}
+
+				if (saved_files.ids_fotos.length > 0) {
+					const fotos_saved = await ctx.prisma.mediaPorTalentos.createMany({
+						data: saved_files.ids_fotos.map(id => { return { id_media: id, id_talento: parseInt(user.id)}})
+					})
+					console.log(fotos_saved);
+				}
+
+				if (saved_files.ids_videos.length > 0) {
+					const videos_saved = await ctx.prisma.mediaPorTalentos.createMany({
+						data: saved_files.ids_videos.map(id => { return { id_media: id, id_talento: parseInt(user.id)}})
+					})
+					console.log(videos_saved);
+				}
+
+				if (saved_files.ids_audios.length > 0) {
+					const audios_saved = await ctx.prisma.mediaPorTalentos.createMany({
+						data: saved_files.ids_audios.map(id => { return { id_media: id, id_talento: parseInt(user.id)}})
+					})
+					console.log(audios_saved);
+				}
+
+				return saved_files;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',

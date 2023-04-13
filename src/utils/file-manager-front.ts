@@ -17,6 +17,9 @@ export const FileManagerFront = {
         const file = new File([blob], "File name",{ type: type })
         return file;
     },
+    createDummyFile: (name: string, type: string) => {
+        return new File([], name,{ type: type });
+    },
     saveFiles: async (to_be_saved: {path: string, file: File, base64: string, name: string}[]) => {            
         const result = await Promise.all(to_be_saved.map(async (file) => {
             const response: {[name: string]: {presigned_url: string | null, url: string | null, error: string | null}} = {};
