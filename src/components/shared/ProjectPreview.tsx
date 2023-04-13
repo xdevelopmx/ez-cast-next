@@ -1,7 +1,31 @@
 import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
-import React from 'react'
+import React, { type ReactNode, type FC, type CSSProperties } from 'react'
 import { MContainer } from '../layout/MContainer'
+
+interface PropsIndividualData {
+    title: ReactNode;
+    children: ReactNode;
+    stylesContainerData?: CSSProperties;
+}
+
+const IndividualData: FC<PropsIndividualData> = ({ title, children, stylesContainerData = {} }) => {
+    return (
+        <>
+            <Grid item xs={12} mt={1}>
+                <Divider />
+            </Grid>
+            <Grid item container xs={12}>
+                <MContainer direction='horizontal'>
+                    <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>{title}</Typography>
+                    <MContainer direction='horizontal' styles={stylesContainerData}>
+                        {children}
+                    </MContainer>
+                </MContainer>
+            </Grid>
+        </>
+    )
+}
 
 export const ProjectPreview = () => {
     return (
@@ -113,61 +137,62 @@ export const ProjectPreview = () => {
                 </Grid>
             </Grid>
             <Grid item container xs={12} sx={{ padding: '20px' }}>
-                <Grid item xs={12} mt={1}>
-                    <Divider />
-                </Grid>
-                <Grid item container xs={12}>
-                    <MContainer direction='horizontal'>
-                        <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Habilidades:</Typography>
-                        <MContainer direction='horizontal'>
 
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>Danza</Typography>
-                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                <IndividualData title={'Habilidades:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Danza</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Canto</Typography>
+                </IndividualData>
 
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>Canto</Typography>
+                <IndividualData title={'Desnudos o situaciones sexuales:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Si desnudos</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>No situación sexual</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Descripción del tipo de situación</Typography>
+                </IndividualData>
 
-                        </MContainer>
-                    </MContainer>
-                </Grid>
-                <Grid item xs={12} mt={1}>
-                    <Divider />
-                </Grid>
-                <Grid item container xs={12}>
-                    <MContainer direction='horizontal'>
-                        <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Desnudos o situaciones sexuales:</Typography>
-                        <MContainer direction='horizontal'>
+                <IndividualData title={'Locación de casting y fechas:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                </IndividualData>
 
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>Si desnudos</Typography>
-                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>No situación sexual</Typography>
-                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                <IndividualData title={'Locación de filmación y fechas:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                </IndividualData>
 
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>Descripción del tipo de situación</Typography>
+                <IndividualData title={'Presentación de solicitud:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>14:00 UTC(CNM) – 5</Typography>
+                </IndividualData>
 
-                        </MContainer>
-                    </MContainer>
-                </Grid>
-                <Grid item xs={12} mt={1}>
-                    <Divider />
-                </Grid>
+                <IndividualData title={'Información del trabajo/notas:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Disponibilidad de viajar</Typography>
+                </IndividualData>
 
-                <Grid item container xs={12}>
-                    <MContainer direction='horizontal'>
-                        <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de casting y fechas:</Typography>
-                        <MContainer direction='horizontal'>
+                <IndividualData title={'Requisitos:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Foto</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Video</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Audio</Typography>
+                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Texto requisitos o notas</Typography>
+                </IndividualData>
 
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
-                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
-
-                        </MContainer>
-                    </MContainer>
-                </Grid>
-                <Grid item xs={12} mt={1}>
-                    <Divider />
-                </Grid>
+                <IndividualData title={'Archivos adicionales:'} stylesContainerData={{ gap: 10 }}>
+                    <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>lineas.pdf</Typography>
+                    <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>headshot.jpg</Typography>
+                    <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia1.jpg</Typography>
+                    <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia2.jpg</Typography>
+                </IndividualData>
             </Grid>
         </Grid>
     )
