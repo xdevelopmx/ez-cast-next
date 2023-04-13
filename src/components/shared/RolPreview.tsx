@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
-import React, { type ReactNode, type FC, type CSSProperties, useState } from 'react'
+import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { AnimatePresence, motion } from 'framer-motion';
 import { RolCompletoPreview } from './RolesTable';
@@ -117,14 +117,30 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                         <Grid xs={12}>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    { }
+                                    {rol.proyecto.tipo.descripcion}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 
-                                <Typography>
-                                    Crédito en pantalla
-                                </Typography>
-                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                {
+                                    rol?.compensaciones &&
+                                        rol.compensaciones?.compensaciones_no_monetarias &&
+                                        rol.compensaciones.compensaciones_no_monetarias.length > 0
+                                        ? rol.compensaciones.compensaciones_no_monetarias.map(c => (
+                                            <Fragment key={c.id}>
+                                                <Typography>
+                                                    {c.compensacion.es}
+                                                </Typography>
+                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                            </Fragment>
+                                        ))
+                                        : <>
+                                            <Typography>
+                                                No especificado
+                                            </Typography>
+                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                        </>
+                                }
+
 
                                 <Typography>
                                     Sin unión
@@ -144,7 +160,7 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                             </Box>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    Principal- En cuadro
+                                    {rol?.tipo_rol?.tipo || 'No especificado'}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                 <Typography>
@@ -164,11 +180,8 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                                 </Typography>
                             </Box>
                             <Typography>
-                                <Typography fontWeight={600} component={'span'}>Descripción:</Typography> Características del personaje y el rol que interpretará
-                                Características del personaje y el rol que interpretar dkshdk qo...
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pell
-                                entesque ut purus at malesuada. Pellentesque at metus at felis egestas
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent pell
+                                <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Descripción:</Typography>
+                                {rol?.descripcion || 'No especificado'}
                             </Typography>
 
                         </Grid>
