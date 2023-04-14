@@ -1724,7 +1724,17 @@ export const RolesRouter = createTRPCRouter({
 
 					proyecto: {
 						include: {
-							tipo: true
+							tipo: {
+								include: {
+									tipo_proyecto: true
+								}
+							},
+							sindicato: {
+								include: {
+									sindicato: true
+								}
+							},
+
 						}
 					}
 				}

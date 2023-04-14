@@ -117,7 +117,7 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                         <Grid xs={12}>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    {rol.proyecto.tipo.descripcion}
+                                    {rol.proyecto.tipo.tipo_proyecto.es}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 
@@ -141,11 +141,11 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                                         </>
                                 }
 
-
                                 <Typography>
-                                    Sin unión
+                                    {rol.proyecto.sindicato.sindicato.es}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+
                                 <Button onClick={() => setShowPreview(v => !v)}>
                                     <MotionImage
                                         src="/assets/img/iconos/arrow_d_blue.svg"
@@ -163,10 +163,28 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                                     {rol?.tipo_rol?.tipo || 'No especificado'}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                <Typography>
-                                    Mujer
-                                </Typography>
-                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+
+                                {
+                                    rol.filtros_demograficos && rol.filtros_demograficos.generos && rol.filtros_demograficos.generos.length > 0
+                                        ?
+                                        rol.filtros_demograficos.generos.map((g) => (
+                                            <Fragment key={g.id}>
+                                                <Typography>
+                                                    {g.genero.es}
+                                                </Typography>
+                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                            </Fragment>
+                                        ))
+                                        : <>
+                                            <Typography>
+                                                No especificado
+                                            </Typography>
+                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                        </>
+                                }
+
+
+
                                 <Typography>
                                     18-25
                                 </Typography>
@@ -181,7 +199,7 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                             </Box>
                             <Typography>
                                 <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Descripción:</Typography>
-                                {rol?.descripcion || 'No especificado'}
+                                {rol?.descripcion ?? 'No especificado'}
                             </Typography>
 
                         </Grid>

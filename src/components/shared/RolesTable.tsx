@@ -6,14 +6,20 @@ import { MCheckboxGroup } from "./MCheckboxGroup"
 import { api } from "~/utils/api"
 import { RolPreview } from "./RolPreview"
 import Image from 'next/image'
-import type { 
+import type {
     TipoProyectoPorProyecto, Proyecto, Roles, CompensacionesPorRoles, CompNoMonetariasPorRoles, CatalogosCompNoMones,
-    CatalogoTiposRoles
+    CatalogoTiposRoles, SindicatoPorProyecto, CatalogoUniones, CatalogoTipoProyectos, FiltrosDemoPorRoles, GenerosPorRoles,
+    CatalogoGeneros,
 } from "@prisma/client"
 
 export interface RolCompletoPreview extends Roles {
     proyecto: Proyecto & {
-        tipo: TipoProyectoPorProyecto;
+        tipo: TipoProyectoPorProyecto & {
+            tipo_proyecto: CatalogoTipoProyectos;
+        };
+        sindicato: SindicatoPorProyecto & {
+            sindicato: CatalogoUniones;
+        };
     };
     compensaciones?: CompensacionesPorRoles & {
         compensaciones_no_monetarias?: (CompNoMonetariasPorRoles & {
@@ -21,6 +27,11 @@ export interface RolCompletoPreview extends Roles {
         })[];
     };
     tipo_rol: CatalogoTiposRoles;
+    filtros_demograficos: FiltrosDemoPorRoles & {
+        generos: (GenerosPorRoles & {
+            genero: CatalogoGeneros;
+        })[]
+    };
 }
 
 export const RolesTable = () => {
