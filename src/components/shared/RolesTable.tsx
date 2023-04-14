@@ -9,7 +9,10 @@ import Image from 'next/image'
 import type {
     TipoProyectoPorProyecto, Proyecto, Roles, CompensacionesPorRoles, CompNoMonetariasPorRoles, CatalogosCompNoMones,
     CatalogoTiposRoles, SindicatoPorProyecto, CatalogoUniones, CatalogoTipoProyectos, FiltrosDemoPorRoles, GenerosPorRoles,
-    CatalogoGeneros,
+    CatalogoGeneros, AparenciasEtnicasPorRoles, CatalogoAparenciasEtnicas, CatalogoPaises, HabilidadesPorTalentos,
+    HabilidadesSelecPorRoles, CatalogoHabilidades, NSFWPorRoles, NSFWSeleccionadosPorRoles, CatalogoNSFW,
+    CastingPorRoles, CatalogoEstadosRepublica, FilmacionPorRoles, RequisitosPorRoles, CatalogoTipoUsosHorario,
+    MediosMultimediaPorRoles, CatalogoMediosMultimedia
 } from "@prisma/client"
 
 export interface RolCompletoPreview extends Roles {
@@ -30,7 +33,34 @@ export interface RolCompletoPreview extends Roles {
     filtros_demograficos: FiltrosDemoPorRoles & {
         generos: (GenerosPorRoles & {
             genero: CatalogoGeneros;
+        })[];
+        aparencias_etnicas: (AparenciasEtnicasPorRoles & {
+            aparencia_etnica: CatalogoAparenciasEtnicas;
         })[]
+        pais: CatalogoPaises;
+    };
+    habilidades: (HabilidadesPorTalentos & {
+        habilidades_seleccionadas: (HabilidadesSelecPorRoles & {
+            habilidad: CatalogoHabilidades;
+        })[]
+    });
+    nsfw: NSFWPorRoles & {
+        nsfw_seleccionados: (NSFWSeleccionadosPorRoles & {
+            nsfw: CatalogoNSFW;
+        })[];
+    };
+    casting: (CastingPorRoles & {
+        estado_republica: CatalogoEstadosRepublica;
+    })[];
+    filmaciones: (FilmacionPorRoles & {
+        estado_republica: CatalogoEstadosRepublica;
+    })[];
+    requisitos: RequisitosPorRoles & {
+        estado_republica: CatalogoEstadosRepublica;
+        uso_horario: CatalogoTipoUsosHorario;
+        medios_multimedia: (MediosMultimediaPorRoles & {
+            medio_multimedia: CatalogoMediosMultimedia;
+        })[];
     };
 }
 
