@@ -67,7 +67,9 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                 >
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
-                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{rol.proyecto.nombre}</Typography>
+                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                {rol.proyecto.nombre} id: {rol.id}
+                            </Typography>
                         </Grid>
                         <Grid item xs={3}>
                             <Button

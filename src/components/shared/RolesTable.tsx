@@ -68,8 +68,9 @@ export const RolesTable = () => {
 
     const [searchInput, setSearchInput] = useState('')
     const [autorellenar, setAutorellenar] = useState([false])
-    const [page, setPage] = useState(0)
-    const [directionPage, setDirectionPage] = useState(1)
+
+    const [siguienteCursor, setSiguienteCursor] = useState<number | undefined>()
+    const [anteriorCursor, setAnteriorCursor] = useState<number | undefined>()
 
     const estados = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false,
@@ -106,7 +107,11 @@ export const RolesTable = () => {
         refetchOnMount: false
     })
 
-    const roles = api.roles.getAllComplete.useQuery(undefined)
+    const roles = api.roles.getAllComplete.useQuery({
+        limit: 2,
+        siguienteCursor,
+        anteriorCursor,
+    })
 
     const loading = estados.isFetching || uniones.isFetching || tipos_roles.isFetching || tipos_proyectos.isFetching || generos_rol.isFetching || apariencias_etnicas.isFetching || preferencias_pago.isFetching
 
@@ -309,7 +314,7 @@ export const RolesTable = () => {
             <Grid xs={12} container gap={2} mt={4}>
                 {
                     roles.data
-                        ? roles.data.map(rol => (
+                        ? roles.data.roles.map(rol => (
                             <RolPreview key={rol.id} rol={rol as unknown as RolCompletoPreview} />
                         ))
                         : <h1>Loading...</h1>
@@ -321,8 +326,8 @@ export const RolesTable = () => {
                     <Button
                         sx={{ textTransform: 'none' }}
                         onClick={() => {
-                            /* setDirectionPage(-1)
-                            setPage(proyectos.data ? proyectos.data[0]?.id || 0 : 0) */
+                            setAnteriorCursor(roles.data?.backCursor || undefined)
+                            setSiguienteCursor(undefined)
                         }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
@@ -335,8 +340,8 @@ export const RolesTable = () => {
                     <Button
                         sx={{ textTransform: 'none' }}
                         onClick={() => {
-                            /* setDirectionPage(1)
-                            setPage(proyectos.data ? proyectos.data[proyectos.data.length - 1]?.id || 0 : 0) */
+                            setSiguienteCursor(roles.data?.nextCursor || undefined)
+                            setAnteriorCursor(undefined)
                         }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Typography fontWeight={600}>Siguiente página</Typography>

@@ -1643,11 +1643,17 @@ export const RolesRouter = createTRPCRouter({
 
 
 	getAllComplete: publicProcedure
-		//.input(z.number())
+		.input(z.object({
+			limit: z.number().min(1).max(100).nullish(),
+			siguienteCursor: z.number().nullish(),
+			anteriorCursor: z.number().nullish(),
+		}))
 		.query(async ({ input, ctx }) => {
-			//if (input <= 0) return null;
-			const rol = await ctx.prisma.roles.findMany({
+			const limit = input.limit ?? 50;
+			const { anteriorCursor, siguienteCursor } = input;
+			const roles = await ctx.prisma.roles.findMany({
 				//where: { id: input },
+				take: (siguienteCursor ? 1 : anteriorCursor ? -1 : 1) * (limit + 1),
 				include: {
 					compensaciones: {
 						include: {
@@ -1737,9 +1743,32 @@ export const RolesRouter = createTRPCRouter({
 
 						}
 					}
-				}
+				},
+				cursor: siguienteCursor
+					? { id: siguienteCursor }
+					: anteriorCursor
+						? { id: anteriorCursor }
+						: undefined,
+				orderBy: {
+					id: 'asc',
+				},
 			});
-			return rol;
+
+			let nextCursor: typeof siguienteCursor | undefined = undefined;
+			let backCursor: typeof siguienteCursor | undefined = undefined;
+
+			if (roles.length > limit) {
+				const nextItem = roles.pop()
+				const firstItem = roles[0]
+				nextCursor = nextItem?.id;
+				backCursor = firstItem?.id
+			}
+
+			return {
+				roles,
+				nextCursor,
+				backCursor
+			};
 		}
 		),
 });
