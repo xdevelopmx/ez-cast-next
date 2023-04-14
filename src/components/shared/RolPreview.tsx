@@ -90,15 +90,35 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                         <Grid item xs={12}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Image src="/assets/img/iconos/icono_relog_blue.png" width={20} height={20} alt="" />
-                                <Typography sx={{ color: '#069cb1' }}>Fecha límite entrega de aplicaciones: 25/09/2021 12:00 a.m. MST</Typography>
+                                <Typography sx={{ color: '#069cb1' }}>
+                                    Fecha límite entrega de aplicaciones:
+                                    <Typography component={'span'} sx={{ color: '#069cb1', marginLeft: '5px' }}>
+                                        {rol.casting && rol.casting.length > 0 && conversorFecha(new Date(Math.max(
+                                            ...rol.casting.map(c => (c.fecha_fin?.getTime() || c.fecha_inicio?.getTime() || 0))
+                                        ))) || 'No especificado'}
+                                    </Typography>
+                                </Typography>
                             </Box>
                         </Grid>
                         <Grid container item xs={12}>
                             <Grid xs={6} item>
-                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>Inicio de proyecto: 10/10/2021 en Ciudad de México</Typography>
+                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
+                                    Inicio de proyecto:
+                                    <Typography component={'span'} sx={{ paddingLeft: '5px', paddingRight: '5px', color: '#069cb1', fontSize: '.9rem' }}>
+                                        {rol.filmaciones && rol.filmaciones.length > 0 && rol.filmaciones[0]?.fecha_inicio && conversorFecha(rol.filmaciones[0]?.fecha_inicio) || 'No especificado'}
+                                    </Typography>
+                                    en {rol.casting && rol.casting.length > 0 && rol.casting[0]?.estado_republica.es || 'No especificado'}
+                                </Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>Aceptando aplicaciones de: Todos los estados</Typography>
+                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
+                                    Aceptando aplicaciones de:
+                                    <Typography component={'span'} sx={{ marginLeft: '5px', color: '#069cb1', fontSize: '.9rem' }}>
+                                        {rol.casting && rol.casting.length > 0 && rol.casting.reduce((acumulador, current) => (
+                                            acumulador += current.estado_republica.es + ', '
+                                        ), '').slice(0, -2) || 'No especificado'}
+                                    </Typography>
+                                </Typography>
                             </Grid>
                         </Grid>
 

@@ -1647,6 +1647,8 @@ export const RolesRouter = createTRPCRouter({
 			limit: z.number().min(1).max(100).nullish(),
 			siguienteCursor: z.number().nullish(),
 			anteriorCursor: z.number().nullish(),
+
+			//filtros
 		}))
 		.query(async ({ input, ctx }) => {
 			const limit = input.limit ?? 50;

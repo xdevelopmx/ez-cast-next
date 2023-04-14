@@ -68,7 +68,7 @@ export interface RolCompletoPreview extends Roles {
 export const RolesTable = () => {
 
     const [searchInput, setSearchInput] = useState('')
-    const [autorellenar, setAutorellenar] = useState([false])
+    const [autorellenar, setAutorellenar] = useState([true])
 
     const [siguienteCursor, setSiguienteCursor] = useState<number | undefined>()
     const [anteriorCursor, setAnteriorCursor] = useState<number | undefined>()
