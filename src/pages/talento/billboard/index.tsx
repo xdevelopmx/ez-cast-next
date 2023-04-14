@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material'
 import { type NextPage } from 'next'
 import Head from 'next/head'
 import React from 'react'
-import { Alertas, MainLayout, MenuLateral, ProjectsTable } from '~/components'
+import { Alertas, MainLayout, MenuLateral, RolesTable } from '~/components'
 
 const BillboardPage: NextPage = () => {
     return (
@@ -27,7 +27,7 @@ const BillboardPage: NextPage = () => {
                                     <Typography fontWeight={800} sx={{ fontSize: '2rem' }}>Casting Billboard</Typography>
                                 </Grid>
                                 <Grid xs={12}>
-                                    <ProjectsTable />
+                                    <RolesTable />
                                 </Grid>
                             </Grid>
 

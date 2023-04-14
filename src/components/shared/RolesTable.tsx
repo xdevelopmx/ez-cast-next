@@ -4,13 +4,31 @@ import { FormGroup } from "./FormGroup"
 import { useState } from "react"
 import { MCheckboxGroup } from "./MCheckboxGroup"
 import { api } from "~/utils/api"
-import { ProjectPreview } from "./ProjectPreview"
+import { RolPreview } from "./RolPreview"
+import Image from 'next/image'
+import type { 
+    TipoProyectoPorProyecto, Proyecto, Roles, CompensacionesPorRoles, CompNoMonetariasPorRoles, CatalogosCompNoMones,
+    CatalogoTiposRoles
+} from "@prisma/client"
 
+export interface RolCompletoPreview extends Roles {
+    proyecto: Proyecto & {
+        tipo: TipoProyectoPorProyecto;
+    };
+    compensaciones?: CompensacionesPorRoles & {
+        compensaciones_no_monetarias?: (CompNoMonetariasPorRoles & {
+            compensacion: CatalogosCompNoMones;
+        })[];
+    };
+    tipo_rol: CatalogoTiposRoles;
+}
 
-export const ProjectsTable = () => {
+export const RolesTable = () => {
 
     const [searchInput, setSearchInput] = useState('')
     const [autorellenar, setAutorellenar] = useState([false])
+    const [page, setPage] = useState(0)
+    const [directionPage, setDirectionPage] = useState(1)
 
     const estados = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false,
@@ -47,8 +65,11 @@ export const ProjectsTable = () => {
         refetchOnMount: false
     })
 
+    const roles = api.roles.getAllComplete.useQuery(undefined)
 
     const loading = estados.isFetching || uniones.isFetching || tipos_roles.isFetching || tipos_proyectos.isFetching || generos_rol.isFetching || apariencias_etnicas.isFetching || preferencias_pago.isFetching
+
+    console.log({ roles: roles.data });
 
     return (
         <Grid container mt={4}>
@@ -87,7 +108,7 @@ export const ProjectsTable = () => {
                                     { value: '3', label: 'Por proyecto' },
                                 ]}
                                 styleRoot={{ width: '100px' }}
-                                style={{width: '100%'}}
+                                style={{ width: '100%' }}
                                 value={'0'}
                                 onChange={(e) => {
                                     /* onFormChange({
@@ -145,7 +166,7 @@ export const ProjectsTable = () => {
                             value: `${e.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -161,7 +182,7 @@ export const ProjectsTable = () => {
                             value: `${u.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -178,7 +199,7 @@ export const ProjectsTable = () => {
                             value: `${tr.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -195,7 +216,7 @@ export const ProjectsTable = () => {
                             value: `${tp.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -212,7 +233,7 @@ export const ProjectsTable = () => {
                             value: `${g.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -229,7 +250,7 @@ export const ProjectsTable = () => {
                             value: `${g.id}`
                         })) || []}
                         styleRoot={{ width: '130px' }}
-                        style={{width: '100%'}}
+                        style={{ width: '100%' }}
                         value={'0'}
                         onChange={(e) => {
                             /* onFormChange({
@@ -246,10 +267,42 @@ export const ProjectsTable = () => {
 
             <Grid xs={12} container gap={2} mt={4}>
                 {
-                    Array.from({ length: 2 }).map((_, i) => (
-                        <ProjectPreview key={i} />
-                    ))
+                    roles.data
+                        ? roles.data.map(rol => (
+                            <RolPreview key={rol.id} rol={rol as unknown as RolCompletoPreview} />
+                        ))
+                        : <h1>Loading...</h1>
                 }
+            </Grid>
+
+            <Grid xs={12} mt={4}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Button
+                        sx={{ textTransform: 'none' }}
+                        onClick={() => {
+                            /* setDirectionPage(-1)
+                            setPage(proyectos.data ? proyectos.data[0]?.id || 0 : 0) */
+                        }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
+                            <Typography fontWeight={600}>Página previa</Typography>
+                        </Box>
+                    </Button>
+
+                    <Typography sx={{ color: '#069cb1' }} fontWeight={600} >1 de 1</Typography>
+
+                    <Button
+                        sx={{ textTransform: 'none' }}
+                        onClick={() => {
+                            /* setDirectionPage(1)
+                            setPage(proyectos.data ? proyectos.data[proyectos.data.length - 1]?.id || 0 : 0) */
+                        }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography fontWeight={600}>Siguiente página</Typography>
+                            <Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
+                        </Box>
+                    </Button>
+                </Box>
             </Grid>
         </Grid>
     )

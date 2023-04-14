@@ -3,16 +3,16 @@ import { FileManager } from "~/utils/file-manager";
 import { z } from "zod";
 
 import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
+	createTRPCRouter,
+	publicProcedure,
+	protectedProcedure,
 } from "~/server/api/trpc";
 import { TipoUsuario } from "~/enums";
 
 export type NewRol = {
 	id_rol: number,
 	info_gral: {
-		nombre: string, 
+		nombre: string,
 		id_tipo_rol: number,
 		id_proyecto: number,
 	},
@@ -91,21 +91,21 @@ export type NewRol = {
 }
 
 export const RolesRouter = createTRPCRouter({
-    getById: publicProcedure
+	getById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			const rol = await ctx.prisma.roles.findUnique({
-				where: {id: input.id}
+				where: { id: input.id }
 			});
 			return rol;
 		}
-	),
+		),
 	getCompleteById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
 			if (input <= 0) return null;
 			const rol = await ctx.prisma.roles.findUnique({
-				where: {id: input},
+				where: { id: input },
 				include: {
 					compensaciones: {
 						include: {
@@ -183,12 +183,12 @@ export const RolesRouter = createTRPCRouter({
 			});
 			return rol;
 		}
-	),
-  	getAll: publicProcedure.query(async ({ ctx }) => {
-    	return await ctx.prisma.roles.findMany();
+		),
+	getAll: publicProcedure.query(async ({ ctx }) => {
+		return await ctx.prisma.roles.findMany();
 	}),
 	getAllCompleteByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
-    	return await ctx.prisma.roles.findMany({
+		return await ctx.prisma.roles.findMany({
 			where: {
 				id_proyecto: input
 			},
@@ -269,7 +269,7 @@ export const RolesRouter = createTRPCRouter({
 		});
 	}),
 	getAllByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
-    	return await ctx.prisma.roles.findMany({
+		return await ctx.prisma.roles.findMany({
 			where: {
 				id_proyecto: input
 			},
@@ -302,9 +302,9 @@ export const RolesRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	updateEstadoRolById: protectedProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id: z.number(),
 			estatus: z.string(),
 		}))
@@ -336,12 +336,12 @@ export const RolesRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveRol: publicProcedure
-		.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			info_gral: z.object({
-				nombre: z.string(), 
+				nombre: z.string(),
 				id_tipo_rol: z.number(),
 				id_proyecto: z.number(),
 			}),
@@ -356,7 +356,7 @@ export const RolesRouter = createTRPCRouter({
 				}).nullish(),
 				compensaciones_no_monetarias: z.array(
 					z.object({
-						id_compensacion: z.number(), 
+						id_compensacion: z.number(),
 						descripcion_compensacion: z.string()
 					})
 				).nullish(),
@@ -372,24 +372,24 @@ export const RolesRouter = createTRPCRouter({
 				rango_edad_inicio: z.number({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_small': 
-							return { message: 'La edad no puede ser menor a 0' };
-						case 'too_big':
-							return { message: 'La edad no puede ser mayor a 110' };
-						default:
-							return { message: 'Formato de biografia invalido' };
+							case 'too_small':
+								return { message: 'La edad no puede ser menor a 0' };
+							case 'too_big':
+								return { message: 'La edad no puede ser mayor a 110' };
+							default:
+								return { message: 'Formato de biografia invalido' };
 						}
 					},
 				}).min(0).max(110),
 				rango_edad_fin: z.number({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_small': 
-							return { message: 'La edad no puede ser menor a 0' };
-						case 'too_big':
-							return { message: 'La edad no puede ser mayor a 110' };
-						default:
-							return { message: 'Formato de biografia invalido' };
+							case 'too_small':
+								return { message: 'La edad no puede ser menor a 0' };
+							case 'too_big':
+								return { message: 'La edad no puede ser mayor a 110' };
+							default:
+								return { message: 'Formato de biografia invalido' };
 						}
 					},
 				}).min(0).max(110),
@@ -397,10 +397,10 @@ export const RolesRouter = createTRPCRouter({
 				id_pais: z.number({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_small':
-							return { message: 'Debes seleccionar una nacionalidad en el apartado de filtros demograficos' };
-						default:
-							return { message: 'Formato de nacionalidad invalido' };
+							case 'too_small':
+								return { message: 'Debes seleccionar una nacionalidad en el apartado de filtros demograficos' };
+							default:
+								return { message: 'Formato de nacionalidad invalido' };
 						}
 					},
 				}).min(1),
@@ -409,10 +409,10 @@ export const RolesRouter = createTRPCRouter({
 				descripcion: z.string({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_big':
-							return { message: 'La descripcion del rol no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de descripcion del rol invalido' };
+							case 'too_big':
+								return { message: 'La descripcion del rol no puede ser mayor a 500 caracteres' };
+							default:
+								return { message: 'Formato de descripcion del rol invalido' };
 						}
 					},
 				}).max(500),
@@ -424,10 +424,10 @@ export const RolesRouter = createTRPCRouter({
 					descripcion: z.string({
 						errorMap: (issue, _ctx) => {
 							switch (issue.code) {
-							case 'too_big':
-								return { message: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres' };
-							default:
-								return { message: 'Formato de descripcion NSFW invalido' };
+								case 'too_big':
+									return { message: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres' };
+								default:
+									return { message: 'Formato de descripcion NSFW invalido' };
 							}
 						},
 					}).max(500)
@@ -450,10 +450,10 @@ export const RolesRouter = createTRPCRouter({
 					errorMap: (issue, _ctx) => {
 						console.log(issue);
 						switch (issue.code) {
-						case 'too_small':
-							return { message: 'Se debe definir al menos una fecha para castings' };
-						default:
-							return { message: 'Formato de fechas invalido' };
+							case 'too_small':
+								return { message: 'Se debe definir al menos una fecha para castings' };
+							default:
+								return { message: 'Formato de fechas invalido' };
 						}
 					}
 				}).min(1)
@@ -466,10 +466,10 @@ export const RolesRouter = createTRPCRouter({
 				}), {
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_small':
-							return { message: 'Se debe definir al menos una fecha para filmaciones' };
-						default:
-							return { message: 'Formato de fechas invalido' };
+							case 'too_small':
+								return { message: 'Se debe definir al menos una fecha para filmaciones' };
+							default:
+								return { message: 'Formato de fechas invalido' };
 						}
 					}
 				}).min(1),
@@ -480,10 +480,10 @@ export const RolesRouter = createTRPCRouter({
 				info_trabajo: z.string({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_big':
-							return { message: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de informacion de trabajo del rol invalido' };
+							case 'too_big':
+								return { message: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres' };
+							default:
+								return { message: 'Formato de informacion de trabajo del rol invalido' };
 						}
 					},
 				}).max(500),
@@ -495,10 +495,10 @@ export const RolesRouter = createTRPCRouter({
 				indicaciones: z.string({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_big':
-							return { message: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de las indicaciones del selftape invalido' };
+							case 'too_big':
+								return { message: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres' };
+							default:
+								return { message: 'Formato de las indicaciones del selftape invalido' };
 						}
 					},
 				}).max(500),
@@ -542,7 +542,7 @@ export const RolesRouter = createTRPCRouter({
 					suma_total_compensaciones_no_monetarias: input.compensaciones.compensacion.suma_total_compensaciones_no_monetarias
 				},
 			})
-		
+
 			console.log('compensaciones', compensaciones);
 
 			if (!compensaciones) {
@@ -560,12 +560,12 @@ export const RolesRouter = createTRPCRouter({
 						id_comp_por_rol: compensaciones.id
 					},
 					update: {
-						cantidad: input.compensaciones.sueldo.cantidad_sueldo, 
+						cantidad: input.compensaciones.sueldo.cantidad_sueldo,
 						periodo: input.compensaciones.sueldo.periodo_sueldo.toUpperCase(),
 					},
 					create: {
 						id_comp_por_rol: compensaciones.id,
-						cantidad: input.compensaciones.sueldo.cantidad_sueldo, 
+						cantidad: input.compensaciones.sueldo.cantidad_sueldo,
 						periodo: input.compensaciones.sueldo.periodo_sueldo.toUpperCase(),
 					},
 				})
@@ -579,17 +579,17 @@ export const RolesRouter = createTRPCRouter({
 				}
 			} else {
 				try {
-					await ctx.prisma.sueldosPorRoles.delete({where: {id_comp_por_rol: compensaciones.id}});
-				} catch (e) {}
+					await ctx.prisma.sueldosPorRoles.delete({ where: { id_comp_por_rol: compensaciones.id } });
+				} catch (e) { }
 			}
 			try {
-				await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id }});
-			} catch (e) {}
-			
+				await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id } });
+			} catch (e) { }
+
 			if (input.compensaciones.compensaciones_no_monetarias) {
 				const saved_compensaciones_no_monetarias = await ctx.prisma.compNoMonetariasPorRoles.createMany({
 					data: input.compensaciones.compensaciones_no_monetarias.map(c => {
-						const comp_no_mone: { id_compensacion: number, descripcion_compensacion: string, id_comp_por_rol: number} = {...c, id_comp_por_rol: compensaciones.id}
+						const comp_no_mone: { id_compensacion: number, descripcion_compensacion: string, id_comp_por_rol: number } = { ...c, id_comp_por_rol: compensaciones.id }
 						return comp_no_mone;
 					})
 				})
@@ -601,7 +601,7 @@ export const RolesRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-			} 
+			}
 
 			// FILTROS DEMOGRAFICOS
 			if (input.filtros_demograficos) {
@@ -624,7 +624,7 @@ export const RolesRouter = createTRPCRouter({
 						id_pais: input.filtros_demograficos.id_pais
 					}
 				})
-	
+
 				if (!filtros_demograficos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -633,14 +633,14 @@ export const RolesRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-				
+
 				try {
-					await ctx.prisma.generosPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-				} catch (e) {}
-	
+					await ctx.prisma.generosPorRoles.deleteMany({ where: { id_filtro_demo_por_rol: filtros_demograficos.id } });
+				} catch (e) { }
+
 				if (input.filtros_demograficos.generos) {
 					const saved_generos = await ctx.prisma.generosPorRoles.createMany({
-						data: input.filtros_demograficos.generos.map(g => { return {id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id} })
+						data: input.filtros_demograficos.generos.map(g => { return { id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id } })
 					});
 					if (!saved_generos) {
 						throw new TRPCError({
@@ -651,14 +651,14 @@ export const RolesRouter = createTRPCRouter({
 						});
 					}
 				}
-	
+
 				try {
-					await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-				} catch (e) {}
-				
+					await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({ where: { id_filtro_demo_por_rol: filtros_demograficos.id } });
+				} catch (e) { }
+
 				if (input.filtros_demograficos.apariencias_etnias) {
 					const saved_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.createMany({
-						data: input.filtros_demograficos.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id} })
+						data: input.filtros_demograficos.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id } })
 					});
 					if (!saved_etnias) {
 						throw new TRPCError({
@@ -669,11 +669,11 @@ export const RolesRouter = createTRPCRouter({
 						});
 					}
 				}
-	
+
 				try {
-					await ctx.prisma.animalPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-				} catch (e) {}
-				
+					await ctx.prisma.animalPorRoles.deleteMany({ where: { id_filtro_demo_por_rol: filtros_demograficos.id } });
+				} catch (e) { }
+
 				if (input.filtros_demograficos.animal) {
 					const saved_animal = await ctx.prisma.animalPorRoles.create({
 						data: {
@@ -696,7 +696,7 @@ export const RolesRouter = createTRPCRouter({
 
 			// DESCRIPCION
 
-			const updated_files: {lineas: null | string, foto_referencia: null | string} = {lineas: null, foto_referencia: null};
+			const updated_files: { lineas: null | string, foto_referencia: null | string } = { lineas: null, foto_referencia: null };
 			if (input.descripcion_rol.lineas) {
 				const save_result = await FileManager.saveFile(`lineas-descripcion-rol.${input.descripcion_rol.lineas.extension}`, input.descripcion_rol.lineas.base64, 'roles/descripcion/lineas/');
 				if (!save_result.error) {
@@ -743,8 +743,8 @@ export const RolesRouter = createTRPCRouter({
 
 			if (rol_updated.habilidades && rol_updated.habilidades.habilidades_seleccionadas.length > 0) {
 				try {
-					await ctx.prisma.habilidadesPorRoles.delete({where: {id_rol: rol.id}});
-				} catch (e) {}
+					await ctx.prisma.habilidadesPorRoles.delete({ where: { id_rol: rol.id } });
+				} catch (e) { }
 			}
 
 			const habilidades_por_rol = await ctx.prisma.habilidadesPorRoles.create({
@@ -764,9 +764,9 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			const habilidades_seleccionadas_por_rol = await ctx.prisma.habilidadesSelecPorRoles.createMany({
-				data: input.descripcion_rol.habilidades.map(h => { return {id_habilidad: h, id_habilidades_por_rol: habilidades_por_rol.id}})
+				data: input.descripcion_rol.habilidades.map(h => { return { id_habilidad: h, id_habilidades_por_rol: habilidades_por_rol.id } })
 			});
-		
+
 			if (!habilidades_seleccionadas_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
@@ -778,14 +778,14 @@ export const RolesRouter = createTRPCRouter({
 
 			if (rol_updated.nsfw && rol_updated.nsfw.nsfw_seleccionados.length > 0) {
 				try {
-					await ctx.prisma.nSFWPorRoles.delete({where: {id_rol: rol.id}});
-				} catch (e) {}
+					await ctx.prisma.nSFWPorRoles.delete({ where: { id_rol: rol.id } });
+				} catch (e) { }
 			}
 
 			if (input.descripcion_rol.nsfw) {
 				const nsfw_por_rol = await ctx.prisma.nSFWPorRoles.create({
 					data: {
-						id_rol: rol.id, 
+						id_rol: rol.id,
 						descripcion: input.descripcion_rol.nsfw.descripcion
 					}
 				});
@@ -798,7 +798,7 @@ export const RolesRouter = createTRPCRouter({
 					});
 				}
 				const nsfw_seleccionados_por_rol = await ctx.prisma.nSFWSeleccionadosPorRoles.createMany({
-					data: input.descripcion_rol.nsfw.ids.map(id => {return {id_nsfw: id, id_nsfw_por_rol: nsfw_por_rol.id}})
+					data: input.descripcion_rol.nsfw.ids.map(id => { return { id_nsfw: id, id_nsfw_por_rol: nsfw_por_rol.id } })
 				});
 				if (!nsfw_seleccionados_por_rol) {
 					throw new TRPCError({
@@ -812,9 +812,9 @@ export const RolesRouter = createTRPCRouter({
 
 			// CASTING
 			try {
-				await ctx.prisma.castingPorRoles.deleteMany({where: {id_rol: rol.id}});
-			} catch (e) {}
-			
+				await ctx.prisma.castingPorRoles.deleteMany({ where: { id_rol: rol.id } });
+			} catch (e) { }
+
 			const saved_fechas_casting = await ctx.prisma.castingPorRoles.createMany({
 				data: input.casting.fechas.map((dates) => {
 					return {
@@ -836,9 +836,9 @@ export const RolesRouter = createTRPCRouter({
 
 			// FILMACIONES
 			try {
-				await ctx.prisma.filmacionPorRoles.deleteMany({where: {id_rol: rol.id}});
-			} catch (e) {}
-			
+				await ctx.prisma.filmacionPorRoles.deleteMany({ where: { id_rol: rol.id } });
+			} catch (e) { }
+
 			const saved_fechas_filmaciones = await ctx.prisma.filmacionPorRoles.createMany({
 				data: input.filmaciones.fechas.map((dates) => {
 					return {
@@ -904,7 +904,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			const saved_medios_multimedia_por_rol = await ctx.prisma.mediosMultimediaPorRoles.createMany({
-				data: input.requisitos.medios_multimedia_a_incluir.map(m => { return {id_requisitos_por_roles: requisitos.id, id_medio_multimedia: m }})
+				data: input.requisitos.medios_multimedia_a_incluir.map(m => { return { id_requisitos_por_roles: requisitos.id, id_medio_multimedia: m } })
 			})
 
 			if (!saved_medios_multimedia_por_rol) {
@@ -917,7 +917,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			// SELFTAPE
-			
+
 			let updated_selftape_lineas: string | null = null;
 			if (input.selftape.lineas) {
 				const save_result = await FileManager.saveFile(`lineas-selftape-rol.${input.selftape.lineas.extension}`, input.selftape.lineas.base64, 'roles/selftape/lineas/');
@@ -954,11 +954,11 @@ export const RolesRouter = createTRPCRouter({
 
 			return rol;
 		}
-	),
+		),
 	saveInfoGral: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
-			nombre: z.string(), 
+			nombre: z.string(),
 			id_tipo_rol: z.number(),
 			id_proyecto: z.number(),
 		}))
@@ -980,9 +980,9 @@ export const RolesRouter = createTRPCRouter({
 			})
 			return rol;
 		}
-	),
+		),
 	saveCompensacion: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			compensacion: z.object({
 				datos_adicionales: z.string(),
@@ -994,14 +994,14 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish(),
 			compensaciones_no_monetarias: z.array(
 				z.object({
-					id_compensacion: z.number(), 
+					id_compensacion: z.number(),
 					descripcion_compensacion: z.string()
 				})
 			).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('input-save compensacion', input)
-			const rol = await ctx.prisma.roles.findUnique({where: {id: input.id_rol}});
+			const rol = await ctx.prisma.roles.findUnique({ where: { id: input.id_rol } });
 			if (!rol) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
@@ -1025,7 +1025,7 @@ export const RolesRouter = createTRPCRouter({
 					suma_total_compensaciones_no_monetarias: input.compensacion.suma_total_compensaciones_no_monetarias
 				},
 			})
-		
+
 			console.log('compensaciones', compensaciones);
 
 			if (!compensaciones) {
@@ -1043,12 +1043,12 @@ export const RolesRouter = createTRPCRouter({
 						id_comp_por_rol: compensaciones.id
 					},
 					update: {
-						cantidad: input.sueldo.cantidad_sueldo, 
+						cantidad: input.sueldo.cantidad_sueldo,
 						periodo: input.sueldo.periodo_sueldo.toUpperCase(),
 					},
 					create: {
 						id_comp_por_rol: compensaciones.id,
-						cantidad: input.sueldo.cantidad_sueldo, 
+						cantidad: input.sueldo.cantidad_sueldo,
 						periodo: input.sueldo.periodo_sueldo.toUpperCase(),
 					},
 				})
@@ -1062,18 +1062,18 @@ export const RolesRouter = createTRPCRouter({
 				}
 			} else {
 				try {
-					await ctx.prisma.sueldosPorRoles.delete({where: {id_comp_por_rol: compensaciones.id}});
-				} catch (e) {}
+					await ctx.prisma.sueldosPorRoles.delete({ where: { id_comp_por_rol: compensaciones.id } });
+				} catch (e) { }
 			}
 
 			try {
-				await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id }});
-			} catch (e) {}
-			
+				await ctx.prisma.compNoMonetariasPorRoles.deleteMany({ where: { id_comp_por_rol: compensaciones.id } });
+			} catch (e) { }
+
 			if (input.compensaciones_no_monetarias) {
 				const saved_compensaciones_no_monetarias = await ctx.prisma.compNoMonetariasPorRoles.createMany({
 					data: input.compensaciones_no_monetarias.map(c => {
-						const comp_no_mone: { id_compensacion: number, descripcion_compensacion: string, id_comp_por_rol: number} = {...c, id_comp_por_rol: compensaciones.id}
+						const comp_no_mone: { id_compensacion: number, descripcion_compensacion: string, id_comp_por_rol: number } = { ...c, id_comp_por_rol: compensaciones.id }
 						return comp_no_mone;
 					})
 				})
@@ -1085,12 +1085,12 @@ export const RolesRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-			} 
+			}
 			return input;
 		}
-	),
+		),
 	saveFiltrosDemograficos: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			generos: z.array(z.number()).nullish(),
 			apariencias_etnias: z.array(z.number()).nullish(),
@@ -1102,24 +1102,24 @@ export const RolesRouter = createTRPCRouter({
 			rango_edad_inicio: z.number({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_small': 
-						return { message: 'La edad no puede ser menor a 0' };
-					case 'too_big':
-						return { message: 'La edad no puede ser mayor a 110' };
-					default:
-						return { message: 'Formato de biografia invalido' };
+						case 'too_small':
+							return { message: 'La edad no puede ser menor a 0' };
+						case 'too_big':
+							return { message: 'La edad no puede ser mayor a 110' };
+						default:
+							return { message: 'Formato de biografia invalido' };
 					}
 				},
 			}).min(0).max(110),
 			rango_edad_fin: z.number({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_small': 
-						return { message: 'La edad no puede ser menor a 0' };
-					case 'too_big':
-						return { message: 'La edad no puede ser mayor a 110' };
-					default:
-						return { message: 'Formato de biografia invalido' };
+						case 'too_small':
+							return { message: 'La edad no puede ser menor a 0' };
+						case 'too_big':
+							return { message: 'La edad no puede ser mayor a 110' };
+						default:
+							return { message: 'Formato de biografia invalido' };
 					}
 				},
 			}).min(0).max(110),
@@ -1127,16 +1127,16 @@ export const RolesRouter = createTRPCRouter({
 			id_pais: z.number({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_small':
-						return { message: 'Debes seleccionar una nacionalidad' };
-					default:
-						return { message: 'Formato de nacionalidad invalido' };
+						case 'too_small':
+							return { message: 'Debes seleccionar una nacionalidad' };
+						default:
+							return { message: 'Formato de nacionalidad invalido' };
 					}
 				},
 			}).min(1)
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const rol = await ctx.prisma.roles.findUnique({where: {id: input.id_rol}});
+			const rol = await ctx.prisma.roles.findUnique({ where: { id: input.id_rol } });
 			if (!rol) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
@@ -1152,16 +1152,16 @@ export const RolesRouter = createTRPCRouter({
 				},
 				update: {
 					rango_edad_inicio: input.rango_edad_inicio,
-                    rango_edad_fin: input.rango_edad_fin,
-                    rango_edad_en_meses: input.rango_edad_en_meses,
-                    id_pais: input.id_pais
+					rango_edad_fin: input.rango_edad_fin,
+					rango_edad_en_meses: input.rango_edad_en_meses,
+					id_pais: input.id_pais
 				},
 				create: {
 					id_rol: input.id_rol,
 					rango_edad_inicio: input.rango_edad_inicio,
-                    rango_edad_fin: input.rango_edad_fin,
-                    rango_edad_en_meses: input.rango_edad_en_meses,
-                    id_pais: input.id_pais
+					rango_edad_fin: input.rango_edad_fin,
+					rango_edad_en_meses: input.rango_edad_en_meses,
+					id_pais: input.id_pais
 				}
 			})
 
@@ -1175,12 +1175,12 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			try {
-				await ctx.prisma.generosPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			} catch (e) {}
-			
+				await ctx.prisma.generosPorRoles.deleteMany({ where: { id_filtro_demo_por_rol: filtros_demograficos.id } });
+			} catch (e) { }
+
 			if (input.generos) {
 				const saved_generos = await ctx.prisma.generosPorRoles.createMany({
-					data: input.generos.map(g => { return {id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id} })
+					data: input.generos.map(g => { return { id_genero: g, id_filtro_demo_por_rol: filtros_demograficos.id } })
 				});
 				if (!saved_generos) {
 					throw new TRPCError({
@@ -1193,12 +1193,12 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			try {
-				await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
-			} catch (e) {}
-			
+				await ctx.prisma.aparenciasEtnicasPorRoles.deleteMany({ where: { id_filtro_demo_por_rol: filtros_demograficos.id } });
+			} catch (e) { }
+
 			if (input.apariencias_etnias) {
 				const saved_etnias = await ctx.prisma.aparenciasEtnicasPorRoles.createMany({
-					data: input.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id} })
+					data: input.apariencias_etnias.map(e => { return { id_aparencia_etnica: e, id_filtro_demo_por_rol: filtros_demograficos.id } })
 				});
 				if (!saved_etnias) {
 					throw new TRPCError({
@@ -1210,7 +1210,7 @@ export const RolesRouter = createTRPCRouter({
 				}
 			}
 
-			const deleted_animal = await ctx.prisma.animalPorRoles.deleteMany({where: { id_filtro_demo_por_rol: filtros_demograficos.id }});
+			const deleted_animal = await ctx.prisma.animalPorRoles.deleteMany({ where: { id_filtro_demo_por_rol: filtros_demograficos.id } });
 			if (!deleted_animal) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
@@ -1240,17 +1240,17 @@ export const RolesRouter = createTRPCRouter({
 			}
 			return input;
 		}
-	),
+		),
 	saveDescripcionRol: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			descripcion: z.string({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_big':
-						return { message: 'La descripcion del rol no puede ser mayor a 500 caracteres' };
-					default:
-						return { message: 'Formato de descripcion del rol invalido' };
+						case 'too_big':
+							return { message: 'La descripcion del rol no puede ser mayor a 500 caracteres' };
+						default:
+							return { message: 'Formato de descripcion del rol invalido' };
 					}
 				},
 			}).max(500),
@@ -1262,10 +1262,10 @@ export const RolesRouter = createTRPCRouter({
 				descripcion: z.string({
 					errorMap: (issue, _ctx) => {
 						switch (issue.code) {
-						case 'too_big':
-							return { message: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de descripcion NSFW invalido' };
+							case 'too_big':
+								return { message: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres' };
+							default:
+								return { message: 'Formato de descripcion NSFW invalido' };
 						}
 					},
 				}).max(500)
@@ -1280,7 +1280,7 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const updated_files: {lineas: null | string, foto_referencia: null | string} = {lineas: null, foto_referencia: null};
+			const updated_files: { lineas: null | string, foto_referencia: null | string } = { lineas: null, foto_referencia: null };
 			if (input.lineas) {
 				const save_result = await FileManager.saveFile(`lineas-descripcion-rol.${input.lineas.extension}`, input.lineas.base64, 'roles/descripcion/lineas/');
 				if (!save_result.error) {
@@ -1326,7 +1326,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			if (rol.habilidades && rol.habilidades.habilidades_seleccionadas.length > 0) {
-				const deleted_habilidades = await ctx.prisma.habilidadesPorRoles.delete({where: {id_rol: rol.id}});
+				const deleted_habilidades = await ctx.prisma.habilidadesPorRoles.delete({ where: { id_rol: rol.id } });
 				if (!deleted_habilidades) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -1337,7 +1337,7 @@ export const RolesRouter = createTRPCRouter({
 				}
 			}
 
-			
+
 			const habilidades_por_rol = await ctx.prisma.habilidadesPorRoles.create({
 				data: {
 					id_rol: rol.id,
@@ -1355,9 +1355,9 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			const habilidades_seleccionadas_por_rol = await ctx.prisma.habilidadesSelecPorRoles.createMany({
-				data: input.habilidades.map(h => { return {id_habilidad: h, id_habilidades_por_rol: habilidades_por_rol.id}})
+				data: input.habilidades.map(h => { return { id_habilidad: h, id_habilidades_por_rol: habilidades_por_rol.id } })
 			});
-		
+
 			if (!habilidades_seleccionadas_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
@@ -1368,8 +1368,8 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			if (rol.nsfw && rol.nsfw.nsfw_seleccionados.length > 0) {
-				const deleted_nsfw = await ctx.prisma.nSFWPorRoles.delete({where: {id_rol: rol.id}});
-	
+				const deleted_nsfw = await ctx.prisma.nSFWPorRoles.delete({ where: { id_rol: rol.id } });
+
 				if (!deleted_nsfw) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -1383,7 +1383,7 @@ export const RolesRouter = createTRPCRouter({
 			if (input.nsfw) {
 				const nsfw_por_rol = await ctx.prisma.nSFWPorRoles.create({
 					data: {
-						id_rol: rol.id, 
+						id_rol: rol.id,
 						descripcion: input.nsfw.descripcion
 					}
 				});
@@ -1396,7 +1396,7 @@ export const RolesRouter = createTRPCRouter({
 					});
 				}
 				const nsfw_seleccionados_por_rol = await ctx.prisma.nSFWSeleccionadosPorRoles.createMany({
-					data: input.nsfw.ids.map(id => {return {id_nsfw: id, id_nsfw_por_rol: nsfw_por_rol.id}})
+					data: input.nsfw.ids.map(id => { return { id_nsfw: id, id_nsfw_por_rol: nsfw_por_rol.id } })
 				});
 				if (!nsfw_seleccionados_por_rol) {
 					throw new TRPCError({
@@ -1406,12 +1406,12 @@ export const RolesRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-			}		
+			}
 			return input;
 		}
-	),
+		),
 	saveInfoCastingYFilmacion: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			id_estado_republica: z.number(),
 			fechas: z.array(z.object({
@@ -1420,10 +1420,10 @@ export const RolesRouter = createTRPCRouter({
 			}), {
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_small':
-						return { message: 'Se debe definir al menos una fecha' };
-					default:
-						return { message: 'Formato de fechas invalido' };
+						case 'too_small':
+							return { message: 'Se debe definir al menos una fecha' };
+						default:
+							return { message: 'Formato de fechas invalido' };
 					}
 				}
 			}).min(1),
@@ -1432,7 +1432,7 @@ export const RolesRouter = createTRPCRouter({
 		.mutation(async ({ input, ctx }) => {
 
 			if (input.action === 'casting') {
-				const deleted_fechas = await ctx.prisma.castingPorRoles.deleteMany({where: {id_rol: input.id_rol}});
+				const deleted_fechas = await ctx.prisma.castingPorRoles.deleteMany({ where: { id_rol: input.id_rol } });
 				if (!deleted_fechas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -1461,7 +1461,7 @@ export const RolesRouter = createTRPCRouter({
 				}
 				return saved_fechas;
 			} else {
-				const deleted_fechas = await ctx.prisma.filmacionPorRoles.deleteMany({where: {id_rol: input.id_rol}});
+				const deleted_fechas = await ctx.prisma.filmacionPorRoles.deleteMany({ where: { id_rol: input.id_rol } });
 				if (!deleted_fechas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -1491,19 +1491,19 @@ export const RolesRouter = createTRPCRouter({
 				return saved_fechas;
 			}
 		}
-	),
+		),
 	saveRequisitosRol: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			fecha_presentacion: z.string(),
 			id_uso_horario: z.number(),
 			info_trabajo: z.string({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_big':
-						return { message: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres' };
-					default:
-						return { message: 'Formato de informacion de trabajo del rol invalido' };
+						case 'too_big':
+							return { message: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres' };
+						default:
+							return { message: 'Formato de informacion de trabajo del rol invalido' };
 					}
 				},
 			}).max(500),
@@ -1512,7 +1512,7 @@ export const RolesRouter = createTRPCRouter({
 			id_estado_donde_aceptan_solicitudes: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			
+
 			const requisitos = await ctx.prisma.requisitosPorRoles.upsert({
 				where: {
 					id_rol: input.id_rol
@@ -1567,7 +1567,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 
 			const saved_medios_multimedia_por_rol = await ctx.prisma.mediosMultimediaPorRoles.createMany({
-				data: input.medios_multimedia_a_incluir.map(m => { return {id_requisitos_por_roles: requisitos.id, id_medio_multimedia: m }})
+				data: input.medios_multimedia_a_incluir.map(m => { return { id_requisitos_por_roles: requisitos.id, id_medio_multimedia: m } })
 			})
 
 			if (!saved_medios_multimedia_por_rol) {
@@ -1579,20 +1579,20 @@ export const RolesRouter = createTRPCRouter({
 				});
 			}
 
-		
+
 			return input;
 		}
-	),
+		),
 	saveSelftapeRol: publicProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			indicaciones: z.string({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_big':
-						return { message: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres' };
-					default:
-						return { message: 'Formato de las indicaciones del selftape invalido' };
+						case 'too_big':
+							return { message: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres' };
+						default:
+							return { message: 'Formato de las indicaciones del selftape invalido' };
 					}
 				},
 			}).max(500),
@@ -1638,8 +1638,100 @@ export const RolesRouter = createTRPCRouter({
 			}
 			return selftape;
 		}
-	),
+		),
 
+
+
+	getAllComplete: publicProcedure
+		//.input(z.number())
+		.query(async ({ input, ctx }) => {
+			//if (input <= 0) return null;
+			const rol = await ctx.prisma.roles.findMany({
+				//where: { id: input },
+				include: {
+					compensaciones: {
+						include: {
+							sueldo: true,
+							compensaciones_no_monetarias: {
+								include: {
+									compensacion: true
+								}
+							}
+						}
+					},
+					filtros_demograficos: {
+						include: {
+							pais: true,
+							generos: {
+								include: {
+									genero: true
+								}
+							},
+							aparencias_etnicas: {
+								include: {
+									aparencia_etnica: true
+								}
+							},
+							animal: {
+								include: {
+									animal: true
+								}
+							}
+						}
+					},
+					habilidades: {
+						include: {
+							habilidades_seleccionadas: {
+								include: {
+									habilidad: true
+								}
+							}
+						}
+					},
+					requisitos: {
+						include: {
+							estado_republica: true,
+							idioma: true,
+							uso_horario: true,
+							medios_multimedia: {
+								include: {
+									medio_multimedia: true
+								}
+							}
+						}
+					},
+					nsfw: {
+						include: {
+							nsfw_seleccionados: {
+								include: {
+									nsfw: true
+								}
+							}
+						}
+					},
+					casting: {
+						include: {
+							estado_republica: true
+						}
+					},
+					filmaciones: {
+						include: {
+							estado_republica: true
+						}
+					},
+					selftape: true,
+					tipo_rol: true,
+
+					proyecto: {
+						include: {
+							tipo: true
+						}
+					}
+				}
+			});
+			return rol;
+		}
+		),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";
