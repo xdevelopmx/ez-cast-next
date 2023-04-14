@@ -12,6 +12,7 @@ interface Props {
 }
 
 export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
+    console.log('STATEEE PROYECTO', state);
     return (
         <Grid container>
             <Grid item xs={12}>
@@ -27,8 +28,27 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     noIconLabel={true}
                     label={<Typography fontWeight={600}>Agregar una foto de portada para tu proyecto</Typography>}
                     text_label_download='Descargar foto'
-                    files={[]}
-                    filetypes={['png', 'jpg', 'jpeg', 'mp4']}
+                    max_file_size={5120}
+                    download_url={state.files.foto_portada?.url}
+                    onDownloadUrlRemove={(url) => {
+                        console.log(url);
+                        /*
+                        if (url === state.files.urls.carta_responsiva) {
+                                onFormChange({ 
+                                    files: { 
+                                        ...state.files, 
+                                        urls: {
+                                            ...state.files.urls,
+                                            carta_responsiva: undefined
+                                        }
+                                    } 
+                                })
+                            }
+                        }}
+                        */
+                    }}
+                    files={(state.files.foto_portada) ? [state.files.foto_portada] : []}
+                    filetypes={['png', 'jpg', 'jpeg']}
                     maxWidth={400}
                     height={100}
                     onChange={(files: File[]) => {
@@ -37,19 +57,18 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                             return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {
-                            const file = files_conv[0];
-                            if (file) {
-                                onFormChange({
-                                    files: {
-                                        ...state.files,
-                                        foto_portada: { base64: file.base64, name: file.file.name, type: file.file.type }
-                                    }    
-                                })
-                            }
-                            // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
+                            console.log(files_conv)
+                            onFormChange({ files: { 
+                                ...state.files, 
+                                foto_portada: files_conv[0], 
+                                touched: {
+                                    ...state.files.touched,
+                                    foto_portada: true
+                                }
+                            } })
                         }).catch((err) => {
                             console.log(err);
-                            //onFormChange({ files: { ...state.files, carta_responsiva: undefined } })
+                            onFormChange({ files: { ...state.files, foto_portada: undefined } })
                         });
                     }}
                 />

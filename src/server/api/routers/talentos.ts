@@ -262,7 +262,11 @@ export const TalentosRouter = createTRPCRouter({
 					},
 					creditos: {
 						include: {
-							creditos: true
+							creditos: {
+								include: {
+									media: true
+								}
+							}
 						}
 					},
 					habilidades: true,
@@ -864,204 +868,161 @@ export const TalentosRouter = createTRPCRouter({
 	saveMedios: protectedProcedure
 		.input(z.object({ 
 			fotos: z.array(z.object({
-				id: z.number().nullish(),
+				id: z.number(),
 				nombre: z.string(),
 				type: z.string(),
 				url: z.string(),
 				clave: z.string(),
 				referencia: z.string(),
 				identificador: z.string()
-			})),
+			})).nullish(),
 			videos: z.array(z.object({
-				id: z.number().nullish(),
+				id: z.number(),
 				nombre: z.string(),
 				type: z.string(),
 				url: z.string(),
 				clave: z.string(),
 				referencia: z.string(),
 				identificador: z.string()
-			})),
+			})).nullish(),
 			audios: z.array(z.object({
-				id: z.number().nullish(),
+				id: z.number(),
 				nombre: z.string(),
 				type: z.string(),
 				url: z.string(),
 				clave: z.string(),
 				referencia: z.string(),
 				identificador: z.string()
-			})),
+			})).nullish(),
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('INPUT saveMedios', input)
 			const user = ctx.session.user; 
 			const saved_files: {ids_fotos: number[], ids_videos: number[], ids_audios: number[]} = {ids_fotos: [], ids_videos: [], ids_audios: []};
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				// obtenemos todas las imagenes de perfil del talento 
-				const fotos = await ctx.prisma.mediaPorTalentos.findMany({
-					where: {
-						media: {
+				
+				if (!input.fotos || input.fotos.length > 0) {
+					await ctx.prisma.media.deleteMany({
+						where: {
 							referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
-						}
-					},
-					include: {
-						media: true
-					}
-				})
+						},
+					})
+				}
 
-				// si hay fotos en almacenadas en la bd
-				if (fotos.length > 0) {
-					const ids_fotos_to_be_deleted = fotos.map((foto) => {
-						if (input.fotos.some(f => f.id && f.id === foto.id_media)) {
-							// si la foto que se esta agregando tiene un id entonces significa que ya ha sido guardado anteriormente
-							// por lo que nos lo brincamos en la parte de eliminar y guardamos el id
-							saved_files.ids_fotos.push(foto.id_media);
-							return 0;
-						}
-						return foto.id;
-					}).filter(f => f > 0);
-
-					// si hay fotos que eliminar entonces entra a eliminar todos los ids que no se encuentren en las nuevas fotos
-					if (ids_fotos_to_be_deleted.length > 0) {
-						await ctx.prisma.media.deleteMany({
+				if (input.fotos) {
+					const media_fotos_saved = await Promise.all(input.fotos.map(async (f) => {
+						const saved = await ctx.prisma.media.upsert({
 							where: {
-								id: {
-									in: ids_fotos_to_be_deleted
-								}
+								id: f.id
+							},
+							update: {
+								nombre: f.nombre,
+								type: f.type,
+								url: f.url,
+								clave: f.clave,
+								referencia: f.referencia,
+								identificador: f.identificador
+							},
+							create: {
+								nombre: f.nombre,
+								type: f.type,
+								url: f.url,
+								clave: f.clave,
+								referencia: f.referencia,
+								identificador: f.identificador
 							}
-						})
+						});
+						return saved.id;
+					}));
+	
+					if (media_fotos_saved.length > 0) {
+						saved_files.ids_fotos.push(...media_fotos_saved);
 					}
 				}
 
-				// si se agregaron fotos y no estan ya guardadas anteriorimente entonces guardamos
-				const fotos_to_save = input.fotos.filter(e => {
-					return e.id == null
-				})
-				
-				const media_fotos_saved = await Promise.all(fotos_to_save.map(async (f) => {
-					const saved = await ctx.prisma.media.create({
-						data: {
-							nombre: f.nombre,
-							type: f.type,
-							url: f.url,
-							clave: f.clave,
-							referencia: f.referencia,
-							identificador: f.identificador
-						}
-					});
-					return saved.id;
-				}));
-
-				if (media_fotos_saved.length > 0) {
-					saved_files.ids_fotos.push(...media_fotos_saved);
-				}
-
-				const videos = await ctx.prisma.mediaPorTalentos.findMany({
-					where: {
-						media: {
+				if (!input.videos || input.videos.length > 0) {
+					await ctx.prisma.media.deleteMany({
+						where: {
 							referencia: `VIDEOS-TALENTO-${user.id}`
-						}
-					},
-					include: {
-						media: true
-					}
-				})
+						},
+					})
+				}
 
-				if (videos.length > 0) {
-					const ids_videos_to_be_deleted = videos.map((video) => {
-						if (input.videos.some(f => f.id && f.id === video.id_media)) {
-							saved_files.ids_videos.push(video.id_media);
-							return 0;
-						}
-						return video.id;
-					}).filter(f => f > 0);
+				if (input.videos) {
 
-					if (ids_videos_to_be_deleted.length > 0) {
-						await ctx.prisma.media.deleteMany({
+					const media_videos_saved = await Promise.all(input.videos.map(async (f) => {
+						const saved = await ctx.prisma.media.upsert({
 							where: {
-								id: {
-									in: ids_videos_to_be_deleted
-								}
+								id: f.id
+							},
+							update: {
+								nombre: f.nombre,
+								type: f.type,
+								url: f.url,
+								clave: f.clave,
+								referencia: f.referencia,
+								identificador: f.identificador
+							},
+							create: {
+								nombre: f.nombre,
+								type: f.type,
+								url: f.url,
+								clave: f.clave,
+								referencia: f.referencia,
+								identificador: f.identificador
 							}
-						})
+						});
+						return saved.id;
+					}));
+	
+					if (media_videos_saved.length > 0) {
+						saved_files.ids_videos.push(...media_videos_saved);
 					}
 				}
 
-				// si se agregaron videos y no estan ya guardadas anteriorimente entonces guardamos
-				const videos_to_save = input.videos.filter(e => {
-					return e.id == null
-				})
-				
-				const media_videos_saved = await Promise.all(videos_to_save.map(async (v) => {
-					const saved = await ctx.prisma.media.create({
-						data: {
-							nombre: v.nombre,
-							type: v.type,
-							url: v.url,
-							clave: v.clave,
-							referencia: v.referencia,
-							identificador: v.identificador
-						}
-					});
-					return saved.id;
-				}));
 
-				if (media_videos_saved.length > 0) {
-					saved_files.ids_videos.push(...media_videos_saved);
-				}
-
-				const audios = await ctx.prisma.mediaPorTalentos.findMany({
-					where: {
-						media: {
+				if (!input.audios || input.audios.length > 0) {
+					await ctx.prisma.media.deleteMany({
+						where: {
 							referencia: `AUDIOS-TALENTO-${user.id}`
-						}
-					},
-					include: {
-						media: true
-					}
-				})
+						},
+					})
+				}
 
-				if (audios.length > 0) {
-					const ids_audios_to_be_deleted = audios.map((audio) => {
-						if (input.audios.some(f => f.id && f.id === audio.id_media)) {
-							saved_files.ids_audios.push(audio.id_media);
-							return 0;
-						}
-						return audio.id;
-					}).filter(f => f > 0);
+				if (input.audios) {
 
-					if (ids_audios_to_be_deleted.length > 0) {
-						await ctx.prisma.media.deleteMany({
+					const media_audios_saved = await Promise.all(input.audios.map(async (f) => {
+						const saved = await ctx.prisma.media.upsert({
 							where: {
-								id: {
-									in: ids_audios_to_be_deleted
-								}
+								id: f.id
+							},
+							update: {
+								nombre: f.nombre,
+								type: f.type,
+								url: f.url,
+								clave: f.clave,
+								referencia: f.referencia,
+								identificador: f.identificador
+							},
+							create: {
+								nombre: f.nombre,
+								type: f.type,
+								url: f.url,
+								clave: f.clave,
+								referencia: f.referencia,
+								identificador: f.identificador
 							}
-						})
+						});
+						return saved.id;
+					}));
+
+					if (media_audios_saved.length > 0) {
+						saved_files.ids_audios.push(...media_audios_saved);
 					}
 				}
 
-				// si se agregaron audios y no estan ya guardadas anteriorimente entonces guardamos
-				const audios_to_save = input.audios.filter(e => {
-					return e.id == null
-				})
-				
-				const media_audios_saved = await Promise.all(audios_to_save.map(async (a) => {
-					const saved = await ctx.prisma.media.create({
-						data: {
-							nombre: a.nombre,
-							type: a.type,
-							url: a.url,
-							clave: a.clave,
-							referencia: a.referencia,
-							identificador: a.identificador
-						}
-					});
-					return saved.id;
-				}));
 
-				if (media_audios_saved.length > 0) {
-					saved_files.ids_audios.push(...media_audios_saved);
-				}
+				
 
 				if (saved_files.ids_fotos.length > 0) {
 					const fotos_saved = await ctx.prisma.mediaPorTalentos.createMany({
@@ -1130,7 +1091,6 @@ export const TalentosRouter = createTRPCRouter({
 			});
 		}
 	),
-
 	saveCreditos: protectedProcedure
 		.input(z.object({ 
 			mostrar_anio_en_perfil: z.boolean(),
@@ -1141,10 +1101,22 @@ export const TalentosRouter = createTRPCRouter({
 				director: z.string(),
 				anio: z.number(),
 				destacado: z.boolean(),
-				clip_url: z.string()
+				media: z.object({
+					id: z.number(),
+					nombre: z.string(),
+					type: z.string(),
+					url: z.string(),
+					clave: z.string(),
+					referencia: z.string(),
+					identificador: z.string()
+				}).nullish()
 			}))
 		}))
 		.mutation(async ({ input, ctx }) => {
+			console.log('INPUT saveCreditos', input)
+			input.creditos.forEach(c => {
+				console.log(c.media)
+			})
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				const creditos_por_talentos = await ctx.prisma.creditosPorTalentos.upsert({
@@ -1168,7 +1140,7 @@ export const TalentosRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-
+				
 				const deleted_creditos = await ctx.prisma.creditoTalento.deleteMany({
 					where: {
 						id_creditos_por_talento: creditos_por_talentos.id
@@ -1183,13 +1155,55 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 
+				await ctx.prisma.media.deleteMany({
+					where: {
+						referencia: `CREDITOS-TALENTO-${user.id}`
+					}
+				})
+
+				console.log(deleted_creditos, 'DELEETED');
+
 				if (input.creditos.length > 0) {
-					const created_creditos = await ctx.prisma.creditoTalento.createMany({
-						data: input.creditos.map(credito => {
-							return {...credito, id_creditos_por_talento: creditos_por_talentos.id};
-						})
-					});
-		
+					
+					const created_creditos = await Promise.all(input.creditos.map(async (credito) => {
+							if (credito.media) {
+								const clip_media = await ctx.prisma.media.create({
+									data: {
+										nombre: credito.media.nombre,
+										type: credito.media.type,
+										url: credito.media.url,
+										clave: credito.media.clave,
+										referencia: credito.media.referencia,
+										identificador: credito.media.identificador
+									}
+								});
+								return await ctx.prisma.creditoTalento.create({
+									data: {
+										id_creditos_por_talento: creditos_por_talentos.id,
+										id_catalogo_proyecto: credito.id_catalogo_proyecto,
+										titulo: credito.titulo,
+										rol: credito.rol,
+										director: credito.director,
+										anio: credito.anio,
+										destacado: credito.destacado,
+										id_media_clip: clip_media.id
+									}
+								});
+							} else {
+								return await ctx.prisma.creditoTalento.create({
+									data: {
+										id_creditos_por_talento: creditos_por_talentos.id,
+										id_catalogo_proyecto: credito.id_catalogo_proyecto,
+										titulo: credito.titulo,
+										rol: credito.rol,
+										director: credito.director,
+										anio: credito.anio,
+										destacado: credito.destacado
+									}
+								});
+							}
+					}));
+
 					if (!created_creditos) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',

@@ -11,6 +11,7 @@ import { Tag } from "../Tag";
 import { Close, QuestionMark } from "@mui/icons-material";
 import { MTooltip } from "../MTooltip";
 import { MContainer } from "~/components/layout/MContainer";
+import { FileManagerFront } from "~/utils/file-manager-front";
 
 const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
@@ -40,7 +41,7 @@ interface Props {
 
 function DragNDrop(props: Props) {
     const [files, setFiles] = useState<Map<string, File>>(new Map());
-    const [error, setError] = useState<{ type: 'MAX_FILES_REACHED' | 'MAX_SIZE_REACHED', message: string } | null>(null);
+    const [error, setError] = useState<{ type: 'MAX_FILES_REACHED' | 'MAX_SIZE_REACHED' | 'FILE_ALREADY_ADDED', message: string } | null>(null);
     const hide_error_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
     useEffect(() => {
         if (hide_error_time_ref.current) {
@@ -56,7 +57,6 @@ function DragNDrop(props: Props) {
         files.clear();
         if (props.files) {
             props.files.forEach(f => {
-                console.log(f);
                 files.set(`${f.file.name}-${f.file.size}-${f.file.type}`, f.file);
             })
             setFiles(new Map(files));
@@ -64,22 +64,25 @@ function DragNDrop(props: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.files]);
 
-    const handleChange = (selected_files: File[]) => {
-        console.log(selected_files)
+    const handleChange = async (selected_files: File[]) => {
         const max_files = (props.max_files) ? props.max_files : 1;
         const current_files_size = files.size + selected_files.length;
         if (current_files_size <= max_files) {
             setError(null);
-            Object.entries(selected_files).every(f => {
+            const all_files = Array.from(files.values());
+            const dont_have_repeated = await FileManagerFront.checkFilesRepeatedInArray(all_files.concat(Array.from(selected_files)));
+            if (!dont_have_repeated) {
+                setError({ type: 'FILE_ALREADY_ADDED', message: `El archivo ya habia sido agregado`});
+                return false;
+            }
+            Object.entries(selected_files).every((f) => {
                 const file_size = Math.round((f[1].size / 1024));
-        
                 if (props.max_file_size && file_size > props.max_file_size) {
                     const max_size = props.max_file_size; 
                     setError({ type: 'MAX_SIZE_REACHED', message: `El archivo super el limite maximo de espacio de ${(max_size) ? max_size : 0} kb`});
                     return false;
                 }
                 files.set(`${f[1].name}-${f[1].size}-${f[1].type}`, f[1]);
-
                 setFiles(new Map(files));
             })
             props.onChange(Array.from(files.values()));

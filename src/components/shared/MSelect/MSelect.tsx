@@ -53,7 +53,6 @@ export const MSelect: FC<Props> = ({
             }
         }
     }
-    console.log(id, default_value)
     return (
         <FormControl sx={styleRoot}>
             {label_element}

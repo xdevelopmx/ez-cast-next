@@ -11,6 +11,7 @@ import { Close, Delete, Star } from '@mui/icons-material';
 import { api } from '~/utils/api';
 import useNotify from '~/hooks/useNotify';
 import { MTooltip } from '~/components/shared/MTooltip';
+import { FileManagerFront } from '~/utils/file-manager-front';
 
 interface Props {
     state: TalentoFormCreditos,
@@ -92,7 +93,6 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         director: state.director,
                                         anio: state.anio,
                                         destacado: false,
-                                        clip_url: ''
                                     }])
                                 })
                             } else {
@@ -182,7 +182,39 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Star />
                             </IconButton>,
                             clip:
-                                <a onClick={() => { console.log('xdxdxddxddx 1') }} style={{ padding: 6, fontWeight: 800, color: '#069cb1' }} className="btn  btn-social mr-1 ml-1"><Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />Añadir</a>,
+                                <Button style={{ minWidth: 150, padding: 6, fontWeight: 800, color: '#069cb1' }} className="btn  btn-social mr-1 ml-1" variant="outlined" component="label">
+                                    <MContainer direction='vertical'>
+                                        <>
+                                            <MContainer direction='horizontal'>
+                                                <Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />
+                                                <Typography fontSize={'0.9rem'} fontWeight={700}>
+                                                    {credito.clip ? 'Cambiar' : 'Añadir'}
+                                                </Typography>
+
+                                            </MContainer>
+                                            {credito.clip &&
+                                                <Typography fontSize={'0.7rem'} fontWeight={400}>
+                                                    {credito.clip.name.includes('clip') ? credito.clip.name : `clip-${credito.clip.name}`}
+                                                </Typography>
+                                            }
+                                        </>
+
+                                    </MContainer>
+                                    <input onChange={(ev) => {
+                                        if (ev.target.files) {
+                                            const file = ev.target.files[0];
+                                            onFormChange({
+                                                creditos: state.creditos.map(c => {
+                                                    if (c.id === credito.id) {
+                                                        c.clip = file;
+                                                        c.touched = true;
+                                                    }
+                                                    return c;
+                                                })
+                                            })
+                                        }
+                                    }} hidden accept="video/mp4, video/mov" type="file" />
+                                </Button>,
                             acciones:
                                 <Button style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }} onClick={() => {
                                     onFormChange({ creditos: state.creditos.filter(c => c.id !== credito.id) })

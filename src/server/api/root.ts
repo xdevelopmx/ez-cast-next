@@ -15,7 +15,7 @@ export type Archivo = {
 }
 
 export type NewMedia = {
-  id?: number,
+  id: number,
   nombre: string,
   type: string,
   url: string,

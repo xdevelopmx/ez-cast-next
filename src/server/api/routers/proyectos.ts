@@ -49,7 +49,9 @@ export const ProyectosRouter = createTRPCRouter({
 							tipo_proyecto: true
 						}
 					},
-					estado_republica: true
+					estado_republica: true,
+					foto_portada: true,
+					archivo: true,
 				}
 			});
 			return proyecto;
@@ -117,6 +119,128 @@ export const ProyectosRouter = createTRPCRouter({
 			});
 		}
 	),
+	saveProyectoFiles: protectedProcedure
+    	.input(z.object({ 
+			id_proyecto: z.number(),
+			foto_portada: z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish(),
+			archivo: z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			console.log('INPUT saveProyectoFiles', input)
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				const ids_files: { id_archivo_media: number | null, id_foto_portada_media: number | null} = {id_archivo_media: null, id_foto_portada_media: null};
+				let proyecto = await ctx.prisma.proyecto.findFirst({
+					where: {
+						id: input.id_proyecto
+					}
+				});
+
+				if (proyecto) {
+
+					if (input.archivo) {
+						const updated_archivo = await ctx.prisma.media.upsert({
+							where: {
+								id: (input.archivo.id) ? input.archivo.id : 0
+							},
+							update: {
+								nombre: input.archivo.nombre,
+								type: input.archivo.type,
+								url: input.archivo.url,
+								clave: input.archivo.clave,
+								referencia: input.archivo.referencia,
+								identificador: input.archivo.identificador,
+							},
+							create: {
+								nombre: input.archivo.nombre,
+								type: input.archivo.type,
+								url: input.archivo.url,
+								clave: input.archivo.clave,
+								referencia: input.archivo.referencia,
+								identificador: input.archivo.identificador,
+							},
+						})
+						ids_files.id_archivo_media = updated_archivo.id;
+					}
+	
+					if (input.foto_portada) {
+						const updated_foto_portada = await ctx.prisma.media.upsert({
+							where: {
+								id: (input.foto_portada.id) ? input.foto_portada.id : 0
+							},
+							update: {
+								nombre: input.foto_portada.nombre,
+								type: input.foto_portada.type,
+								url: input.foto_portada.url,
+								clave: input.foto_portada.clave,
+								referencia: input.foto_portada.referencia,
+								identificador: input.foto_portada.identificador,
+							},
+							create: {
+								nombre: input.foto_portada.nombre,
+								type: input.foto_portada.type,
+								url: input.foto_portada.url,
+								clave: input.foto_portada.clave,
+								referencia: input.foto_portada.referencia,
+								identificador: input.foto_portada.identificador,
+							},
+						})
+						ids_files.id_foto_portada_media = updated_foto_portada.id;
+					}
+					
+					if (proyecto.id_archivo_media && !ids_files.id_archivo_media) {
+						await ctx.prisma.media.delete({
+							where: {
+								id: proyecto.id_archivo_media
+							},
+						});
+					}
+
+					if (proyecto.id_foto_portada_media && !ids_files.id_foto_portada_media) {
+						await ctx.prisma.media.delete({
+							where: {
+								id: proyecto.id_foto_portada_media
+							},
+						});
+					}
+
+					proyecto = await ctx.prisma.proyecto.update({
+						where: {
+							id: proyecto.id
+						},
+						data: {
+							id_archivo_media: ids_files.id_archivo_media,
+							id_foto_portada_media: ids_files.id_foto_portada_media
+						}
+					})
+				}
+		
+				return proyecto;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalento puede modificar la informacion general',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
   	updateProyecto: protectedProcedure
     	.input(z.object({ 
 			id: z.number().nullish(),
@@ -142,19 +266,7 @@ export const ProyectosRouter = createTRPCRouter({
 				id_estado_republica: z.number().min(1),
 				compartir_nombre: z.boolean(),
 				estatus: z.string(),
-			}),
-			files: z.object({
-				archivo: z.object({
-					base64: z.string(),
-					name: z.string(),
-					type: z.string()
-				}).nullish(),
-				foto_portada: z.object({
-					base64: z.string(),
-					name: z.string(),
-					type: z.string()
-				}).nullish(),
-			}).nullish()
+			})
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log(input);

@@ -79,7 +79,12 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
                                 const base64 = await FileManagerFront.convertFileToBase64(f);
-                                return { base64: base64, name: f.name, file: f };
+                                const file_on_state = state.fotos.filter(foto => FileManagerFront.compareBase64Strings(base64, foto.base64));
+                                if (file_on_state.length > 0) {
+                                    return { base64: base64, name: f.name, file: f, id: file_on_state[0]?.id, url: file_on_state[0]?.url };
+                                } else {
+                                    return { base64: base64, name: f.name, file: f };
+                                }
                             }));
                             files_converted.then((files_conv) => {
                                 onFormChange({ fotos: files_conv });
@@ -133,11 +138,18 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
                                         const base64 = await FileManagerFront.convertFileToBase64(f);
-                                        return { base64: base64, name: f.name, file: f };
+                                        const file_on_state = state.fotos.filter(foto => FileManagerFront.compareBase64Strings(base64, foto.base64));
+                                        if (file_on_state.length > 0) {
+                                            return { base64: base64, name: f.name, file: f, id: file_on_state[0]?.id };
+                                        } else {
+                                            return { base64: base64, name: f.name, file: f };
+                                        }
                                     }));
                                     files_converted.then((files_conv) => {
                                         console.log(files_conv)
-                                        onFormChange({ videos: files_conv });
+                                        onFormChange({ 
+                                            videos: files_conv 
+                                        });
                                     }).catch((err) => {
                                         console.log(err);
                                         onFormChange({ videos: [] });
@@ -169,7 +181,12 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
                                         const base64 = await FileManagerFront.convertFileToBase64(f);
-                                        return { base64: base64, name: f.name, file: f };
+                                        const file_on_state = state.fotos.filter(foto => FileManagerFront.compareBase64Strings(base64, foto.base64));
+                                        if (file_on_state.length > 0) {
+                                            return { base64: base64, name: f.name, file: f, id: file_on_state[0]?.id };
+                                        } else {
+                                            return { base64: base64, name: f.name, file: f };
+                                        }
                                     }));
                                     files_converted.then((files_conv) => {
                                         onFormChange({ audios: files_conv });

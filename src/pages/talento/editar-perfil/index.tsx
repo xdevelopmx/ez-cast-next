@@ -17,7 +17,7 @@ import { MTooltip } from "~/components/shared/MTooltip";
 import { useRouter } from "next/router";
 import { FileManagerFront } from "~/utils/file-manager-front";
 import { TalentosRouter } from "~/server/api/routers/talentos";
-import { Media } from "@prisma/client";
+import { CreditoTalento, Media } from "@prisma/client";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -50,6 +50,7 @@ export type TalentoFormInfoGral = {
 
 export type TalentoFormMedios = {
     fotos: Archivo[],
+    fotos_order: string,
     videos: Archivo[],
     audios: Archivo[],
 }
@@ -69,7 +70,10 @@ export type TalentoFormCreditos = {
         director: string,
         anio: number,
         destacado: boolean,
-        clip_url: string
+        id_clip_media?: number,
+        clip?: File,
+        touched?: boolean,
+        media?: Media
     }[]
 }
 
@@ -256,6 +260,7 @@ const initialState: TalentoForm = {
         fotos: [],
         videos: [],
         audios: [],
+        fotos_order: '',
     },
     creditos: {
         mostrar_anio_en_perfil: false,
@@ -544,7 +549,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
     const initMediaFiles = async (foto_perfil: Media | undefined, fotos: Media[], audios: Media[], videos: Media[]) => {
         const fotos_talento: Archivo[] = [];
         if (foto_perfil) {
-            const foto_file = await FileManagerFront.convertUrlToFile(foto_perfil.url, foto_perfil.type);
+            const foto_file = await FileManagerFront.convertUrlToFile(foto_perfil.url, foto_perfil.nombre, foto_perfil.type);
             const foto_file_base_64 = await FileManagerFront.convertFileToBase64(foto_file);
             fotos_talento.push({
                 id: foto_perfil.id,
@@ -555,7 +560,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             })
         }
         const fotos_perfil = await Promise.all(fotos.map(async (f) => {
-            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.type);
+            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.nombre, f.type);
             const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
             return {
                 id: f.id,
@@ -566,7 +571,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }));
         const audios_perfil = await Promise.all(audios.map(async (f) => {
-            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.type);
+            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.nombre, f.type);
             const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
             return {
                 id: f.id,
@@ -577,7 +582,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }));
         const videos_perfil = await Promise.all(videos.map(async (f) => {
-            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.type);
+            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.nombre, f.type);
             const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
             return {
                 id: f.id,
@@ -590,32 +595,54 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         dispatch({ type: 'update-medios', value: {
             ...state.medios,
             fotos: fotos_talento.concat(fotos_perfil),
+            fotos_order: fotos_talento.concat(fotos_perfil).map(f => f.id).join('-'),
             audios: audios_perfil,
             videos: videos_perfil
         }})
     }
-
+    const initCreditosFiles = async (mostrar_anio_perfil: boolean, creditos: (CreditoTalento & {media: Media | null})[]) => {
+        const creditos_with_file = await Promise.all(creditos.map(async (credito) => {
+            if (credito.media) {
+                const file = await FileManagerFront.convertUrlToFile(credito.media.url, credito.media.nombre, credito.media.type);
+                return {
+                    ...credito,
+                    clip: file,
+                    touched: false
+                }
+            }
+            return {...credito, touched: false};
+        }));
+        
+        dispatch({ type: 'update-creditos', value: {mostrar_anio_en_perfil: mostrar_anio_perfil, creditos: creditos_with_file}})
+        
+    }
     const handleMedia = async () => {
-        const media: {fotos: NewMedia[], videos: NewMedia[], audios: NewMedia[] } = { fotos: [], videos: [], audios: [] };
-        if (state.medios.fotos.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(state.medios.fotos.map((f, i) => {
-                return {path: `talentos/${user.id}/fotos-perfil`, name: `${(i === 0) ? 'foto-perfil' : `foto-${i}`}`, file: f.file, base64: f.base64}
+        const media: {fotos: NewMedia[] | null, videos: NewMedia[] | null, audios: NewMedia[] | null } = { fotos: [], videos: [], audios: [] };
+        const fotos_changed_order = state.medios.fotos.map(f => f.id).join('-') !== state.medios.fotos_order;
+        const no_fotos_added = state.medios.fotos.filter(v => v.url != null).length === state.medios.fotos.length;
+        if ((fotos_changed_order || !no_fotos_added) && state.medios.fotos.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(state.medios.fotos.map((f) => {
+                return {path: `talentos/${user.id}/fotos-perfil`, name: `${f.name}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
-                urls_saved.forEach((res) => {
-                    Object.entries(res).forEach((e, i) => {
+                urls_saved.forEach((res, j) => {
+                    Object.entries(res).forEach((e) => {
                         const url = e[1].url;  
-                        const type = state.medios.fotos[i]?.file.type;
-                        const original_name = state.medios.fotos[i]?.file.name;
+                        const type = state.medios.fotos[j]?.file.type;
+                        const id = state.medios.fotos[j]?.id;
+                        const original_name = state.medios.fotos[j]?.file.name;
                         if (url) {
-                            media.fotos.push({
-                                nombre: e[0],
-                                type: (type) ? type : '',
-                                url: (url) ? url : '',
-                                clave: `talentos/${user.id}/fotos-perfil/${e[0]}`,
-                                referencia: `FOTOS-PERFIL-TALENTO-${user.id}`,
-                                identificador: `${e[0]}`
-                            })  
+                            if (media.fotos) {
+                                media.fotos.push({
+                                    id: (id) ? id : 0,
+                                    nombre: e[0],
+                                    type: (type) ? type : '',
+                                    url: (url) ? url : '',
+                                    clave: `talentos/${user.id}/fotos-perfil/${e[0]}`,
+                                    referencia: `FOTOS-PERFIL-TALENTO-${user.id}`,
+                                    identificador: `foto-${(j === 0) ? 'perfil' : j.toString()}-talento-${user.id}`
+                                })
+                            }
                         } else {
                             notify('error', `${(original_name) ? `La imagen ${original_name} no se pudo subir` : 'Una imagen no se pudo subir'}`);
                         }
@@ -623,26 +650,33 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 });
             }
         }
-
-        if (state.medios.videos.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(state.medios.videos.map((f, i) => {
-                return {path: `talentos/${user.id}/videos`, name: `video-${i}`, file: f.file, base64: f.base64}
+        if (state.medios.fotos.length === 0) {
+            media.fotos = null;
+        }
+        
+        if (state.medios.videos.filter(v => v.url != null).length !== state.medios.videos.length && state.medios.videos.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(state.medios.videos.filter(f => (f.id == null)).map((f, i) => {
+                return {path: `talentos/${user.id}/videos`, name: `${f.name}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
-                urls_saved.forEach((res) => {
+                urls_saved.forEach((res, j) => {
                     Object.entries(res).forEach((e, i) => {
                         const url = e[1].url;  
-                        const type = state.medios.videos[i]?.file.type;
-                        const original_name = state.medios.fotos[i]?.file.name;
+                        const type = state.medios.videos[j]?.file.type;
+                        const id = state.medios.videos[j]?.id;
+                        const original_name = state.medios.videos[j]?.file.name;
                         if (url) {
-                            media.videos.push({
-                                nombre: e[0],
-                                type: (type) ? type : '',
-                                url: (url) ? url : '',
-                                clave: `talentos/${user.id}/videos/${e[0]}`,
-                                referencia: `VIDEOS-TALENTO-${user.id}`,
-                                identificador: `${e[0]}`
-                            })  
+                            if (media.videos) {
+                                media.videos.push({
+                                    id: (id) ? id : 0,
+                                    nombre: e[0],
+                                    type: (type) ? type : '',
+                                    url: (url) ? url : '',
+                                    clave: `talentos/${user.id}/videos/${e[0]}`,
+                                    referencia: `VIDEOS-TALENTO-${user.id}`,
+                                    identificador: `video-${j + 1}`
+                                })  
+                            }
                         } else {
                             notify('error', `${(original_name) ? `El video ${original_name} no se pudo subir` : 'Un video no se pudo subir'}`);
                         }
@@ -651,25 +685,33 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }
 
-        if (state.medios.audios.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(state.medios.audios.map((f, i) => {
-                return {path: `talentos/${user.id}/audios`, name: `audio-${i}`, file: f.file, base64: f.base64}
+        if (state.medios.videos.length === 0) {
+            media.videos = null;
+        }
+
+        if (state.medios.audios.filter(v => v.url != null).length !== state.medios.audios.length && state.medios.audios.length > 0) {
+            const urls_saved = await FileManagerFront.saveFiles(state.medios.audios.filter(f => (f.id == null)).map((f, i) => {
+                return {path: `talentos/${user.id}/audios`, name: `${f.name}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
-                urls_saved.forEach((res) => {
-                    Object.entries(res).forEach((e, i) => {
+                urls_saved.forEach((res, j) => {
+                    Object.entries(res).forEach((e) => {
                         const url = e[1].url;  
-                        const type = state.medios.audios[i]?.file.type;
-                        const original_name = state.medios.fotos[i]?.file.name;
+                        const type = state.medios.audios[j]?.file.type;
+                        const id = state.medios.audios[j]?.id;
+                        const original_name = state.medios.audios[j]?.file.name;
                         if (url) {
-                            media.audios.push({
-                                nombre: e[0],
-                                type: (type) ? type : '',
-                                url: (url) ? url : '',
-                                clave: `talentos/${user.id}/audios/${e[0]}`,
-                                referencia: `AUDIOS-TALENTO-${user.id}`,
-                                identificador: `${e[0]}`
-                            })  
+                            if (media.audios) {
+                                media.audios.push({
+                                    id: (id) ? id : 0,
+                                    nombre: e[0],
+                                    type: (type) ? type : '',
+                                    url: (url) ? url : '',
+                                    clave: `talentos/${user.id}/audios/${e[0]}`,
+                                    referencia: `AUDIOS-TALENTO-${user.id}`,
+                                    identificador: `audio-${j + 1}`
+                                })  
+                            }
                         } else {
                             notify('error', `${(original_name) ? `El audio ${original_name} no se pudo subir` : 'Un audio no se pudo subir'}`);
                         }
@@ -678,11 +720,54 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }
 
+        if (state.medios.audios.length === 0) {
+            media.audios = null;
+        }
+
         saveMedios.mutate({
             fotos: media.fotos,
             videos: media.videos,
             audios: media.audios
         })
+    }
+
+    const handleCreditos = async () => {
+        
+        const creditos = await Promise.all(state.creditos.creditos.map(async (credito, i) => {
+            if (credito.clip && credito.touched) {
+                const base_64 = await FileManagerFront.convertFileToBase64(credito.clip);
+                const urls_saved = await FileManagerFront.saveFiles([{path: `talentos/${user.id}/creditos`, name: `${(credito.clip.name.includes('clip') ? '' : 'clip-')}${credito.clip.name}`, file: credito.clip, base64: base_64}]);
+                const type = credito.clip.type;
+                const id = credito.id_clip_media;
+                const original_name = credito.clip.name;
+                
+                if (urls_saved.length > 0) {
+                    urls_saved.forEach((res, j) => {
+                        Object.entries(res).forEach((e) => {
+                            const url = e[1].url;  
+                            if (url) {
+                                credito.media = {
+                                    id: (id) ? id : 0,
+                                    nombre: e[0],
+                                    type: (type) ? type : '',
+                                    url: (url) ? url : '',
+                                    clave: `talentos/${user.id}/creditos/${e[0]}`,
+                                    referencia: `CREDITOS-TALENTO-${user.id}`,
+                                    identificador: `${(original_name.includes('clip') ? '' : 'clip-')}${original_name}`
+                                }
+                            } else {
+                                notify('error', `${(original_name) ? `El credito ${original_name} no se pudo subir` : 'Un credito no se pudo subir'}`);
+                            }
+                        })
+                    });
+                }
+            }
+            return {...credito};
+        }))
+        saveCreditos.mutate({
+            mostrar_anio_en_perfil: state.creditos.mostrar_anio_en_perfil,
+            creditos: creditos
+        });
     }
 
     useEffect(() => {
@@ -736,12 +821,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
 
             if (talento.data.creditos) {
-                dispatch({
-                    type: 'update-creditos', value: {
-                        mostrar_anio_en_perfil: talento.data.creditos.mostrar_anio_perfil,
-                        creditos: (talento.data.creditos.creditos) ? talento.data.creditos.creditos : []
-                    }
-                })
+                void initCreditosFiles(talento.data.creditos.mostrar_anio_perfil, talento.data.creditos.creditos);
             }
 
             const habilidades = new Map<number, number[]>();
@@ -983,10 +1063,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                 }
 
                                 case 3: {
-                                    saveCreditos.mutate({
-                                        mostrar_anio_en_perfil: state.creditos.mostrar_anio_en_perfil,
-                                        creditos: state.creditos.creditos
-                                    });
+                                    void handleCreditos();
                                     break;
                                 }
 

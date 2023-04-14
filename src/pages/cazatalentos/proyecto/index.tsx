@@ -14,6 +14,9 @@ import { Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
 import { FileManager } from '~/utils/file-manager'
+import { FileManagerFront } from '~/utils/file-manager-front'
+import { Archivo } from '~/server/api/root';
+import { Media } from '@prisma/client';
 
 export type ProyectoForm = {
     id?: number,
@@ -36,15 +39,15 @@ export type ProyectoForm = {
     compartir_nombre: boolean,
     estatus: string,
     files: {
-        archivo?: {
-            base64: string,
-            name: string, 
-            type: string
+        archivo?: Archivo,
+        foto_portada?: Archivo,
+        media: {
+            archivo?: Media,
+            foto_portada?: Media,
         },
-        foto_portada?: {
-            base64: string,
-            name: string, 
-            type: string
+        touched: {
+            archivo: boolean,
+            foto_portada: boolean,
         }
     },
     errors: {
@@ -78,7 +81,13 @@ const initialState: ProyectoForm = {
     estatus: '',
     errors: {},
     hasErrors: null,
-    files: {}
+    files: {
+        media: {},
+        touched: {
+            archivo: false,
+            foto_portada: false,
+        }
+    }
 }
 
 function reducer(state: ProyectoForm, action: { type: string, value: { [key: string]: unknown } }) {
@@ -110,6 +119,49 @@ const Proyecto: NextPage = () => {
         refetchOnWindowFocus: false
     });
 
+    const initFiles = async () => {
+        const files: {
+            archivo?: Archivo,
+            foto_portada?: Archivo
+        } = {};
+        if (state.files.media.archivo) {
+            const file = await FileManagerFront.convertUrlToFile(state.files.media.archivo.url, state.files.media.archivo.nombre, state.files.media.archivo.type);
+            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            files.archivo = {
+                id: state.files.media.archivo.id,
+                base64: base_64,
+                name: state.files.media.archivo.nombre,
+                file: file,
+                url: state.files.media.archivo.url
+            }
+        }
+        if (state.files.media.foto_portada) {
+            const file = await FileManagerFront.convertUrlToFile(state.files.media.foto_portada.url, state.files.media.foto_portada.nombre, state.files.media.foto_portada.type);
+            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            files.foto_portada = {
+                id: state.files.media.foto_portada.id,
+                base64: base_64,
+                name: state.files.media.foto_portada.nombre,
+                file: file,
+                url: state.files.media.foto_portada.url
+            }
+        }
+        console.log('FILES', files);
+        dispatch({
+            type: 'update-proyecto-form',
+            value: {
+                files: {
+                    media: {
+                        archivo: undefined,
+                        foto_portada: undefined,
+                    },
+                    archivo: files.archivo,
+                    foto_portada: files.foto_portada
+                }
+            }
+        })
+    }
+
     useEffect(() => {
         if (proyecto.data) {
             dispatch({
@@ -134,19 +186,117 @@ const Proyecto: NextPage = () => {
                     id_estado_republica: proyecto.data.id_estado_republica,
                     compartir_nombre: proyecto.data.compartir_nombre,
                     estatus: proyecto.data.estatus,
+                    files: {
+                        media: {
+                            archivo: proyecto.data.archivo, 
+                            foto_portada: proyecto.data.foto_portada
+                        }
+                    }
                 }
             })
         }
     }, [proyecto.data, id]);
 
-    const updateProyecto = api.proyectos.updateProyecto.useMutation({
+
+    const updateProyectoFiles = api.proyectos.saveProyectoFiles.useMutation({
         onSuccess: (data) => {
-            notify('success', 'Se guardo el proyecto con exito');
-            if (redirect === 'back') {
-                router.back();
+            if (data) {
+                notify('success', 'Se guardo el proyecto con exito');
+                if (redirect === 'back') {
+                    router.back();
+                } else {
+                    void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${data.id}`);
+                }
             } else {
-                void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${data.id}`);
+                notify('error', 'Ocurrio un problema al actualizar el proyecto, por favor contacta a soporte');    
             }
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    });
+
+    useEffect(() => {
+        if (state.files.media.archivo || state.files.media.foto_portada) {
+            void initFiles();
+        }
+    }, [state.files.media]);
+
+    const updateProyecto = api.proyectos.updateProyecto.useMutation({
+        onSuccess: async (data) => {
+            const files: { foto_portada: Media | null, archivo: Media | null} = { foto_portada: null, archivo: null };
+            const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+            if (state.files.archivo && state.files.touched.archivo) {
+                const base_64 = await FileManagerFront.convertFileToBase64(state.files.archivo.file);
+                files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: 'archivo', file: state.files.archivo.file, base64: base_64});
+            } else {
+                if (state.files.archivo) {
+                    files.archivo = {
+                        id: (state.files.archivo?.id) ? state.files.archivo.id : 0,
+                        nombre: state.files.archivo?.name,
+                        type: (state.files.archivo?.file.type) ? state.files.archivo.file.type : '',
+                        url: (state.files.archivo.url) ? state.files.archivo.url : '',
+                        clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${state.files.archivo.name}`,
+                        referencia: `ARCHIVO-PROYECTO-${data.id}`,
+                        identificador: `archivo-proyecto-${data.id}`
+                    }
+
+                }
+            }
+            if (state.files.foto_portada && state.files.touched.foto_portada) {
+                const base_64 = await FileManagerFront.convertFileToBase64(state.files.foto_portada.file);
+                files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto_portada`, name: 'foto_portada', file: state.files.foto_portada.file, base64: base_64});
+            } else {
+                if (state.files.foto_portada) {
+                    files.foto_portada = {
+                        id: (state.files.foto_portada?.id) ? state.files.foto_portada.id : 0,
+                        nombre: state.files.foto_portada.name,
+                        type: (state.files.foto_portada?.file.type) ? state.files.foto_portada.file.type : '',
+                        url: (state.files.foto_portada.url) ? state.files.foto_portada.url : '',
+                        clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${state.files.foto_portada.name}`,
+                        referencia: `FOTO-PORTADA-PROYECTO-${data.id}`,
+                        identificador: `foto-portada-proyecto-${data.id}`
+                    }
+                }
+            }
+            const urls_saved = await FileManagerFront.saveFiles(files_to_be_saved);
+            if (urls_saved.length > 0) {
+                urls_saved.forEach((res, j) => {
+                    Object.entries(res).forEach((e) => {
+                        const url = e[1].url;  
+                        if (url) {
+                            if (e[0] === 'archivo') {
+                                const arch = state.files.archivo;
+                                files.archivo = {
+                                    id: (arch?.id) ? arch.id : 0,
+                                    nombre: e[0],
+                                    type: (arch?.file.type) ? arch.file.type : '',
+                                    url: url,
+                                    clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${e[0]}`,
+                                    referencia: `ARCHIVO-PROYECTO-${data.id}`,
+                                    identificador: `archivo-proyecto-${data.id}`
+                                }
+                            }
+                            if (e[0] === 'foto_portada') {
+                                const foto = state.files.foto_portada;
+                                files.foto_portada = {
+                                    id: (foto?.id) ? foto.id : 0,
+                                    nombre: e[0],
+                                    type: (foto?.file.type) ? foto.file.type : '',
+                                    url: url,
+                                    clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${e[0]}`,
+                                    referencia: `FOTO-PORTADA-PROYECTO-${data.id}`,
+                                    identificador: `foto-portada-proyecto-${data.id}`
+                                }
+                            }
+                        }
+                    })
+                });
+            }
+            updateProyectoFiles.mutate({
+                id_proyecto: data.id,
+                ...files
+            })
         },
         onError: (error) => {
             notify('error', parseErrorBody(error.message));
@@ -156,6 +306,7 @@ const Proyecto: NextPage = () => {
     const handleSave = (action_redirect: 'back' | 'roles') => {
         setRedirect(action_redirect);
         if (!state.hasErrors) {
+            
             updateProyecto.mutate({
                 id: (state.id && state.id > 0) ? state.id : null,
                 sindicato: {
@@ -173,10 +324,6 @@ const Proyecto: NextPage = () => {
                     telefono_contacto: (state.telefono_contacto) ? state.telefono_contacto : '',
                     email_contacto: (state.email_contacto) ? state.email_contacto : ''
                 },
-                files: {
-                    archivo: state.files.archivo,
-                    foto_portada: state.files.foto_portada
-                }
             })
         } else {
             dispatch({
@@ -249,7 +396,7 @@ const Proyecto: NextPage = () => {
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.sinopsis, state.detalles_adicionales])
+    }, [state.sinopsis, state.detalles_adicionales, state.files.archivo])
 
     const locacion_proyecto = useMemo(() => {
         return <LocacionProyecto
@@ -269,7 +416,7 @@ const Proyecto: NextPage = () => {
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.compartir_nombre])
+    }, [state.compartir_nombre, state.files.foto_portada])
 
     return (
         <>

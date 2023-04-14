@@ -127,9 +127,8 @@ model CreditoTalento {
   director                String
   anio                    Int
   destacado               Boolean
-  clip_url                String
   id_media_clip           Int?
-  media                   Media?               @relation(fields: [id_media_clip], references: [id])
+  media                   Media?               @relation(fields: [id_media_clip], references: [id], onDelete: Cascade)
   creditos_por_talentos   CreditosPorTalentos @relation(fields: [id_creditos_por_talento], references: [id], onDelete: Cascade)
 }
 
@@ -194,16 +193,18 @@ model Proyecto {
   director             String
   agencia_publicidad   String
   sinopsis             String
-  url_archivo          String?
+  id_archivo_media Int?
   detalles_adicionales String
   id_estado_republica  Int
   created              DateTime                 @default(now())
-  url_foto_portada     String?
+  id_foto_portada_media Int?
   compartir_nombre     Boolean                  @default(true)
   estatus              String                   @default("Por Validar")
   id_cazatalentos      Int
   estado_republica     CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   cazatalentos         Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  archivo Media? @relation("media_archivo", fields: [id_archivo_media], references: [id], onDelete: Cascade)
+  foto_portada Media? @relation("media_foto_portada", fields: [id_foto_portada_media], references: [id], onDelete: Cascade)
   rol                  Roles[]
   tipo                 TipoProyectoPorProyecto?
   sindicato            SindicatoPorProyecto?
@@ -449,6 +450,8 @@ model Media {
   InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
   CreditoTalento            CreditoTalento[]
   RepresentantesPorTalentos RepresentantesPorTalentos[]
+  archivo_proyecto Proyecto[] @relation("media_archivo")
+  foto_portada_proyecto Proyecto[] @relation("media_foto_portada")
 }
 
 model MediaPorTalentos {
@@ -456,7 +459,7 @@ model MediaPorTalentos {
   id_talento Int
   id_media   Int
   talento    Talentos @relation(fields: [id_talento], references: [id])
-  media      Media    @relation(fields: [id_media], references: [id])
+  media      Media    @relation(fields: [id_media], references: [id], onDelete: Cascade)
 }
 
 model RequisitosPorRoles {

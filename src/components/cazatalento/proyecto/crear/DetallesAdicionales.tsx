@@ -66,8 +66,9 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                                 <Typography fontSize={14} fontWeight={600}>(Guión, Storyboard o Contrato)</Typography>
                             </>
                         }
+                        download_url={state.files.archivo?.url}
                         text_label_download='Descargar archivo'
-                        files={[]}
+                        files={(state.files.archivo) ? [state.files.archivo] : []}
                         filetypes={['pdf', 'doc', 'docx', 'mp4']}
                         height={100}
                         onChange={(files: File[]) => {
@@ -76,19 +77,18 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                                 return { base64: base64, name: f.name, file: f };
                             }));
                             files_converted.then((files_conv) => {
-                                const file = files_conv[0];
-                                if (file) {
-                                    onFormChange({
-                                        files: {
-                                            ...state.files,
-                                            archivo: { base64: file.base64, name: file.file.name, type: file.file.type }
-                                        }    
-                                    })
-                                }
-                                // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
+                                console.log(files_conv)
+                                onFormChange({ files: { 
+                                    ...state.files, 
+                                    archivo: files_conv[0],
+                                    touched: {
+                                        ...state.files.touched,
+                                        archivo: true
+                                    } 
+                                } })
                             }).catch((err) => {
                                 console.log(err);
-                                //onFormChange({ files: { ...state.files, carta_responsiva: undefined } })
+                                onFormChange({ files: { ...state.files, archivo: undefined } })
                             });
                         }}
                     />
