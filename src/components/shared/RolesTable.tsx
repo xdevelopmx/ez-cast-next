@@ -14,6 +14,7 @@ import type {
     CastingPorRoles, CatalogoEstadosRepublica, FilmacionPorRoles, RequisitosPorRoles, CatalogoTipoUsosHorario,
     MediosMultimediaPorRoles, CatalogoMediosMultimedia
 } from "@prisma/client"
+import { RolPreviewLoader } from "./RolPreviewLoader"
 
 export interface RolCompletoPreview extends Roles {
     proyecto: Proyecto & {
@@ -111,6 +112,9 @@ export const RolesTable = () => {
         limit: 2,
         siguienteCursor,
         anteriorCursor,
+    }, {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false
     })
 
     const loading = estados.isFetching || uniones.isFetching || tipos_roles.isFetching || tipos_proyectos.isFetching || generos_rol.isFetching || apariencias_etnicas.isFetching || preferencias_pago.isFetching
@@ -313,11 +317,13 @@ export const RolesTable = () => {
 
             <Grid xs={12} container gap={2} mt={4}>
                 {
-                    roles.data
+                    roles.data && !roles.isFetching
                         ? roles.data.roles.map(rol => (
                             <RolPreview key={rol.id} rol={rol as unknown as RolCompletoPreview} />
                         ))
-                        : <h1>Loading...</h1>
+                        : Array.from({ length: 2 }).map((_, i) => (
+                            <RolPreviewLoader key={i} />
+                        ))
                 }
             </Grid>
 

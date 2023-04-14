@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
 import { MContainer } from '../layout/MContainer'
-import { AnimatePresence, motion } from 'framer-motion';
-import { RolCompletoPreview } from './RolesTable';
+import { motion } from 'framer-motion';
+import { type RolCompletoPreview } from './RolesTable';
 import { conversorFecha } from '~/utils/conversor-fecha';
 
 interface PropsIndividualData {
