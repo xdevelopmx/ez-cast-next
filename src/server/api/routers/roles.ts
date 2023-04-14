@@ -1649,12 +1649,16 @@ export const RolesRouter = createTRPCRouter({
 			anteriorCursor: z.number().nullish(),
 
 			//filtros
+			tipo_rol: z.number().nullish(),
 		}))
 		.query(async ({ input, ctx }) => {
 			const limit = input.limit ?? 50;
 			const { anteriorCursor, siguienteCursor } = input;
+			await ctx.prisma.roles.count();
 			const roles = await ctx.prisma.roles.findMany({
-				//where: { id: input },
+				where: {
+					id_tipo_rol: input.tipo_rol || undefined
+				},  
 				take: (siguienteCursor ? 1 : anteriorCursor ? -1 : 1) * (limit + 1),
 				include: {
 					compensaciones: {
@@ -1754,6 +1758,7 @@ export const RolesRouter = createTRPCRouter({
 				orderBy: {
 					id: 'asc',
 				},
+				
 			});
 
 			let nextCursor: typeof siguienteCursor | undefined = undefined;

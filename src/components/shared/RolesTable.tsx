@@ -112,6 +112,8 @@ export const RolesTable = () => {
         limit: 2,
         siguienteCursor,
         anteriorCursor,
+
+        tipo_rol: 1
     }, {
         refetchOnWindowFocus: false,
         refetchOnMount: false
