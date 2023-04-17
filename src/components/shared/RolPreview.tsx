@@ -2,8 +2,9 @@ import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
 import { MContainer } from '../layout/MContainer'
-import { AnimatePresence, motion } from 'framer-motion';
-import { RolCompletoPreview } from './RolesTable';
+import { motion } from 'framer-motion';
+import { type RolCompletoPreview } from './RolesTable';
+import { conversorFecha } from '~/utils/conversor-fecha';
 
 interface PropsIndividualData {
     title: ReactNode;
@@ -66,7 +67,9 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                 >
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
-                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{rol.proyecto.nombre}</Typography>
+                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                {rol.proyecto.nombre} id: {rol.id}
+                            </Typography>
                         </Grid>
                         <Grid item xs={3}>
                             <Button
@@ -87,15 +90,35 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                         <Grid item xs={12}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Image src="/assets/img/iconos/icono_relog_blue.png" width={20} height={20} alt="" />
-                                <Typography sx={{ color: '#069cb1' }}>Fecha límite entrega de aplicaciones: 25/09/2021 12:00 a.m. MST</Typography>
+                                <Typography sx={{ color: '#069cb1' }}>
+                                    Fecha límite entrega de aplicaciones:
+                                    <Typography component={'span'} sx={{ color: '#069cb1', marginLeft: '5px' }}>
+                                        {rol.casting && rol.casting.length > 0 && conversorFecha(new Date(Math.max(
+                                            ...rol.casting.map(c => (c.fecha_fin?.getTime() || c.fecha_inicio?.getTime() || 0))
+                                        ))) || 'No especificado'}
+                                    </Typography>
+                                </Typography>
                             </Box>
                         </Grid>
                         <Grid container item xs={12}>
                             <Grid xs={6} item>
-                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>Inicio de proyecto: 10/10/2021 en Ciudad de México</Typography>
+                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
+                                    Inicio de proyecto:
+                                    <Typography component={'span'} sx={{ paddingLeft: '5px', paddingRight: '5px', color: '#069cb1', fontSize: '.9rem' }}>
+                                        {rol.filmaciones && rol.filmaciones.length > 0 && rol.filmaciones[0]?.fecha_inicio && conversorFecha(rol.filmaciones[0]?.fecha_inicio) || 'No especificado'}
+                                    </Typography>
+                                    en {rol.casting && rol.casting.length > 0 && rol.casting[0]?.estado_republica.es || 'No especificado'}
+                                </Typography>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>Aceptando aplicaciones de: Todos los estados</Typography>
+                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
+                                    Aceptando aplicaciones de:
+                                    <Typography component={'span'} sx={{ marginLeft: '5px', color: '#069cb1', fontSize: '.9rem' }}>
+                                        {rol.casting && rol.casting.length > 0 && rol.casting.reduce((acumulador, current) => (
+                                            acumulador += current.estado_republica.es + ', '
+                                        ), '').slice(0, -2) || 'No especificado'}
+                                    </Typography>
+                                </Typography>
                             </Grid>
                         </Grid>
 
@@ -117,7 +140,7 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                         <Grid xs={12}>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    {rol.proyecto.tipo.descripcion}
+                                    {rol.proyecto.tipo.tipo_proyecto.es}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 
@@ -141,11 +164,11 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                                         </>
                                 }
 
-
                                 <Typography>
-                                    Sin unión
+                                    {rol.proyecto.sindicato.sindicato.es}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+
                                 <Button onClick={() => setShowPreview(v => !v)}>
                                     <MotionImage
                                         src="/assets/img/iconos/arrow_d_blue.svg"
@@ -163,25 +186,63 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                                     {rol?.tipo_rol?.tipo || 'No especificado'}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+
+                                {
+                                    rol.filtros_demograficos && rol.filtros_demograficos.generos && rol.filtros_demograficos.generos.length > 0
+                                        ?
+                                        rol.filtros_demograficos.generos.map((g) => (
+                                            <Fragment key={g.id}>
+                                                <Typography>
+                                                    {g.genero.es}
+                                                </Typography>
+                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                            </Fragment>
+                                        ))
+                                        : <>
+                                            <Typography>
+                                                No especificado
+                                            </Typography>
+                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                        </>
+                                }
+
+
+
                                 <Typography>
-                                    Mujer
+                                    {
+                                        rol.filtros_demograficos && rol.filtros_demograficos.rango_edad_inicio && rol.filtros_demograficos.rango_edad_fin
+                                            ? `${rol.filtros_demograficos.rango_edad_inicio}-${rol.filtros_demograficos.rango_edad_fin}`
+                                            : 'No especificado'
+                                    }
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+
+                                {
+                                    rol.filtros_demograficos && rol.filtros_demograficos.aparencias_etnicas && rol.filtros_demograficos.aparencias_etnicas.length > 0
+                                        ? rol.filtros_demograficos.aparencias_etnicas.map(ae => (
+                                            <Fragment key={ae.id}>
+                                                <Typography>
+                                                    {ae.aparencia_etnica.nombre}
+                                                </Typography>
+                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                            </Fragment>
+                                        ))
+                                        : <>
+                                            <Typography>
+                                                No especificado
+                                            </Typography>
+                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                        </>
+                                }
+
+
                                 <Typography>
-                                    18-25
-                                </Typography>
-                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                <Typography>
-                                    Latino/Hispano
-                                </Typography>
-                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                <Typography>
-                                    Nacionalidad
+                                    {rol.filtros_demograficos && rol.filtros_demograficos.pais.es || 'No especificado'}
                                 </Typography>
                             </Box>
                             <Typography>
                                 <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Descripción:</Typography>
-                                {rol?.descripcion || 'No especificado'}
+                                {rol?.descripcion ?? 'No especificado'}
                             </Typography>
 
                         </Grid>
@@ -197,52 +258,115 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
             >
 
                 <IndividualData title={'Habilidades:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Danza</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Canto</Typography>
+                    {
+                        rol.habilidades && rol.habilidades.habilidades_seleccionadas && rol.habilidades.habilidades_seleccionadas.length > 0
+                            ? rol.habilidades.habilidades_seleccionadas.map((h, i) => (
+                                <Fragment key={h.id}>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
+                                    {i !== rol.habilidades.habilidades_seleccionadas.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                </Fragment>
+                            ))
+                            : <>
+                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                    No especificado
+                                </Typography>
+                            </>
+                    }
                 </IndividualData>
 
                 <IndividualData title={'Desnudos o situaciones sexuales:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Si desnudos</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>No situación sexual</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Descripción del tipo de situación</Typography>
+                    {
+                        rol.nsfw && rol.nsfw.nsfw_seleccionados && rol.nsfw.nsfw_seleccionados.length > 0
+                            ? rol.nsfw.nsfw_seleccionados.map((n, i) => (
+                                <Fragment key={n.id}>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw.es}</Typography>
+                                    {i !== rol.nsfw.nsfw_seleccionados.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                </Fragment>
+                            ))
+                            : <>
+                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                    No especificado
+                                </Typography>
+                            </>
+                    }
                 </IndividualData>
 
                 <IndividualData title={'Locación de casting y fechas:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                    {
+                        rol.casting && rol.casting.length > 0
+                            ? rol.casting.map((c, i) => (
+                                <Fragment key={c.id}>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
+                                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{conversorFecha(c.fecha_inicio)}</Typography>
+                                    {c.fecha_fin && <Typography component={'span'} sx={{ color: '#928F8F', paddingLeft: '5px' }}> a {conversorFecha(c.fecha_fin)}</Typography>}
+                                    {i !== rol.casting.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                </Fragment>
+                            ))
+                            : <>
+                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                    No especificado
+                                </Typography>
+                            </>
+                    }
                 </IndividualData>
 
 
                 <IndividualData title={'Locación de filmación y fechas:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                    {
+                        rol.filmaciones && rol.filmaciones.length > 0
+                            ? rol.filmaciones.map((c, i) => (
+                                <Fragment key={c.id}>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
+                                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{conversorFecha(c.fecha_inicio)}</Typography>
+                                    {c.fecha_fin && <Typography component={'span'} sx={{ color: '#928F8F', paddingLeft: '5px' }}> a {conversorFecha(c.fecha_fin)}</Typography>}
+                                    {i !== rol.filmaciones.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                </Fragment>
+                            ))
+                            : <>
+                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                    No especificado
+                                </Typography>
+                            </>
+                    }
                 </IndividualData>
 
                 <IndividualData title={'Presentación de solicitud:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Lugar</Typography>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                        {rol?.requisitos?.estado_republica?.es || 'No especificado'}
+                    </Typography>
                     <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>25/09/2021</Typography>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                        {rol.requisitos && rol.requisitos.presentacion_solicitud && conversorFecha(rol.requisitos.presentacion_solicitud) || 'No especificado'}
+                    </Typography>
                     <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>14:00 UTC(CNM) – 5</Typography>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                        {rol.requisitos && rol.requisitos.uso_horario.es || 'No especificado'}
+                    </Typography>
                 </IndividualData>
 
                 <IndividualData title={'Información del trabajo/notas:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Disponibilidad de viajar</Typography>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                        {rol.detalles_adicionales || 'No especificado'}
+                    </Typography>
                 </IndividualData>
 
                 <IndividualData title={'Requisitos:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Foto</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Video</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Audio</Typography>
-                    <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>Texto requisitos o notas</Typography>
+                    {
+                        rol.requisitos && rol.requisitos.medios_multimedia && rol.requisitos.medios_multimedia.length > 0
+                            ? rol.requisitos.medios_multimedia.map((m, i) => (
+                                <Fragment key={m.id}>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
+                                    {i !== rol.requisitos.medios_multimedia.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                </Fragment>
+                            ))
+                            : <>
+                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                    No especificado
+                                </Typography>
+                            </>
+                    }
                 </IndividualData>
 
                 <IndividualData title={'Archivos adicionales:'} stylesContainerData={{ gap: 10 }}>
