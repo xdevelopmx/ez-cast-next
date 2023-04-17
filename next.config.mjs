@@ -9,6 +9,9 @@
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  images: {
+    domains: ['elasticbeanstalk-us-east-1-232555073760.s3.amazonaws.com'],
+  },
 
   /**
    * If you have the "experimental: { appDir: true }" setting enabled, then you

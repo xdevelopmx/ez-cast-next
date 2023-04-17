@@ -36,6 +36,7 @@ export const CazatalentosRouter = createTRPCRouter({
                 where: {id: input},
                 include: {
                     redes_sociales: true,
+					foto_perfil: true
                 }
             });
             // hay que excluir la pass en 
@@ -45,6 +46,14 @@ export const CazatalentosRouter = createTRPCRouter({
     ),
 	updatePerfil: protectedProcedure
     	.input(z.object({ 
+			foto_perfil: z.object({
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish(),
 			nombre: z.string(),
             posicion: z.string(),
 			compania: z.string(),
@@ -66,13 +75,32 @@ export const CazatalentosRouter = createTRPCRouter({
 		.mutation(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				let id_foto_perfil_media: number | undefined = undefined;
+				if (input.foto_perfil) {
+					const foto_perfil = await ctx.prisma.media.findFirst({
+						where: {
+							identificador: `foto-perfil-cazatalentos-${user.id}`
+						}
+					})
+					const saved_foto = await ctx.prisma.media.upsert({
+						where: {
+							id: (foto_perfil) ? foto_perfil.id : 0
+						},
+						update: input.foto_perfil,
+						create: input.foto_perfil
+					})
+					if (saved_foto) {
+						id_foto_perfil_media = saved_foto.id;
+					}
+				}
 				const cazatalento = await ctx.prisma.cazatalentos.update({
 					where: {id: parseInt(user.id)},
 					data: {
                         posicion: input.posicion,
 						nombre: input.nombre,
                         biografia: input.biografia,
-						compania: input.compania
+						compania: input.compania,
+						id_foto_perfil_media: id_foto_perfil_media
 					}
 				})
 

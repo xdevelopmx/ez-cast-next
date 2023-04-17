@@ -30,27 +30,11 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     text_label_download='Descargar foto'
                     max_file_size={5120}
                     download_url={state.files.foto_portada?.url}
-                    onDownloadUrlRemove={(url) => {
-                        console.log(url);
-                        /*
-                        if (url === state.files.urls.carta_responsiva) {
-                                onFormChange({ 
-                                    files: { 
-                                        ...state.files, 
-                                        urls: {
-                                            ...state.files.urls,
-                                            carta_responsiva: undefined
-                                        }
-                                    } 
-                                })
-                            }
-                        }}
-                        */
-                    }}
                     files={(state.files.foto_portada) ? [state.files.foto_portada] : []}
                     filetypes={['png', 'jpg', 'jpeg']}
                     maxWidth={400}
                     height={100}
+                    
                     onChange={(files: File[]) => {
                         const files_converted = Promise.all(files.map(async (f) => {
                             const base64 = await FileManagerFront.convertFileToBase64(f);
@@ -60,15 +44,15 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                             console.log(files_conv)
                             onFormChange({ files: { 
                                 ...state.files, 
-                                foto_portada: files_conv[0], 
+                                foto_portada: files_conv[0],
                                 touched: {
                                     ...state.files.touched,
                                     foto_portada: true
-                                }
+                                } 
                             } })
                         }).catch((err) => {
                             console.log(err);
-                            onFormChange({ files: { ...state.files, foto_portada: undefined } })
+                            onFormChange({ files: { ...state.files, archivo: undefined } })
                         });
                     }}
                 />

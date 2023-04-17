@@ -11,218 +11,9 @@ import { api, parseErrorBody } from '~/utils/api';
 import { useSession } from "next-auth/react"
 import { TipoUsuario } from '~/enums';
 import useNotify from '~/hooks/useNotify';
-
-/*
-
-	<p className="text-white"><em>Productor en Un Lugar</em></p>
-				<p className="text-white menu_bio">Biografía breve, 100 caracteres dos renglones</p>
-				<div className="d-lg-flex justify-content-center box_social">
-					<a target="_blank" href="#">
-						<motion.img className=" m-2" src="/assets/img/iconos/icon_vimeo.svg" alt="" />
-					</a>
-					<a target="_blank" href="#">
-						<motion.img className=" m-2" src="/assets/img/iconos/icon_linkedin.svg" alt="" />
-					</a>
-					<a target="_blank" href="#">
-						<motion.img className=" m-2" src="/assets/img/iconos/icon_youtube.svg" alt="" />
-					</a>
-					<a target="_blank" href="#">
-						<motion.img className=" m-2" src="/assets/img/iconos/icon_imbd.svg" alt="" />
-					</a>
-					<a target="_blank" href="#">
-						<motion.img className=" m-2" src="/assets/img/iconos/icon_Twitwe.svg" alt="" />
-					</a>
-					<a target="_blank" href="#">
-						<motion.img className=" m-2" src="/assets/img/iconos/icon_insta.svg" alt="" />
-					</a>
-				</div>
-				<div className="d-lg-flex justify-content-center mt-2 mb-2">
-					<motion.img className="mr-2" src="/assets/img/iconos/icon_website.svg" alt="" />
-					<a target="_blank" href="#" className="text-white">www.ivanaguilao.com</a>
-				</div>
-
-*/
-
-
-/*
-
-<Grid item xs={12}  textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const pagina_web = form.redes_sociales['pagina_web'];
-										if (pagina_web && pagina_web.length > 0 && !URL_PATTERN.test(pagina_web)) {
-											return 'La url es invalida';
-										}
-										return undefined;
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['pagina_web']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, pagina_web: e.target.value}}) 
-									}}
-									label='Link a pagina web'
-								/>
-							</MContainer>
-						</Grid>
-						<Grid item xs={12}  textAlign={'center'}>
-							<Typography fontSize={'1rem'} fontWeight={400} variant="body1">{'Link a redes sociales'}</Typography>
-						</Grid>
-						<Grid item xs={12}  textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const vimeo = form.redes_sociales['vimeo'];
-										if (vimeo && vimeo.length > 0 && !URL_PATTERN.test(vimeo)) {
-											return 'La url es invalida';
-										}
-										return undefined;
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['vimeo']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, vimeo: e.target.value}}) 
-									}}
-									icon={{
-										element: <Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" />,
-										position: 'end'
-									}}
-									label='Vimeo'
-								/>
-							</MContainer>
-						</Grid>
-						<Grid item xs={12} sx={{mt: 1}}  textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const youtube = form.redes_sociales['youtube'];
-										if (youtube && youtube.length > 0 && !URL_PATTERN.test(youtube)) {
-											return 'La url es invalida';
-										}
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['youtube']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, youtube: e.target.value}}) 
-									}}
-									icon={{
-										element: <Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" />,
-										position: 'end'
-									}}
-									label='Youtube'
-								/>
-							</MContainer>
-						</Grid>
-						<Grid item xs={12}  textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const linkedin = form.redes_sociales['linkedin'];
-										if (linkedin && linkedin.length > 0 && !URL_PATTERN.test(linkedin)) {
-											return 'La url es invalida';
-										}
-										return undefined;
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['linkedin']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, linkedin: e.target.value}}) 
-									}}
-									icon={{
-										element: <Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" />,
-										position: 'end'
-									}}
-									label='Linkedin' 
-								/>
-							</MContainer>
-						</Grid>
-						<Grid item xs={12}  textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const instagram = form.redes_sociales['instagram'];
-										if (instagram && instagram.length > 0 && !URL_PATTERN.test(instagram)) {
-											return 'La url es invalida';
-										}
-										return undefined;
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['instagram']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, instagram: e.target.value}}) 
-									}}
-									icon={{
-										element: <Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" />,
-										position: 'end'
-									}}
-									label='Instagram' 
-								/>
-							</MContainer>
-						</Grid>
-						<Grid item xs={12} textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const twitter = form.redes_sociales['twitter'];
-										if (twitter && twitter.length > 0 && !URL_PATTERN.test(twitter)) {
-											return 'La url es invalida';
-										}
-										return undefined;
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['twitter']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, twitter: e.target.value}}) 
-									}}
-									icon={{
-										element: <Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" />,
-										position: 'end'
-									}}
-									label='Twitter' 
-								/>
-							</MContainer>
-						</Grid>
-						<Grid item xs={12} textAlign={'start'}>
-							<MContainer direction='vertical' styles={{alignContent: 'space-around'}}>
-								<FormGroup
-									show_error_message={false}
-									error={(() => {
-										const imdb = form.redes_sociales['imdb'];
-										if (imdb && imdb.length > 0 && !URL_PATTERN.test(imdb)) {
-											return 'La url es invalida';
-										}
-										return undefined;
-									})()}
-									style={{width: 200}}
-									labelStyle={{ fontWeight: 800, fontSize: '1.1rem', textAlign: 'start' }}
-									value={form.redes_sociales['imdb']}
-									onChange={(e) => { 
-										setForm({...form, redes_sociales: {...form.redes_sociales, imdb: e.target.value}}) 
-									}}
-									icon={{
-										element: <Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" />,
-										position: 'end'
-									}}
-									label='IMDB' 
-								/>
-							</MContainer>
-						</Grid>
-
-*/
-
-const URL_PATTERN = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/;
+import { Media } from '@prisma/client';
+import { Archivo } from '~/server/api/root';
+import { FileManagerFront } from '~/utils/file-manager-front';
 
 export const MenuLateral = () => {
 	const [form, setForm] = useState<{
@@ -230,9 +21,10 @@ export const MenuLateral = () => {
 		nombre: string,
 		biografia?: string,
 		redes_sociales: { [nombre: string]: string },
-
 		posicion: string,
 		compania: string,
+		foto_perfil: string,
+		foto_selected: Archivo | null,
 	}>({
 		tipo_usuario: TipoUsuario.NO_DEFINIDO,
 		nombre: '',
@@ -248,13 +40,16 @@ export const MenuLateral = () => {
 		},
 
 		posicion: '',
-		compania: ''
+		compania: '',
+		foto_selected: null,
+		foto_perfil: ''
 	});
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
 		refetchOnWindowFocus: false
 	});
+	
 	const talento = api.talentos.getById.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
@@ -286,23 +81,27 @@ export const MenuLateral = () => {
 		}
 	})
 
-	const is_fetching = talento.isFetching || info_gral_talento.isFetching;
+	const is_fetching = talento.isFetching || info_gral_talento.isFetching || cazatalentos.isFetching;
 
 	const user_info = useMemo(() => {
 		if (session.data && session.data.user) {
 			switch (session.data.user.tipo_usuario) {
 				case TipoUsuario.TALENTO: {
 					if (talento.data && info_gral_talento.data) {
-						//const redes_sociales: {[red_social: string]: string} = {};
-						//info_gral_talento.data.redes_sociales.forEach(red => {
-						//	redes_sociales[red.nombre] = red.url;
-						//});
+						let foto_perfil = '';
+						if (talento.data) {
+							const foto = talento.data.media.filter(m => m.media.identificador.includes('foto-perfil-talento'))[0];
+							if (foto) {
+								foto_perfil = foto.media.url;
+							}
+						}
 						return {
 							tipo_usuario: TipoUsuario.TALENTO,
 							nombre: talento.data.nombre,
 							apellido: talento.data.apellido,
 							biografia: info_gral_talento.data.info_basica?.biografia,
-							redes_sociales: {}
+							redes_sociales: {},
+							foto_perfil: foto_perfil
 						}
 					}
 				}
@@ -312,6 +111,10 @@ export const MenuLateral = () => {
 						cazatalentos.data.redes_sociales.forEach(red => {
 							redes_sociales[red.nombre] = red.url;
 						});
+						let foto_perfil = '';
+						if (cazatalentos.data.foto_perfil) {
+							foto_perfil = cazatalentos.data.foto_perfil.url;
+						}
 						return {
 							tipo_usuario: TipoUsuario.CAZATALENTOS,
 							nombre: cazatalentos.data.nombre,
@@ -321,6 +124,7 @@ export const MenuLateral = () => {
 
 							posicion: cazatalentos.data.posicion,
 							compania: cazatalentos.data.compania,
+							foto_perfil: foto_perfil
 						}
 					}
 				}
@@ -336,12 +140,27 @@ export const MenuLateral = () => {
 				nombre: user_info.nombre,
 				biografia: user_info.biografia,
 				redes_sociales: user_info.redes_sociales,
-
 				posicion: user_info.posicion || '',
 				compania: user_info.compania || '',
+				foto_selected: null,
+				foto_perfil: user_info.foto_perfil,
 			});
 		}
 	}, [user_info]);
+
+	const foto_perfil = useMemo(() => {
+		if (form.foto_selected) {
+			return form.foto_selected.base64;
+		} else {
+			if (form.foto_perfil !== '') {
+				return form.foto_perfil;
+			}
+			return '/assets/img/no-user-image.png';
+		}
+
+	}, [form.foto_perfil, form.foto_selected])
+
+	console.log('FOTO PERFIL', foto_perfil)
 
 	return (
 		<>
@@ -393,26 +212,32 @@ export const MenuLateral = () => {
 					<Grid container justifyContent="center">
 						<Grid item xs={12}>
 							<div className="mt-3 mb-3 avatar" style={{ position: 'relative' }}>
-								<motion.img src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar" />
+								<motion.img width={128} src={foto_perfil} alt="avatar" />
 								<IconButton
 									style={{
 										position: 'absolute',
 										top: '35%',
 										left: '35%',
-										color: 'white',
+										color: (user_info?.foto_perfil === '') ? 'black' : 'white',
 									}}
 									aria-label="Cancelar edicion usuario"
-									onClick={() => {
-										setEditMode(edit => !edit)
-									}}
 								>
+									
 									<CameraAlt />
 								</IconButton>
 							</div>
-							<Button color={'inherit'} style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => {
-								console.log('xd')
-							}} variant='text'>
+							<Button color={'inherit'} style={{ textDecoration: 'underline', fontWeight: 800 }} variant='text' component="label">
 								Cambiar foto
+								<input onChange={(ev) => {
+									if (ev.target.files) {
+										const file = ev.target.files[0];
+										if (file) {
+											void FileManagerFront.convertFileToBase64(file).then(base64 => {
+												setForm({...form, foto_selected: { base64: base64, name: file.name, file: file}})
+											})
+										}
+									}
+								}} hidden accept="image/png, image/jpg, image/jpeg" type="file" />
 							</Button>
 						</Grid>
 						<Grid item xs={12} sx={{ mt: 4 }} textAlign={'start'} maxHeight={'95vh'}>
@@ -757,23 +582,77 @@ export const MenuLateral = () => {
 									if (user_info) {
 										switch (user_info.tipo_usuario) {
 											case TipoUsuario.TALENTO: {
-												update_perfil_talento.mutate({
-													nombre: form.nombre,
-													biografia: (form.biografia) ? form.biografia : '',
-												})
+												if (talento.data && form.foto_selected) {
+													void FileManagerFront.saveFiles([{path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+														result.forEach((res) => {
+															if (talento.data) {
+																const response = res[`foto-perfil-talento-${talento.data.id}`];
+																if (response) {
+																	update_perfil_talento.mutate({
+																		foto_perfil: {
+																			nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
+																			type: (form.foto_selected) ? form.foto_selected.file.type : '',
+																			url: (response.url) ? response.url : '',
+																			clave: `talentos/${talento.data.id}/fotos-perfil/foto-perfil-talento-${talento.data.id}`,
+																			referencia: `FOTOS-PERFIL-TALENTO-${talento.data.id}`,
+																			identificador: `foto-perfil-talento-${talento.data.id}`
+																		},
+																		nombre: form.nombre,
+																		biografia: (form.biografia) ? form.biografia : '',
+																	})
+																}
+															}
+														})
+													});
+												} else {
+													update_perfil_talento.mutate({
+														nombre: form.nombre,
+														biografia: (form.biografia) ? form.biografia : '',
+													})
+												}
 												break;
 											}
 											case TipoUsuario.CAZATALENTOS: {
-												update_perfil_cazatalento.mutate({
-													nombre: form.nombre,
-													biografia: (form.biografia) ? form.biografia : '',
-													posicion: form.posicion,
-													compania: form.compania,
-													redes_sociales: Object.keys(form.redes_sociales).map(key => ({
-														nombre: key,
-														url: form.redes_sociales[key] || ''
-													}))
-												})
+												if (cazatalentos.data && form.foto_selected) {
+													void FileManagerFront.saveFiles([{path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+														result.forEach((res) => {
+															if (cazatalentos.data) {
+																const response = res[`foto-perfil-cazatalentos-${cazatalentos.data.id}`];
+																if (response) {
+																	update_perfil_cazatalento.mutate({
+																		foto_perfil: {
+																			nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
+																			type: (form.foto_selected) ? form.foto_selected.file.type : '',
+																			url: (response.url) ? response.url : '',
+																			clave: `cazatalentos/${cazatalentos.data.id}/foto-perfil/foto-perfil-cazatalentos-${cazatalentos.data.id}`,
+																			referencia: `FOTOS-PERFIL-CAZATALENTOS-${cazatalentos.data.id}`,
+																			identificador: `foto-perfil-cazatalentos-${cazatalentos.data.id}`
+																		},
+																		nombre: form.nombre,
+																		biografia: (form.biografia) ? form.biografia : '',
+																		posicion: form.posicion,
+																		compania: form.compania,
+																		redes_sociales: Object.keys(form.redes_sociales).map(key => ({
+																			nombre: key,
+																			url: form.redes_sociales[key] || ''
+																		}))
+																	})
+																}
+															}
+														})
+													});
+												} else {
+													update_perfil_cazatalento.mutate({
+														nombre: form.nombre,
+														biografia: (form.biografia) ? form.biografia : '',
+														posicion: form.posicion,
+														compania: form.compania,
+														redes_sociales: Object.keys(form.redes_sociales).map(key => ({
+															nombre: key,
+															url: form.redes_sociales[key] || ''
+														}))
+													})
+												}
 												break;
 											}
 										}
@@ -794,7 +673,7 @@ export const MenuLateral = () => {
 						<p className="h2 text-uppercase text-white mb-3"><b>EZ-CAST</b></p>
 						{user_info?.tipo_usuario === TipoUsuario.TALENTO && <p className="h2 text-white mb-0">TALENTO</p>}
 						<div className="mt-3 mb-3 avatar">
-							<motion.img src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar" />
+							<motion.img width={128} src={foto_perfil} alt="avatar" />
 						</div>
 						{is_fetching && <Skeleton className="h2 text-white mb-0" />}
 						{!is_fetching && <p className="h2 text-white mb-0">{user_info?.nombre}</p>}

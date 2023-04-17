@@ -26,12 +26,14 @@ export const ProyectosRouter = createTRPCRouter({
 						include: {
 							sindicato: true
 						}
-					}
+					},
+					foto_portada: true,
+					archivo: true
 				}
 			});
 			return proyectos;
 		}
-		),
+	),
 	getById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
@@ -145,7 +147,6 @@ export const ProyectosRouter = createTRPCRouter({
 			console.log('INPUT saveProyectoFiles', input)
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				const ids_files: { id_archivo_media: number | null, id_foto_portada_media: number | null} = {id_archivo_media: null, id_foto_portada_media: null};
 				let proyecto = await ctx.prisma.proyecto.findFirst({
 					where: {
 						id: input.id_proyecto
@@ -155,6 +156,13 @@ export const ProyectosRouter = createTRPCRouter({
 				if (proyecto) {
 
 					if (input.archivo) {
+						if (proyecto.id_archivo_media && input.archivo.id === 0) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: proyecto.id_archivo_media
+								},
+							});
+						}
 						const updated_archivo = await ctx.prisma.media.upsert({
 							where: {
 								id: (input.archivo.id) ? input.archivo.id : 0
@@ -176,10 +184,32 @@ export const ProyectosRouter = createTRPCRouter({
 								identificador: input.archivo.identificador,
 							},
 						})
-						ids_files.id_archivo_media = updated_archivo.id;
+						proyecto = await ctx.prisma.proyecto.update({
+							where: {
+								id: proyecto.id
+							},
+							data: {
+								id_archivo_media: updated_archivo.id,
+							}
+						})
+					} else {
+						if (proyecto.id_archivo_media) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: proyecto.id_archivo_media
+								},
+							});
+						}
 					}
 	
 					if (input.foto_portada) {
+						if (proyecto.id_foto_portada_media && input.foto_portada.id === 0) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: proyecto.id_foto_portada_media
+								},
+							});
+						}
 						const updated_foto_portada = await ctx.prisma.media.upsert({
 							where: {
 								id: (input.foto_portada.id) ? input.foto_portada.id : 0
@@ -201,34 +231,24 @@ export const ProyectosRouter = createTRPCRouter({
 								identificador: input.foto_portada.identificador,
 							},
 						})
-						ids_files.id_foto_portada_media = updated_foto_portada.id;
-					}
-					
-					if (proyecto.id_archivo_media && !ids_files.id_archivo_media) {
-						await ctx.prisma.media.delete({
+						proyecto = await ctx.prisma.proyecto.update({
 							where: {
-								id: proyecto.id_archivo_media
+								id: proyecto.id
 							},
-						});
-					}
-
-					if (proyecto.id_foto_portada_media && !ids_files.id_foto_portada_media) {
-						await ctx.prisma.media.delete({
-							where: {
-								id: proyecto.id_foto_portada_media
-							},
-						});
-					}
-
-					proyecto = await ctx.prisma.proyecto.update({
-						where: {
-							id: proyecto.id
-						},
-						data: {
-							id_archivo_media: ids_files.id_archivo_media,
-							id_foto_portada_media: ids_files.id_foto_portada_media
+							data: {
+								id_foto_portada_media: updated_foto_portada.id
+							}
+						})
+						
+					} else {
+						if (proyecto.id_foto_portada_media) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: proyecto.id_foto_portada_media
+								},
+							});
 						}
-					})
+					}
 				}
 		
 				return proyecto;

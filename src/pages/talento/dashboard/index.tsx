@@ -65,7 +65,7 @@ const DashBoardTalentosPage: NextPage = () => {
 								<InfoGeneral id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 							</MContainer>
 
-							<Media />
+							<Media id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 
 							<Creditos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
 

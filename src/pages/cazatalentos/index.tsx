@@ -1,13 +1,27 @@
-import { type NextPage } from "next";
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
-
+import Image from 'next/image';
 import { motion } from 'framer-motion'
 
 import { MainLayout, SlideImagenesLinks } from "~/components";
 import Link from "next/link";
+import { api } from "~/utils/api";
+import { User } from "next-auth";
+import { getSession } from "next-auth/react";
+import { Carroucel } from "~/components/shared/Carroucel";
+import { MContainer } from "~/components/layout/MContainer";
+import { Typography } from "@mui/material";
 
-const CazaTalentos: NextPage = () => {
+type CazaTalentosIndexPageProps = {
+  user: User,
+}
 
+const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => {
+
+  const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
+		refetchOnWindowFocus: false
+	});
 
   return (
     <>
@@ -38,14 +52,33 @@ const CazaTalentos: NextPage = () => {
             </div>
           </div>
           <hr className="mb-1 hr_gold" />
-          <SlideImagenesLinks />
+          {proyectos.data && proyectos.data.filter(p => p.destacado).length > 0 &&
+             <Carroucel slidesPerView={6}>
+               {proyectos.data.filter(p => p.destacado).map((proyecto, i) => {
+                return <MContainer key={i} direction='vertical'>
+                  <Image style={{cursor: 'grab'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
+                  <Typography align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                </MContainer>
+               })}
+             </Carroucel>
+          }
+          {proyectos.data && proyectos.data.filter(p => p.destacado).length === 0 &&
+            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes proyectos destacados</Typography>
+          }
           <hr className="mb-5 mt-1 hr_gold" />
           <div className="banner_slider_full">
             <motion.img src="/assets/img/banner_slider_full.png" alt="icono" />
           </div>
           <p className="mt-5 h5">Ahora casteando en EZ-Cast</p>
           <hr className="hr_blue" />
-          <SlideImagenesLinks />
+          <Carroucel slidesPerView={6}>
+              {proyectos.data && proyectos.data.map((proyecto, i) => {
+                  return <MContainer key={i} direction='vertical'>
+                      <Image style={{cursor: 'grab'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
+                      <Typography align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                    </MContainer>
+              })}
+          </Carroucel>
           <hr className="hr_blue" />
           <div className="d-flex justify-content-end align-items-center">
             <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
@@ -57,4 +90,21 @@ const CazaTalentos: NextPage = () => {
   );
 };
 
-export default CazaTalentos;
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+  if (session && session.user) {
+      return {
+          props: {
+              user: session.user,
+          }
+      }
+  }
+  return {
+      redirect: {
+          destination: '/',
+          permanent: true,
+      },
+  }
+}
+
+export default CazaTalentosIndexPage;

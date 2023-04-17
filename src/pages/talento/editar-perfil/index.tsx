@@ -813,8 +813,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
 
             if (talento.data.media) {
-                const foto_perfil = talento.data.media.filter(m => m.media.nombre === 'foto-perfil')[0];
-                const fotos = talento.data.media.filter(m => m.media.type.includes('image') && m.media.nombre !== 'foto-perfil').map(a => a.media);
+                const foto_perfil = talento.data.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
+                const fotos = talento.data.media.filter(m => m.media.type.includes('image') && !m.media.identificador.includes('foto-perfil')).map(a => a.media);
                 const audios = talento.data.media.filter(m => m.media.type.includes('audio')).map(a => a.media);
                 const videos = talento.data.media.filter(m => m.media.type.includes('video')).map(a => a.media);
                 void initMediaFiles((foto_perfil) ? foto_perfil.media : undefined, fotos, audios, videos);

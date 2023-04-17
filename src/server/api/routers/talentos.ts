@@ -41,6 +41,7 @@ export const TalentosRouter = createTRPCRouter({
 							union: true
 						}
 					},
+					media: true,
 					estado_republica: true,
 				}
 			})
@@ -73,7 +74,11 @@ export const TalentosRouter = createTRPCRouter({
 			const creditos_por_talento = await ctx.prisma.creditosPorTalentos.findFirst({
 				where: {id_talento: input.id},
 				include: {
-					creditos: true
+					creditos: {
+						include: {
+							media: true
+						}
+					}
 				}
 			});
 			return creditos_por_talento;
@@ -241,6 +246,13 @@ export const TalentosRouter = createTRPCRouter({
 			if (input.id <= 0) return null;
 			const talento = await ctx.prisma.talentos.findUnique({
 				where: {id: input.id},
+				include: {
+					media: {
+						include: {
+							media: true
+						}
+					}
+				}
 			});
 			// hay que excluir la pass en 
 			return talento;
@@ -457,31 +469,40 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				});
 
-				if (input.cv) {
-					if (info_gral && info_gral.id_media_cv) {
-						await ctx.prisma.media.delete({
-							where: {
-								id: info_gral.id_media_cv
-							}
-						})
-					}
-					const media_cv_saved = await ctx.prisma.media.create({
-						data: input.cv
-					});
-	
-					if (media_cv_saved) {
-						saved_files.id_cv = media_cv_saved.id;
-					}
-				} else {
-					if (info_gral && info_gral.id_media_cv) {
-						if (!input.cv_url) {
+				if (info_gral) {
+					if (input.cv) {
+						if (info_gral.id_media_cv) {
 							await ctx.prisma.media.delete({
 								where: {
 									id: info_gral.id_media_cv
 								}
 							})
-						} else {
+						}
+						const media_cv_saved = await ctx.prisma.media.create({
+							data: {
+								nombre: input.cv.nombre,
+								type: input.cv.type,
+								url: input.cv.url,
+								clave: input.cv.clave,
+								referencia: input.cv.referencia,
+								identificador: input.cv.identificador
+							}
+						});
+		
+						if (media_cv_saved) {
+							saved_files.id_cv = media_cv_saved.id;
+						}
+					} else {
+						if (input.cv_url) {
 							saved_files.id_cv = info_gral.id_media_cv;
+						} else {
+							if (info_gral.id_media_cv) {
+								await ctx.prisma.media.delete({
+									where: {
+										id: info_gral.id_media_cv
+									}
+								})
+							}
 						}
 					}
 				}
@@ -492,35 +513,44 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				})
 
-				if (input.carta_responsiva) {
-					if (representante && representante.id_media_carta_responsiva) {
-						await ctx.prisma.media.delete({
-							where: {
-								id: representante.id_media_carta_responsiva
-							}
-						})
-					}
-					const media_carta_saved = await ctx.prisma.media.create({
-						data: input.carta_responsiva
-					});
-	
-					if (media_carta_saved) {
-						saved_files.id_carta_responsiva = media_carta_saved.id;
-					}
-				} else {
-					if (representante && representante.id_media_carta_responsiva) {
-						if (!input.carta_responsiva_url) {
+				if (representante) {
+					if (input.carta_responsiva) {
+						if (representante.id_media_carta_responsiva) {
 							await ctx.prisma.media.delete({
 								where: {
 									id: representante.id_media_carta_responsiva
 								}
 							})
-						} else {
+						}
+						const media_carta_saved = await ctx.prisma.media.create({
+							data: {
+								nombre: input.carta_responsiva.nombre,
+								type: input.carta_responsiva.type,
+								url: input.carta_responsiva.url,
+								clave: input.carta_responsiva.clave,
+								referencia: input.carta_responsiva.referencia,
+								identificador: input.carta_responsiva.identificador
+							}
+						});
+		
+						if (media_carta_saved) {
+							saved_files.id_carta_responsiva = media_carta_saved.id;
+						}
+					} else {
+						if (input.carta_responsiva_url) {
 							saved_files.id_carta_responsiva = representante.id_media_carta_responsiva;
+						} else {
+							if (representante.id_media_carta_responsiva) {
+								await ctx.prisma.media.delete({
+									where: {
+										id: representante.id_media_carta_responsiva
+									}
+								})
+							}
 						}
 					}
 				}
-
+				console.log(saved_files);
 				return saved_files;
 			}
 			throw new TRPCError({
@@ -533,6 +563,14 @@ export const TalentosRouter = createTRPCRouter({
 	),
 	updatePerfil: protectedProcedure
     	.input(z.object({ 
+			foto_perfil: z.object({
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish(),
 			nombre: z.string(),
 			biografia: z.string({
 				errorMap: (issue, _ctx) => {
@@ -552,8 +590,40 @@ export const TalentosRouter = createTRPCRouter({
 		.mutation(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+				if (input.foto_perfil) {
+					const foto_perfil = await ctx.prisma.media.findFirst({
+						where: {
+							identificador: `foto-perfil-talento-${user.id}`
+						}
+					})
+					const saved_foto_perfil = await ctx.prisma.media.upsert({
+						where: {
+							id: (foto_perfil) ? foto_perfil.id : 0, 
+						},
+						update: input.foto_perfil,
+						create: input.foto_perfil
+					})
 
-				
+					const foto_perfil_en_media = await ctx.prisma.mediaPorTalentos.findFirst({
+						where: {
+							id_media: saved_foto_perfil.id
+						}
+					})
+
+					await ctx.prisma.mediaPorTalentos.upsert({
+						where: {
+							id: (foto_perfil_en_media) ? foto_perfil_en_media.id : 0
+						},
+						update: {
+							id_media: saved_foto_perfil.id
+						},
+						create: {
+							id_media: saved_foto_perfil.id,
+							id_talento: parseInt(user.id)
+						}
+					})
+				}
+			
 				const talento = await ctx.prisma.talentos.update({
 					where: {id: parseInt(user.id)},
 					data: {
@@ -902,11 +972,13 @@ export const TalentosRouter = createTRPCRouter({
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				
 				if (!input.fotos || input.fotos.length > 0) {
-					await ctx.prisma.media.deleteMany({
-						where: {
-							referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
-						},
-					})
+					try {
+						await ctx.prisma.media.deleteMany({
+							where: {
+								referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
+							},
+						})
+					} catch (e) {}
 				}
 
 				if (input.fotos) {

@@ -29,7 +29,7 @@ export const createPresignedUrl = async (req: NextApiRequest, res: NextApiRespon
 		const fileParams = {
 			Bucket: process.env.BUCKET_NAME,
 			Key: (body.action.toUpperCase() === 'PUTOBJECT' ? `${body.path}/${body.name}` : body.path),
-			Expires: 600,
+			Expires: 1200,
 			ContentType: (body.action.toUpperCase() === 'PUTOBJECT') ? body.type : null,
 			ContentEncoding: (body.action.toUpperCase() === 'PUTOBJECT') ? 'base64' : null,
 			ACL: (body.action.toUpperCase() === 'PUTOBJECT') ? "public-read" : null

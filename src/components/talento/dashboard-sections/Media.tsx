@@ -1,20 +1,53 @@
 import Image from 'next/image';
-import { Divider, Grid, Typography } from '@mui/material';
-import React from 'react'
+import { Button, Divider, Grid, Typography } from '@mui/material';
+import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { AddButton, AudioBar, SectionTitle } from '~/components/shared'
 import { Carroucel } from '~/components/shared/Carroucel';
 import { MContainer } from '~/components/layout/MContainer';
 import { useRouter } from 'next/router';
+import { api } from '~/utils/api';
 
-export const Media = () => {
+export const Media = (props: { id_talento: number }) => {
     const router = useRouter();
+    const [current_video_url, setCurrentVideoUrl] = useState('');
+    const media_por_talento = api.talentos.getMediaByIdTalento.useQuery({id: props.id_talento}, {
+        refetchOnWindowFocus: false
+    });
+
+    const video_player = useRef<HTMLVideoElement | null>(null);
+
+    const media = useMemo(() => {
+        if (media_por_talento.data) {
+            const fotos = media_por_talento.data.filter(m => m.media.type.includes('image')).map(a => a.media);
+            const audios = media_por_talento.data.filter(m => m.media.type.includes('audio')).map(a => a.media);
+            const videos = media_por_talento.data.filter(m => m.media.type.includes('video')).map(a => a.media);
+            return { fotos: fotos, audios: audios, videos: videos }
+        }
+        return null;
+    }, [media_por_talento.data]);
+
+    useEffect(() => {
+        if (current_video_url !== '' && video_player.current) {
+            video_player.current.setAttribute('src', current_video_url);
+            video_player.current.load();
+        }
+    }, [current_video_url]);
+
+    useEffect(() => {
+        if (media && media.videos.length > 0 && current_video_url === '') {
+            const video = media.videos[0];
+            if (video) {
+                setCurrentVideoUrl(video.url);
+            }
+        }
+    }, [media]);
 
     return (
         <Grid id="media" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
                 <SectionTitle title='Media' onClickButton={() => {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    router.push('/talento/editar-perfil?step=2')
+                    router.push('/talento/editar-perfil?step=2');
                 }} />
             </Grid>
             <Grid item xs={12}>
@@ -33,13 +66,9 @@ export const Media = () => {
                     />
                 </MContainer>
                 <Carroucel>
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
-                    <Image width={191} height={217} src="/assets/img/slider_modelo_01.png" alt="" />
+                    {media && media.fotos.map((image, i) => {
+                        return <Image key={i} width={191} height={217} src={image.url} alt="" /> 
+                    })}
                 </Carroucel>
                 <Divider sx={{ mt: 3 }} />
             </Grid>
@@ -57,11 +86,37 @@ export const Media = () => {
                             // eslint-disable-next-line @typescript-eslint/no-floating-promises
                             router.push('/talento/editar-perfil?step=2')
                         }} />
-
-                        <video controls style={{ width: '100%' }}>
-                            <source src="/assets/video/video1.mp4" type="video/mp4" />
-                            Lo sentimos tu navegador no soporta videos.
-                        </video>
+                        {media && media.videos.length > 0 &&
+                            <>
+                                <video ref={video_player} controls style={{ width: '100%' }}>
+                                    <source src={current_video_url} type="video/mp4" />
+                                    Lo sentimos tu navegador no soporta videos.
+                                </video>
+                                <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                    <>
+                                        {media.videos.map((v, i) => {
+                                            return <Button
+                                                key={i} 
+                                                onClick={() => {
+                                                    setCurrentVideoUrl(v.url);
+                                                }}
+                                                size='small'
+                                                style={{margin: 8}}
+                                                variant={v.url === current_video_url ? 'contained' : 'outlined'} 
+                                                endIcon={<Image style={{ marginLeft: 5, cursor: 'pointer', filter: (v.url === current_video_url) ? 'invert(78%) sepia(63%) saturate(806%) hue-rotate(332deg) brightness(100%) contrast(96%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />}
+                                            >
+                                                {v.nombre}
+                                            </Button>
+                                        })}
+                                    </>
+                                </MContainer>
+                            
+                            </>
+                        
+                        }
+                        {!media || media.videos.length === 0 &&
+                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun video</Typography>
+                        }
                     </MContainer>
                 </MContainer>
                 <Divider sx={{ mt: 3 }} />
@@ -77,24 +132,21 @@ export const Media = () => {
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
                         <AddButton text='Agregar audios' aStyles={{ marginBottom: 10 }} onClick={() => {
-                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                            router.push('/talento/editar-perfil?step=2')
-                        }}
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                router.push('/talento/editar-perfil?step=2')
+                            }}
                         />
-                        <AudioBar
-                            name='Archivo audio.mp3'
-                            onPlay={() => { console.log('click'); }}
-                            onPause={() => { console.log('click'); }}
-                            onExit={() => { console.log('click'); }}
-                            onDownload={() => { console.log('click'); }}
-                        />
-                        <AudioBar
-                            name='miaudio.mp3'
-                            onPlay={() => { console.log('click'); }}
-                            onPause={() => { console.log('click'); }}
-                            onExit={() => { console.log('click'); }}
-                            onDownload={() => { console.log('click'); }}
-                        />
+                        {media && media.audios.length > 0 &&
+                            media.audios.map((audio, i) => {
+                                return <AudioBar key={i}
+                                    name={audio.nombre}
+                                    url={audio.url}
+                                />
+                            })
+                        }
+                        {!media || media.audios.length === 0 &&
+                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun audio</Typography>
+                        }
                     </MContainer>
                 </MContainer>
             </Grid>

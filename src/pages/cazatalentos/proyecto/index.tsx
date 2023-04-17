@@ -19,7 +19,7 @@ import { Archivo } from '~/server/api/root';
 import { Media } from '@prisma/client';
 
 export type ProyectoForm = {
-    id?: number,
+    id: number,
     nombre: string | null,
     id_sindicato: number,
     sindicato: string,
@@ -61,6 +61,7 @@ export type ProyectoForm = {
 }
 
 const initialState: ProyectoForm = {
+    id: 0,
     nombre: null,
     id_sindicato: 0,
     sindicato: '',
@@ -146,7 +147,6 @@ const Proyecto: NextPage = () => {
                 url: state.files.media.foto_portada.url
             }
         }
-        console.log('FILES', files);
         dispatch({
             type: 'update-proyecto-form',
             value: {
@@ -156,7 +156,11 @@ const Proyecto: NextPage = () => {
                         foto_portada: undefined,
                     },
                     archivo: files.archivo,
-                    foto_portada: files.foto_portada
+                    foto_portada: files.foto_portada,
+                    touched: {
+                        archivo: false,
+                        foto_portada: false,
+                    }
                 }
             }
         })
@@ -167,7 +171,7 @@ const Proyecto: NextPage = () => {
             dispatch({
                 type: 'update-proyecto-form',
                 value: {
-                    id: (id > 0) ? id : null,
+                    id: proyecto.data.id,
                     nombre: proyecto.data.nombre,
                     id_sindicato: proyecto.data.sindicato?.id_sindicato,
                     sindicato: (proyecto.data.sindicato?.id_sindicato === 99) ? proyecto.data.sindicato?.descripcion : '',
@@ -190,13 +194,22 @@ const Proyecto: NextPage = () => {
                         media: {
                             archivo: proyecto.data.archivo, 
                             foto_portada: proyecto.data.foto_portada
+                        },
+                        touched: {
+                            archivo: false,
+                            foto_portada: false
                         }
                     }
                 }
             })
         }
-    }, [proyecto.data, id]);
+    }, [proyecto.data]);
 
+    useEffect(() => {
+        if (state.files.media.archivo || state.files.media.foto_portada) {
+            void initFiles();
+        }
+    }, [state.files.media]);
 
     const updateProyectoFiles = api.proyectos.saveProyectoFiles.useMutation({
         onSuccess: (data) => {
@@ -216,21 +229,14 @@ const Proyecto: NextPage = () => {
         }
     });
 
-    useEffect(() => {
-        if (state.files.media.archivo || state.files.media.foto_portada) {
-            void initFiles();
-        }
-    }, [state.files.media]);
-
     const updateProyecto = api.proyectos.updateProyecto.useMutation({
         onSuccess: async (data) => {
             const files: { foto_portada: Media | null, archivo: Media | null} = { foto_portada: null, archivo: null };
             const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
-            if (state.files.archivo && state.files.touched.archivo) {
-                const base_64 = await FileManagerFront.convertFileToBase64(state.files.archivo.file);
-                files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: 'archivo', file: state.files.archivo.file, base64: base_64});
-            } else {
-                if (state.files.archivo) {
+            if (state.files.archivo) {
+                if (state.files.touched.archivo) {
+                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: 'archivo', file: state.files.archivo.file, base64: state.files.archivo.base64});
+                } else {
                     files.archivo = {
                         id: (state.files.archivo?.id) ? state.files.archivo.id : 0,
                         nombre: state.files.archivo?.name,
@@ -240,14 +246,12 @@ const Proyecto: NextPage = () => {
                         referencia: `ARCHIVO-PROYECTO-${data.id}`,
                         identificador: `archivo-proyecto-${data.id}`
                     }
-
                 }
             }
-            if (state.files.foto_portada && state.files.touched.foto_portada) {
-                const base_64 = await FileManagerFront.convertFileToBase64(state.files.foto_portada.file);
-                files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto_portada`, name: 'foto_portada', file: state.files.foto_portada.file, base64: base_64});
-            } else {
-                if (state.files.foto_portada) {
+            if (state.files.foto_portada) {
+                if (state.files.touched.foto_portada) {
+                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto_portada`, name: 'foto_portada', file: state.files.foto_portada.file, base64: state.files.foto_portada.base64});
+                } else {
                     files.foto_portada = {
                         id: (state.files.foto_portada?.id) ? state.files.foto_portada.id : 0,
                         nombre: state.files.foto_portada.name,
@@ -258,7 +262,7 @@ const Proyecto: NextPage = () => {
                         identificador: `foto-portada-proyecto-${data.id}`
                     }
                 }
-            }
+            } 
             const urls_saved = await FileManagerFront.saveFiles(files_to_be_saved);
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -396,7 +400,7 @@ const Proyecto: NextPage = () => {
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.sinopsis, state.detalles_adicionales, state.files.archivo])
+    }, [state.sinopsis, state.detalles_adicionales, state.files])
 
     const locacion_proyecto = useMemo(() => {
         return <LocacionProyecto
@@ -416,7 +420,7 @@ const Proyecto: NextPage = () => {
             }}
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.compartir_nombre, state.files.foto_portada])
+    }, [state.compartir_nombre, state.files])
 
     return (
         <>
