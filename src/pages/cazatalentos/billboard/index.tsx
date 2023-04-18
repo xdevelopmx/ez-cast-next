@@ -16,6 +16,7 @@ import type {
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
+    id_proyecto: number
 }
 
 export interface RolCompleto extends Roles {
@@ -29,20 +30,43 @@ export interface RolCompleto extends Roles {
 
 }
 
-const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
+const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user, id_proyecto }) => {
 
-    const [proyectoSeleccionado, setProyectoSeleccionado] = useState('0')
-    const [idProyectoSeleccionado, setIdProyectoSeleccionado] = useState(0)
-    const [rolSeleccionado, setRolSeleccionado] = useState('0')
+    const [selected_proyecto, setSelectedProyecto] = useState<number>(id_proyecto);
+    const [selected_rol, setSelectedRol] = useState<number>(0);
 
     const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
         refetchOnWindowFocus: false
-    })
+    });
 
-    const roles = api.roles.getAllCompleteByProyecto.useQuery(idProyectoSeleccionado, {
+    const roles_by_proyecto = api.roles.getAllByProyecto.useQuery(selected_proyecto, {
         refetchOnWindowFocus: false
     });
 
+	useEffect(() => {
+		if (roles_by_proyecto.data && roles_by_proyecto.data.length > 0) {
+			const first_rol = roles_by_proyecto.data[0];
+			setSelectedRol((first_rol) ? first_rol.id : 0);
+		}
+	}, [roles_by_proyecto.data]);
+
+	const rol = api.roles.getCompleteById.useQuery(selected_rol, {
+		refetchOnWindowFocus: false
+	});
+
+
+
+    //const [proyectoSeleccionado, setProyectoSeleccionado] = useState('0')
+    //const [idProyectoSeleccionado, setIdProyectoSeleccionado] = useState(id_proyecto)
+    //const [rolSeleccionado, setRolSeleccionado] = useState('0');
+
+    
+
+    //const roles = api.roles.getAllCompleteByProyecto.useQuery(idProyectoSeleccionado, {
+    //    refetchOnWindowFocus: false
+    //});
+
+    /*
     useEffect(() => {
         if (!proyectos.data) return;
         if (proyectos.data.length === 0) return;
@@ -57,7 +81,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
         if (!idProyecto) return;
         setIdProyectoSeleccionado(idProyecto)
     }, [proyectoSeleccionado, proyectos.data])
-
+    */
     return (
         <>
             <Head>
@@ -81,30 +105,31 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                     <MContainer direction="horizontal">
                                         <MSelect
                                             id="nombre-proyecto-select"
+                                            disabled={id_proyecto > 0}
                                             loading={proyectos.isFetching}
                                             options={proyectos.data?.map(p => ({
                                                 value: `${p.id}`,
                                                 label: p.nombre,
                                             })) || []}
                                             className={'form-input-md'}
-                                            value={proyectoSeleccionado}
+                                            value={selected_proyecto.toString()}
                                             onChange={(e) => {
-                                                setProyectoSeleccionado(e.target.value)
+                                                setSelectedProyecto(parseInt(e.target.value))
                                             }}
                                             label=''
                                         />
                                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                         <MSelect
                                             id="nombre-personaje-select"
-                                            loading={roles.isFetching}
-                                            options={roles.data?.map(r => ({
+                                            loading={roles_by_proyecto.isFetching}
+                                            options={roles_by_proyecto.data?.map(r => ({
                                                 label: r.nombre,
                                                 value: `${r.id}`,
                                             })) || []}
                                             className={'form-input-md'}
-                                            value={rolSeleccionado}
+                                            value={selected_rol.toString()}
                                             onChange={(e) => {
-                                                setRolSeleccionado(e.target.value)
+                                                setSelectedRol(parseInt(e.target.value))
                                             }}
                                             label=''
                                         />
@@ -113,7 +138,7 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <PerfilTable
-                                        rol={roles.data?.find(r => `${r.id}` === rolSeleccionado) as unknown as RolCompleto}
+                                        rol={roles_by_proyecto.data?.find(r => r.id === selected_rol) as unknown as RolCompleto}
                                     />
                                 </Grid>
                             </Grid>
@@ -127,10 +152,15 @@ const BillboardPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
+    let id_proyecto = 0;
+    if (context.query) {
+        id_proyecto = parseInt(context.query['id-proyecto'] as string);
+    }
     if (session && session.user) {
         return {
             props: {
                 user: session.user,
+                id_proyecto: id_proyecto
             }
         }
     }

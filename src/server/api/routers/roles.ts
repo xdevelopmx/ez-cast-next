@@ -183,7 +183,7 @@ export const RolesRouter = createTRPCRouter({
 			});
 			return rol;
 		}
-		),
+	),
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.roles.findMany();
 	}),

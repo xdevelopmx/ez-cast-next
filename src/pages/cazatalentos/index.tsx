@@ -12,6 +12,7 @@ import { getSession } from "next-auth/react";
 import { Carroucel } from "~/components/shared/Carroucel";
 import { MContainer } from "~/components/layout/MContainer";
 import { Typography } from "@mui/material";
+import { useRouter } from "next/router";
 
 type CazaTalentosIndexPageProps = {
   user: User,
@@ -22,6 +23,8 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
   const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
 		refetchOnWindowFocus: false
 	});
+
+  const router = useRouter();
 
   return (
     <>
@@ -56,16 +59,18 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
              <Carroucel slidesPerView={6}>
                {proyectos.data.filter(p => p.destacado).map((proyecto, i) => {
                 return <MContainer key={i} direction='vertical'>
-                  <Image style={{cursor: 'grab'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
-                  <Typography align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                  <Image onClick={() => { void router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
+                  <Typography onClick={() => { void router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
                 </MContainer>
                })}
              </Carroucel>
           }
           {proyectos.data && proyectos.data.filter(p => p.destacado).length === 0 &&
-            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes proyectos destacados</Typography>
+            <>
+              <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes proyectos destacados</Typography>
+              <hr className="mb-5 mt-1 hr_gold" />
+            </>
           }
-          <hr className="mb-5 mt-1 hr_gold" />
           <div className="banner_slider_full">
             <motion.img src="/assets/img/banner_slider_full.png" alt="icono" />
           </div>
@@ -74,8 +79,8 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
           <Carroucel slidesPerView={6}>
               {proyectos.data && proyectos.data.map((proyecto, i) => {
                   return <MContainer key={i} direction='vertical'>
-                      <Image style={{cursor: 'grab'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
-                      <Typography align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                      <Image onClick={() => { void router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
+                      <Typography onClick={() => { void router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
                     </MContainer>
               })}
           </Carroucel>
