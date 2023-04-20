@@ -52,6 +52,7 @@ model Talentos {
   preferencias       PreferenciasPorTalentos?
   filtros_aparencias FiltrosAparenciasPorTalentos?
   medidas            MedidasPorTalentos?
+  aplicaciones AplicacionRolPorTalento[]
 }
 
 model MedidasPorTalentos {
@@ -212,6 +213,30 @@ model Proyecto {
   sindicato            SindicatoPorProyecto?
 }
 
+model AplicacionRolPorTalento {
+  id                   Int                      @id @default(autoincrement())
+  id_rol Int
+  rol Roles @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  id_talento Int
+  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  id_estado_aplicacion Int
+  estado_aplicacion CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
+}
+
+model CatalogoEstadosAplicacionesRoles {
+  id                   Int                      @id 
+  es String
+  en String
+  AplicacionRolPorTalento AplicacionRolPorTalento[]
+}
+
+model Banners {
+  id                   Int                      @id @default(autoincrement())
+  page_to_show String
+  url String
+  redirect_url String 
+}
+
 model TipoProyectoPorProyecto {
   id               Int                   @id @default(autoincrement())
   id_proyecto      Int                   @unique
@@ -257,6 +282,7 @@ model Roles {
   filmaciones          FilmacionPorRoles[]
   selftape             SelftapePorRoles?
   tipo_rol             CatalogoTiposRoles      @relation(fields: [id_tipo_rol], references: [id])
+  aplicaciones_por_talento AplicacionRolPorTalento[]
 }
 
 model SelftapePorRoles {

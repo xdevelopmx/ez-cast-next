@@ -103,7 +103,7 @@ export const Media = (props: { id_talento: number }) => {
                                                 size='small'
                                                 style={{margin: 8}}
                                                 variant={v.url === current_video_url ? 'contained' : 'outlined'} 
-                                                endIcon={<Image style={{ marginLeft: 5, cursor: 'pointer', filter: (v.url === current_video_url) ? 'invert(78%) sepia(63%) saturate(806%) hue-rotate(332deg) brightness(100%) contrast(96%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />}
+                                                endIcon={<Image style={{ marginLeft: 5, cursor: 'pointer', filter: (v.url === current_video_url) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />}
                                             >
                                                 {v.nombre}
                                             </Button>

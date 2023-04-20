@@ -11,6 +11,36 @@ import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
 
 export const ProyectosRouter = createTRPCRouter({
+	getProyectosRandom: publicProcedure
+		.input(z.number())
+		.query(async ({input, ctx}) => {
+			return await ctx.prisma.$queryRaw<{id: number, nombre: string, url: null | string}[]>`select p.id, p.nombre, m.url  from Proyecto p left join Media m on m.identificador = concat("foto-portada-proyecto-", p.id) order by rand() limit ${input}`
+		}
+	),
+	getProyectosDestacados: publicProcedure
+		.input(z.number())
+		.query(async ({input, ctx}) => {
+			const proyectos = await ctx.prisma.proyecto.findMany({
+				where: { destacado: true },
+				take: input,
+				include: {
+					tipo: {
+						include: {
+							tipo_proyecto: true
+						}
+					},
+					sindicato: {
+						include: {
+							sindicato: true
+						}
+					},
+					foto_portada: true,
+					archivo: true
+				}
+			});
+			return proyectos;
+		}
+	),
 	getAllByIdCazatalentos: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {

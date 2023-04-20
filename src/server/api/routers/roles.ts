@@ -99,7 +99,85 @@ export const RolesRouter = createTRPCRouter({
 			});
 			return rol;
 		}
-		),
+	),
+	getRolWithApplicationsById: publicProcedure
+		.input(z.object({
+			start: z.number(),
+			end: z.number(),
+			id_rol: z.number(),
+			id_estado_aplicacion: z.number(),
+		}))
+		.query(async ({ input, ctx }) => {
+			console.log('\n\n\n\n\n INPUT getRolWithApplicationsById \n\n\n\n', input);
+			if (input.id_rol <= 0) return null;
+			const applications_where: {id_rol: number, id_estado_aplicacion?: number} = {
+				id_rol: input.id_rol
+			}
+			if (input.id_estado_aplicacion > 0) {
+				applications_where.id_estado_aplicacion = input.id_estado_aplicacion;
+			}
+			const count_applications = await ctx.prisma.aplicacionRolPorTalento.count({
+				where: applications_where
+			});
+			const rol = await ctx.prisma.roles.findUnique({
+				where: { id: input.id_rol },
+				include: {
+					filtros_demograficos: {
+						include: {
+							pais: true,
+							generos: {
+								include: {
+									genero: true
+								}
+							},
+							aparencias_etnicas: {
+								include: {
+									aparencia_etnica: true
+								}
+							},
+							animal: {
+								include: {
+									animal: true
+								}
+							}
+						}
+					},
+					tipo_rol: true,
+					aplicaciones_por_talento: {
+						skip: input.start,
+						take: input.end,
+						where: applications_where,
+						include: {
+							talento: {
+								include: {
+									media: {
+										include: {
+											media: true
+										}
+									},
+									info_basica: {
+										include: {
+											estado_republica: true,
+											union: {
+												include: {
+													union: true
+												}
+											}
+										}
+									}
+									
+								},
+							}
+						}
+					}
+				}
+			});
+			if (count_applications && rol) {
+				return {count_applications: count_applications, rol: rol};
+			}
+			return null;
+		}
+	),
 	getCompleteById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
@@ -269,6 +347,7 @@ export const RolesRouter = createTRPCRouter({
 		});
 	}),
 	getAllByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
+		if (input <= 0) return null;
 		return await ctx.prisma.roles.findMany({
 			where: {
 				id_proyecto: input

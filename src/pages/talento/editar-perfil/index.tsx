@@ -18,6 +18,8 @@ import { useRouter } from "next/router";
 import { FileManagerFront } from "~/utils/file-manager-front";
 import { TalentosRouter } from "~/server/api/routers/talentos";
 import { CreditoTalento, Media } from "@prisma/client";
+import { TipoUsuario } from "~/enums";
+import Constants from "~/constants";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -1164,10 +1166,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
     if (session && session.user) {
         const { step } = context.query;
+        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+            return {
+                props: {
+                    user: session.user,
+                    step: (step) ? step : 1
+                }
+            }
+        }
         return {
-            props: {
-                user: session.user,
-                step: (step) ? step : 1
+            redirect: {
+                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+                permanent: true
             }
         }
     }

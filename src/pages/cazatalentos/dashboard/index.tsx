@@ -16,6 +16,8 @@ import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import { useMemo, useState } from "react";
 import useNotify from "~/hooks/useNotify";
 import { useRouter } from "next/router";
+import Constants from "~/constants";
+import { TipoUsuario } from "~/enums";
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
@@ -290,20 +292,28 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const session = await getSession(context);
-    if (session && session.user) {
-        return {
-            props: {
-                user: session.user,
-            }
-        }
-    }
-    return {
-        redirect: {
-            destination: '/',
-            permanent: true,
-        },
-    }
-}
+	const session = await getSession(context);
+	if (session && session.user) {
+		if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+			return {
+				props: {
+					user: session.user,
+				}
+			}
+		} 
+		return {
+			redirect: {
+				destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+				permanent: true
+			}
+		}
+	}
+	return {
+		redirect: {
+			destination: '/',
+			permanent: true,
+		},
+	}
+  }
 
 export default DashBoardCazaTalentosPage;

@@ -22,6 +22,7 @@ import Link from 'next/link'
 import { MTable } from '~/components/shared/MTable/MTable'
 import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
+import { TipoUsuario } from '~/enums';
 
 type RolesIndexPageProps = {
     user: User,
@@ -773,13 +774,20 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
     )
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
     if (session && session.user) {
+        if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+            return {
+                props: {
+                    user: session.user,
+                }
+            }
+        } 
         return {
-            props: {
-                user: session.user,
+            redirect: {
+                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+                permanent: true
             }
         }
     }
@@ -789,7 +797,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: true,
         },
     }
-}
+  }
 
 
 export default RolesIndexPage

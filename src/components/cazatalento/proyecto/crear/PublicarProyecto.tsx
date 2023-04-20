@@ -12,7 +12,6 @@ interface Props {
 }
 
 export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
-    console.log('STATEEE PROYECTO', state);
     return (
         <Grid container>
             <Grid item xs={12}>

@@ -42,14 +42,12 @@ export const MSelect: FC<Props> = ({
         }
     }
     const select_class = 'select-form-control';
-    let default_value = '';
+    let default_value = '0';
     if (options.length > 0) {
         const option = options[0];
         if (option) {
             if (isNaN(parseInt(option.value)) || option.value.length !== parseInt(option.value).toString().length) {
                 default_value = ' ';
-            } else {
-                default_value = '0';
             }
         }
     }

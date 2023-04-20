@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import { GetServerSideProps, type NextPage } from "next";
 import Image from 'next/image';
 import Head from "next/head";
 import { motion } from 'framer-motion'
@@ -11,7 +11,9 @@ import { MTable } from "~/components/shared/MTable/MTable";
 import { Activos, Creditos, FiltrosApariencias, Habilidades, Media, Preferencias } from "~/components/talento";
 import { InfoGeneral } from "~/components/talento/dashboard-sections/InfoGeneral";
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
+import { TipoUsuario } from "~/enums";
+import Constants from "~/constants";
 
 const DashBoardTalentosPage: NextPage = () => {
 	const session = useSession();
@@ -82,5 +84,30 @@ const DashBoardTalentosPage: NextPage = () => {
 		</>
 	);
 };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const session = await getSession(context);
+    if (session && session.user) {
+        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+            return {
+                props: {
+                    user: session.user,
+                }
+            }
+        } 
+        return {
+            redirect: {
+                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+                permanent: true
+            }
+        }
+    }
+    return {
+        redirect: {
+            destination: '/',
+            permanent: true,
+        },
+    }
+}
 
 export default DashBoardTalentosPage;

@@ -1,4 +1,4 @@
-import { type NextPage } from 'next'
+import { GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import React, { useEffect, useMemo, useReducer, useState } from 'react'
 import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas } from '~/components'
@@ -17,6 +17,8 @@ import { FileManager } from '~/utils/file-manager'
 import { FileManagerFront } from '~/utils/file-manager-front'
 import { Archivo } from '~/server/api/root';
 import { Media } from '@prisma/client';
+import { getSession } from 'next-auth/react'
+import { TipoUsuario } from '~/enums'
 
 export type ProyectoForm = {
     id: number,
@@ -235,7 +237,7 @@ const Proyecto: NextPage = () => {
             const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
             if (state.files.archivo) {
                 if (state.files.touched.archivo) {
-                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: 'archivo', file: state.files.archivo.file, base64: state.files.archivo.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: `${state.files.archivo.file.name}`, file: state.files.archivo.file, base64: state.files.archivo.base64});
                 } else {
                     files.archivo = {
                         id: (state.files.archivo?.id) ? state.files.archivo.id : 0,
@@ -250,7 +252,7 @@ const Proyecto: NextPage = () => {
             }
             if (state.files.foto_portada) {
                 if (state.files.touched.foto_portada) {
-                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto_portada`, name: 'foto_portada', file: state.files.foto_portada.file, base64: state.files.foto_portada.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto_portada`, name: `${state.files.foto_portada.file.name}`, file: state.files.foto_portada.file, base64: state.files.foto_portada.base64});
                 } else {
                     files.foto_portada = {
                         id: (state.files.foto_portada?.id) ? state.files.foto_portada.id : 0,
@@ -269,7 +271,7 @@ const Proyecto: NextPage = () => {
                     Object.entries(res).forEach((e) => {
                         const url = e[1].url;  
                         if (url) {
-                            if (e[0] === 'archivo') {
+                            if (e[0] === state.files.archivo?.file.name) {
                                 const arch = state.files.archivo;
                                 files.archivo = {
                                     id: (arch?.id) ? arch.id : 0,
@@ -281,7 +283,7 @@ const Proyecto: NextPage = () => {
                                     identificador: `archivo-proyecto-${data.id}`
                                 }
                             }
-                            if (e[0] === 'foto_portada') {
+                            if (e[0] === state.files.foto_portada?.file.name) {
                                 const foto = state.files.foto_portada;
                                 files.foto_portada = {
                                     id: (foto?.id) ? foto.id : 0,
@@ -500,5 +502,30 @@ const Proyecto: NextPage = () => {
         </>
     )
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const session = await getSession(context);
+    if (session && session.user) {
+        if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+            return {
+                props: {
+                    user: session.user,
+                }
+            }
+        } 
+        return {
+            redirect: {
+                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+                permanent: true
+            }
+        }
+    }
+    return {
+        redirect: {
+            destination: '/',
+            permanent: true,
+        },
+    }
+  }
 
 export default Proyecto

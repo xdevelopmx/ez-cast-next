@@ -23,7 +23,7 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
                         void audio_player.current.play();
                     }
                 }}>
-                    <Image style={{ marginLeft: 5, cursor: 'pointer', filter: (action_selected === 'PLAY') ? 'invert(78%) sepia(63%) saturate(806%) hue-rotate(332deg) brightness(100%) contrast(96%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />
+                    <Image style={{ marginLeft: 5, cursor: 'pointer', filter: (action_selected === 'PLAY') ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />
                 </IconButton>
                 <IconButton onClick={() => {
                     if (audio_player.current) {
@@ -31,7 +31,7 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
                         void audio_player.current.pause();
                     }
                 }}>
-                    <Image style={{ marginLeft: 5, cursor: 'pointer', filter: (action_selected === 'PAUSE') ? 'invert(78%) sepia(63%) saturate(806%) hue-rotate(332deg) brightness(100%) contrast(96%)' : '' }} src="/assets/img/iconos/pausa.svg" width={20} height={20} alt="" />
+                    <Image style={{ marginLeft: 5, cursor: 'pointer', filter: (action_selected === 'PAUSE') ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/pausa.svg" width={20} height={20} alt="" />
                 </IconButton>
                 <IconButton onClick={() => {
                     if (audio_player.current) {
@@ -40,7 +40,7 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
                         audio_player.current.pause();
                     }
                 }}>
-                    <Image style={{ marginLeft: 5, cursor: 'pointer', filter: (action_selected === 'STOP') ? 'invert(78%) sepia(63%) saturate(806%) hue-rotate(332deg) brightness(100%) contrast(96%)' : '' }} src="/assets/img/iconos/stop.svg" width={20} height={20} alt="" />
+                    <Image style={{ marginLeft: 5, cursor: 'pointer', filter: (action_selected === 'STOP') ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/stop.svg" width={20} height={20} alt="" />
                 </IconButton>
                 <Typography style={{ paddingLeft: 10 }}>{name}</Typography>
             </MContainer>

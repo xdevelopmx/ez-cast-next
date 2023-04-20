@@ -150,7 +150,7 @@ const LoginPage: NextPage = () => {
 												notify('success', 'Autenticacion Exitosa');
 												switch (state.tipo_usuario) {
 													case 'talento': {
-														router.push('/talento/dashboard');
+														router.push('/talento');
 														break;
 													}
 													case 'cazatalentos': {

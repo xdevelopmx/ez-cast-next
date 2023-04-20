@@ -169,7 +169,12 @@ export const CatalogosRouter = createTRPCRouter({
 		.query(async ({ ctx }) => {
 			return await ctx.prisma.catalogoPaises.findMany();
 		},
-),
+	),
+	getEstadosAplicacionesRoles: publicProcedure
+		.query(async ({ ctx }) => {
+			return await ctx.prisma.catalogoEstadosAplicacionesRoles.findMany();
+		},
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

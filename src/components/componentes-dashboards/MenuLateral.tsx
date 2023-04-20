@@ -14,6 +14,7 @@ import useNotify from '~/hooks/useNotify';
 import { Media } from '@prisma/client';
 import { Archivo } from '~/server/api/root';
 import { FileManagerFront } from '~/utils/file-manager-front';
+import { useRouter } from 'next/router';
 
 export const MenuLateral = () => {
 	const [form, setForm] = useState<{
@@ -44,6 +45,7 @@ export const MenuLateral = () => {
 		foto_selected: null,
 		foto_perfil: ''
 	});
+	const router = useRouter();
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
@@ -762,14 +764,26 @@ export const MenuLateral = () => {
 						<hr />
 						{is_fetching && <Skeleton className="mt-2 mb-5 text-white open_popup" />}
 						{!is_fetching && <p onClick={() => setEditMode(edit => !edit)} className="mt-2 mb-5 text-white open_popup" data-popup="box_editprofile">Editar perfil</p>}
-						<div className="sub_menu">
-							<a href="#" className="active">Perfil</a>
-							<Link href="/cazatalentos/billboard">Casting Billboard</Link>
-							<a href="#">Tus Aplicaciones</a>
-							<a href="#">Media Bank</a>
-							<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
-							<a href="#">Ayuda</a>
-						</div>
+						{is_fetching && <Skeleton className="sub_menu" />}
+						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.TALENTO &&
+							<div className="sub_menu">
+								<Link href="/talento/dashboard" className={(router.pathname === '/talento/dashboard') ? 'active' : ''}>Perfil</Link>
+								<Link href="/talento/billboard" className={(router.pathname === '/talento/billboard') ? 'active' : ''}>Casting Billboard</Link>
+								<a href="#">Tus Aplicaciones</a>
+								<a href="#">Media Bank</a>
+								<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
+								<a href="#">Ayuda</a>
+							</div>
+						}
+						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.CAZATALENTOS &&
+							<div className="sub_menu">
+								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
+								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
+								<a href="#">Agenda Virtual</a>
+								<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
+								<a href="#">Ayuda</a>
+							</div>
+						}
 						<p className="mt-5 mb-2">
 							<a
 								onClick={() => {

@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
-import { type NextPage } from 'next'
+import { GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
 import { Alert, Grid, Typography } from '@mui/material'
@@ -17,6 +17,9 @@ import useNotify from "~/hooks/useNotify";
 import { NewRol } from '~/server/api/routers/roles';
 import { conversorFecha } from '~/utils/conversor-fecha';
 import { MContainer } from '~/components/layout/MContainer'
+import Constants from '~/constants'
+import { getSession } from 'next-auth/react'
+import { TipoUsuario } from '~/enums'
 
 export type RolInformacionGeneralForm = {
     nombre: string,
@@ -792,5 +795,30 @@ const AgregarRolPage: NextPage = () => {
         </>
     )
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    const session = await getSession(context);
+    if (session && session.user) {
+        if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+            return {
+                props: {
+                    user: session.user,
+                }
+            }
+        } 
+        return {
+            redirect: {
+                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+                permanent: true
+            }
+        }
+    }
+    return {
+        redirect: {
+            destination: '/',
+            permanent: true,
+        },
+    }
+  }
 
 export default AgregarRolPage
