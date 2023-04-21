@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import Head from 'next/head'
 import { MStepper, MainLayout } from '~/components';
+import { InformacionBasicaRepresentante } from '~/components';
 import { MTooltip } from '~/components/shared/MTooltip';
 
 const EditarPerfilRepresentantePage = () => {
@@ -81,12 +82,9 @@ const EditarPerfilRepresentantePage = () => {
                         }}
                         step_titles={{
                             1: 'Información básica',
-                            2: 'Media',
-                            3: 'Créditos',
-                            4: 'Habilidades',
-                            5: 'Activos',
-                            6: 'Preferencia de rol y compensación',
-                            7: 'Filtros de Apariencia'
+                            2: 'Permisos',
+                            3: 'Cuenta',
+                            4: 'Validación',
                         }}
                         tooltips={{
                             4: <MTooltip
@@ -117,7 +115,7 @@ const EditarPerfilRepresentantePage = () => {
                         }}
                     >
 
-                        <div>sadas</div>
+                        <InformacionBasicaRepresentante />
                         <div>dsadas</div>
                     </MStepper>
                 </div>
