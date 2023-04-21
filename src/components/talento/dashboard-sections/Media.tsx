@@ -10,6 +10,7 @@ import { api } from '~/utils/api';
 export const Media = (props: { id_talento: number }) => {
     const router = useRouter();
     const [current_video_url, setCurrentVideoUrl] = useState('');
+
     const media_por_talento = api.talentos.getMediaByIdTalento.useQuery({id: props.id_talento}, {
         refetchOnWindowFocus: false
     });

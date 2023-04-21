@@ -14,7 +14,6 @@ import { Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
 import { FileManager } from '~/utils/file-manager'
-import { FileManagerFront } from '~/utils/file-manager-front'
 import { Archivo } from '~/server/api/root';
 import { Media } from '@prisma/client';
 import { getSession } from 'next-auth/react'
@@ -128,8 +127,8 @@ const Proyecto: NextPage = () => {
             foto_portada?: Archivo
         } = {};
         if (state.files.media.archivo) {
-            const file = await FileManagerFront.convertUrlToFile(state.files.media.archivo.url, state.files.media.archivo.nombre, state.files.media.archivo.type);
-            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            const file = await FileManager.convertUrlToFile(state.files.media.archivo.url, state.files.media.archivo.nombre, state.files.media.archivo.type);
+            const base_64 = await FileManager.convertFileToBase64(file);
             files.archivo = {
                 id: state.files.media.archivo.id,
                 base64: base_64,
@@ -139,8 +138,8 @@ const Proyecto: NextPage = () => {
             }
         }
         if (state.files.media.foto_portada) {
-            const file = await FileManagerFront.convertUrlToFile(state.files.media.foto_portada.url, state.files.media.foto_portada.nombre, state.files.media.foto_portada.type);
-            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            const file = await FileManager.convertUrlToFile(state.files.media.foto_portada.url, state.files.media.foto_portada.nombre, state.files.media.foto_portada.type);
+            const base_64 = await FileManager.convertFileToBase64(file);
             files.foto_portada = {
                 id: state.files.media.foto_portada.id,
                 base64: base_64,
@@ -235,16 +234,17 @@ const Proyecto: NextPage = () => {
         onSuccess: async (data) => {
             const files: { foto_portada: Media | null, archivo: Media | null} = { foto_portada: null, archivo: null };
             const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+            const time = new Date().getTime();
             if (state.files.archivo) {
                 if (state.files.touched.archivo) {
-                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: `${state.files.archivo.file.name}`, file: state.files.archivo.file, base64: state.files.archivo.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: `${state.files.archivo.file.name}-${time}`, file: state.files.archivo.file, base64: state.files.archivo.base64});
                 } else {
                     files.archivo = {
                         id: (state.files.archivo?.id) ? state.files.archivo.id : 0,
                         nombre: state.files.archivo?.name,
                         type: (state.files.archivo?.file.type) ? state.files.archivo.file.type : '',
                         url: (state.files.archivo.url) ? state.files.archivo.url : '',
-                        clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${state.files.archivo.name}`,
+                        clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${state.files.archivo.name}-${time}`,
                         referencia: `ARCHIVO-PROYECTO-${data.id}`,
                         identificador: `archivo-proyecto-${data.id}`
                     }
@@ -252,30 +252,30 @@ const Proyecto: NextPage = () => {
             }
             if (state.files.foto_portada) {
                 if (state.files.touched.foto_portada) {
-                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto_portada`, name: `${state.files.foto_portada.file.name}`, file: state.files.foto_portada.file, base64: state.files.foto_portada.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada`, name: `${state.files.foto_portada.file.name}-${time}`, file: state.files.foto_portada.file, base64: state.files.foto_portada.base64});
                 } else {
                     files.foto_portada = {
                         id: (state.files.foto_portada?.id) ? state.files.foto_portada.id : 0,
                         nombre: state.files.foto_portada.name,
                         type: (state.files.foto_portada?.file.type) ? state.files.foto_portada.file.type : '',
                         url: (state.files.foto_portada.url) ? state.files.foto_portada.url : '',
-                        clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${state.files.foto_portada.name}`,
+                        clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${state.files.foto_portada.name}-${time}`,
                         referencia: `FOTO-PORTADA-PROYECTO-${data.id}`,
                         identificador: `foto-portada-proyecto-${data.id}`
                     }
                 }
             } 
-            const urls_saved = await FileManagerFront.saveFiles(files_to_be_saved);
+            const urls_saved = await FileManager.saveFiles(files_to_be_saved);
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
                     Object.entries(res).forEach((e) => {
                         const url = e[1].url;  
                         if (url) {
-                            if (e[0] === state.files.archivo?.file.name) {
+                            if (e[0] === `${state.files.archivo?.file.name}-${time}`) {
                                 const arch = state.files.archivo;
                                 files.archivo = {
                                     id: (arch?.id) ? arch.id : 0,
-                                    nombre: e[0],
+                                    nombre: (arch) ? arch.file.name : '',
                                     type: (arch?.file.type) ? arch.file.type : '',
                                     url: url,
                                     clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${e[0]}`,
@@ -283,11 +283,11 @@ const Proyecto: NextPage = () => {
                                     identificador: `archivo-proyecto-${data.id}`
                                 }
                             }
-                            if (e[0] === state.files.foto_portada?.file.name) {
+                            if (e[0] === `${state.files.foto_portada?.file.name}-${time}`) {
                                 const foto = state.files.foto_portada;
                                 files.foto_portada = {
                                     id: (foto?.id) ? foto.id : 0,
-                                    nombre: e[0],
+                                    nombre: (foto) ? foto.file.name : '',
                                     type: (foto?.file.type) ? foto.file.type : '',
                                     url: url,
                                     clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${e[0]}`,

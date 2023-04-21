@@ -7,7 +7,7 @@ import { MRadioGroup } from '~/components/shared/MRadioGroup';
 import { MSelect } from '~/components/shared/MSelect/MSelect';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type TalentoFormInfoGral } from '~/pages/talento/editar-perfil';
-import { FileManagerFront } from '~/utils/file-manager-front';
+import { FileManager } from '~/utils/file-manager';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
 import { MTooltip } from '~/components/shared/MTooltip';
@@ -232,7 +232,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         height={100}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
-                                const base64 = await FileManagerFront.convertFileToBase64(f);
+                                const base64 = await FileManager.convertFileToBase64(f);
                                 return { base64: base64, name: f.name, file: f };
                             }));
                             files_converted.then((files_conv) => {
@@ -338,7 +338,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     filetypes={['PDF', 'DOC', 'DOCX']}
                     onChange={(files: File[]) => {
                         const files_converted = Promise.all(files.map(async (f) => {
-                            const base64 = await FileManagerFront.convertFileToBase64(f);
+                            const base64 = await FileManager.convertFileToBase64(f);
                             return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {

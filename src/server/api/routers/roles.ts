@@ -467,14 +467,22 @@ export const RolesRouter = createTRPCRouter({
 				});
 
 				if (rol) {
-					if (input.lineas) {
-						if (rol.id_media_lineas && input.lineas.id === 0) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: rol.id_media_lineas
-								},
-							});
+					if (rol.id_media_lineas) {
+						const lineas = await ctx.prisma.media.findFirst({
+							where: {
+								id: rol.id_media_lineas
+							},
+						});
+						if (lineas) {
+							await FileManager.deleteFiles([lineas.clave]);
 						}
+						await ctx.prisma.media.delete({
+							where: {
+								id: rol.id_media_lineas
+							},
+						});
+					}
+					if (input.lineas) {
 						const updated_lineas = await ctx.prisma.media.upsert({
 							where: {
 								id: (input.lineas.id) ? input.lineas.id : 0
@@ -507,24 +515,25 @@ export const RolesRouter = createTRPCRouter({
 								id_media_lineas: updated_lineas.id,
 							}
 						})
-					} else {
-						if (rol.id_media_lineas) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: rol.id_media_lineas
-								},
-							});
-						}
 					}
 	
-					if (input.foto_referencia) {
-						if (rol.id_media_foto_referencia && input.foto_referencia.id === 0) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: rol.id_media_foto_referencia
-								},
-							});
+					if (rol.id_media_foto_referencia) {
+						const foto = await ctx.prisma.media.findFirst({
+							where: {
+								id: rol.id_media_foto_referencia
+							}
+						})
+						if (foto) {
+							await FileManager.deleteFiles([foto.clave]);
 						}
+						await ctx.prisma.media.delete({
+							where: {
+								id: rol.id_media_foto_referencia
+							},
+						});
+					}
+
+					if (input.foto_referencia) {
 						const updated_foto_referencia = await ctx.prisma.media.upsert({
 							where: {
 								id: (input.foto_referencia.id) ? input.foto_referencia.id : 0
@@ -558,25 +567,25 @@ export const RolesRouter = createTRPCRouter({
 							}
 						})
 						
-					} else {
-						if (rol.id_media_foto_referencia) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: rol.id_media_foto_referencia
-								},
-							});
-						}
 					}
 
 					if (rol.selftape) {
-						if (input.lineas_selftape) {
-							if (rol.selftape.id_media_lineas && input.lineas_selftape.id === 0) {
-								await ctx.prisma.media.delete({
-									where: {
-										id: rol.selftape.id_media_lineas
-									},
-								});
+						if (rol.selftape.id_media_lineas) {
+							const self_lines = await ctx.prisma.media.findFirst({
+								where: {
+									id: rol.selftape.id_media_lineas
+								}
+							})
+							if (self_lines) {
+								await FileManager.deleteFiles([self_lines.clave]);
 							}
+							await ctx.prisma.media.delete({
+								where: {
+									id: rol.selftape.id_media_lineas
+								},
+							});
+						}
+						if (input.lineas_selftape) {
 							const updated_lineas = await ctx.prisma.media.upsert({
 								where: {
 									id: (input.lineas_selftape.id) ? input.lineas_selftape.id : 0
@@ -607,14 +616,6 @@ export const RolesRouter = createTRPCRouter({
 									id_media_lineas: updated_lineas.id, 
 								}
 							})
-						} else {
-							if (rol.selftape.id_media_lineas) {
-								await ctx.prisma.media.delete({
-									where: {
-										id: rol.selftape.id_media_lineas
-									},
-								});
-							}
 						}
 					}
 				}

@@ -22,7 +22,7 @@ import { getSession } from 'next-auth/react'
 import { TipoUsuario } from '~/enums'
 import { Archivo } from '~/server/api/root'
 import { Media } from '@prisma/client'
-import { FileManagerFront } from '~/utils/file-manager-front'
+import { FileManager } from '~/utils/file-manager'
 import { User } from 'next-auth'
 
 export type RolInformacionGeneralForm = {
@@ -295,8 +295,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
             foto_referencia?: Archivo
         } = {};
         if (state.descripcion_rol.files.media.lineas) {
-            const file = await FileManagerFront.convertUrlToFile(state.descripcion_rol.files.media.lineas.url, state.descripcion_rol.files.media.lineas.nombre, state.descripcion_rol.files.media.lineas.type);
-            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            const file = await FileManager.convertUrlToFile(state.descripcion_rol.files.media.lineas.url, state.descripcion_rol.files.media.lineas.nombre, state.descripcion_rol.files.media.lineas.type);
+            const base_64 = await FileManager.convertFileToBase64(file);
             files.lineas = {
                 id: state.descripcion_rol.files.media.lineas.id,
                 base64: base_64,
@@ -306,8 +306,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
             }
         }
         if (state.descripcion_rol.files.media.foto_referencia) {
-            const file = await FileManagerFront.convertUrlToFile(state.descripcion_rol.files.media.foto_referencia.url, state.descripcion_rol.files.media.foto_referencia.nombre, state.descripcion_rol.files.media.foto_referencia.type);
-            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            const file = await FileManager.convertUrlToFile(state.descripcion_rol.files.media.foto_referencia.url, state.descripcion_rol.files.media.foto_referencia.nombre, state.descripcion_rol.files.media.foto_referencia.type);
+            const base_64 = await FileManager.convertFileToBase64(file);
             files.foto_referencia = {
                 id: state.descripcion_rol.files.media.foto_referencia.id,
                 base64: base_64,
@@ -342,8 +342,8 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
             lineas?: Archivo,
         } = {};
         if (state.selftape.files.media.lineas) {
-            const file = await FileManagerFront.convertUrlToFile(state.selftape.files.media.lineas.url, state.selftape.files.media.lineas.nombre, state.selftape.files.media.lineas.type);
-            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            const file = await FileManager.convertUrlToFile(state.selftape.files.media.lineas.url, state.selftape.files.media.lineas.nombre, state.selftape.files.media.lineas.type);
+            const base_64 = await FileManager.convertFileToBase64(file);
             files.lineas = {
                 id: state.selftape.files.media.lineas.id,
                 base64: base_64,
@@ -771,16 +771,17 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
         async onSuccess(data) {
             const files: { lineas: Media | null, foto_referencia: Media | null, lineas_selftape: Media | null} = { lineas: null, foto_referencia: null, lineas_selftape: null };
             const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+            const time = new Date().getTime();
             if (state.descripcion_rol.files.lineas) {
                 if (state.descripcion_rol.files.touched.lineas) {
-                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/lineas`, name: `${state.descripcion_rol.files.lineas.file.name}`, file: state.descripcion_rol.files.lineas.file, base64: state.descripcion_rol.files.lineas.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/lineas`, name: `${state.descripcion_rol.files.lineas.file.name}-${time}`, file: state.descripcion_rol.files.lineas.file, base64: state.descripcion_rol.files.lineas.base64});
                 } else {
                     files.lineas = {
                         id: (state.descripcion_rol.files.lineas?.id) ? state.descripcion_rol.files.lineas.id : 0,
                         nombre: state.descripcion_rol.files.lineas?.name,
                         type: (state.descripcion_rol.files.lineas?.file.type) ? state.descripcion_rol.files.lineas.file.type : '',
                         url: (state.descripcion_rol.files.lineas.url) ? state.descripcion_rol.files.lineas.url : '',
-                        clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${state.descripcion_rol.files.lineas.name}`,
+                        clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${state.descripcion_rol.files.lineas.name}-${time}`,
                         referencia: `ARCHIVOS-ROL-${data.id}`,
                         identificador: `lineas-rol-${data.id}`
                     }
@@ -788,14 +789,14 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
             }
             if (state.descripcion_rol.files.foto_referencia) {
                 if (state.descripcion_rol.files.touched.foto_referencia) {
-                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia`, name: `${state.descripcion_rol.files.foto_referencia.file.name}`, file: state.descripcion_rol.files.foto_referencia.file, base64: state.descripcion_rol.files.foto_referencia.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia`, name: `${state.descripcion_rol.files.foto_referencia.file.name}-${time}`, file: state.descripcion_rol.files.foto_referencia.file, base64: state.descripcion_rol.files.foto_referencia.base64});
                 } else {
                     files.foto_referencia = {
                         id: (state.descripcion_rol.files.foto_referencia?.id) ? state.descripcion_rol.files.foto_referencia.id : 0,
                         nombre: state.descripcion_rol.files.foto_referencia.name,
                         type: (state.descripcion_rol.files.foto_referencia?.file.type) ? state.descripcion_rol.files.foto_referencia.file.type : '',
                         url: (state.descripcion_rol.files.foto_referencia.url) ? state.descripcion_rol.files.foto_referencia.url : '',
-                        clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${state.descripcion_rol.files.foto_referencia.name}`,
+                        clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${state.descripcion_rol.files.foto_referencia.name}-${time}`,
                         referencia: `ARCHIVOS-ROL-${data.id}`,
                         identificador: `foto-referencia-rol-${data.id}`
                     }
@@ -803,30 +804,30 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
             } 
             if (state.selftape.files.lineas) {
                 if (state.selftape.files.touched.lineas) {
-                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape`, name: `${state.selftape.files.lineas.file.name}`, file: state.selftape.files.lineas.file, base64: state.selftape.files.lineas.base64});
+                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape`, name: `${state.selftape.files.lineas.file.name}-${time}`, file: state.selftape.files.lineas.file, base64: state.selftape.files.lineas.base64});
                 } else {
                     files.lineas_selftape = {
                         id: (state.selftape.files.lineas?.id) ? state.selftape.files.lineas.id : 0,
                         nombre: state.selftape.files.lineas?.name,
                         type: (state.selftape.files.lineas?.file.type) ? state.selftape.files.lineas.file.type : '',
                         url: (state.selftape.files.lineas.url) ? state.selftape.files.lineas.url : '',
-                        clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${state.selftape.files.lineas.name}`,
+                        clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${state.selftape.files.lineas.name}-${time}`,
                         referencia: `ARCHIVOS-ROL-${data.id}`,
                         identificador: `lineas-selftape-rol-${data.id}`
                     }
                 }
             }
-            const urls_saved = await FileManagerFront.saveFiles(files_to_be_saved);
+            const urls_saved = await FileManager.saveFiles(files_to_be_saved);
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
                     Object.entries(res).forEach((e) => {
                         const url = e[1].url;  
                         if (url) {
-                            if (e[0] === state.descripcion_rol.files.lineas?.file.name) {
+                            if (e[0] === `${state.descripcion_rol.files.lineas?.file.name}-${time}`) {
                                 const arch = state.descripcion_rol.files.lineas;
                                 files.lineas = {
                                     id: (arch?.id) ? arch.id : 0,
-                                    nombre: e[0],
+                                    nombre: (arch) ? arch.file.name : '',
                                     type: (arch?.file.type) ? arch.file.type : '',
                                     url: url,
                                     clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${e[0]}`,
@@ -834,11 +835,11 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
                                     identificador: `lineas-rol-${data.id}`
                                 }
                             }
-                            if (e[0] === state.descripcion_rol.files.foto_referencia?.file.name) {
+                            if (e[0] === `${state.descripcion_rol.files.foto_referencia?.file.name}-${time}`) {
                                 const foto = state.descripcion_rol.files.foto_referencia;
                                 files.foto_referencia = {
                                     id: (foto?.id) ? foto.id : 0,
-                                    nombre: e[0],
+                                    nombre: (foto) ? foto.file.name : '',
                                     type: (foto?.file.type) ? foto.file.type : '',
                                     url: url,
                                     clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${e[0]}`,
@@ -846,12 +847,12 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
                                     identificador: `foto-referencia-rol-${data.id}`
                                 }
                             }
-                            if (e[0] === state.selftape.files.lineas?.file.name) {
-                                const foto = state.selftape.files.lineas;
+                            if (e[0] === `${state.selftape.files.lineas?.file.name}-${time}`) {
+                                const lineas = state.selftape.files.lineas;
                                 files.lineas_selftape = {
-                                    id: (foto?.id) ? foto.id : 0,
-                                    nombre: e[0],
-                                    type: (foto?.file.type) ? foto.file.type : '',
+                                    id: (lineas && lineas.id) ? lineas.id : 0,
+                                    nombre: (lineas) ? lineas.file.name : '',
+                                    type: (lineas?.file.type) ? lineas.file.type : '',
                                     url: url,
                                     clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${e[0]}`,
                                     referencia: `ARCHIVOS-ROL-${data.id}`,

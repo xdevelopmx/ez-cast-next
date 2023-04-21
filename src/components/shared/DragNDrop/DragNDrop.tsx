@@ -11,7 +11,7 @@ import { Tag } from "../Tag";
 import { Close, QuestionMark } from "@mui/icons-material";
 import { MTooltip } from "../MTooltip";
 import { MContainer } from "~/components/layout/MContainer";
-import { FileManagerFront } from "~/utils/file-manager-front";
+import { FileManager } from "~/utils/file-manager";
 
 const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
@@ -70,7 +70,7 @@ function DragNDrop(props: Props) {
         if (current_files_size <= max_files) {
             setError(null);
             const all_files = Array.from(files.values());
-            const dont_have_repeated = await FileManagerFront.checkFilesRepeatedInArray(all_files.concat(Array.from(selected_files)));
+            const dont_have_repeated = await FileManager.checkFilesRepeatedInArray(all_files.concat(Array.from(selected_files)));
             if (!dont_have_repeated) {
                 setError({ type: 'FILE_ALREADY_ADDED', message: `El archivo ya habia sido agregado`});
                 return false;
