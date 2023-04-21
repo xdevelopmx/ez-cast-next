@@ -6,6 +6,7 @@ import { MTooltip } from '~/components/shared/MTooltip';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { DescripcionDelRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { FC, useReducer} from 'react';
+import { FileManagerFront } from '~/utils/file-manager-front';
 
 interface Props {
     state: DescripcionDelRolForm,
@@ -107,7 +108,9 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                             noIconLabel={true}
                             label={<Typography fontWeight={600}>Foto referencia:</Typography>}
                             text_label_download='Descargar foto'
-                            files={[]}
+                            max_file_size={5120}
+                            download_url={state.files.foto_referencia?.url}
+                            files={(state.files.foto_referencia) ? [state.files.foto_referencia] : []}
                             filetypes={['JPG', 'PNG', 'GIF']}
                             text_button='Agregar foto'
                             tooltip={{ color: 'orange', placement: 'right', text: 'Te recomendamos agregar fotos para transmitir mejor lo que estás buscando.' }}
@@ -120,17 +123,24 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                 />
                             }
                             onChange={(files: File[]) => {
-                                /* const files_converted = Promise.all(files.map(async (f) => {
+                                const files_converted = Promise.all(files.map(async (f) => {
                                     const base64 = await FileManagerFront.convertFileToBase64(f);
                                     return { base64: base64, name: f.name, file: f };
                                 }));
                                 files_converted.then((files_conv) => {
                                     console.log(files_conv)
-                                    // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
+                                    onFormChange({ files: { 
+                                        ...state.files, 
+                                        foto_referencia: files_conv[0],
+                                        touched: {
+                                            ...state.files.touched,
+                                            foto_referencia: true
+                                        } 
+                                    } })
                                 }).catch((err) => {
                                     console.log(err);
-                                    //onFormChange({ files: { ...state.files, carta_responsiva: undefined } })
-                                }); */
+                                    onFormChange({ files: { ...state.files, archivo: undefined } })
+                                });
                             }}
                         />
                     </Grid>
@@ -139,8 +149,10 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                             id='id-drag-n-drop-pdf-rol'
                             noIconLabel={true}
                             label={<Typography fontWeight={600}>Líneas:</Typography>}
-                            text_label_download='Descargar PDF'
-                            files={[]}
+                            text_label_download='Descargar Lineas'
+                            max_file_size={5120}
+                            download_url={state.files.lineas?.url}
+                            files={(state.files.lineas) ? [state.files.lineas] : []}
                             filetypes={['pdf', 'doc', 'docx']}
                             text_button='Agregar PDF'
                             mainIcon={
@@ -152,17 +164,24 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                 />
                             }
                             onChange={(files: File[]) => {
-                                /* const files_converted = Promise.all(files.map(async (f) => {
+                                const files_converted = Promise.all(files.map(async (f) => {
                                     const base64 = await FileManagerFront.convertFileToBase64(f);
                                     return { base64: base64, name: f.name, file: f };
                                 }));
                                 files_converted.then((files_conv) => {
                                     console.log(files_conv)
-                                    // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
+                                    onFormChange({ files: { 
+                                        ...state.files, 
+                                        lineas: files_conv[0],
+                                        touched: {
+                                            ...state.files.touched,
+                                            lineas: true
+                                        } 
+                                    } })
                                 }).catch((err) => {
                                     console.log(err);
-                                    //onFormChange({ files: { ...state.files, carta_responsiva: undefined } })
-                                }); */
+                                    onFormChange({ files: { ...state.files, archivo: undefined } })
+                                });
                             }}
                         />
                     </Grid>

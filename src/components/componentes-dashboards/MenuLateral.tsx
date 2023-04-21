@@ -85,6 +85,8 @@ export const MenuLateral = () => {
 
 	const is_fetching = talento.isFetching || info_gral_talento.isFetching || cazatalentos.isFetching;
 
+	console.log('TALENTO_DATA: ', talento.data);
+
 	const user_info = useMemo(() => {
 		if (session.data && session.data.user) {
 			switch (session.data.user.tipo_usuario) {
@@ -585,17 +587,18 @@ export const MenuLateral = () => {
 										switch (user_info.tipo_usuario) {
 											case TipoUsuario.TALENTO: {
 												if (talento.data && form.foto_selected) {
-													void FileManagerFront.saveFiles([{path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+													const time = new Date().getTime();
+													void FileManagerFront.saveFiles([{path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
 														result.forEach((res) => {
 															if (talento.data) {
-																const response = res[`foto-perfil-talento-${talento.data.id}`];
+																const response = res[`foto-perfil-talento-${talento.data.id}-${time}`];
 																if (response) {
 																	update_perfil_talento.mutate({
 																		foto_perfil: {
 																			nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
 																			type: (form.foto_selected) ? form.foto_selected.file.type : '',
 																			url: (response.url) ? response.url : '',
-																			clave: `talentos/${talento.data.id}/fotos-perfil/foto-perfil-talento-${talento.data.id}`,
+																			clave: `talentos/${talento.data.id}/fotos-perfil/foto-perfil-talento-${talento.data.id}-${time}`,
 																			referencia: `FOTOS-PERFIL-TALENTO-${talento.data.id}`,
 																			identificador: `foto-perfil-talento-${talento.data.id}`
 																		},
@@ -616,17 +619,18 @@ export const MenuLateral = () => {
 											}
 											case TipoUsuario.CAZATALENTOS: {
 												if (cazatalentos.data && form.foto_selected) {
-													void FileManagerFront.saveFiles([{path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+													const time = new Date().getTime();
+													void FileManagerFront.saveFiles([{path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
 														result.forEach((res) => {
 															if (cazatalentos.data) {
-																const response = res[`foto-perfil-cazatalentos-${cazatalentos.data.id}`];
+																const response = res[`foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`];
 																if (response) {
 																	update_perfil_cazatalento.mutate({
 																		foto_perfil: {
 																			nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
 																			type: (form.foto_selected) ? form.foto_selected.file.type : '',
 																			url: (response.url) ? response.url : '',
-																			clave: `cazatalentos/${cazatalentos.data.id}/foto-perfil/foto-perfil-cazatalentos-${cazatalentos.data.id}`,
+																			clave: `cazatalentos/${cazatalentos.data.id}/foto-perfil/foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`,
 																			referencia: `FOTOS-PERFIL-CAZATALENTOS-${cazatalentos.data.id}`,
 																			identificador: `foto-perfil-cazatalentos-${cazatalentos.data.id}`
 																		},

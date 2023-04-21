@@ -20,6 +20,10 @@ import { MContainer } from '~/components/layout/MContainer'
 import Constants from '~/constants'
 import { getSession } from 'next-auth/react'
 import { TipoUsuario } from '~/enums'
+import { Archivo } from '~/server/api/root'
+import { Media } from '@prisma/client'
+import { FileManagerFront } from '~/utils/file-manager-front'
+import { User } from 'next-auth'
 
 export type RolInformacionGeneralForm = {
     nombre: string,
@@ -77,14 +81,18 @@ export type DescripcionDelRolForm = {
         ids: number[],
         descripcion: string
     },
-    lineas?: {
-        base64: string,
-        extension: string
+    files: {
+        lineas?: Archivo,
+        foto_referencia?: Archivo,
+        media: {
+            lineas?: Media,
+            foto_referencia?: Media,
+        },
+        touched: {
+            lineas: boolean,
+            foto_referencia: boolean,
+        }
     },
-    foto_referencia?: {
-        base64: string,
-        extension: string
-    }
 }
 
 export type CastingsRolForm = {
@@ -111,9 +119,14 @@ export type RequisitosRolForm = {
 export type SelftapeRolForm = {
     pedir_selftape: boolean,
     indicaciones: string,
-    lineas?: {
-        base64: string,
-        extension: string
+    files: {
+        lineas?: Archivo,
+        media: {
+            lineas?: Media,
+        },
+        touched: {
+            lineas: boolean,
+        }
     }
 }
 
@@ -177,7 +190,19 @@ const initialState: RolForm = {
         nsfw: {
             ids: [],
             descripcion: ''
-        }
+        },
+        files: {
+            lineas: undefined,
+            foto_referencia: undefined,
+            media: {
+                lineas: undefined,
+                foto_referencia: undefined,
+            },
+            touched: {
+                lineas: false,
+                foto_referencia: false,
+            }
+        },
     },
     castings: {
         id_estado_republica: 0,
@@ -200,6 +225,12 @@ const initialState: RolForm = {
     selftape: {
         pedir_selftape: false,
         indicaciones: '',
+        files: {
+            media: {},
+            touched: {
+                lineas: false,
+            }
+        },
     }
 }
 
@@ -239,7 +270,7 @@ const reducerRol = (state: RolForm, action: { type: string, value: { [key: strin
     }
 }
 
-const AgregarRolPage: NextPage = () => {
+const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
 
     const router = useRouter()
 
@@ -256,6 +287,98 @@ const AgregarRolPage: NextPage = () => {
     const rol = api.roles.getCompleteById.useQuery(state.id_rol, {
         refetchOnWindowFocus: false
     })
+
+    const initDescripcionFiles = async () => {
+        console.log('FILEEES XSSSA', state.descripcion_rol.files);
+        const files: {
+            lineas?: Archivo,
+            foto_referencia?: Archivo
+        } = {};
+        if (state.descripcion_rol.files.media.lineas) {
+            const file = await FileManagerFront.convertUrlToFile(state.descripcion_rol.files.media.lineas.url, state.descripcion_rol.files.media.lineas.nombre, state.descripcion_rol.files.media.lineas.type);
+            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            files.lineas = {
+                id: state.descripcion_rol.files.media.lineas.id,
+                base64: base_64,
+                name: state.descripcion_rol.files.media.lineas.nombre,
+                file: file,
+                url: state.descripcion_rol.files.media.lineas.url
+            }
+        }
+        if (state.descripcion_rol.files.media.foto_referencia) {
+            const file = await FileManagerFront.convertUrlToFile(state.descripcion_rol.files.media.foto_referencia.url, state.descripcion_rol.files.media.foto_referencia.nombre, state.descripcion_rol.files.media.foto_referencia.type);
+            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            files.foto_referencia = {
+                id: state.descripcion_rol.files.media.foto_referencia.id,
+                base64: base_64,
+                name: state.descripcion_rol.files.media.foto_referencia.nombre,
+                file: file,
+                url: state.descripcion_rol.files.media.foto_referencia.url
+            }
+        }
+        dispatch({
+            type: 'update-descripcion-rol',
+            value: {
+                files: {
+                    media: {
+                        lineas: undefined,
+                        foto_referencia: undefined,
+                    },
+                    lineas: files.lineas,
+                    foto_referencia: files.foto_referencia,
+                    touched: {
+                        lineas: false,
+                        foto_referencia: false,
+                    }
+                }
+            }
+        })
+    }
+console.log('STATEEEEEEEEEEE', state.descripcion_rol)
+    console.log(rol, 'ROLEEEEEEEEEEEEEEEE');
+
+    const initSelftapeFiles = async () => {
+        const files: {
+            lineas?: Archivo,
+        } = {};
+        if (state.selftape.files.media.lineas) {
+            const file = await FileManagerFront.convertUrlToFile(state.selftape.files.media.lineas.url, state.selftape.files.media.lineas.nombre, state.selftape.files.media.lineas.type);
+            const base_64 = await FileManagerFront.convertFileToBase64(file);
+            files.lineas = {
+                id: state.selftape.files.media.lineas.id,
+                base64: base_64,
+                name: state.selftape.files.media.lineas.nombre,
+                file: file,
+                url: state.selftape.files.media.lineas.url
+            }
+        }
+        dispatch({
+            type: 'update-selftape-rol',
+            value: {
+                files: {
+                    media: {
+                        lineas: undefined,
+                    },
+                    lineas: files.lineas,
+                    touched: {
+                        lineas: false,
+                    }
+                }
+            }
+        })
+    }
+
+    useEffect(() => {
+        if (state.descripcion_rol.files.media.foto_referencia || state.descripcion_rol.files.media.lineas) {
+            void initDescripcionFiles();
+        }
+    }, [state.descripcion_rol.files.media]);
+
+    useEffect(() => {
+        if (state.selftape.files.media.lineas) {
+            void initSelftapeFiles();
+        }
+    }, [state.selftape.files.media]);
 
     useEffect(() => {
         if (rol.data) {
@@ -324,6 +447,12 @@ const AgregarRolPage: NextPage = () => {
                         nsfw: {
                             ids: (rol.data && rol.data.nsfw) ? rol.data.nsfw.nsfw_seleccionados.map(n => n.id_nsfw) : [],
                             descripcion: (rol.data && rol.data.nsfw) ? rol.data.nsfw.descripcion : ''
+                        },
+                        files: {
+                            media: {
+                                lineas: rol.data.lineas,
+                                foto_referencia: rol.data.foto_referencia
+                            }
                         }
                     },
                     castings: {
@@ -354,8 +483,18 @@ const AgregarRolPage: NextPage = () => {
                         medios_multimedia_a_incluir: (rol.data.requisitos) ? rol.data.requisitos.medios_multimedia.map(m => m.id_medio_multimedia) : [],
                         id_estado_donde_aceptan_solicitudes: (rol.data.requisitos) ? rol.data.requisitos.id_estado_republica : 0
                     },
+                    selftape: {
+                        indicaciones: (rol.data.selftape) ? rol.data.selftape.indicaciones : '',
+                        pedir_selftape: (rol.data.selftape) ? rol.data.selftape.pedir_selftape : false,
+                        files: {
+                            media: {
+                                lineas: rol.data.selftape?.lineas,
+                            }
+                        }
+                    }
                 }
             })
+            //void initDescripcionFiles();
         }
     }, [rol.data]);
 
@@ -598,11 +737,12 @@ const AgregarRolPage: NextPage = () => {
             state.filmaciones.id_estado_republica > 0 && state.filmaciones.fechas.length > 0 && state.requisitos.fecha_presentacion !== '' &&
             state.requisitos.id_uso_horario > 0 && state.requisitos.id_idioma > 0 && state.requisitos.medios_multimedia_a_incluir.length > 0 &&
             state.requisitos.id_estado_donde_aceptan_solicitudes > 0 && state.requisitos.info_trabajo.length > 0);
+        console.log('FOOOORM', form);
         return form;
     }, [state]);
 
-    const saveRol = api.roles.saveRol.useMutation({
-        onSuccess(input) {
+    const updateRolFiles = api.roles.saveRolFiles.useMutation({
+        onSuccess: (data) => {
             if (on_save_action) {
                 switch (on_save_action) {
                     case 'redirect-to-proyectos': {
@@ -627,6 +767,110 @@ const AgregarRolPage: NextPage = () => {
         }
     });
 
+    const saveRol = api.roles.saveRol.useMutation({
+        async onSuccess(data) {
+            const files: { lineas: Media | null, foto_referencia: Media | null, lineas_selftape: Media | null} = { lineas: null, foto_referencia: null, lineas_selftape: null };
+            const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+            if (state.descripcion_rol.files.lineas) {
+                if (state.descripcion_rol.files.touched.lineas) {
+                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/lineas`, name: `${state.descripcion_rol.files.lineas.file.name}`, file: state.descripcion_rol.files.lineas.file, base64: state.descripcion_rol.files.lineas.base64});
+                } else {
+                    files.lineas = {
+                        id: (state.descripcion_rol.files.lineas?.id) ? state.descripcion_rol.files.lineas.id : 0,
+                        nombre: state.descripcion_rol.files.lineas?.name,
+                        type: (state.descripcion_rol.files.lineas?.file.type) ? state.descripcion_rol.files.lineas.file.type : '',
+                        url: (state.descripcion_rol.files.lineas.url) ? state.descripcion_rol.files.lineas.url : '',
+                        clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${state.descripcion_rol.files.lineas.name}`,
+                        referencia: `ARCHIVOS-ROL-${data.id}`,
+                        identificador: `lineas-rol-${data.id}`
+                    }
+                }
+            }
+            if (state.descripcion_rol.files.foto_referencia) {
+                if (state.descripcion_rol.files.touched.foto_referencia) {
+                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia`, name: `${state.descripcion_rol.files.foto_referencia.file.name}`, file: state.descripcion_rol.files.foto_referencia.file, base64: state.descripcion_rol.files.foto_referencia.base64});
+                } else {
+                    files.foto_referencia = {
+                        id: (state.descripcion_rol.files.foto_referencia?.id) ? state.descripcion_rol.files.foto_referencia.id : 0,
+                        nombre: state.descripcion_rol.files.foto_referencia.name,
+                        type: (state.descripcion_rol.files.foto_referencia?.file.type) ? state.descripcion_rol.files.foto_referencia.file.type : '',
+                        url: (state.descripcion_rol.files.foto_referencia.url) ? state.descripcion_rol.files.foto_referencia.url : '',
+                        clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${state.descripcion_rol.files.foto_referencia.name}`,
+                        referencia: `ARCHIVOS-ROL-${data.id}`,
+                        identificador: `foto-referencia-rol-${data.id}`
+                    }
+                }
+            } 
+            if (state.selftape.files.lineas) {
+                if (state.selftape.files.touched.lineas) {
+                    files_to_be_saved.push({path: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape`, name: `${state.selftape.files.lineas.file.name}`, file: state.selftape.files.lineas.file, base64: state.selftape.files.lineas.base64});
+                } else {
+                    files.lineas_selftape = {
+                        id: (state.selftape.files.lineas?.id) ? state.selftape.files.lineas.id : 0,
+                        nombre: state.selftape.files.lineas?.name,
+                        type: (state.selftape.files.lineas?.file.type) ? state.selftape.files.lineas.file.type : '',
+                        url: (state.selftape.files.lineas.url) ? state.selftape.files.lineas.url : '',
+                        clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${state.selftape.files.lineas.name}`,
+                        referencia: `ARCHIVOS-ROL-${data.id}`,
+                        identificador: `lineas-selftape-rol-${data.id}`
+                    }
+                }
+            }
+            const urls_saved = await FileManagerFront.saveFiles(files_to_be_saved);
+            if (urls_saved.length > 0) {
+                urls_saved.forEach((res, j) => {
+                    Object.entries(res).forEach((e) => {
+                        const url = e[1].url;  
+                        if (url) {
+                            if (e[0] === state.descripcion_rol.files.lineas?.file.name) {
+                                const arch = state.descripcion_rol.files.lineas;
+                                files.lineas = {
+                                    id: (arch?.id) ? arch.id : 0,
+                                    nombre: e[0],
+                                    type: (arch?.file.type) ? arch.file.type : '',
+                                    url: url,
+                                    clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${e[0]}`,
+                                    referencia: `ARCHIVOS-ROL-${data.id}`,
+                                    identificador: `lineas-rol-${data.id}`
+                                }
+                            }
+                            if (e[0] === state.descripcion_rol.files.foto_referencia?.file.name) {
+                                const foto = state.descripcion_rol.files.foto_referencia;
+                                files.foto_referencia = {
+                                    id: (foto?.id) ? foto.id : 0,
+                                    nombre: e[0],
+                                    type: (foto?.file.type) ? foto.file.type : '',
+                                    url: url,
+                                    clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${e[0]}`,
+                                    referencia: `ARCHIVOS-ROL-${data.id}`,
+                                    identificador: `foto-referencia-rol-${data.id}`
+                                }
+                            }
+                            if (e[0] === state.selftape.files.lineas?.file.name) {
+                                const foto = state.selftape.files.lineas;
+                                files.lineas_selftape = {
+                                    id: (foto?.id) ? foto.id : 0,
+                                    nombre: e[0],
+                                    type: (foto?.file.type) ? foto.file.type : '',
+                                    url: url,
+                                    clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${e[0]}`,
+                                    referencia: `ARCHIVOS-ROL-${data.id}`,
+                                    identificador: `lineas-selftape-rol-${data.id}`
+                                }
+                            }
+                        }
+                    })
+                });
+            }
+            updateRolFiles.mutate({
+                id_rol: data.id,
+                ...files
+            })
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    });
 
     const info_gral = useMemo(() => {
         return <InformacionGeneralRol
@@ -773,6 +1017,8 @@ const AgregarRolPage: NextPage = () => {
                                                 onClick={() => {
                                                     if (state.informacion_general.nombre.length > 1 && state.informacion_general.id_tipo_rol > 0) {
                                                         setOnSaveAction('reset-form');
+
+
                                                         saveRol.mutate(form_validate.data);
                                                     } else {
                                                         notify('warning', 'Por favor ingresa el nombre y tipo de rol antes de intentar guardar los cambios');

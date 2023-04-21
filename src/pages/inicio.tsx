@@ -3,26 +3,31 @@ import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from 'next/image';
 import { motion } from 'framer-motion'
-
-import { MainLayout } from "~/components";
+import { MainLayout, SlideImagenesLinks } from "~/components";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { type User } from "next-auth";
 import { getSession } from "next-auth/react";
 import { Carroucel } from "~/components/shared/Carroucel";
 import { MContainer } from "~/components/layout/MContainer";
-import { Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
+import { useState } from "react";
+import { RolPreview } from "~/components/shared/RolPreview";
+import { DetallesProyecto } from "~/components/proyecto/detalles";
+import useBanners from "~/hooks/useBanners";
 
-type CazaTalentosIndexPageProps = {
+type InicioPageProps = {
   user: User,
 }
 
-const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => {
+const InicioPage: NextPage<InicioPageProps> = ({user}) => {
 
-  const proyectos = api.proyectos.getAllByIdCazatalentos.useQuery({ id: parseInt(user.id) }, {
+  const [dialog, setDialog] = useState<{open: boolean, id_proyecto: number}>({open: false, id_proyecto: 0});
+
+  const proyectos = api.proyectos.getProyectosRandom.useQuery(20, {
 		refetchOnWindowFocus: false
 	});
 
@@ -32,10 +37,18 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
 
   const router = useRouter();
 
+  const banners = useBanners("BANNERS_PAGE_INICIO");
+
+  const banner_principal = banners.filter(b => b.id === 'banner_principal')[0];
+  
+  console.log('BANNERS', banners);
+
+  const redirect = (user.tipo_usuario) ? (user.tipo_usuario === TipoUsuario.TALENTO) ? '/talento/dashboard' : (user.tipo_usuario === TipoUsuario.CAZATALENTOS) ? '/cazatalentos/dashboard' : '/representante/dashboard' : '';
+
   return (
     <>
       <Head>
-        <title>Cazatalentos | Talent Corner</title>
+        <title>{user.tipo_usuario ? `${user.tipo_usuario?.charAt(0).toUpperCase()}${user.tipo_usuario?.substring(1, user.tipo_usuario.length).toLowerCase()} | Talent Corner` : ''}</title>
         <meta name="description" content="Talent Corner" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -49,7 +62,7 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
                 <p className="mb-5">Ahora siendo casteado…</p>
               </div>
               <div className="d-flex align-items-center">
-                <Link href={'/cazatalentos/dashboard'} style={{ textDecoration: 'none' }}>
+                <Link href={redirect} style={{ textDecoration: 'none' }}>
                   <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
                 </Link>
                 <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="icon" />
@@ -65,8 +78,8 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
              <Carroucel slidesPerView={6}>
                {destacados.data.map((proyecto, i) => {
                 return <MContainer key={i} direction='vertical'>
-                  <Image onClick={() => { void router.push(`/cazatalentos/proyecto?id_proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
-                  <Typography onClick={() => { void router.push(`/cazatalentos/proyecto?id_proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                  <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
+                  <Typography onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
                 </MContainer>
                })}
              </Carroucel>
@@ -77,25 +90,43 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
               <hr className="mb-5 mt-1 hr_gold" />
             </>
           }
-          <div className="banner_slider_full">
-            <motion.img src="/assets/img/banner_slider_full.png" alt="icono" />
-          </div>
+          {banner_principal &&
+            <motion.img src={banner_principal.url_content} alt="icono" />
+          }
           <p className="mt-5 h5">Ahora casteando en EZ-Cast</p>
           <hr className="hr_blue" />
           <Carroucel slidesPerView={6}>
               {proyectos.data && proyectos.data.map((proyecto, i) => {
                   return <MContainer key={i} direction='vertical'>
-                      <Image onClick={() => { void router.push(`/cazatalentos/proyecto?id_proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
-                      <Typography onClick={() => { void router.push(`/cazatalentos/proyecto?id_proyecto=${proyecto.id}`) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                      <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.url) ? proyecto.url : '/assets/img/no-image.png'} alt="" /> 
+                      <Typography onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
                     </MContainer>
               })}
           </Carroucel>
           <hr className="hr_blue" />
           <div className="d-flex justify-content-end align-items-center">
-            <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
+            <Link href={redirect} style={{ textDecoration: 'none' }}>
+              <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
+            </Link>
             <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="" />
           </div>
         </div>
+        <Dialog
+            style={{
+              marginTop: 56
+            }}
+            fullWidth={true}
+            maxWidth={'md'}
+            open={dialog.open}
+            onClose={() => { setDialog({...dialog, open: false}) }}
+        >
+            <DialogContent>
+                <DetallesProyecto id_proyecto={dialog.id_proyecto}/>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={() => { setDialog({...dialog, open: false}) }}>Cerrar</Button>
+            </DialogActions>
+        </Dialog>
       </MainLayout>
     </>
   );
@@ -104,19 +135,11 @@ const CazaTalentosIndexPage: NextPage<CazaTalentosIndexPageProps> = ({user}) => 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
   if (session && session.user) {
-      if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-          return {
-              props: {
-                  user: session.user,
-              }
-          }
-      } 
-      return {
-          redirect: {
-              destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
-              permanent: true
-          }
-      }
+    return {
+        props: {
+            user: session.user
+        }
+    }
   }
   return {
       redirect: {
@@ -126,4 +149,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-export default CazaTalentosIndexPage;
+export default InicioPage;

@@ -267,8 +267,8 @@ model Roles {
   nombre               String
   id_tipo_rol          Int
   descripcion          String?
-  foto_referencia      String?
-  lineas               String?
+  id_media_foto_referencia      Int?
+  id_media_lineas      Int?
   detalles_adicionales String?
   estatus              String                  @default("SIN_FINALIZAR")
   id_proyecto          Int
@@ -283,6 +283,8 @@ model Roles {
   selftape             SelftapePorRoles?
   tipo_rol             CatalogoTiposRoles      @relation(fields: [id_tipo_rol], references: [id])
   aplicaciones_por_talento AplicacionRolPorTalento[]
+  lineas Media?  @relation("media_lineas", map: "media_lineas", fields: [id_media_lineas], references: [id])
+  foto_referencia Media? @relation("media_foto_referencia", map: "media_foto_referencia", fields: [id_media_foto_referencia], references: [id])
 }
 
 model SelftapePorRoles {
@@ -291,7 +293,8 @@ model SelftapePorRoles {
   rol            Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   pedir_selftape Boolean
   indicaciones   String  @db.VarChar(512)
-  lineas         String?
+  id_media_lineas         Int?
+  lineas Media?  @relation(fields: [id_media_lineas], references: [id])
 }
 
 model CatalogoTiposRoles {
@@ -481,6 +484,9 @@ model Media {
   RepresentantesPorTalentos RepresentantesPorTalentos[]
   archivo_proyecto Proyecto[] @relation("media_archivo", map: "media_archivo")
   foto_portada_proyecto Proyecto[] @relation("media_foto_portada", map: "media_foto_portada")
+  lineas_roles Roles[] @relation("media_lineas", map: "media_lineas")
+  foto_referencia_roles Roles[] @relation("media_foto_referencia", map: "media_foto_referencia")
+  lineas_selftape SelftapePorRoles[]
 }
 
 model MediaPorTalentos {
