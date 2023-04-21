@@ -185,6 +185,8 @@ export const RolesRouter = createTRPCRouter({
 			const rol = await ctx.prisma.roles.findUnique({
 				where: { id: input },
 				include: {
+					lineas: true,
+					foto_referencia: true,
 					compensaciones: {
 						include: {
 							sueldo: true,
@@ -255,7 +257,11 @@ export const RolesRouter = createTRPCRouter({
 							estado_republica: true
 						}
 					},
-					selftape: true,
+					selftape: {
+						include: {
+							lineas: true
+						}
+					},
 					tipo_rol: true,
 				}
 			});
@@ -415,7 +421,214 @@ export const RolesRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-		),
+	),
+	saveRolFiles: protectedProcedure
+    	.input(z.object({ 
+			id_rol: z.number(),
+			foto_referencia: z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish(),
+			lineas: z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish(),
+			lineas_selftape: z.object({
+				id: z.number().nullish(),
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			}).nullish()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			console.log('INPUT saveRolFiles', input)
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				let rol = await ctx.prisma.roles.findFirst({
+					where: {
+						id: input.id_rol
+					},
+					include: {
+						selftape: true
+					}
+				});
+
+				if (rol) {
+					if (input.lineas) {
+						if (rol.id_media_lineas && input.lineas.id === 0) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: rol.id_media_lineas
+								},
+							});
+						}
+						const updated_lineas = await ctx.prisma.media.upsert({
+							where: {
+								id: (input.lineas.id) ? input.lineas.id : 0
+							},
+							update: {
+								nombre: input.lineas.nombre,
+								type: input.lineas.type,
+								url: input.lineas.url,
+								clave: input.lineas.clave,
+								referencia: input.lineas.referencia,
+								identificador: input.lineas.identificador,
+							},
+							create: {
+								nombre: input.lineas.nombre,
+								type: input.lineas.type,
+								url: input.lineas.url,
+								clave: input.lineas.clave,
+								referencia: input.lineas.referencia,
+								identificador: input.lineas.identificador,
+							},
+						})
+						rol = await ctx.prisma.roles.update({
+							where: {
+								id: rol.id
+							},
+							include: {
+								selftape: true,
+							},
+							data: {
+								id_media_lineas: updated_lineas.id,
+							}
+						})
+					} else {
+						if (rol.id_media_lineas) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: rol.id_media_lineas
+								},
+							});
+						}
+					}
+	
+					if (input.foto_referencia) {
+						if (rol.id_media_foto_referencia && input.foto_referencia.id === 0) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: rol.id_media_foto_referencia
+								},
+							});
+						}
+						const updated_foto_referencia = await ctx.prisma.media.upsert({
+							where: {
+								id: (input.foto_referencia.id) ? input.foto_referencia.id : 0
+							},
+							update: {
+								nombre: input.foto_referencia.nombre,
+								type: input.foto_referencia.type,
+								url: input.foto_referencia.url,
+								clave: input.foto_referencia.clave,
+								referencia: input.foto_referencia.referencia,
+								identificador: input.foto_referencia.identificador,
+							},
+							create: {
+								nombre: input.foto_referencia.nombre,
+								type: input.foto_referencia.type,
+								url: input.foto_referencia.url,
+								clave: input.foto_referencia.clave,
+								referencia: input.foto_referencia.referencia,
+								identificador: input.foto_referencia.identificador,
+							},
+						})
+						rol = await ctx.prisma.roles.update({
+							where: {
+								id: rol.id
+							},
+							include: {
+								selftape: true,
+							},
+							data: {
+								id_media_foto_referencia: updated_foto_referencia.id
+							}
+						})
+						
+					} else {
+						if (rol.id_media_foto_referencia) {
+							await ctx.prisma.media.delete({
+								where: {
+									id: rol.id_media_foto_referencia
+								},
+							});
+						}
+					}
+
+					if (rol.selftape) {
+						if (input.lineas_selftape) {
+							if (rol.selftape.id_media_lineas && input.lineas_selftape.id === 0) {
+								await ctx.prisma.media.delete({
+									where: {
+										id: rol.selftape.id_media_lineas
+									},
+								});
+							}
+							const updated_lineas = await ctx.prisma.media.upsert({
+								where: {
+									id: (input.lineas_selftape.id) ? input.lineas_selftape.id : 0
+								},
+								update: {
+									nombre: input.lineas_selftape.nombre,
+									type: input.lineas_selftape.type,
+									url: input.lineas_selftape.url,
+									clave: input.lineas_selftape.clave,
+									referencia: input.lineas_selftape.referencia,
+									identificador: input.lineas_selftape.identificador,
+								},
+								create: {
+									nombre: input.lineas_selftape.nombre,
+									type: input.lineas_selftape.type,
+									url: input.lineas_selftape.url,
+									clave: input.lineas_selftape.clave,
+									referencia: input.lineas_selftape.referencia,
+									identificador: input.lineas_selftape.identificador,
+								},
+							})
+
+							rol.selftape = await ctx.prisma.selftapePorRoles.update({
+								where: {
+									id_rol: rol.id
+								},
+								data: {
+									id_media_lineas: updated_lineas.id, 
+								}
+							})
+						} else {
+							if (rol.selftape.id_media_lineas) {
+								await ctx.prisma.media.delete({
+									where: {
+										id: rol.selftape.id_media_lineas
+									},
+								});
+							}
+						}
+					}
+				}
+		
+				return rol;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalento puede modificar la informacion del rol',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
 	saveRol: publicProcedure
 		.input(z.object({
 			id_rol: z.number(),
@@ -511,14 +724,6 @@ export const RolesRouter = createTRPCRouter({
 						},
 					}).max(500)
 				}).nullish(),
-				lineas: z.object({
-					base64: z.string(),
-					extension: z.string()
-				}).nullish(),
-				foto_referencia: z.object({
-					base64: z.string(),
-					extension: z.string()
-				}).nullish()
 			}),
 			casting: z.object({
 				id_estado_republica: z.number(),
@@ -582,10 +787,6 @@ export const RolesRouter = createTRPCRouter({
 					},
 				}).max(500),
 				pedir_selftape: z.boolean(),
-				lineas: z.object({
-					base64: z.string(),
-					extension: z.string()
-				}).nullish(),
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
@@ -621,8 +822,6 @@ export const RolesRouter = createTRPCRouter({
 					suma_total_compensaciones_no_monetarias: input.compensaciones.compensacion.suma_total_compensaciones_no_monetarias
 				},
 			})
-
-			console.log('compensaciones', compensaciones);
 
 			if (!compensaciones) {
 				throw new TRPCError({
@@ -775,20 +974,6 @@ export const RolesRouter = createTRPCRouter({
 
 			// DESCRIPCION
 
-			const updated_files: { lineas: null | string, foto_referencia: null | string } = { lineas: null, foto_referencia: null };
-			if (input.descripcion_rol.lineas) {
-				const save_result = await FileManager.saveFile(`lineas-descripcion-rol.${input.descripcion_rol.lineas.extension}`, input.descripcion_rol.lineas.base64, 'roles/descripcion/lineas/');
-				if (!save_result.error) {
-					updated_files.lineas = save_result.result;
-				}
-			}
-
-			if (input.descripcion_rol.foto_referencia) {
-				const save_result = await FileManager.saveFile(`foto-referencia-descripcion-rol.${input.descripcion_rol.foto_referencia.extension}`, input.descripcion_rol.foto_referencia.base64, 'roles/descripcion/fotos/');
-				if (!save_result.error) {
-					updated_files.foto_referencia = save_result.result;
-				}
-			}
 			const rol_updated = await ctx.prisma.roles.update({
 				where: {
 					id: rol.id
@@ -808,7 +993,6 @@ export const RolesRouter = createTRPCRouter({
 				data: {
 					descripcion: input.descripcion_rol.descripcion,
 					detalles_adicionales: input.descripcion_rol.detalles_adicionales,
-					...updated_files
 				}
 			});
 			if (!rol_updated) {
@@ -997,14 +1181,6 @@ export const RolesRouter = createTRPCRouter({
 
 			// SELFTAPE
 
-			let updated_selftape_lineas: string | null = null;
-			if (input.selftape.lineas) {
-				const save_result = await FileManager.saveFile(`lineas-selftape-rol.${input.selftape.lineas.extension}`, input.selftape.lineas.base64, 'roles/selftape/lineas/');
-				if (!save_result.error) {
-					updated_selftape_lineas = save_result.result;
-				}
-			}
-
 			const selftape = await ctx.prisma.selftapePorRoles.upsert({
 				where: {
 					id_rol: rol.id
@@ -1012,13 +1188,11 @@ export const RolesRouter = createTRPCRouter({
 				update: {
 					pedir_selftape: input.selftape.pedir_selftape,
 					indicaciones: input.selftape.indicaciones,
-					lineas: updated_selftape_lineas
 				},
 				create: {
 					id_rol: rol.id,
 					pedir_selftape: input.selftape.pedir_selftape,
 					indicaciones: input.selftape.indicaciones,
-					lineas: updated_selftape_lineas
 				}
 			})
 
@@ -1359,20 +1533,6 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const updated_files: { lineas: null | string, foto_referencia: null | string } = { lineas: null, foto_referencia: null };
-			if (input.lineas) {
-				const save_result = await FileManager.saveFile(`lineas-descripcion-rol.${input.lineas.extension}`, input.lineas.base64, 'roles/descripcion/lineas/');
-				if (!save_result.error) {
-					updated_files.lineas = save_result.result;
-				}
-			}
-
-			if (input.foto_referencia) {
-				const save_result = await FileManager.saveFile(`foto-referencia-descripcion-rol.${input.foto_referencia.extension}`, input.foto_referencia.base64, 'roles/descripcion/fotos/');
-				if (!save_result.error) {
-					updated_files.foto_referencia = save_result.result;
-				}
-			}
 			const rol = await ctx.prisma.roles.update({
 				where: {
 					id: input.id_rol
@@ -1392,7 +1552,6 @@ export const RolesRouter = createTRPCRouter({
 				data: {
 					descripcion: input.descripcion,
 					detalles_adicionales: input.detalles_adicionales,
-					...updated_files
 				}
 			});
 			if (!rol) {
@@ -1682,14 +1841,6 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish(),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			let updated_lineas: string | null = null;
-			if (input.lineas) {
-				const save_result = await FileManager.saveFile(`lineas-selftape-rol.${input.lineas.extension}`, input.lineas.base64, 'roles/selftape/lineas/');
-				if (!save_result.error) {
-					updated_lineas = save_result.result;
-				}
-			}
-
 			const selftape = await ctx.prisma.selftapePorRoles.upsert({
 				where: {
 					id_rol: input.id_rol
@@ -1697,13 +1848,11 @@ export const RolesRouter = createTRPCRouter({
 				update: {
 					pedir_selftape: input.pedir_selftape,
 					indicaciones: input.indicaciones,
-					lineas: updated_lineas
 				},
 				create: {
 					id_rol: input.id_rol,
 					pedir_selftape: input.pedir_selftape,
 					indicaciones: input.indicaciones,
-					lineas: updated_lineas
 				}
 			})
 

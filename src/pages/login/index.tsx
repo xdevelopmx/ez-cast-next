@@ -42,7 +42,7 @@ const LoginPage: NextPage = () => {
 		const result = {
 			errors: {
 				user: (!state.user || state.user.length < 2) ? 'El usuario es demasiado corto' : undefined,
-				password: (!state.password || state.password.length < 8) ? 'La contrasenia es demasiado corta' : undefined,
+				password: (!state.password || state.password.length < 8) ? 'La contraseña es demasiado corta' : undefined,
 			},
 			hasErrors: false
 		}
@@ -148,16 +148,9 @@ const LoginPage: NextPage = () => {
 										}).then(res => {
 											if (res?.ok) {
 												notify('success', 'Autenticacion Exitosa');
-												switch (state.tipo_usuario) {
-													case 'talento': {
-														router.push('/talento');
-														break;
-													}
-													case 'cazatalentos': {
-														router.push('/cazatalentos');
-														break;
-													}
-												}
+												router.push('/inicio');
+											} else {
+												notify('error', 'Usuario u contraseña incorrectos');
 											}
 											console.log(res);
 										}).catch((err: Error) => {

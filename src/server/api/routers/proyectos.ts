@@ -81,6 +81,11 @@ export const ProyectosRouter = createTRPCRouter({
 							tipo_proyecto: true
 						}
 					},
+					cazatalentos: {
+						include: {
+							foto_perfil: true
+						}
+					},
 					estado_republica: true,
 					foto_portada: true,
 					archivo: true,

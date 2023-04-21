@@ -37,7 +37,7 @@ export interface RolCompleto extends Roles {
 const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proyecto }) => {
 
 	const [selected_proyecto, setSelectedProyecto] = useState<number>(id_proyecto);
-	const [pagination, setPagination] = useState<{page: number, page_size: number}>({page: 0, page_size: 2 });
+	const [pagination, setPagination] = useState<{page: number, page_size: number}>({page: 0, page_size: 4 });
 	const [selected_rol, setSelectedRol] = useState<number>(0);
 	const [estado_aplicacion_rol, setEstadoAplicacionRol] = useState<number>(0);
 

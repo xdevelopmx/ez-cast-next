@@ -4,6 +4,7 @@ import { FormGroup, MCheckboxGroup, SectionTitle } from "~/components/shared"
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop"
 import { SelftapeRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { FC, useReducer } from 'react';
+import { FileManagerFront } from '~/utils/file-manager-front';
 
 interface Props {
     state: SelftapeRolForm,
@@ -57,9 +58,11 @@ export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
                     id='id-drag-n-drop-foto-referencia'
                     noIconLabel={true}
                     label={<Typography fontWeight={600}>Líneas</Typography>}
-                    text_label_download='Descargar foto'
-                    files={[]}
-                    filetypes={['JPG', 'PNG', 'GIF']}
+                    text_label_download='Descargar lineas'
+                    max_file_size={5120}
+                    download_url={state.files.lineas?.url}
+                    files={(state.files.lineas) ? [state.files.lineas] : []}
+                    filetypes={['DOC', 'DOCX', 'PDF']}
                     text_button='Subir'
                     mainIcon={
                         <Image
@@ -70,17 +73,23 @@ export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
                         />
                     }
                     onChange={(files: File[]) => {
-                        /* const files_converted = Promise.all(files.map(async (f) => {
+                        const files_converted = Promise.all(files.map(async (f) => {
                             const base64 = await FileManagerFront.convertFileToBase64(f);
                             return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {
                             console.log(files_conv)
-                            // onFormChange({ files: { ...state.files, carta_responsiva: files_conv[0] } })
+                            onFormChange({ files: { 
+                                ...state.files, 
+                                lineas: files_conv[0],
+                                touched: {
+                                    lineas: true
+                                } 
+                            } })
                         }).catch((err) => {
                             console.log(err);
-                            //onFormChange({ files: { ...state.files, carta_responsiva: undefined } })
-                        }); */
+                            onFormChange({ files: { ...state.files, archivo: undefined } })
+                        });
                     }}
                 />
             </Grid>
