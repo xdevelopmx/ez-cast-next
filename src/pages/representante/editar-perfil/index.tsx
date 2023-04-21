@@ -1,10 +1,33 @@
 import { Typography } from '@mui/material';
 import Head from 'next/head'
+import { useReducer } from 'react';
 import { MStepper, MainLayout } from '~/components';
 import { InformacionBasicaRepresentante } from '~/components';
+import { PermisosRepresentante } from '~/components/representante/forms/PermisosRepresentante';
 import { MTooltip } from '~/components/shared/MTooltip';
 
+type RepresentanteForm = {
+    step_active: number,
+}
+
+const initialState: RepresentanteForm = {
+    step_active: 1,
+}
+
+const editarPerfilRepresentanteReducer = (state: RepresentanteForm, action: { type: string, value: { [key: string]: unknown } }) => {
+    switch (action.type) {
+        case 'update-form': {
+            return { ...state, ...action.value }
+        }
+        default:
+            return state;
+    }
+}
+
 const EditarPerfilRepresentantePage = () => {
+
+    const [state, dispatch] = useReducer(editarPerfilRepresentanteReducer, initialState)
+
     return (
         <>
             <Head>
@@ -16,7 +39,7 @@ const EditarPerfilRepresentantePage = () => {
                 <div className={'RootContainer'} style={{ minHeight: /* ([1].includes(state.step_active)) ?  */'calc(100vh - 76px)' /* : '100%' */ }}>
                     <MStepper
                         onStepChange={(step: number) => {
-                            /* dispatch({ type: 'update-form', value: { step_active: step } }); */
+                            dispatch({ type: 'update-form', value: { step_active: step } });
                         }}
                         onFinish={() => {
                             /* saveFiltrosApariencias.mutate({
@@ -27,7 +50,7 @@ const EditarPerfilRepresentantePage = () => {
                                 }
                             }); */
                         }}
-                        current_step={/* state.step_active */1}
+                        current_step={state.step_active}
                         onStepSave={(step: number) => {
                             /* switch (step) {
                                 case 1: {
@@ -116,7 +139,7 @@ const EditarPerfilRepresentantePage = () => {
                     >
 
                         <InformacionBasicaRepresentante />
-                        <div>dsadas</div>
+                        <PermisosRepresentante />
                     </MStepper>
                 </div>
             </MainLayout>
