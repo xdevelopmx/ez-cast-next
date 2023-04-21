@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Grid, Skeleton, Typography } from "@mui/material";
 import Head from "next/head";
 import Image from 'next/image';
+import Link from "next/link";
 import { Alertas, MainLayout, MenuLateral } from "~/components";
 
 
@@ -23,7 +24,6 @@ const AgendaVirtual = () => {
 								<Alertas />
 							</div>
 							<Grid container>
-								
                                 <Grid item xs={12}>
                                     <Grid container item columns={12}>
                                         <Grid item md={1} textAlign={'center'}>
@@ -36,8 +36,11 @@ const AgendaVirtual = () => {
                                         
                                     </Grid>
 								</Grid>
+                                <div style={{textAlign: 'right', width: '100%'}}>
+                                    <Link href="/cazatalentos/agenda-virtual/crear" className="btn btn-intro btn-price mb-2 mt-3"><Image src="/assets/img/iconos/mas.svg" width={14} height={14} style={{filter : 'invert(1)', margin: '0 0 2px 0'}} alt="" />&nbsp;&nbsp;Nuevo horario</Link>
+                                </div>
 								<Grid item xs={12}>
-                                <Grid container item xs={20} sx={{ backgroundColor: '#fff', padding: '10px 10px' }} columns={18}>
+                                    <Grid container item xs={20} sx={{ backgroundColor: '#fff', padding: '10px 10px' }} columns={18}>
                                         <Grid item md={4} textAlign={'center'}>
                                              
                                         </Grid>

@@ -783,7 +783,7 @@ export const MenuLateral = () => {
 							<div className="sub_menu">
 								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
 								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
-								<a href="#">Agenda Virtual</a>
+								<Link href="/cazatalentos/agenda-virtual" className={(router.pathname === '/cazatalentos/agenda-virtual' ||  '/cazatalentos/agenda-virtual/crear')  ? 'active' : ''}>Agenda Virtual</Link>
 								<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
 								<a href="#">Ayuda</a>
 							</div>
