@@ -5,7 +5,6 @@ import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { FileManager } from '~/utils/file-manager';
-import { FileManagerFront } from '~/utils/file-manager-front';
 
 interface Props {
     state: ProyectoForm;
@@ -73,7 +72,7 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                         height={100}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
-                                const base64 = await FileManagerFront.convertFileToBase64(f);
+                                const base64 = await FileManager.convertFileToBase64(f);
                                 return { base64: base64, name: f.name, file: f };
                             }));
                             files_converted.then((files_conv) => {

@@ -472,6 +472,14 @@ export const TalentosRouter = createTRPCRouter({
 				if (info_gral) {
 					if (input.cv) {
 						if (info_gral.id_media_cv) {
+							const cv = await ctx.prisma.media.findFirst({
+								where: {
+									id: info_gral.id_media_cv
+								}
+							});
+							if (cv) {
+								await FileManager.deleteFiles([cv.clave])
+							}
 							await ctx.prisma.media.delete({
 								where: {
 									id: info_gral.id_media_cv
@@ -497,6 +505,14 @@ export const TalentosRouter = createTRPCRouter({
 							saved_files.id_cv = info_gral.id_media_cv;
 						} else {
 							if (info_gral.id_media_cv) {
+								const cv = await ctx.prisma.media.findFirst({
+									where: {
+										id: info_gral.id_media_cv
+									}
+								});
+								if (cv) {
+									await FileManager.deleteFiles([cv.clave])
+								}
 								await ctx.prisma.media.delete({
 									where: {
 										id: info_gral.id_media_cv
@@ -516,6 +532,16 @@ export const TalentosRouter = createTRPCRouter({
 				if (representante) {
 					if (input.carta_responsiva) {
 						if (representante.id_media_carta_responsiva) {
+							const carta = await ctx.prisma.media.findFirst({
+								where: {
+									id: representante.id_media_carta_responsiva
+								}
+							})
+
+							if (carta) {
+								await FileManager.deleteFiles([carta.clave]);
+							}
+							
 							await ctx.prisma.media.delete({
 								where: {
 									id: representante.id_media_carta_responsiva
@@ -541,6 +567,15 @@ export const TalentosRouter = createTRPCRouter({
 							saved_files.id_carta_responsiva = representante.id_media_carta_responsiva;
 						} else {
 							if (representante.id_media_carta_responsiva) {
+								const carta = await ctx.prisma.media.findFirst({
+									where: {
+										id: representante.id_media_carta_responsiva
+									}
+								})
+	
+								if (carta) {
+									await FileManager.deleteFiles([carta.clave]);
+								}
 								await ctx.prisma.media.delete({
 									where: {
 										id: representante.id_media_carta_responsiva
@@ -596,6 +631,17 @@ export const TalentosRouter = createTRPCRouter({
 							identificador: `foto-perfil-talento-${user.id}`
 						}
 					})
+					if (foto_perfil) {
+						const result_delete = await FileManager.deleteFiles([foto_perfil.clave]);
+						if (!result_delete.status) {
+							throw new TRPCError({
+								code: 'INTERNAL_SERVER_ERROR',
+								message: `Ocurrio un error al tratar de actualizar la foto de perfil del talento [${result_delete.error}]`,
+								// optional: pass the original error to retain stack trace
+								//cause: theError,
+							});
+						}
+					}
 					const saved_foto_perfil = await ctx.prisma.media.upsert({
 						where: {
 							id: (foto_perfil) ? foto_perfil.id : 0, 
@@ -973,6 +1019,14 @@ export const TalentosRouter = createTRPCRouter({
 				
 				if (!input.fotos || input.fotos.length > 0) {
 					try {
+						const fotos_perfil = await ctx.prisma.media.findMany({
+							where: {
+								referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
+							},
+						})
+						if (fotos_perfil.length > 0) {
+							await FileManager.deleteFiles(fotos_perfil.map(f => f.clave));
+						}
 						await ctx.prisma.media.deleteMany({
 							where: {
 								referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
@@ -1013,6 +1067,14 @@ export const TalentosRouter = createTRPCRouter({
 				}
 
 				if (!input.videos || input.videos.length > 0) {
+					const videos_perfil = await ctx.prisma.media.findMany({
+						where: {
+							referencia: `VIDEOS-TALENTO-${user.id}`
+						},
+					})
+					if (videos_perfil.length > 0) {
+						await FileManager.deleteFiles(videos_perfil.map(f => f.clave));
+					}
 					await ctx.prisma.media.deleteMany({
 						where: {
 							referencia: `VIDEOS-TALENTO-${user.id}`
@@ -1054,6 +1116,14 @@ export const TalentosRouter = createTRPCRouter({
 
 
 				if (!input.audios || input.audios.length > 0) {
+					const audios_perfil = await ctx.prisma.media.findMany({
+						where: {
+							referencia: `AUDIOS-TALENTO-${user.id}`
+						},
+					})
+					if (audios_perfil.length > 0) {
+						await FileManager.deleteFiles(audios_perfil.map(f => f.clave));
+					}
 					await ctx.prisma.media.deleteMany({
 						where: {
 							referencia: `AUDIOS-TALENTO-${user.id}`
@@ -1213,6 +1283,19 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 				
+				const creditos = await ctx.prisma.creditoTalento.findMany({
+					where: {
+						id_creditos_por_talento: creditos_por_talentos.id
+					},
+					include: {
+						media: true
+					}
+				});
+
+				if (creditos.length > 0) {
+					await FileManager.deleteFiles(creditos.map(c => (c.media) ? c.media.clave : '').filter(c => c !== ''))
+				}
+
 				const deleted_creditos = await ctx.prisma.creditoTalento.deleteMany({
 					where: {
 						id_creditos_por_talento: creditos_por_talentos.id
@@ -1232,8 +1315,6 @@ export const TalentosRouter = createTRPCRouter({
 						referencia: `CREDITOS-TALENTO-${user.id}`
 					}
 				})
-
-				console.log(deleted_creditos, 'DELEETED');
 
 				if (input.creditos.length > 0) {
 					

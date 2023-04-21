@@ -11,7 +11,7 @@ import { Close, Delete, Star } from '@mui/icons-material';
 import { api } from '~/utils/api';
 import useNotify from '~/hooks/useNotify';
 import { MTooltip } from '~/components/shared/MTooltip';
-import { FileManagerFront } from '~/utils/file-manager-front';
+import { FileManager } from '~/utils/file-manager';
 
 interface Props {
     state: TalentoFormCreditos,

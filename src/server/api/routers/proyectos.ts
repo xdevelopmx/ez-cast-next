@@ -189,15 +189,24 @@ export const ProyectosRouter = createTRPCRouter({
 				});
 
 				if (proyecto) {
+					if (proyecto.id_archivo_media) {
+						const archivo_proyecto = await ctx.prisma.media.findFirst({
+							where: {
+								id: proyecto.id_archivo_media
+							},
+						});
+						if (archivo_proyecto) {
+							const result = await FileManager.deleteFiles([archivo_proyecto.clave]);
+							console.log('result delete', result);
+						}
+						await ctx.prisma.media.delete({
+							where: {
+								id: proyecto.id_archivo_media
+							},
+						});
+					}
 
 					if (input.archivo) {
-						if (proyecto.id_archivo_media && input.archivo.id === 0) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: proyecto.id_archivo_media
-								},
-							});
-						}
 						const updated_archivo = await ctx.prisma.media.upsert({
 							where: {
 								id: (input.archivo.id) ? input.archivo.id : 0
@@ -228,23 +237,34 @@ export const ProyectosRouter = createTRPCRouter({
 							}
 						})
 					} else {
-						if (proyecto.id_archivo_media) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: proyecto.id_archivo_media
-								},
-							});
+						proyecto = await ctx.prisma.proyecto.update({
+							where: {
+								id: proyecto.id
+							},
+							data: {
+								id_archivo_media: undefined,
+							}
+						})
+					}
+
+					if (proyecto.id_foto_portada_media) {
+						const foto_portada_proyecto = await ctx.prisma.media.findFirst({
+							where: {
+								id: proyecto.id_foto_portada_media
+							},
+						});
+						if (foto_portada_proyecto) {
+							const result_delete = await FileManager.deleteFiles([foto_portada_proyecto.clave]);
+							console.log('result delete foto portada', result_delete);
 						}
+						await ctx.prisma.media.delete({
+							where: {
+								id: proyecto.id_foto_portada_media
+							},
+						});
 					}
 	
 					if (input.foto_portada) {
-						if (proyecto.id_foto_portada_media && input.foto_portada.id === 0) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: proyecto.id_foto_portada_media
-								},
-							});
-						}
 						const updated_foto_portada = await ctx.prisma.media.upsert({
 							where: {
 								id: (input.foto_portada.id) ? input.foto_portada.id : 0
@@ -274,15 +294,15 @@ export const ProyectosRouter = createTRPCRouter({
 								id_foto_portada_media: updated_foto_portada.id
 							}
 						})
-						
 					} else {
-						if (proyecto.id_foto_portada_media) {
-							await ctx.prisma.media.delete({
-								where: {
-									id: proyecto.id_foto_portada_media
-								},
-							});
-						}
+						proyecto = await ctx.prisma.proyecto.update({
+							where: {
+								id: proyecto.id
+							},
+							data: {
+								id_foto_portada_media: undefined
+							}
+						})
 					}
 				}
 		

@@ -82,6 +82,9 @@ export const CazatalentosRouter = createTRPCRouter({
 							identificador: `foto-perfil-cazatalentos-${user.id}`
 						}
 					})
+					if (foto_perfil) {
+						await FileManager.deleteFiles([foto_perfil.clave]);
+					}
 					const saved_foto = await ctx.prisma.media.upsert({
 						where: {
 							id: (foto_perfil) ? foto_perfil.id : 0

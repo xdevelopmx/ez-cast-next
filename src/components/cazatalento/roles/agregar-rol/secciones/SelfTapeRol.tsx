@@ -4,7 +4,7 @@ import { FormGroup, MCheckboxGroup, SectionTitle } from "~/components/shared"
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop"
 import { SelftapeRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { FC, useReducer } from 'react';
-import { FileManagerFront } from '~/utils/file-manager-front';
+import { FileManager } from '~/utils/file-manager';
 
 interface Props {
     state: SelftapeRolForm,
@@ -74,7 +74,7 @@ export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
                     }
                     onChange={(files: File[]) => {
                         const files_converted = Promise.all(files.map(async (f) => {
-                            const base64 = await FileManagerFront.convertFileToBase64(f);
+                            const base64 = await FileManager.convertFileToBase64(f);
                             return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {

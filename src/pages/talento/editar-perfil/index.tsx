@@ -15,7 +15,7 @@ import { type User } from 'next-auth';
 import useNotify from "~/hooks/useNotify";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { useRouter } from "next/router";
-import { FileManagerFront } from "~/utils/file-manager-front";
+import { FileManager } from "~/utils/file-manager";
 import { TalentosRouter } from "~/server/api/routers/talentos";
 import { CreditoTalento, Media } from "@prisma/client";
 import { TipoUsuario } from "~/enums";
@@ -504,24 +504,24 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
     const handleInfoGral = async () => {
         const urls: {cv: string | null, carta: string | null} = { cv: null, carta: null };
         const to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+        const time = new Date().getTime();
         if (state.info_gral.files.cv) {
-            to_be_saved.push({path: `talentos/${user.id}/cv`, name: `cv`, file: state.info_gral.files.cv.file, base64: state.info_gral.files.cv.base64});
+            to_be_saved.push({path: `talentos/${user.id}/cv`, name: `cv-${time}`, file: state.info_gral.files.cv.file, base64: state.info_gral.files.cv.base64});
         }
         if (state.info_gral.files.carta_responsiva) {
-            to_be_saved.push({path: `talentos/${user.id}/carta-responsiva`, name: 'carta', file: state.info_gral.files.carta_responsiva.file, base64: state.info_gral.files.carta_responsiva.base64});
+            to_be_saved.push({path: `talentos/${user.id}/carta-responsiva`, name: `carta-${time}`, file: state.info_gral.files.carta_responsiva.file, base64: state.info_gral.files.carta_responsiva.base64});
         }
         if (to_be_saved.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(to_be_saved);
+            const urls_saved = await FileManager.saveFiles(to_be_saved);
             if (urls_saved) {
                 urls_saved.forEach((u) => {
-                    console.log('jiji', u);
-                    if (u['cv']) {
-                        console.log('jeje', u);
-                        urls.cv = u['cv'].url;
+                    const cv = u[`cv-${time}`];
+                    if (cv) {
+                        urls.cv = cv.url;
                     }
-                    if (u['carta']) {
-                        console.log('juju', u);
-                        urls.carta = u['carta'].url;
+                    const carta = u[`carta-${time}`];
+                    if (carta) {
+                        urls.carta = carta.url;
                     }
                 })
             }
@@ -532,7 +532,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 nombre: 'cv',
                 type: state.info_gral.files.cv.file.type,
                 url: urls.cv,
-                clave: `talentos/${user.id}/cv/cv`,
+                clave: `talentos/${user.id}/cv/cv-${time}`,
                 referencia: `talento-info-gral`,
                 identificador: `talento-cv`
             },
@@ -541,7 +541,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 nombre: 'carta',
                 type: state.info_gral.files.carta_responsiva.file.type,
                 url: urls.carta,
-                clave: `talentos/${user.id}/carta-responsiva/carta`,
+                clave: `talentos/${user.id}/carta-responsiva/carta-${time}`,
                 referencia: `talento-info-gral`,
                 identificador: `talento-carta-responsiva`
             },
@@ -551,8 +551,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
     const initMediaFiles = async (foto_perfil: Media | undefined, fotos: Media[], audios: Media[], videos: Media[]) => {
         const fotos_talento: Archivo[] = [];
         if (foto_perfil) {
-            const foto_file = await FileManagerFront.convertUrlToFile(foto_perfil.url, foto_perfil.nombre, foto_perfil.type);
-            const foto_file_base_64 = await FileManagerFront.convertFileToBase64(foto_file);
+            const foto_file = await FileManager.convertUrlToFile(foto_perfil.url, foto_perfil.nombre, foto_perfil.type);
+            const foto_file_base_64 = await FileManager.convertFileToBase64(foto_file);
             fotos_talento.push({
                 id: foto_perfil.id,
                 base64: foto_file_base_64,
@@ -562,8 +562,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             })
         }
         const fotos_perfil = await Promise.all(fotos.map(async (f) => {
-            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.nombre, f.type);
-            const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
+            const f_file = await FileManager.convertUrlToFile(f.url, f.nombre, f.type);
+            const f_file_base_64 = await FileManager.convertFileToBase64(f_file);
             return {
                 id: f.id,
                 base64: f_file_base_64,
@@ -573,8 +573,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }));
         const audios_perfil = await Promise.all(audios.map(async (f) => {
-            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.nombre, f.type);
-            const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
+            const f_file = await FileManager.convertUrlToFile(f.url, f.nombre, f.type);
+            const f_file_base_64 = await FileManager.convertFileToBase64(f_file);
             return {
                 id: f.id,
                 base64: f_file_base_64,
@@ -584,8 +584,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }));
         const videos_perfil = await Promise.all(videos.map(async (f) => {
-            const f_file = await FileManagerFront.convertUrlToFile(f.url, f.nombre, f.type);
-            const f_file_base_64 = await FileManagerFront.convertFileToBase64(f_file);
+            const f_file = await FileManager.convertUrlToFile(f.url, f.nombre, f.type);
+            const f_file_base_64 = await FileManager.convertFileToBase64(f_file);
             return {
                 id: f.id,
                 base64: f_file_base_64,
@@ -605,7 +605,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
     const initCreditosFiles = async (mostrar_anio_perfil: boolean, creditos: (CreditoTalento & {media: Media | null})[]) => {
         const creditos_with_file = await Promise.all(creditos.map(async (credito) => {
             if (credito.media) {
-                const file = await FileManagerFront.convertUrlToFile(credito.media.url, credito.media.nombre, credito.media.type);
+                const file = await FileManager.convertUrlToFile(credito.media.url, credito.media.nombre, credito.media.type);
                 return {
                     ...credito,
                     clip: file,
@@ -622,9 +622,10 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         const media: {fotos: NewMedia[] | null, videos: NewMedia[] | null, audios: NewMedia[] | null } = { fotos: [], videos: [], audios: [] };
         const fotos_changed_order = state.medios.fotos.map(f => f.id).join('-') !== state.medios.fotos_order;
         const no_fotos_added = state.medios.fotos.filter(v => v.url != null).length === state.medios.fotos.length;
+        const time = new Date().getTime();
         if ((fotos_changed_order || !no_fotos_added) && state.medios.fotos.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(state.medios.fotos.map((f) => {
-                return {path: `talentos/${user.id}/fotos-perfil`, name: `${f.name}`, file: f.file, base64: f.base64}
+            const urls_saved = await FileManager.saveFiles(state.medios.fotos.map((f) => {
+                return {path: `talentos/${user.id}/fotos-perfil`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -637,7 +638,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             if (media.fotos) {
                                 media.fotos.push({
                                     id: (id) ? id : 0,
-                                    nombre: e[0],
+                                    nombre: (original_name) ? original_name : '',
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
                                     clave: `talentos/${user.id}/fotos-perfil/${e[0]}`,
@@ -657,8 +658,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         }
         
         if (state.medios.videos.filter(v => v.url != null).length !== state.medios.videos.length && state.medios.videos.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(state.medios.videos.filter(f => (f.id == null)).map((f, i) => {
-                return {path: `talentos/${user.id}/videos`, name: `${f.name}`, file: f.file, base64: f.base64}
+            const urls_saved = await FileManager.saveFiles(state.medios.videos.filter(f => (f.id == null)).map((f, i) => {
+                return {path: `talentos/${user.id}/videos`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -671,7 +672,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             if (media.videos) {
                                 media.videos.push({
                                     id: (id) ? id : 0,
-                                    nombre: e[0],
+                                    nombre: (original_name) ? original_name : '',
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
                                     clave: `talentos/${user.id}/videos/${e[0]}`,
@@ -692,8 +693,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         }
 
         if (state.medios.audios.filter(v => v.url != null).length !== state.medios.audios.length && state.medios.audios.length > 0) {
-            const urls_saved = await FileManagerFront.saveFiles(state.medios.audios.filter(f => (f.id == null)).map((f, i) => {
-                return {path: `talentos/${user.id}/audios`, name: `${f.name}`, file: f.file, base64: f.base64}
+            const urls_saved = await FileManager.saveFiles(state.medios.audios.filter(f => (f.id == null)).map((f, i) => {
+                return {path: `talentos/${user.id}/audios`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -706,7 +707,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             if (media.audios) {
                                 media.audios.push({
                                     id: (id) ? id : 0,
-                                    nombre: e[0],
+                                    nombre: (original_name) ? original_name : '',
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
                                     clave: `talentos/${user.id}/audios/${e[0]}`,
@@ -734,11 +735,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
     }
 
     const handleCreditos = async () => {
-        
+        const time = new Date().getTime();
         const creditos = await Promise.all(state.creditos.creditos.map(async (credito, i) => {
             if (credito.clip && credito.touched) {
-                const base_64 = await FileManagerFront.convertFileToBase64(credito.clip);
-                const urls_saved = await FileManagerFront.saveFiles([{path: `talentos/${user.id}/creditos`, name: `${(credito.clip.name.includes('clip') ? '' : 'clip-')}${credito.clip.name}`, file: credito.clip, base64: base_64}]);
+                const base_64 = await FileManager.convertFileToBase64(credito.clip);
+                const urls_saved = await FileManager.saveFiles([{path: `talentos/${user.id}/creditos`, name: `${(credito.clip.name.includes('clip') ? '' : 'clip-')}${credito.clip.name}-${time}`, file: credito.clip, base64: base_64}]);
                 const type = credito.clip.type;
                 const id = credito.id_clip_media;
                 const original_name = credito.clip.name;
@@ -750,7 +751,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                             if (url) {
                                 credito.media = {
                                     id: (id) ? id : 0,
-                                    nombre: e[0],
+                                    nombre: e[0].replace(`-${time}`, ''),
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
                                     clave: `talentos/${user.id}/creditos/${e[0]}`,

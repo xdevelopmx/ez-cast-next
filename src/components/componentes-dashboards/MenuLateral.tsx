@@ -13,7 +13,7 @@ import { TipoUsuario } from '~/enums';
 import useNotify from '~/hooks/useNotify';
 import { Media } from '@prisma/client';
 import { Archivo } from '~/server/api/root';
-import { FileManagerFront } from '~/utils/file-manager-front';
+import { FileManager } from '~/utils/file-manager';
 import { useRouter } from 'next/router';
 
 export const MenuLateral = () => {
@@ -58,6 +58,9 @@ export const MenuLateral = () => {
 	const info_gral_talento = api.talentos.getInfoBasicaByIdTalento.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
+	const media_por_talento = api.talentos.getMediaByIdTalento.useQuery({id: (talento.data) ? talento.data.id : 0}, {
+		refetchOnWindowFocus: false
+	});
 
 	const { notify } = useNotify();
 
@@ -66,6 +69,7 @@ export const MenuLateral = () => {
 			notify('success', 'Se actualizo el talento con exito');
 			setEditMode(false)
 			void talento.refetch();
+			void media_por_talento.refetch();
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
@@ -84,8 +88,6 @@ export const MenuLateral = () => {
 	})
 
 	const is_fetching = talento.isFetching || info_gral_talento.isFetching || cazatalentos.isFetching;
-
-	console.log('TALENTO_DATA: ', talento.data);
 
 	const user_info = useMemo(() => {
 		if (session.data && session.data.user) {
@@ -164,8 +166,6 @@ export const MenuLateral = () => {
 
 	}, [form.foto_perfil, form.foto_selected])
 
-	console.log('FOTO PERFIL', foto_perfil)
-
 	return (
 		<>
 			<div className="menu_container text-center ezcast_container" style={{ position: 'relative' }}>
@@ -236,7 +236,7 @@ export const MenuLateral = () => {
 									if (ev.target.files) {
 										const file = ev.target.files[0];
 										if (file) {
-											void FileManagerFront.convertFileToBase64(file).then(base64 => {
+											void FileManager.convertFileToBase64(file).then(base64 => {
 												setForm({...form, foto_selected: { base64: base64, name: file.name, file: file}})
 											})
 										}
@@ -588,7 +588,7 @@ export const MenuLateral = () => {
 											case TipoUsuario.TALENTO: {
 												if (talento.data && form.foto_selected) {
 													const time = new Date().getTime();
-													void FileManagerFront.saveFiles([{path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+													void FileManager.saveFiles([{path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
 														result.forEach((res) => {
 															if (talento.data) {
 																const response = res[`foto-perfil-talento-${talento.data.id}-${time}`];
@@ -620,7 +620,7 @@ export const MenuLateral = () => {
 											case TipoUsuario.CAZATALENTOS: {
 												if (cazatalentos.data && form.foto_selected) {
 													const time = new Date().getTime();
-													void FileManagerFront.saveFiles([{path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+													void FileManager.saveFiles([{path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
 														result.forEach((res) => {
 															if (cazatalentos.data) {
 																const response = res[`foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`];

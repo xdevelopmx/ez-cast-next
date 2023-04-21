@@ -4,7 +4,7 @@ import { Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type Archivo } from '~/server/api/root';
-import { FileManagerFront } from '~/utils/file-manager-front';
+import { FileManager } from '~/utils/file-manager';
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer';
 import { type TalentoFormMedios } from '~/pages/talento/editar-perfil';
 import { MTooltip } from '~/components/shared/MTooltip';
@@ -78,8 +78,8 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         text_button='Añadir foto'
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
-                                const base64 = await FileManagerFront.convertFileToBase64(f);
-                                const file_on_state = state.fotos.filter(foto => FileManagerFront.compareBase64Strings(base64, foto.base64));
+                                const base64 = await FileManager.convertFileToBase64(f);
+                                const file_on_state = state.fotos.filter(foto => FileManager.compareBase64Strings(base64, foto.base64));
                                 if (file_on_state.length > 0) {
                                     return { base64: base64, name: f.name, file: f, id: file_on_state[0]?.id, url: file_on_state[0]?.url };
                                 } else {
@@ -137,8 +137,8 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 text_button='Añadir Video'
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
-                                        const base64 = await FileManagerFront.convertFileToBase64(f);
-                                        const file_on_state = state.fotos.filter(foto => FileManagerFront.compareBase64Strings(base64, foto.base64));
+                                        const base64 = await FileManager.convertFileToBase64(f);
+                                        const file_on_state = state.fotos.filter(foto => FileManager.compareBase64Strings(base64, foto.base64));
                                         if (file_on_state.length > 0) {
                                             return { base64: base64, name: f.name, file: f, id: file_on_state[0]?.id };
                                         } else {
@@ -180,8 +180,8 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 text_button='Añadir Audio Clip'
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
-                                        const base64 = await FileManagerFront.convertFileToBase64(f);
-                                        const file_on_state = state.fotos.filter(foto => FileManagerFront.compareBase64Strings(base64, foto.base64));
+                                        const base64 = await FileManager.convertFileToBase64(f);
+                                        const file_on_state = state.fotos.filter(foto => FileManager.compareBase64Strings(base64, foto.base64));
                                         if (file_on_state.length > 0) {
                                             return { base64: base64, name: f.name, file: f, id: file_on_state[0]?.id };
                                         } else {
