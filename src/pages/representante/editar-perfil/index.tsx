@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import Head from 'next/head'
 import { useReducer } from 'react';
-import { MStepper, MainLayout } from '~/components';
+import { CuentaRepresentante, MStepper, MainLayout } from '~/components';
 import { InformacionBasicaRepresentante } from '~/components';
 import { PermisosRepresentante } from '~/components/representante/forms/PermisosRepresentante';
 import { MTooltip } from '~/components/shared/MTooltip';
@@ -36,7 +36,7 @@ const EditarPerfilRepresentantePage = () => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <MainLayout style={{ padding: 32, backgroundColor: '#f2f2f2', marginTop: 48, minHeight: '100vh' }} menuSiempreBlanco={true} >
-                <div className={'RootContainer'} style={{ minHeight: /* ([1].includes(state.step_active)) ?  */'calc(100vh - 76px)' /* : '100%' */ }}>
+                <div className={'RootContainer'} style={{ minHeight: /* ([1].includes(state.step_active)) ?  'calc(100vh - 76px)'  : */ '100%' }}>
                     <MStepper
                         onStepChange={(step: number) => {
                             dispatch({ type: 'update-form', value: { step_active: step } });
@@ -140,6 +140,7 @@ const EditarPerfilRepresentantePage = () => {
 
                         <InformacionBasicaRepresentante />
                         <PermisosRepresentante />
+                        <CuentaRepresentante />
                     </MStepper>
                 </div>
             </MainLayout>
