@@ -24,7 +24,7 @@ export const TalentoPreviewLong = () => {
                 <Grid xs={12}>
                     <Typography fontWeight={600} sx={{}}>Nombre Talento</Typography>
                 </Grid>
-                <Grid container xs={12}>
+                <Grid container xs={12} mt={2}>
                     <Grid xs={4}>
                         <Button sx={{ textTransform: 'none' }}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>Ir a Perfil</Typography>
@@ -36,8 +36,34 @@ export const TalentoPreviewLong = () => {
                         </Button>
                     </Grid>
                 </Grid>
-                <Grid xs={12}>
+                <Grid container xs={12} gap={2} mt={9}>
+                    <Grid xs={3}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
+                            <Image src="/assets/img/iconos/download.svg" width={20} height={20} alt="" />
+                            <Typography>Aplicaciones</Typography>
+                            <Typography fontWeight={600}>10</Typography>
+                        </Box>
+                    </Grid>
 
+                    <Grid xs={3}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
+                            <Image src="/assets/img/iconos/icono_lampara_blue.svg" width={20} height={20} alt="" />
+                            <Typography>Audiciones</Typography>
+                            <Typography fontWeight={600}>3</Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid xs={3}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
+                            <Image src="/assets/img/iconos/icono_claqueta_blue.svg" width={20} height={20} alt="" />
+                            <Typography>Callbacks</Typography>
+                            <Typography fontWeight={600}>1</Typography>
+                        </Box>
+                    </Grid>
+
+                    <Grid xs={1}>
+                        <Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" />
+                    </Grid>
                 </Grid>
             </Grid>
             <Grid xs={12} mt={4}>
