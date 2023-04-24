@@ -4,7 +4,7 @@ import { type CSSProperties } from "react";
 export default function MotionDiv(props: {
     children: JSX.Element,
     id?: string,
-    animation: 'down-to-up' | 'left-to-right' | 'right-to-left' | 'fade'
+    animation: 'down-to-up' | 'left-to-right' | 'right-to-left' | 'fade' | 'fade-down-to-up'
     style?: CSSProperties,
     show: boolean
 }) {
@@ -31,6 +31,19 @@ export default function MotionDiv(props: {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ opacity: 0.2 }}
+            >
+                {props.children}
+            </motion.div>
+            break;
+        }
+        case 'fade-down-to-up': {
+            animation = <motion.div
+                id={props.id}
+                style={props.style}
+                initial={{ opacity: 0}}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, height: '0%' }}
+                transition={{ opacity: 0.2, height: 1 }}
             >
                 {props.children}
             </motion.div>

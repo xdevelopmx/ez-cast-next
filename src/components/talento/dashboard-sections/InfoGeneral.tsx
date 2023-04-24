@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from "next/router";
 import MotionDiv from "~/components/layout/MotionDiv";
 
-export const InfoGeneral = (props: { id_talento: number }) => {
+export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) => {
     const [dialog, setDialog] = useState<{open: boolean, url: string, name: string}>({open: false, url: '', name: ''});
     const info = api.talentos.getInfoBasicaByIdTalento.useQuery({ id: props.id_talento }, {
         refetchOnWindowFocus: false,
@@ -60,13 +60,15 @@ export const InfoGeneral = (props: { id_talento: number }) => {
                         <MContainer styles={{ alignItems: 'baseline' }} className={`m-1`} direction="horizontal">
                             <p style={{ fontSize: 30, fontWeight: 900 }}>Información básica</p>
                             <Link href="/talento/editar-perfil" variant="button">
-                                <Button onClick={() => {
-                                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                                    router.push('/talento/editar-perfil?step=1')
-                                }} size='small' sx={{ textTransform: 'none', fontSize: '1.1rem' }}
-                                    className='ml-2 color_a' variant="text">
-                                    Editar
-                                </Button>
+                                {!props.read_only &&
+                                    <Button onClick={() => {
+                                        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                        router.push('/talento/editar-perfil?step=1')
+                                    }} size='small' sx={{ textTransform: 'none', fontSize: '1.1rem' }}
+                                        className='ml-2 color_a' variant="text">
+                                        Editar
+                                    </Button>
+                                }
                             </Link>
 
                         </MContainer>

@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 
-export const Preferencias = (props: {id_talento: number}) => {
+export const Preferencias = (props: {id_talento: number, read_only: boolean}) => {
     const router = useRouter();
 
     const preferencias = api.talentos.getPreferenciasRolByIdTalento.useQuery({id: props.id_talento}, {
@@ -74,10 +74,10 @@ export const Preferencias = (props: {id_talento: number}) => {
     return (
         <Grid id="preferencia-de-roles" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Preferencia de roles' onClickButton={() => { 
+                <SectionTitle title='Preferencia de roles' onClickButton={(!props.read_only) ? () => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     router.push('/talento/editar-perfil?step=6')  
-                 }} />
+                 } : undefined} />
             </Grid>
             <Grid item xs={6} mt={4}>
                 <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Tipo de trabajo</Typography>

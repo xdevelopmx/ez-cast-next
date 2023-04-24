@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { Star } from '@mui/icons-material';
 import useNotify from '~/hooks/useNotify';
 
-export const Creditos = (props: {id_talento: number}) => {
+export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
     const router = useRouter();
     const [dialog, setDialog] = useState<{open: boolean, url: string, name: string}>({open: false, url: '', name: ''});
 
@@ -45,10 +45,10 @@ export const Creditos = (props: {id_talento: number}) => {
         
             <Grid id="creditos" container sx={{ mt: 10 }}>
                 <Grid item xs={12}>
-                    <SectionTitle title='Créditos' onClickButton={() => { 
+                    <SectionTitle title='Créditos' onClickButton={(!props.read_only) ? () => { 
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         router.push('/talento/editar-perfil?step=3')  
-                    }} />
+                    } : undefined} />
                 </Grid>
                 <Grid item xs={12}>
                     <Typography my={1} fontSize={30} sx={{ color: '#069cb1' }} fontWeight={900}>

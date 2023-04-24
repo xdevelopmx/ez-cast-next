@@ -7,7 +7,7 @@ import { MContainer } from '~/components/layout/MContainer';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
 
-export const Media = (props: { id_talento: number }) => {
+export const Media = (props: { id_talento: number, read_only: boolean }) => {
     const router = useRouter();
     const [current_video_url, setCurrentVideoUrl] = useState('');
 
@@ -46,10 +46,10 @@ export const Media = (props: { id_talento: number }) => {
     return (
         <Grid id="media" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Media' onClickButton={() => {
+                <SectionTitle title='Media' onClickButton={(!props.read_only) ? () => {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     router.push('/talento/editar-perfil?step=2');
-                }} />
+                } : undefined} />
             </Grid>
             <Grid item xs={12}>
                 <MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px', justifyContent: 'space-between' }}>
@@ -57,14 +57,16 @@ export const Media = (props: { id_talento: number }) => {
                         <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
                         <Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>GALERÍA DE IMÁGENES</Typography>
                     </MContainer>
-                    <AddButton
-                        aStyles={{ margin: 0 }}
-                        onClick={() => {
-                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                            router.push('/talento/editar-perfil?step=2')
-                        }}
-                        text="Agregar imágenes"
-                    />
+                    {!props.read_only &&
+                        <AddButton
+                            aStyles={{ margin: 0 }}
+                            onClick={() => {
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                router.push('/talento/editar-perfil?step=2')
+                            }}
+                            text="Agregar imágenes"
+                        />
+                    }
                 </MContainer>
                 <Carroucel>
                     {media && media.fotos.map((image, i) => {
@@ -83,10 +85,12 @@ export const Media = (props: { id_talento: number }) => {
                         </Typography>
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
-                        <AddButton text='Agregar videos' aStyles={{ margin: 10 }} onClick={() => {
-                            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                            router.push('/talento/editar-perfil?step=2')
-                        }} />
+                        {!props.read_only && 
+                            <AddButton text='Agregar videos' aStyles={{ margin: 10 }} onClick={() => {
+                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                router.push('/talento/editar-perfil?step=2')
+                            }} />
+                        }
                         {media && media.videos.length > 0 &&
                             <>
                                 <video ref={video_player} controls style={{ width: '100%' }}>
@@ -132,11 +136,13 @@ export const Media = (props: { id_talento: number }) => {
                         </Typography>
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
-                        <AddButton text='Agregar audios' aStyles={{ marginBottom: 10 }} onClick={() => {
-                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                                router.push('/talento/editar-perfil?step=2')
-                            }}
-                        />
+                        {!props.read_only &&
+                            <AddButton text='Agregar audios' aStyles={{ marginBottom: 10 }} onClick={() => {
+                                    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                    router.push('/talento/editar-perfil?step=2')
+                                }}
+                            />
+                        } 
                         {media && media.audios.length > 0 &&
                             media.audios.map((audio, i) => {
                                 return <AudioBar key={i}

@@ -232,9 +232,15 @@ model CatalogoEstadosAplicacionesRoles {
 
 model Banners {
   id                   Int                      @id @default(autoincrement())
-  page_to_show String
-  url String
-  redirect_url String 
+  position String
+  isButton Boolean
+  text String
+  redirect_url String
+  type String 
+  id_media_content Int
+  identificador String
+  ref String
+  content Media @relation(fields: [id_media_content], references: [id])
 }
 
 model TipoProyectoPorProyecto {
@@ -487,6 +493,7 @@ model Media {
   lineas_roles Roles[] @relation("media_lineas", map: "media_lineas")
   foto_referencia_roles Roles[] @relation("media_foto_referencia", map: "media_foto_referencia")
   lineas_selftape SelftapePorRoles[]
+  banners Banners[]
 }
 
 model MediaPorTalentos {

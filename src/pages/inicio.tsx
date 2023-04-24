@@ -14,10 +14,10 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography }
 import { useRouter } from "next/router";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { RolPreview } from "~/components/shared/RolPreview";
 import { DetallesProyecto } from "~/components/proyecto/detalles";
-import useBanners from "~/hooks/useBanners";
+import { MBanner } from "~/components/shared/MBanner";
 
 type InicioPageProps = {
   user: User,
@@ -36,14 +36,10 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
   });
 
   const router = useRouter();
-
-  const banners = useBanners("BANNERS_PAGE_INICIO");
-
-  const banner_principal = banners.filter(b => b.id === 'banner_principal')[0];
   
-  console.log('BANNERS', banners);
-
   const redirect = (user.tipo_usuario) ? (user.tipo_usuario === TipoUsuario.TALENTO) ? '/talento/dashboard' : (user.tipo_usuario === TipoUsuario.CAZATALENTOS) ? '/cazatalentos/dashboard' : '/representante/dashboard' : '';
+
+  const container_ref = useRef<HTMLDivElement>(null);
 
   return (
     <>
@@ -54,7 +50,7 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
       </Head>
 
       <MainLayout menuSiempreBlanco={true}>
-        <div className="container_slider_intro">
+        <div ref={container_ref} className="container_slider_intro">
           <div>
             <div className="d-flex justify-content-between align-items-start">
               <div>
@@ -90,8 +86,8 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
               <hr className="mb-5 mt-1 hr_gold" />
             </>
           }
-          {banner_principal &&
-            <motion.img src={banner_principal.url_content} alt="icono" />
+          {container_ref.current &&
+            <MBanner show_only_media width={container_ref.current.getBoundingClientRect().width} height={250} identificador="banner-cartelera-proyectos-1"/>
           }
           <p className="mt-5 h5">Ahora casteando en EZ-Cast</p>
           <hr className="hr_blue" />

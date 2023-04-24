@@ -1,5 +1,5 @@
 import { type GetServerSideProps } from "next";
-import { Box, Button, Divider, Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, MenuItem, Select, Skeleton, Typography } from "@mui/material";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { Alertas, MSelect, MainLayout, MenuLateral } from "~/components";
@@ -17,6 +17,7 @@ import type {
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { TalentoTableItem } from "~/components/cazatalento/billboard/TalentoTableItem";
+import MotionDiv from "~/components/layout/MotionDiv";
 
 type BillboardCazaTalentosPageProps = {
 	user: User,
@@ -130,6 +131,37 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 		setIdProyectoSeleccionado(idProyecto)
 	}, [proyectoSeleccionado, proyectos.data])
 	*/
+
+	const rol_applications_content = useMemo(() => {
+		if (rol_applications.isFetching && selected_rol > 0) {
+			return Array.from({length: pagination.page_size}).map((v, i) => {
+				return <Skeleton sx={{width: '100%', border: '4px solid #069cb1', height: 850, transformOrigin: 'top'}}/>;
+			});
+		}
+		if (rol_applications.data && rol_applications.data.rol.aplicaciones_por_talento.length > 0) {
+			return rol_applications.data.rol.aplicaciones_por_talento.map((a, i) => {
+				return <TalentoTableItem 
+					key={i}
+					id_talento={a.talento.id}
+					id_estado_aplicacion_rol={a.id_estado_aplicacion}
+					nombre={`${a.talento.nombre} ${a.talento.apellido}`}
+					rating={4}
+					union={(a.talento.info_basica && a.talento.info_basica.union) ? (a.talento.info_basica.union.id_union === 99) ? `${(a.talento.info_basica.union.descripcion) ? a.talento.info_basica.union.descripcion : 'N/D'}` : a.talento.info_basica.union.union.es : 'N/D'}
+					ubicacion={(a.talento.info_basica) ? a.talento.info_basica.estado_republica.es : 'N/D'}
+					peso={(a.talento.info_basica) ? a.talento.info_basica.peso : 0}
+					altura={(a.talento.info_basica) ? a.talento.info_basica.altura : 0}
+					images_urls={a.talento.media.filter(m =>  m.media.referencia.includes('FOTOS-PERFIL-TALENTO')).map(m => m.media.url)}
+				/>
+			});
+		}
+		if (selected_rol > 0) {
+			return [<Typography>Aun no hay aplicaciones para este rol</Typography>]
+		}
+		return [];
+	}, [rol_applications.isFetching, rol_applications.data, selected_rol]);
+
+	const has_applitations = (rol_applications.data) ? rol_applications.data.count_applications > 0 : false;
+
 	return (
 		<>
 			<Head>
@@ -229,27 +261,61 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 
 											<Grid xs={9}>
 												<MContainer direction='horizontal' styles={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-													<Typography>Ver <Typography component={'span'} sx={{ backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page_size}</Typography> resultados</Typography>
-													<Button
-														onClick={() => {
-															setPagination(prev => {return {...prev, page: prev.page - 1}})
-														}} 
-														sx={{ width: '20px', padding: 0 }}>
-														<Image src="/assets/img/iconos/arrow_l_white.svg" width={20} height={20} alt="" />
-													</Button>
-													<Typography>Página <Typography component={'span'} sx={{ backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page + 1}</Typography> de {(rol_applications.data) ? Math.ceil(rol_applications.data.count_applications / pagination.page_size) : 0}</Typography>
-													<Button
-														onClick={() => {
-															setPagination(prev => {return {...prev, page: prev.page + 1}})
-														}} 
-														sx={{ width: '20px', padding: 0 }}>
-														<Image src="/assets/img/iconos/arrow_r_white.svg" width={20} height={20} alt="" />
-													</Button>
+													<>
+													
+														<Typography>
+															Ver 
+															<Typography onChange={(ev) => {setPagination(prev => {
+																return {
+																	...prev,
+																	page_size: parseInt(ev.target.value)
+																}
+															})}} component={'select'} sx={{ marginLeft: 2, marginRight: 2, backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page_size}
+																<option selected={pagination.page_size === 2} value={2}>2</option>
+																<option selected={pagination.page_size === 4} value={4}>4</option>
+																<option selected={pagination.page_size === 8} value={8}>8</option>
+																<option selected={pagination.page_size === 16} value={16}>16</option>
+															</Typography> 
+															resultados
+														</Typography>
+														<Button
+															disabled={!has_applitations}
+															onClick={() => {
+																setPagination(prev => {return {...prev, page: prev.page - 1}})
+															}} 
+															sx={{ width: '20px', padding: 0 }}>
+															<Image src="/assets/img/iconos/arrow_l_white.svg" width={20} height={20} alt="" />
+														</Button>
+														{rol_applications.isFetching &&
+															<Skeleton/>
+														}
+														{!rol_applications.isFetching && has_applitations &&
+															<Typography>Página <Typography component={'span'} sx={{ backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page + 1}</Typography> de {(rol_applications.data) ? Math.ceil(rol_applications.data.count_applications / pagination.page_size) : 0}</Typography>
+														}
+														{!rol_applications.isFetching && !has_applitations &&
+															<Typography>Sin resultados</Typography>
+														}
+														<Button
+															disabled={!has_applitations}
+															onClick={() => {
+																setPagination(prev => {return {...prev, page: prev.page + 1}})
+															}} 
+															sx={{ width: '20px', padding: 0 }}>
+															<Image src="/assets/img/iconos/arrow_r_white.svg" width={20} height={20} alt="" />
+														</Button>
+													</>
 												</MContainer>
 											</Grid>
 										</Grid>
 										<Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px' }}>
-											{rol_applications.isFetching && <Skeleton/>}
+											{selected_rol > 0 && rol_applications.isFetching && 
+												<>
+													<Skeleton/>
+													<br/>
+													<Skeleton/>
+												</>
+
+											}
 											{!rol_applications.isFetching &&
 												<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
 													<Box sx={{ display: 'flex', gap: 1 }}>
@@ -304,48 +370,52 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 												</Box>
 											}
 										</Grid>
-										<Grid container item xs={12} gap={1} sx={{ justifyContent: 'space-between' }} mt={1}>
-											{rol_applications.data && rol_applications.data.rol.aplicaciones_por_talento.length > 0 &&
-												rol_applications.data.rol.aplicaciones_por_talento.map((a, i) => {
-													return <TalentoTableItem 
-														key={i}
-														id_estado_aplicacion_rol={a.id_estado_aplicacion}
-														nombre={`${a.talento.nombre} ${a.talento.apellido}`}
-														rating={4}
-														union={(a.talento.info_basica && a.talento.info_basica.union) ? (a.talento.info_basica.union.id_union === 99) ? `${(a.talento.info_basica.union.descripcion) ? a.talento.info_basica.union.descripcion : 'N/D'}` : a.talento.info_basica.union.union.es : 'N/D'}
-														ubicacion={(a.talento.info_basica) ? a.talento.info_basica.estado_republica.es : 'N/D'}
-														peso={(a.talento.info_basica) ? a.talento.info_basica.peso : 0}
-														altura={(a.talento.info_basica) ? a.talento.info_basica.altura : 0}
-														images_urls={a.talento.media.filter(m =>  m.media.referencia.includes('FOTOS-PERFIL-TALENTO')).map(m => m.media.url)}
-													/>
-												})
-											}
-											{rol_applications.data && rol_applications.data.rol.aplicaciones_por_talento.length === 0 &&
-												<>
-													<Typography>Aun no hay aplicaciones para este rol</Typography>
-													<Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-												</>
-											}
-										</Grid>
-										<Grid xs={12} mt={4}>
-											<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-												<Button sx={{ textTransform: 'none' }}>
-													<Box sx={{ display: 'flex', alignItems: 'center' }}>
-														<Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
-														<Typography fontWeight={600}>Página previa</Typography>
-													</Box>
-												</Button>
+										{rol_applications_content.map((e, i) => {
+											return <Grid key={i} item xs={12} md={3} p={1} mt={1}>
+													{e}
+												</Grid>
+										})}
+										{!rol_applications.isFetching && rol_applications.data && rol_applications.data.count_applications > 0 &&
+											<Grid xs={12} mt={4}>
+												<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+													<Button 
+														onClick={() => {
+															setPagination(prev => {return {...prev, page: prev.page - 1}});
+															window.scroll({
+																behavior: 'smooth',
+																top: 0
+															})
+														}} 
+														disabled={pagination.page === 0} 
+														sx={{ textTransform: 'none' }}
+													>
+														<Box sx={{ display: 'flex', alignItems: 'center' }}>
+															<Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
+															<Typography sx={{color: (pagination.page === 0) ? 'gray' : '#069cb1' }} fontWeight={600}>Página previa</Typography>
+														</Box>
+													</Button>
 
-												<Typography sx={{ color: '#069cb1' }} fontWeight={600} >1 de 1</Typography>
-
-												<Button sx={{ textTransform: 'none' }}>
-													<Box sx={{ display: 'flex', alignItems: 'center' }}>
-														<Typography fontWeight={600}>Siguiente página</Typography>
-														<Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
-													</Box>
-												</Button>
-											</Box>
-										</Grid>
+													<Typography sx={{ color: '#069cb1' }} fontWeight={600}>Página <Typography component={'span'} sx={{ color: '#069cb1', backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page + 1}</Typography> de {(rol_applications.data) ? Math.ceil(rol_applications.data.count_applications / pagination.page_size) : 0}</Typography>
+	
+													<Button 
+														onClick={() => {
+															setPagination(prev => {return {...prev, page: prev.page + 1}});
+															window.scroll({
+																behavior: 'smooth',
+																top: 0
+															})
+														}} 
+														disabled={(pagination.page * pagination.page_size) > rol_applications.data.count_applications} 
+														sx={{ textTransform: 'none' }}
+													>
+														<Box sx={{ display: 'flex', alignItems: 'center' }}>
+															<Typography sx={{color: ((pagination.page * pagination.page_size) > rol_applications.data.count_applications) ? 'gray' : '#069cb1'}} fontWeight={600}>Siguiente página</Typography>
+															<Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
+														</Box>
+													</Button>
+												</Box>
+											</Grid>
+										}
 									</Grid>
 
 								</Grid>

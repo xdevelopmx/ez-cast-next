@@ -7,7 +7,7 @@ import { MTable } from '~/components/shared/MTable/MTable';
 import { useRouter } from 'next/router';
 import MotionDiv from '~/components/layout/MotionDiv';
 
-export const Activos = (props: { id_talento: number }) => {
+export const Activos = (props: { id_talento: number, read_only: boolean }) => {
     const router = useRouter();
 
     const activos = api.talentos.getActivosByIdTalento.useQuery({ id: props.id_talento }, {
@@ -75,10 +75,10 @@ export const Activos = (props: { id_talento: number }) => {
     return (
         <Grid id="activos" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Activos' onClickButton={() => {
+                <SectionTitle title='Activos' onClickButton={(!props.read_only) ? () => {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     router.push('/talento/editar-perfil?step=5')
-                }} />
+                } : undefined} />
             </Grid>
             <Grid item xs={12}>
                 {loading && <Skeleton className={'md-skeleton'} />}

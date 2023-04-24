@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { MedidasDialog } from "../dialogs/MedidasDialog";
 
-export const FiltrosApariencias = (props: { id_talento: number }) => {
+export const FiltrosApariencias = (props: { id_talento: number, read_only: boolean }) => {
     const router = useRouter();
     const [dialog, setDialog] = useState<{ opened: boolean, data: Map<string, unknown> }>({ opened: false, data: new Map() })
 
@@ -89,11 +89,6 @@ export const FiltrosApariencias = (props: { id_talento: number }) => {
         return null;
     }, [medidas.data]);
 
-    console.log({
-        f: medidas.isFetching,
-        m: medidas_grouped,
-    })
-
     const tatuajes = useMemo(() => {
         if (data) {
 
@@ -139,10 +134,10 @@ export const FiltrosApariencias = (props: { id_talento: number }) => {
         <>
             <Grid container sx={{ mt: 10 }}>
                 <Grid item xs={12}>
-                    <SectionTitle title='Apariencia' onClickButton={() => {
+                    <SectionTitle title='Apariencia' onClickButton={(!props.read_only) ? () => {
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         router.push('/talento/editar-perfil?step=7')
-                    }} />
+                    } : undefined} />
                 </Grid>
                 <Grid item xs={6} mt={4}>
                     <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Rango de edad a interpretar</Typography>
@@ -305,9 +300,9 @@ export const FiltrosApariencias = (props: { id_talento: number }) => {
                     <Divider />
                 </Grid>
                 <Grid id="medidas" my={6} item xs={12}>
-                    <SectionTitle title='Medidas' onClickButton={() => {
+                    <SectionTitle title='Medidas' onClickButton={(!props.read_only) ? () => {
                         setDialog(prev => { return { ...prev, opened: true } })
-                    }} />
+                    } : undefined} />
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={12}>
                     {!medidas_grouped && medidas.isFetching && <Skeleton className="md-skeleton" />}

@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { Alertas, Destacados, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Grid, Link, Typography } from "@mui/material";
+import { Button, Grid, Link, Skeleton, Typography } from "@mui/material";
 import { MTable } from "~/components/shared/MTable/MTable";
 import { Activos, Creditos, FiltrosApariencias, Habilidades, Media, Preferencias } from "~/components/talento";
 import { InfoGeneral } from "~/components/talento/dashboard-sections/InfoGeneral";
@@ -14,14 +14,37 @@ import { api } from "~/utils/api";
 import { getSession, useSession } from "next-auth/react";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
+import { User } from "next-auth/core/types";
+import { useEffect, useMemo } from "react";
 
-const DashBoardTalentosPage: NextPage = () => {
+const DashBoardTalentosPage: NextPage<{user: User, id_talento: number, scroll_section: string}> = (props) => {
 	const session = useSession();
 
 	const scrollToSection = (sectionId: string) => {
 		const section = document.getElementById(sectionId);
 		section?.scrollIntoView({ behavior: 'smooth' });
 	};
+
+	const id_talento = useMemo(() => {
+		if (props.id_talento > 0) {
+			return props.id_talento;
+		}
+		if (session.data && session.data.user) {
+			return parseInt(session.data.user.id);
+		}
+		return 0;
+	}, [session.data, props]);
+
+	
+	const talento = api.talentos.getById.useQuery({id: id_talento}, {
+		refetchOnWindowFocus: false
+	});
+	
+	useEffect(() => {
+		if (talento.data) {
+			scrollToSection(props.scroll_section);	
+		}
+	}, [talento.data]);
 
 	return (
 		<>
@@ -42,7 +65,8 @@ const DashBoardTalentosPage: NextPage = () => {
 							</div>
 							<div className="d-flex">
 								<motion.img src="/assets/img/iconos/icono_head_chat.png" alt="icono" />
-								<p className="h4 font-weight-bold mb-0 ml-2"><b>Iván Rodriguez</b></p>
+								{talento.isFetching && <Skeleton style={{marginLeft: 16}} width={200} height={24}/>}
+								{!talento.isFetching && talento.data && <p className="h4 font-weight-bold mb-0 ml-2"><b>{talento.data.nombre} {talento.data.apellido}</b></p>}
 							</div>
 							<br />
 							<MContainer direction="vertical">
@@ -64,18 +88,18 @@ const DashBoardTalentosPage: NextPage = () => {
 									}}
 									labels={['Informacion basica', 'Media', 'Creditos', 'Habilidades', 'Medidas', 'Activos', 'Preferencia de roles']}
 								/>
-								<InfoGeneral id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+								<InfoGeneral id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 							</MContainer>
 
-							<Media id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+							<Media id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
 
-							<Creditos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+							<Creditos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 
-							<Habilidades id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+							<Habilidades id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
 
-							<Activos id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
-							<FiltrosApariencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
-							<Preferencias id_talento={(session && session.data && session.data.user) ? parseInt(session.data.user.id) : 0} />
+							<Activos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
+							<FiltrosApariencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
+							<Preferencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
 						</div>
 					</div>
 				</div>
@@ -88,10 +112,16 @@ const DashBoardTalentosPage: NextPage = () => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
     if (session && session.user) {
-        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+        if (session.user.tipo_usuario === TipoUsuario.TALENTO || session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+			const { id_talento } = context.query;
+			const { scroll_section } = context.query;
+			console.log(id_talento);
+			console.log(scroll_section);
             return {
                 props: {
                     user: session.user,
+					id_talento: (id_talento) ? parseInt(id_talento as string) : 0,
+					scroll_section: (scroll_section) ? scroll_section as string : ''
                 }
             }
         } 

@@ -2,6 +2,7 @@ export enum TipoUsuario {
 	TALENTO = "talento",
 	CAZATALENTOS = "cazatalentos",
 	NO_DEFINIDO = 'no_definido',
+	ADMIN = 'admin'
 }
 
 export enum TipoMembresia {

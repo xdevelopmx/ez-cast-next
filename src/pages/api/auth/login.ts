@@ -1,5 +1,5 @@
 
-import { Cazatalentos, Talentos } from "@prisma/client";
+import { Cazatalentos, Talentos, Administradores } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { TipoUsuario } from "~/enums";
 import { prisma } from "~/server/db";
@@ -51,6 +51,24 @@ export default async function handler(req: Request, res: NextApiResponse) {
 				const correct_pass = await bcrypt.compare(form.password, cazatalentos.contrasenia);
 				if (correct_pass) {
 					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: cazatalentos.id.toString(), name: `${cazatalentos.nombre} ${cazatalentos.apellido}`, email: cazatalentos.email, tipo_usuario: TipoUsuario.CAZATALENTOS, profile_img: '' }});
+				}
+			}
+			break;
+		}
+		case TipoUsuario.ADMIN: {
+			const admin: Administradores | null = await prisma.administradores.findFirst({
+				where: {
+					OR: [
+						{ email: { equals: (form.email) ? form.email : '' } },
+						{
+							usuario: { equals: (form.username) ? form.username : '' }
+						}],
+				}
+			});
+			if (admin) {
+				const correct_pass = await bcrypt.compare(form.password, admin.contrasenia);
+				if (correct_pass) {
+					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: admin.id.toString(), name: 'ADMIN', email: admin.email, tipo_usuario: TipoUsuario.ADMIN, profile_img: '' }});
 				}
 			}
 			break;
