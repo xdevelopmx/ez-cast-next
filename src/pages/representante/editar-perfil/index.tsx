@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import Head from 'next/head'
 import { useReducer } from 'react';
-import { CuentaRepresentante, MStepper, MainLayout } from '~/components';
+import { CuentaRepresentante, MStepper, MainLayout, ValidacionRepresentante } from '~/components';
 import { InformacionBasicaRepresentante } from '~/components';
 import { PermisosRepresentante } from '~/components/representante/forms/PermisosRepresentante';
 import { MTooltip } from '~/components/shared/MTooltip';
@@ -115,32 +115,13 @@ const EditarPerfilRepresentantePage = () => {
                                 color='blue'
                                 placement='right'
                             />,
-                            5: <MTooltip
-                                text={
-                                    <>
-                                        <Typography fontSize={14} fontWeight={600}>De tu casa al set</Typography>
-                                        <Typography fontSize={14} fontWeight={400}>
-                                            Suma al equipo de producción con los activos que cuentes,
-                                            estos pueden ser muy beneficiosos y dar un giro a la producción
-                                            como plus valía a tu talento, estos pueden ser vestuario, props,
-                                            vehículos, etc...
-                                        </Typography>
-                                    </>
-                                }
-                                color='blue'
-                                placement='right'
-                            />,
-                            6: <MTooltip
-                                text='Un rol es un papel que una persona representa dentro de una historia, este personaje puede ser ficticio o real.'
-                                color='blue'
-                                placement='top'
-                            />
                         }}
                     >
 
                         <InformacionBasicaRepresentante />
                         <PermisosRepresentante />
                         <CuentaRepresentante />
+                        <ValidacionRepresentante />
                     </MStepper>
                 </div>
             </MainLayout>
