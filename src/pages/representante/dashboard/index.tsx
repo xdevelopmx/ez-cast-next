@@ -1,6 +1,6 @@
 import { type GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
-import { Alertas, MainLayout, MenuLateral } from '~/components'
+import { Alertas, MainLayout, MenuLateral, TalentoPreviewShort } from '~/components'
 import { motion } from 'framer-motion'
 import { getSession, useSession } from 'next-auth/react'
 import { TipoUsuario } from '~/enums'
@@ -133,7 +133,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                                     </MContainer>
                                 </Grid>
                             </Grid>
-                            <Grid container mt={4}>
+                            <Grid container mt={4} xs={12}>
                                 <Grid xs={12}>
                                     <Typography fontWeight={900} sx={{ color: '#069cb1' }}>Acerca de</Typography>
                                     <Typography>
@@ -144,7 +144,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                                 <Grid xs={12} mt={4}>
                                     <Divider />
                                 </Grid>
-                                <Grid>
+                                <Grid xs={12} mt={4}>
                                     <Typography fontWeight={900}>
                                         Representas
                                         <Typography
@@ -156,6 +156,14 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                                         talentos
                                     </Typography>
                                     <Typography>Da click en el botón de Nuevo talento para comenzar a agregar talentos.</Typography>
+
+                                    <Grid container xs={12} spacing={3} mt={4}>
+                                        {
+                                            Array.from({ length: 4 }).map((_, i) => (
+                                                <TalentoPreviewShort key={i} />
+                                            ))
+                                        }
+                                    </Grid>
 
                                     <Button
                                         className="btn btn-intro btn-price btn_out_line mb-2"
@@ -179,6 +187,23 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                                         }}
                                     >
                                         Nuevo talento
+                                    </Button>
+
+                                    <Button
+                                        className="btn btn-intro btn-price btn_out_line mb-2"
+                                        sx={{
+                                            padding: '8px 40px',
+                                            marginTop: 0,
+                                            marginRight: 10,
+                                            fontWeight: '900 !important',
+                                            textTransform: 'none',
+                                            color: '#000',
+                                            border: '2px solid #f9b233',
+                                            backgroundColor: '#fff',
+                                            borderRadius: '80px',
+                                        }}
+                                    >
+                                        Administrar talentos
                                     </Button>
                                 </Grid>
                             </Grid>
