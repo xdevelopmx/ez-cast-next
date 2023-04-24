@@ -5,12 +5,14 @@ import { motion } from 'framer-motion'
 import { getSession, useSession } from 'next-auth/react'
 import { TipoUsuario } from '~/enums'
 import { type User, type Session } from 'next-auth'
-import { Button, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, Divider, Grid, Modal, Typography } from '@mui/material'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { MContainer } from '~/components/layout/MContainer'
 import Link from 'next/link'
 import MotionDiv from '~/components/layout/MotionDiv'
+import { useState } from 'react'
+import { MTooltip } from '~/components/shared/MTooltip'
 
 type DashboardRepresentante = {
     user: User;
@@ -19,7 +21,7 @@ type DashboardRepresentante = {
 const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
 
     const router = useRouter()
-    console.log({ user });
+    const [showModal, setShowModal] = useState(false)
 
     return (
         <>
@@ -185,6 +187,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                                             color: '#000',
                                             backgroundColor: '#f9b233 !important',
                                         }}
+                                        onClick={() => setShowModal(true)}
                                     >
                                         Nuevo talento
                                     </Button>
@@ -210,6 +213,50 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                         </div>
                     </div>
                 </div>
+
+                <Dialog fullWidth maxWidth={'sm'} onClose={() => setShowModal(false)} open={showModal}>
+                    <DialogContent sx={{ overflow: 'hidden', padding: 0 }} >
+                        <Grid container sx={{}}>
+                            <Grid item xs={12}>
+                                <Typography fontWeight={600}
+                                    sx={{ color: '#069cb1', textAlign: 'center', padding: '30px' }}
+                                >
+                                    Nuevo Talento
+                                </Typography>
+                            </Grid>
+                            <Grid container item xs={12}>
+                                <Grid xs={6}>
+                                    <Button sx={{
+                                        textTransform: 'none',
+                                        width: '100%',
+                                        backgroundColor: '#069cb1',
+                                        color: '#fff',
+                                        borderRadius: 0,
+                                        '&:hover': {
+                                            backgroundColor: '#05acc2',
+                                        },
+                                        padding: '30px'
+                                    }}>
+                                        <Typography>Registrar</Typography>
+                                    </Button>
+                                </Grid>
+                                <Grid xs={6}>
+                                    <Button
+                                        sx={{ textTransform: 'none', width: '100%', padding: '30px' }}
+                                        onClick={() => router.push('/representante/invitar-talento')}
+                                    >
+                                        <Typography>Invitar a Talento</Typography>
+                                        <MTooltip
+                                            color='orange'
+                                            text={'Link llegará a correo de Talento para que este llene su perfil con todas las especificaciones requeridas.'}
+                                            placement='right'
+                                        />
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                </Dialog>
             </MainLayout>
         </>
     )

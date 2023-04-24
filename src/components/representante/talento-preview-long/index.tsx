@@ -1,13 +1,20 @@
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
-import React from 'react'
+import React, { type SetStateAction, type FC, type Dispatch } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 
-export const TalentoPreviewLong = () => {
+interface Props {
+    setShowModal: Dispatch<SetStateAction<boolean>>;
+}
+
+export const TalentoPreviewLong: FC<Props> = ({ setShowModal }) => {
     return (
         <Grid container item xs={12} mt={4}>
             <Grid xs={3}>
-                <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1' }}>
+                <Box
+                    sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', cursor: 'pointer' }}
+                    onClick={() => setShowModal(true)}
+                >
                     <Image src="/assets/img/no-user-image.png" fill alt="" style={{ objectFit: 'cover' }} />
                 </Box>
             </Grid>

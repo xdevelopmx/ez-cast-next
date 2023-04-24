@@ -1,10 +1,17 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import { Box, Button, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Dialog, DialogContent, Divider, Grid, Typography } from '@mui/material'
 import { Alertas, MainLayout, MenuLateral } from '~/components'
 import { TalentoPreviewLong } from '~/components/representante/talento-preview-long'
+import { MTooltip } from '~/components/shared/MTooltip'
+import { useState } from 'react'
 
 const RepresentanteTusTalentosPage = () => {
+
+    const [showModal, setShowModal] = useState(false)
+
+    const [option_selected, setOptionSelected] = useState<{ current: 'GENERALES' | 'HOMBRE' | 'MUJER' | 'NINO/NINA' | '', updated: 'GENERALES' | 'HOMBRE' | 'MUJER' | 'NINO/NINA' }>({ current: 'GENERALES', updated: 'GENERALES' });
+
     return (
         <>
             <Head>
@@ -103,7 +110,7 @@ const RepresentanteTusTalentosPage = () => {
                                 <Grid xs={12}>
                                     {
                                         Array.from({ length: 4 }).map((_, i) => (
-                                            <TalentoPreviewLong key={i} />
+                                            <TalentoPreviewLong setShowModal={setShowModal} key={i} />
                                         ))
                                     }
                                 </Grid>
@@ -112,6 +119,57 @@ const RepresentanteTusTalentosPage = () => {
                         </div>
                     </div>
                 </div>
+
+                <Dialog fullWidth maxWidth={'lg'} onClose={() => setShowModal(false)} open={showModal}>
+                    <DialogContent sx={{ overflow: 'hidden', padding: 0, paddingLeft: '50px' }} >
+                        <Grid container sx={{}}>
+                            <Grid item xs={12}>
+                                <Typography fontWeight={600}
+                                    sx={{ color: '#069cb1', textAlign: 'center', padding: '30px' }}
+                                >
+                                    Tabla de Aplicaciones
+                                </Typography>
+                            </Grid>
+                            <Grid container item xs={12}>
+                                <Grid xs={12}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Image src="/assets/img/no-user-image.png" width={50} height={50} alt="" />
+                                        <Typography sx={{ paddingLeft: '20px' }}>Nombre Talento</Typography>
+                                    </Box>
+
+                                </Grid>
+                                <Grid xs={6}>
+                                    <ButtonGroup sx={{ mt: 2, mb: 4 }} variant="contained" aria-label="outlined primary button group">
+                                        <Button
+                                            onClick={() => { setOptionSelected({ current: '', updated: 'GENERALES' }) }}
+                                            variant={option_selected.current === 'GENERALES' ? 'contained' : 'outlined'}
+                                        >
+                                            Generales
+                                        </Button>
+                                        <Button
+                                            onClick={() => { setOptionSelected({ current: '', updated: 'HOMBRE' }) }}
+                                            variant={option_selected.current === 'HOMBRE' ? 'contained' : 'outlined'}
+                                        >
+                                            Hombre
+                                        </Button>
+                                        <Button
+                                            onClick={() => { setOptionSelected({ current: '', updated: 'MUJER' }) }}
+                                            variant={option_selected.current === 'MUJER' ? 'contained' : 'outlined'}
+                                        >
+                                            Mujer
+                                        </Button>
+                                        <Button
+                                            onClick={() => { setOptionSelected({ current: '', updated: 'NINO/NINA' }) }}
+                                            variant={option_selected.current === 'NINO/NINA' ? 'contained' : 'outlined'}
+                                        >
+                                            Niño/Niña
+                                        </Button>
+                                    </ButtonGroup>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                </Dialog>
             </MainLayout>
 
         </>
