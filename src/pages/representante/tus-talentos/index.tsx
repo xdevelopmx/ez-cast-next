@@ -5,12 +5,13 @@ import { Alertas, MainLayout, MenuLateral } from '~/components'
 import { TalentoPreviewLong } from '~/components/representante/talento-preview-long'
 import { MTooltip } from '~/components/shared/MTooltip'
 import { useState } from 'react'
+import MotionDiv from '~/components/layout/MotionDiv'
 
 const RepresentanteTusTalentosPage = () => {
 
     const [showModal, setShowModal] = useState(false)
 
-    const [option_selected, setOptionSelected] = useState<{ current: 'GENERALES' | 'HOMBRE' | 'MUJER' | 'NINO/NINA' | '', updated: 'GENERALES' | 'HOMBRE' | 'MUJER' | 'NINO/NINA' }>({ current: 'GENERALES', updated: 'GENERALES' });
+    const [option_selected, setOptionSelected] = useState<{ current: 'APLICACIONES' | 'AUDICIONES' | 'CALLBACK' | '', updated: 'APLICACIONES' | 'AUDICIONES' | 'CALLBACK' }>({ current: 'APLICACIONES', updated: 'APLICACIONES' });
 
     return (
         <>
@@ -120,6 +121,8 @@ const RepresentanteTusTalentosPage = () => {
                     </div>
                 </div>
 
+
+
                 <Dialog fullWidth maxWidth={'lg'} onClose={() => setShowModal(false)} open={showModal}>
                     <DialogContent sx={{ overflow: 'hidden', padding: 0, paddingLeft: '50px' }} >
                         <Grid container sx={{}}>
@@ -138,38 +141,70 @@ const RepresentanteTusTalentosPage = () => {
                                     </Box>
 
                                 </Grid>
-                                <Grid xs={6}>
-                                    <ButtonGroup sx={{ mt: 2, mb: 4 }} variant="contained" aria-label="outlined primary button group">
-                                        <Button
-                                            onClick={() => { setOptionSelected({ current: '', updated: 'GENERALES' }) }}
-                                            variant={option_selected.current === 'GENERALES' ? 'contained' : 'outlined'}
-                                        >
-                                            Generales
-                                        </Button>
-                                        <Button
-                                            onClick={() => { setOptionSelected({ current: '', updated: 'HOMBRE' }) }}
-                                            variant={option_selected.current === 'HOMBRE' ? 'contained' : 'outlined'}
-                                        >
-                                            Hombre
-                                        </Button>
-                                        <Button
-                                            onClick={() => { setOptionSelected({ current: '', updated: 'MUJER' }) }}
-                                            variant={option_selected.current === 'MUJER' ? 'contained' : 'outlined'}
-                                        >
-                                            Mujer
-                                        </Button>
-                                        <Button
-                                            onClick={() => { setOptionSelected({ current: '', updated: 'NINO/NINA' }) }}
-                                            variant={option_selected.current === 'NINO/NINA' ? 'contained' : 'outlined'}
-                                        >
-                                            Niño/Niña
-                                        </Button>
-                                    </ButtonGroup>
+                                <Grid xs={8}>
+                                    <Grid xs={12}>
+                                        <ButtonGroup sx={{ mt: 2, mb: 0 }} variant="contained" aria-label="outlined primary button group">
+                                            <Button
+                                                onClick={() => { setOptionSelected({ current: '', updated: 'APLICACIONES' }) }}
+                                                variant={option_selected.current === 'APLICACIONES' ? 'contained' : 'outlined'}
+                                            >
+                                                Aplicaciones
+                                            </Button>
+                                            <Button
+                                                onClick={() => { setOptionSelected({ current: '', updated: 'AUDICIONES' }) }}
+                                                variant={option_selected.current === 'AUDICIONES' ? 'contained' : 'outlined'}
+                                            >
+                                                Audiciones
+                                            </Button>
+                                            <Button
+                                                onClick={() => { setOptionSelected({ current: '', updated: 'CALLBACK' }) }}
+                                                variant={option_selected.current === 'CALLBACK' ? 'contained' : 'outlined'}
+                                            >
+                                                Callback
+                                            </Button>
+                                        </ButtonGroup>
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        <MotionDiv show={option_selected.current === 'APLICACIONES'} animation="fade">
+                                            <Grid container sx={{ backgroundColor: '#CED6D9', padding: '15px' }} xs={15} columns={15}>
+                                                <Grid xs={3}>
+                                                    <Typography sx={{ textAlign: 'center' }}>
+                                                        Proyecto
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid xs={3}>
+                                                    <Typography sx={{ textAlign: 'center' }}>
+                                                        Tipo
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid xs={3}>
+                                                    <Typography sx={{ textAlign: 'center' }}>
+                                                        Estado
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid xs={3}>
+                                                    <Typography sx={{ textAlign: 'center' }}>
+                                                        Cazatalento
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid xs={3}>
+                                                    <Typography sx={{ textAlign: 'center' }}>
+                                                        Fecha
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+
+                                        </MotionDiv>
+                                    </Grid>
                                 </Grid>
+
                             </Grid>
                         </Grid>
                     </DialogContent>
                 </Dialog>
+
+
+
             </MainLayout>
 
         </>
