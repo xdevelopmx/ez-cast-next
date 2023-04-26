@@ -4,8 +4,16 @@ import Image from 'next/image';
 import Link from "next/link";
 import { Alertas, MainLayout, MenuLateral } from "~/components";
 
+import Calendar from 'react-calendar';
+import { useState } from "react";
+
+import 'react-calendar/dist/Calendar.css';
+
 
 const AgendaVirtual = () => {
+
+    const [value, onChange] = useState(new Date());
+
     return (
         <>
             <Head>
@@ -145,8 +153,13 @@ const AgendaVirtual = () => {
                                         </Grid>
                                     </Grid>
 
-                                    <Grid xs={12}>
-                                        
+                                    <Grid container xs={12} sx={{ border: '2px solid #069cb1', padding: '30px' }} mt={4}>
+                                        <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Calendar locale="mx-ES" onChange={() => { console.log(''); }} value={value} />
+                                        </Grid>
+                                        <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Calendar locale="mx-ES" onChange={() => { console.log(''); }} value={value} />
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
