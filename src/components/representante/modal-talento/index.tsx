@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Dialog, DialogContent, Grid, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Dialog, DialogContent, Divider, Grid, Typography } from '@mui/material'
 import Image from 'next/image'
 import React, { type Dispatch, type SetStateAction, type FC } from 'react'
 import MotionDiv from '~/components/layout/MotionDiv'
@@ -228,7 +228,42 @@ export const ModalTalento: FC<Props> = ({ showModal, setShowModal, option_select
                                 </Grid>
                             </MotionDiv>
 
-                            
+                            <MotionDiv show={requisitoSelected === 'ROL'} animation="fade">
+                                <Grid xs={12} sx={{ border: '2px solid #CED6D9' }}>
+                                    <Grid xs={12} sx={{ padding: '20px 30px' }}>
+                                        <Typography fontWeight={600} sx={{ fontSize: '1.4rem' }}>Nombre del Rol</Typography>
+
+                                        <Typography sx={{ color: '#838080', fontStyle: 'italic', marginTop: '20px' }}>Sexo:</Typography>
+                                        <Typography>Femenino</Typography>
+
+                                        <Typography sx={{ color: '#838080', fontStyle: 'italic', marginTop: '20px' }}>Edad:</Typography>
+                                        <Typography>20-25 años</Typography>
+
+                                        <Typography sx={{ color: '#838080', fontStyle: 'italic', marginTop: '20px' }}>Filtros demográficos:</Typography>
+                                        <Typography>Latino/Hispano</Typography>
+
+                                        <Typography sx={{ color: '#838080', fontStyle: 'italic', marginTop: '20px' }}>Habilidades:</Typography>
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                                <Typography>Danza</Typography>
+                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                            </Box>
+                                            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                                <Typography>Canto</Typography>
+                                            </Box>
+                                        </Box>
+
+                                        <Typography sx={{ color: '#838080', fontStyle: 'italic', marginTop: '20px' }}>Descripción:</Typography>
+                                        <Typography>
+                                            Características del personaje y el
+                                            rol que interpretar Características
+                                            del personaje y el rol que
+                                            interpretar dkshdk qo...
+                                        </Typography>
+
+                                    </Grid>
+                                </Grid>
+                            </MotionDiv>
                         </Grid>
 
                     </Grid>
