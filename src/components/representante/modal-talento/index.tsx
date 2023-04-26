@@ -264,6 +264,65 @@ export const ModalTalento: FC<Props> = ({ showModal, setShowModal, option_select
                                     </Grid>
                                 </Grid>
                             </MotionDiv>
+
+                            <MotionDiv show={requisitoSelected === 'SELF-TAPE'} animation="fade">
+                                <Grid xs={12} sx={{ border: '2px solid #CED6D9' }}>
+                                    <Grid xs={12} sx={{ padding: '20px 30px' }}>
+                                        <Typography fontWeight={600} sx={{ fontSize: '1.4rem' }}>Requisito Self-Tape</Typography>
+
+                                        <Typography sx={{ color: '#069cb1', marginTop: '20px' }}>
+                                            “Fondo Blanco”,“Casting en
+                                            Horizontal”, Distancia del Talento
+                                            a la cámara o cuadro específico,
+                                        </Typography>
+
+                                        <Typography sx={{ marginTop: '30px' }}>
+                                            Requisitos escritos por el
+                                            Cazatalentos previamente
+                                            Sobre indicaciones para
+                                            Hacer el self-tape
+                                        </Typography>
+
+                                        <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: 2, marginTop: '50px' }}>
+                                            <Button
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    backgroundColor: '#069cb1',
+                                                    color: '#fff',
+                                                    borderRadius: '2rem',
+                                                    width: '250px',
+                                                    '&:hover': {
+                                                        backgroundColor: '#07a9be',
+                                                    }
+                                                }}>
+                                                <Typography sx={{ lineHeight: '15px' }}>
+                                                    Invitar a Talento a <br />
+                                                    Grabar Self-Tape
+                                                </Typography>
+                                            </Button>
+
+                                            <Button
+                                                sx={{
+                                                    textTransform: 'none',
+                                                    color: '#07a9be',
+                                                    borderRadius: '2rem',
+                                                    width: '250px',
+                                                    border: '2px solid #07a9be'
+                                                }}>
+                                                <Typography>
+                                                    Subir Self-Tape
+                                                </Typography>
+                                            </Button>
+
+                                            <Typography sx={{ color: '#07a9be', textDecoration: 'underline', textAlign: 'center' }}>
+                                                Descargar Líneas
+                                            </Typography>
+                                        </Box>
+
+
+                                    </Grid>
+                                </Grid>
+                            </MotionDiv>
                         </Grid>
 
                     </Grid>
