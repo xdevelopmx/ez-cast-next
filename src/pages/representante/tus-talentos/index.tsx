@@ -1,10 +1,18 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
-import { Alertas, MainLayout, MenuLateral } from '~/components'
+import { Alertas, MainLayout, MenuLateral, ModalTalento } from '~/components'
 import { TalentoPreviewLong } from '~/components/representante/talento-preview-long'
+import { useState } from 'react'
 
 const RepresentanteTusTalentosPage = () => {
+
+    const [showModal, setShowModal] = useState(false)
+
+    const [option_selected, setOptionSelected] = useState<'APLICACIONES' | 'AUDICIONES' | 'CALLBACK'>('APLICACIONES');
+
+    const [requisitoSelected, setRequisitoSelected] = useState<'PROYECTO' | 'ROL' | 'SELF-TAPE'>('PROYECTO');
+
     return (
         <>
             <Head>
@@ -103,7 +111,7 @@ const RepresentanteTusTalentosPage = () => {
                                 <Grid xs={12}>
                                     {
                                         Array.from({ length: 4 }).map((_, i) => (
-                                            <TalentoPreviewLong key={i} />
+                                            <TalentoPreviewLong setShowModal={setShowModal} key={i} />
                                         ))
                                     }
                                 </Grid>
@@ -112,6 +120,20 @@ const RepresentanteTusTalentosPage = () => {
                         </div>
                     </div>
                 </div>
+
+
+                <ModalTalento
+                    option_selected={option_selected}
+                    setOptionSelected={setOptionSelected}
+                    requisitoSelected={requisitoSelected}
+                    setRequisitoSelected={setRequisitoSelected}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                />
+
+
+
+
             </MainLayout>
 
         </>

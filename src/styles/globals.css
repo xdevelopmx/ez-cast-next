@@ -35,6 +35,12 @@ button:focus {
   font-size: 25px !important;
 }
 
+
+/*Calendario*/
+.react-calendar__month-view__weekdays {
+  border-bottom: 1px solid #069cb1;
+}
+
 h1,
 h2,
 h3,
