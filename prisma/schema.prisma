@@ -31,6 +31,9 @@ model Cazatalentos {
   proyectos       Proyecto[]
   foto_perfil Media? @relation(fields: [id_foto_perfil_media], references: [id])
   redes_sociales  RedesSocialesPorCazatalentos[]
+  reportes_talentos ReporteTalentos[]
+  talentos_destacados TalentosDestacados[]
+  notas_talentos NotasTalentos[]
 }
 
 model Talentos {
@@ -53,6 +56,10 @@ model Talentos {
   filtros_aparencias FiltrosAparenciasPorTalentos?
   medidas            MedidasPorTalentos?
   aplicaciones AplicacionRolPorTalento[]
+  audiciones AudicionTalento[]
+  reportes ReporteTalentos[]
+  notas NotasTalentos[]
+  destacados TalentosDestacados[]
 }
 
 model MedidasPorTalentos {
@@ -223,6 +230,54 @@ model AplicacionRolPorTalento {
   estado_aplicacion CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
 }
 
+model NotasTalentos {
+  id Int                      @id @default(autoincrement())
+  id_cazatalentos Int
+  id_talento Int
+  nota String
+  cazatlentos Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+}
+
+model TalentosDestacados {
+  id Int       @id @default(autoincrement())
+  id_cazatalentos Int               
+  id_talento Int
+  calificacion Int
+  cazatlentos Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+}
+
+model ReporteTalentos {
+  id Int                      @id @default(autoincrement())
+  id_talento Int
+  id_cazatalentos Int
+  id_tipo_reporte Int
+  comentario String
+  cazatlentos Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  reporte CatalogoTiposReportesTalento @relation(fields: [id_tipo_reporte], references: [id], onDelete: Cascade)
+}
+
+model AudicionTalento {
+  id Int                      @id @default(autoincrement())
+  id_talento Int
+  id_rol Int
+  fecha_audicion DateTime
+  tipo_audicion String
+  mensaje String
+  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  rol Roles @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+}
+
+model CatalogoTiposReportesTalento {
+  id                   Int                      @id 
+  es String
+  en String
+  ReporteTalentos ReporteTalentos[]
+}
+
+
 model CatalogoEstadosAplicacionesRoles {
   id                   Int                      @id 
   es String
@@ -291,6 +346,7 @@ model Roles {
   aplicaciones_por_talento AplicacionRolPorTalento[]
   lineas Media?  @relation("media_lineas", map: "media_lineas", fields: [id_media_lineas], references: [id])
   foto_referencia Media? @relation("media_foto_referencia", map: "media_foto_referencia", fields: [id_media_foto_referencia], references: [id])
+  audiciones_talentos AudicionTalento[]
 }
 
 model SelftapePorRoles {

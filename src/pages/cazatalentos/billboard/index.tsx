@@ -1,5 +1,5 @@
 import { type GetServerSideProps } from "next";
-import { Box, Button, Divider, Grid, MenuItem, Select, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, MenuItem, Select, Skeleton, TextField, Typography } from "@mui/material";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { Alertas, MSelect, MainLayout, MenuLateral } from "~/components";
@@ -9,7 +9,7 @@ import { api } from "~/utils/api";
 import { getSession } from "next-auth/react";
 import Image from 'next/image';
 import { type User } from "next-auth";
-import { Fragment, useEffect, useState, useMemo } from "react";
+import { Fragment, useEffect, useState, useMemo, useRef } from "react";
 import type {
 	Roles, CatalogoTiposRoles, FiltrosDemoPorRoles, GenerosPorRoles, CatalogoGeneros,
 	AparenciasEtnicasPorRoles, CatalogoAparenciasEtnicas
@@ -18,6 +18,7 @@ import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { TalentoTableItem } from "~/components/cazatalento/billboard/TalentoTableItem";
 import MotionDiv from "~/components/layout/MotionDiv";
+import { ExpandMoreOutlined } from "@mui/icons-material";
 
 type BillboardCazaTalentosPageProps = {
 	user: User,
@@ -39,6 +40,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 
 	const [selected_proyecto, setSelectedProyecto] = useState<number>(id_proyecto);
 	const [pagination, setPagination] = useState<{page: number, page_size: number}>({page: 0, page_size: 4 });
+	const [open_proyecto_select, setOpenProyectoSelect] = useState(false);
 	const [selected_rol, setSelectedRol] = useState<number>(0);
 	const [estado_aplicacion_rol, setEstadoAplicacionRol] = useState<number>(0);
 
@@ -53,6 +55,15 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 	const roles_by_proyecto = api.roles.getAllByProyecto.useQuery(selected_proyecto, {
 		refetchOnWindowFocus: false
 	});
+
+	useEffect(() => {
+		if (proyectos.data && proyectos.data.length > 0) {
+			const proyecto = proyectos.data[0];
+			if (proyecto) {
+				setSelectedProyecto(proyecto.id);
+			}
+		}
+	}, [proyectos.data]);
 
 	useEffect(() => {
 		if (roles_by_proyecto.data && roles_by_proyecto.data.length > 0) {
@@ -142,10 +153,11 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 			return rol_applications.data.rol.aplicaciones_por_talento.map((a, i) => {
 				return <TalentoTableItem 
 					key={i}
+					id_rol={a.id_rol}
 					id_talento={a.talento.id}
 					id_estado_aplicacion_rol={a.id_estado_aplicacion}
 					nombre={`${a.talento.nombre} ${a.talento.apellido}`}
-					rating={4}
+					rating={(a.talento.destacados[0]) ? a.talento.destacados[0].calificacion : 0}
 					union={(a.talento.info_basica && a.talento.info_basica.union) ? (a.talento.info_basica.union.id_union === 99) ? `${(a.talento.info_basica.union.descripcion) ? a.talento.info_basica.union.descripcion : 'N/D'}` : a.talento.info_basica.union.union.es : 'N/D'}
 					ubicacion={(a.talento.info_basica) ? a.talento.info_basica.estado_republica.es : 'N/D'}
 					peso={(a.talento.info_basica) ? a.talento.info_basica.peso : 0}
@@ -183,36 +195,55 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 								<Grid item xs={12}>
 									<Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>Billboard</Typography>
 									<MContainer direction="horizontal">
-										<MSelect
-											id="nombre-proyecto-select"
-											disabled={id_proyecto > 0}
-											loading={proyectos.isFetching}
-											options={proyectos.data?.map(p => ({
-												value: `${p.id}`,
-												label: p.nombre,
-											})) || []}
-											className={'form-input-md'}
-											value={selected_proyecto.toString()}
-											onChange={(e) => {
-												setSelectedProyecto(parseInt(e.target.value))
-											}}
-											label=''
-										/>
+										<Box style={{cursor: 'pointer'}} position={'relative'}  onClick={() => {
+												setOpenProyectoSelect(prev => !prev)
+											}}>
+											<Box display={'flex'} flexDirection={'row'}>
+												<IconButton
+													sx={{
+														p: 0,
+														transform: open_proyecto_select ? 'rotate(0deg)' : 'rotate(180deg)',
+														marginLeft: 'auto',
+														transition: 'ease-in-out 0.5s'
+													}}
+												>
+													<ExpandMoreOutlined />
+												</IconButton>
+												<Typography zIndex={1} top={4} variant="subtitle1" fontSize={'1.5rem'} lineHeight={1}>
+													{proyectos.data?.filter(p => p.id === selected_proyecto)[0]?.nombre}
+												</Typography>
+
+											</Box>
+											<Box style={{
+													opacity: 0, 
+													zIndex: 2, 
+													top: 0,
+													position: 'absolute',
+											}}>
+
+												<Select
+													open={open_proyecto_select}
+													sx={{
+														'&ul': {
+															maxHeight: 100
+														},
+													}}
+													MenuProps={{ style: {
+														width: '250px', top: -24
+													}, classes: { paper: 'select-children-billboard' } }}
+													value={selected_proyecto.toString()}
+													onChange={(e) => {
+														setSelectedProyecto(parseInt(e.target.value))
+													}}
+												>
+														{proyectos.data?.map(p => (<MenuItem value={p.id}>{p.nombre}</MenuItem>))}
+												</Select>
+											</Box>
+										</Box>
 										<Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-										<MSelect
-											id="nombre-personaje-select"
-											loading={roles_by_proyecto.isFetching}
-											options={(roles_by_proyecto.data) ? roles_by_proyecto.data.map(r => ({
-												label: r.nombre,
-												value: r.id.toString(),
-											})) : []}
-											className={'form-input-md'}
-											value={selected_rol.toString()}
-											onChange={(e) => {
-												setSelectedRol(parseInt(e.target.value))
-											}}
-											label=''
-										/>
+										<Typography variant="subtitle1" fontSize={'1.5rem'} lineHeight={1}>
+											{(selected_rol > 0 && roles_by_proyecto.data && roles_by_proyecto.data.length > 0) ? roles_by_proyecto.data.filter(r => selected_rol === r.id)[0]?.nombre : 'No se ha seleccionado ningun rol'}
+										</Typography>
 									</MContainer>
 									<Divider style={{ borderWidth: 1, marginTop: '10px' }} />
 								</Grid>

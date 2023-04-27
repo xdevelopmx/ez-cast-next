@@ -3,23 +3,28 @@ import Image from 'next/image';
 import Head from "next/head";
 import { motion } from 'framer-motion'
 
-import { Alertas, Destacados, Flotantes, MainLayout, MenuLateral } from "~/components";
+import { Alertas, Destacados, Flotantes, FormGroup, MCheckboxGroup, MRadioGroup, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Grid, Link, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Link, Skeleton, Typography } from "@mui/material";
 import { MTable } from "~/components/shared/MTable/MTable";
 import { Activos, Creditos, FiltrosApariencias, Habilidades, Media, Preferencias } from "~/components/talento";
 import { InfoGeneral } from "~/components/talento/dashboard-sections/InfoGeneral";
-import { api } from "~/utils/api";
+import { api, parseErrorBody } from "~/utils/api";
 import { getSession, useSession } from "next-auth/react";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { User } from "next-auth/core/types";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Close, MessageOutlined } from "@mui/icons-material";
+import { useRouter } from "next/router";
+import useNotify from "~/hooks/useNotify";
+import MotionDiv from "~/components/layout/MotionDiv";
+import { TalentoDashBoardSelect } from "~/components/cazatalento/talento/talento-dashboard-select";
 
-const DashBoardTalentosPage: NextPage<{user: User, id_talento: number, scroll_section: string}> = (props) => {
+const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: number, scroll_section: string }> = (props) => {
 	const session = useSession();
-
+	const { notify } = useNotify();
 	const scrollToSection = (sectionId: string) => {
 		const section = document.getElementById(sectionId);
 		section?.scrollIntoView({ behavior: 'smooth' });
@@ -35,14 +40,15 @@ const DashBoardTalentosPage: NextPage<{user: User, id_talento: number, scroll_se
 		return 0;
 	}, [session.data, props]);
 
-	
-	const talento = api.talentos.getById.useQuery({id: id_talento}, {
+
+	const talento = api.talentos.getById.useQuery({ id: id_talento }, {
 		refetchOnWindowFocus: false
 	});
-	
+
+
 	useEffect(() => {
 		if (talento.data) {
-			scrollToSection(props.scroll_section);	
+			scrollToSection(props.scroll_section);
 		}
 	}, [talento.data]);
 
@@ -59,13 +65,18 @@ const DashBoardTalentosPage: NextPage<{user: User, id_talento: number, scroll_se
 					<MenuLateral />
 					<div className="seccion_container col">
 						<br /><br />
+						{props.id_talento > 0 &&
+							<TalentoDashBoardSelect id_talento={props.id_talento} id_rol={props.id_rol}/>
+						}
 						<div className="container_box_header">
 							<div className="d-flex justify-content-end align-items-start py-2">
-								<Alertas />
+								{props.id_talento === 0 &&
+									<Alertas />
+								}
 							</div>
 							<div className="d-flex">
 								<motion.img src="/assets/img/iconos/icono_head_chat.png" alt="icono" />
-								{talento.isFetching && <Skeleton style={{marginLeft: 16}} width={200} height={24}/>}
+								{talento.isFetching && <Skeleton style={{ marginLeft: 16 }} width={200} height={24} />}
 								{!talento.isFetching && talento.data && <p className="h4 font-weight-bold mb-0 ml-2"><b>{talento.data.nombre} {talento.data.apellido}</b></p>}
 							</div>
 							<br />
@@ -91,15 +102,15 @@ const DashBoardTalentosPage: NextPage<{user: User, id_talento: number, scroll_se
 								<InfoGeneral id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 							</MContainer>
 
-							<Media id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
+							<Media id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 
 							<Creditos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 
-							<Habilidades id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
+							<Habilidades id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 
-							<Activos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
-							<FiltrosApariencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
-							<Preferencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO}/>
+							<Activos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+							<FiltrosApariencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+							<Preferencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
 						</div>
 					</div>
 				</div>
@@ -110,34 +121,34 @@ const DashBoardTalentosPage: NextPage<{user: User, id_talento: number, scroll_se
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const session = await getSession(context);
-    if (session && session.user) {
-        if (session.user.tipo_usuario === TipoUsuario.TALENTO || session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+	const session = await getSession(context);
+	if (session && session.user) {
+		if (session.user.tipo_usuario === TipoUsuario.TALENTO || session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 			const { id_talento } = context.query;
 			const { scroll_section } = context.query;
-			console.log(id_talento);
-			console.log(scroll_section);
-            return {
-                props: {
-                    user: session.user,
+			const { id_rol } = context.query;
+			return {
+				props: {
+					user: session.user,
 					id_talento: (id_talento) ? parseInt(id_talento as string) : 0,
+					id_rol: (id_rol) ? parseInt(id_rol as string) : 0,
 					scroll_section: (scroll_section) ? scroll_section as string : ''
-                }
-            }
-        } 
-        return {
-            redirect: {
-                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
-                permanent: true
-            }
-        }
-    }
-    return {
-        redirect: {
-            destination: '/',
-            permanent: true,
-        },
-    }
+				}
+			}
+		}
+		return {
+			redirect: {
+				destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+				permanent: true
+			}
+		}
+	}
+	return {
+		redirect: {
+			destination: '/',
+			permanent: true,
+		},
+	}
 }
 
 export default DashBoardTalentosPage;

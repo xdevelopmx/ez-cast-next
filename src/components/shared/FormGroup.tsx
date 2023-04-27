@@ -1,5 +1,5 @@
 
-import { Skeleton, TextField, Typography } from '@mui/material';
+import { Box, Skeleton, TextField, Typography } from '@mui/material';
 import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute, ReactNode } from 'react'
 import { MContainer } from '../layout/MContainer';
 import MotionDiv from '../layout/MotionDiv';
@@ -19,6 +19,10 @@ interface Props {
         element: JSX.Element,
         position: 'start' | 'end'
     },
+    innerIcon?: {
+        element: JSX.Element,
+        style: CSSProperties
+    },
     loading?: boolean,
     error?: string,
     show_error_message?: boolean,
@@ -29,10 +33,18 @@ interface Props {
 }
 
 export const FormGroup: FC<Props> = ({
-    disabled, show_error_message, rows, error, loading, icon, rootStyle, className, labelClassName, label, id, type = 'text',
+    disabled, show_error_message, rows, error, loading, icon, innerIcon, rootStyle, className, labelClassName, label, id, type = 'text',
     onChange, value, labelStyle, style, textBlueLabel, tooltip
 }) => {
-    let input: JSX.Element = <input disabled={(disabled)} style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id} />;
+    let input: JSX.Element = <input disabled={(disabled)} style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id}/>;
+    if (innerIcon) {
+        input = <Box style={{maxWidth: style?.width, position: 'relative'}} >
+            {input}
+            <Box position={'absolute'} style={innerIcon.style}>
+                {innerIcon.element}
+            </Box>
+        </Box>
+    }
     if (type === 'text-area') {
         input = <TextField
             disabled={(disabled)}

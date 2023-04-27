@@ -100,6 +100,48 @@ export const RolesRouter = createTRPCRouter({
 			return rol;
 		}
 	),
+	getFechasCasting: protectedProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			let rol = await ctx.prisma.roles.findUnique({
+				where: {id: input},
+				include: {
+					casting: true
+				}
+			});
+			console.log(rol?.casting);
+			const dates = new Set<string>();
+			if (rol) {
+				rol.casting.forEach((date) => {
+					const start_day = date.fecha_inicio.getDate() + 1;
+					const end_day = ((date.fecha_fin) ? date.fecha_fin.getDate() : date.fecha_inicio.getDate()) + 1;
+					const start_month = date.fecha_inicio.getMonth();
+					const end_month = (date.fecha_fin) ? date.fecha_fin.getMonth() : date.fecha_inicio.getMonth();
+					const start_year = date.fecha_inicio.getFullYear();
+					const end_year = (date.fecha_fin) ? date.fecha_fin.getFullYear() : date.fecha_inicio.getFullYear();
+					for (let y = start_year; y <= end_year; y++) {
+						let final_month = end_month;
+						let initial_month = start_month;
+						if (y !== end_year) {
+							final_month = 11;
+						}
+						if (start_year !== end_year && y === end_year) {
+							initial_month = 0;
+						}
+						for (let m = initial_month; m <= final_month; m++) {
+							const final_day = (m !== end_month) ? 31 : end_day;
+							const initial_day = (m !== start_month) ? 1 : start_day;
+							for (let d = initial_day; d <= final_day; d++) {
+								dates.add(`${d < 10 ? `0${d}` : d}/${m < 9 ? `0${m + 1}` : m + 1}/${y}`)
+							}
+						}
+					}
+				});
+			}
+			return dates;
+		}
+	),
 	getRolWithApplicationsById: publicProcedure
 		.input(z.object({
 			start: z.number(),
@@ -119,6 +161,16 @@ export const RolesRouter = createTRPCRouter({
 			const count_applications = await ctx.prisma.aplicacionRolPorTalento.count({
 				where: applications_where
 			});
+			let rol_con_cazatalento = await ctx.prisma.roles.findUnique({
+				where: {id: input.id_rol},
+				include: {
+					proyecto: true
+				}
+			});
+			let id_cazatalento = 0;
+			if (rol_con_cazatalento) {
+				id_cazatalento = rol_con_cazatalento.proyecto.id_cazatalentos;
+			}
 			const rol = await ctx.prisma.roles.findUnique({
 				where: { id: input.id_rol },
 				include: {
@@ -153,6 +205,11 @@ export const RolesRouter = createTRPCRouter({
 									media: {
 										include: {
 											media: true
+										}
+									},
+									destacados: {
+										where: {
+											id_cazatalentos: id_cazatalento
 										}
 									},
 									info_basica: {

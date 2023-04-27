@@ -334,8 +334,6 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
             }
         })
     }
-console.log('STATEEEEEEEEEEE', state.descripcion_rol)
-    console.log(rol, 'ROLEEEEEEEEEEEEEEEE');
 
     const initSelftapeFiles = async () => {
         const files: {
@@ -737,8 +735,7 @@ console.log('STATEEEEEEEEEEE', state.descripcion_rol)
             state.filmaciones.id_estado_republica > 0 && state.filmaciones.fechas.length > 0 && state.requisitos.fecha_presentacion !== '' &&
             state.requisitos.id_uso_horario > 0 && state.requisitos.id_idioma > 0 && state.requisitos.medios_multimedia_a_incluir.length > 0 &&
             state.requisitos.id_estado_donde_aceptan_solicitudes > 0 && state.requisitos.info_trabajo.length > 0);
-        console.log('FOOOORM', form);
-        return form;
+            return form;
     }, [state]);
 
     const updateRolFiles = api.roles.saveRolFiles.useMutation({

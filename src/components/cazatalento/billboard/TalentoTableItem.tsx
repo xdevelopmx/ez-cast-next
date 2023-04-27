@@ -4,9 +4,11 @@ import { Carroucel } from '~/components/shared/Carroucel'
 import { MTooltip } from '~/components/shared/MTooltip'
 import { useMemo } from 'react'
 import { useRouter } from 'next/router'
+import Constants from '~/constants'
 
 export const TalentoTableItem = (props: {
     id_talento: number,
+    id_rol: number,
     id_estado_aplicacion_rol: number,
     nombre: string,
     rating: number,
@@ -33,10 +35,10 @@ export const TalentoTableItem = (props: {
                     color='orange'
                     placement='top'
                     icon={<Image
-                        src={`/assets/img/iconos/${(props.id_estado_aplicacion_rol === 2 ? 'icon_no_vistos_highlited' : 'icon_no_vistos')}.svg`} 
+                        src={`/assets/img/iconos/${(props.id_estado_aplicacion_rol === Constants.ESTADOS_APLICACION_ROL.NO_VISTO ? 'icon_no_vistos_highlited' : 'icon_no_vistos')}.svg`} 
                         width={30} 
                         height={20} 
-                        alt="no vistos" 
+                        alt="no vistos"
                     />}
                 />
                 <MTooltip
@@ -44,7 +46,7 @@ export const TalentoTableItem = (props: {
                     color='orange'
                     placement='top'
                     icon={<Image 
-                        src={`/assets/img/iconos/${props.id_estado_aplicacion_rol === 3 ? 'icon_vistos_highlited' : 'icon_vistos'}.svg`} 
+                        src={`/assets/img/iconos/${props.id_estado_aplicacion_rol === Constants.ESTADOS_APLICACION_ROL.VISTO ? 'icon_vistos_highlited' : 'icon_vistos'}.svg`} 
                         width={30} 
                         height={20} 
                         alt="Vistos" 
@@ -55,7 +57,7 @@ export const TalentoTableItem = (props: {
                     color='orange'
                     placement='top'
                     icon={<Image 
-                        src={`/assets/img/iconos/${props.id_estado_aplicacion_rol === 4 ? 'icon_estrella_dorada' : 'icono_star_blue'}.svg`} 
+                        src={`/assets/img/iconos/${props.id_estado_aplicacion_rol === Constants.ESTADOS_APLICACION_ROL.DESTACADO ? 'icon_estrella_dorada' : 'icono_star_blue'}.svg`} 
                         width={30} 
                         height={20} 
                         alt="Destacado" 
@@ -66,7 +68,7 @@ export const TalentoTableItem = (props: {
                     color='orange'
                     placement='top'
                     icon={<Image 
-                        style={{filter: (props.id_estado_aplicacion_rol === 5) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : ''}}
+                        style={{filter: (props.id_estado_aplicacion_rol === Constants.ESTADOS_APLICACION_ROL.AUDICION) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : ''}}
                         src={'/assets/img/iconos/icono_lampara_blue.svg'} 
                         width={30} 
                         height={20} 
@@ -78,7 +80,7 @@ export const TalentoTableItem = (props: {
                     color='orange'
                     placement='top'
                     icon={<Image 
-                        style={{filter: (props.id_estado_aplicacion_rol === 1) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : ''}}
+                        style={{filter: (props.id_estado_aplicacion_rol === Constants.ESTADOS_APLICACION_ROL.CALLBACK) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : ''}}
                         src={'/assets/img/iconos/icono_claqueta_blue.svg'} 
                         width={30} 
                         height={20} 
@@ -97,10 +99,9 @@ export const TalentoTableItem = (props: {
             <Box sx={{ padding: '10px' }}>
                 <Typography fontWeight={800} sx={{ color: '#069cb1' }}>{props.nombre}</Typography>
                 <Box sx={{ display: 'flex', gap: .5 }}>
-                    <Image src="/assets/img/iconos/estrella-fill.svg" width={10} height={10} alt="" />
-                    <Image src="/assets/img/iconos/estrella-fill.svg" width={10} height={10} alt="" />
-                    <Image src="/assets/img/iconos/estrella-fill.svg" width={10} height={10} alt="" />
-                    <Image src="/assets/img/iconos/estrella-fill.svg" width={10} height={10} alt="" />
+                    {Array.from({length: 5}).map((v, i) => {
+                        return <Image style={{cursor: 'pointer'}} src={(props.rating >= (i + 1)) ? '/assets/img/iconos/estrella-fill.svg' : '/assets/img/iconos/estrella_empty.svg'} width={10} height={10} alt="" />
+                    })}
                 </Box>
                 <Box sx={{ display: 'flex' }}>
                     <Grid container xs={12}>
@@ -124,7 +125,7 @@ export const TalentoTableItem = (props: {
                 <Box sx={{ display: 'flex', gap: 1.5, marginTop: 1 }}>
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&scroll_section=media`);
+                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}&scroll_section=media`);
                         }}
                         text='Videos Talento'
                         color='blue'
@@ -133,7 +134,7 @@ export const TalentoTableItem = (props: {
                     />
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}`)
+                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`)
                         }}
                         text='Documento Talento'
                         color='blue'
@@ -142,7 +143,7 @@ export const TalentoTableItem = (props: {
                     />
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&scroll_section=media`);
+                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}&scroll_section=media`);
                         }}
                         text='Fotos Talento'
                         color='blue'
@@ -151,7 +152,7 @@ export const TalentoTableItem = (props: {
                     />
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}`)
+                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`)
                         }}
                         text='Sitio Web'
                         color='blue'

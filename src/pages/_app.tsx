@@ -12,7 +12,9 @@ import AppContext, { type AppAlert } from "~/context/app";
 import { useState } from "react";
 import { CustomThemeProvider } from "~/theme";
 import { CssBaseline } from "@mui/material";
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, esES } from "@mui/x-date-pickers";
+import 'dayjs/locale/es-mx';
 
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -35,13 +37,15 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }}>
           <CustomThemeProvider>
             <CssBaseline />
-            <AnimatePresence
-              mode="wait"
-              initial={true}
-              onExitComplete={() => { window.scrollTo(0, 0) }}
-            >
-              <Component {...pageProps} />
-            </AnimatePresence>
+            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'es-mx'}>
+              <AnimatePresence
+                mode="wait"
+                initial={true}
+                onExitComplete={() => { window.scrollTo(0, 0) }}
+              >
+                <Component {...pageProps} />
+              </AnimatePresence>
+            </LocalizationProvider>
           </CustomThemeProvider>
 
         </AppContext.Provider>

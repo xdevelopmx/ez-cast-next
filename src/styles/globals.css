@@ -3260,6 +3260,12 @@ p.edo_pendiente {
   max-height: 150px !important;
 }
 
+.select-children-billboard {
+  left: 190% !important;
+  max-height: 150px !important;
+  min-width: 350px !important;
+}
+
 .RootContainer {
   width: calc(100% - 30%);
   margin-top: 56px;

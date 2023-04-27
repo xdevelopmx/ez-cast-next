@@ -4,6 +4,13 @@ const Constants = {
         CAZATALENTOS: 'CAZATALENTOS',
         REPRESENTANTE: 'REPRESENTANTE'
     },
+    ESTADOS_APLICACION_ROL: {
+        CALLBACK: 1, 
+        NO_VISTO: 2, 
+        VISTO: 3, 
+        DESTACADO: 4, 
+        AUDICION: 5
+    },
     PATTERNS: {
         EMAIL: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
         URL: /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$/

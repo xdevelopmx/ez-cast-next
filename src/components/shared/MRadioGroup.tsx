@@ -9,6 +9,7 @@ interface Props {
     onChange?: ChangeEventHandler<HTMLInputElement>;
     value?: string;
     style?: CSSProperties,
+    elementStyle?: CSSProperties,
     labelStyle?: CSSProperties,
     labelClassName?: string,
     disabled?: boolean,
@@ -18,7 +19,7 @@ interface Props {
 }
 
 export const MRadioGroup: FC<Props> = ({
-    direction, loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options, styleRoot = {}
+    direction, loading, disabled, labelClassName, label, id, onChange, value, labelStyle, style, options, elementStyle, styleRoot = {}
 }) => {
     return (
         <>
@@ -38,6 +39,7 @@ export const MRadioGroup: FC<Props> = ({
                         {options.map(o => {
                             return <FormControlLabel
                                 key={o}
+                                style={elementStyle}
                                 control={
                                     <Radio
                                         value={o}
