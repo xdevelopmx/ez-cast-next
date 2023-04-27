@@ -3,7 +3,7 @@ import { Box, Button, ButtonGroup, Divider, Grid, Typography } from "@mui/materi
 import Head from "next/head";
 import Image from 'next/image';
 import { useState } from "react";
-import { Alertas, MainLayout, MenuLateral, FormGroup, MRadioGroup, Tag, AddButton, MSelect } from "~/components";
+import { Alertas, MainLayout, MenuLateral, FormGroup, MRadioGroup, Tag, AddButton, MSelect, ModalLocacion } from "~/components";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { api } from "~/utils/api";
 
@@ -11,6 +11,8 @@ type tipos_locacion = 'PRESENCIAL' | 'VIRTUAL';
 type tipos_audicion = 'AUDICION' | 'CALLBACK';
 
 const NuevoHorarioAgendaVirtual = () => {
+
+    const [showModal, setShowModal] = useState(false)
 
     const [tipoAudicion, setTipoAudicion] = useState<tipos_audicion>('AUDICION')
     const [tipoLocacion, setTipoLocacion] = useState<tipos_locacion>('PRESENCIAL')
@@ -211,7 +213,7 @@ const NuevoHorarioAgendaVirtual = () => {
                                                     <AddButton
                                                         aStyles={{ margin: 0, borderRadius: '2rem' }}
                                                         text="Agregar locación"
-                                                        onClick={() => { console.log('') }}
+                                                        onClick={() => { setShowModal(true) }}
                                                     />
 
                                                     <MTooltip
@@ -292,6 +294,11 @@ const NuevoHorarioAgendaVirtual = () => {
                         </div>
                     </div>
                 </div>
+
+                <ModalLocacion
+                    isOpen={showModal}
+                    setIsOpen={setShowModal}
+                />
             </MainLayout>
         </>
 
