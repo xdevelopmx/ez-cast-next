@@ -1,5 +1,5 @@
 
-import { FormControl, FormControlLabel, FormLabel, InputLabel, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton, Typography } from '@mui/material';
+import { Box, Checkbox, FormControl, FormControlLabel, FormLabel, InputLabel, ListItemText, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton, Typography } from '@mui/material';
 import type { CSSProperties, FC, MouseEventHandler, ReactNode } from 'react';
 import { MContainer } from '../../layout/MContainer';
 
@@ -9,7 +9,7 @@ interface Props {
     options: { value: string, label: string }[],
     onChange?: ((event: SelectChangeEvent<string>, child: ReactNode) => void) | undefined;
     onClick?: ((event: unknown) => void) | undefined;
-    value?: string;
+    value?: string | string[];
     style?: CSSProperties,
     className?: string,
     labelStyle?: CSSProperties,
@@ -21,13 +21,17 @@ interface Props {
     tooltip?: ReactNode,
     inferiorBlueText?: ReactNode,
     styleMenuProps?: CSSProperties,
-    placeholder?: string,
     disable_default_option?: boolean,
-    default_value_label?: string
+    default_option?: {value: string, label: string},
+    renderValue?: (selected: string) => JSX.Element | string,
+    highlight_default_option?: boolean,
+    button_props?: CSSProperties,
+    multiple?: boolean,
+    placeholder?: string
 }
 
 export const MSelect: FC<Props> = ({
-    disabled, loading, className, disable_default_option, default_value_label, placeholder, icon, labelClassName, label, id, onChange, onClick, value, labelStyle, style, options, tooltip,
+    disabled, loading, className, placeholder, renderValue, multiple, button_props, highlight_default_option, disable_default_option, default_option, icon, labelClassName, label, id, onChange, onClick, value, labelStyle, style, options, tooltip,
     inferiorBlueText, styleRoot = {}, styleMenuProps = {}
 }) => {
     let label_element: JSX.Element | null = null;
@@ -56,8 +60,14 @@ export const MSelect: FC<Props> = ({
         }
     }
 
-    const default_option = (disable_default_option) ? [] : [{ value: default_value, label: (default_value_label) ? default_value_label : 'Selecciona una opcion' }]; 
+    const _default_option = (disable_default_option) ? [] : [(default_option) ? default_option : { value: default_value, label: 'Selecciona una opcion' }]; 
     
+    let multiple_values: string[] = [];
+    if (multiple) {
+        const vals = value as string[];
+        multiple_values = multiple_values.concat(vals)
+    }
+
     return (
         <FormControl sx={styleRoot}>
             {label_element}
@@ -70,25 +80,78 @@ export const MSelect: FC<Props> = ({
             }
             {!loading &&
                 <>
-                    <Select
-                        disabled={(disabled)}
-                        sx={{
-                            '&ul': {
-                                maxHeight: 100
-                            },
-                            ...style
-                        }}
-                        onClick={onClick}
-                        labelId={id}
-                        id={id}
-                        placeholder={placeholder}
-                        value={value}
-                        className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
-                        onChange={onChange}
-                        MenuProps={{ classes: { paper: 'select-children' }, style: styleMenuProps }}
-                    >
-                        {default_option.concat(options).map((e, index) => <MenuItem key={index} value={e.value}>{e.label}</MenuItem>)}
-                    </Select>
+                    {multiple &&
+                        <Box position={'relative'}>
+                            {placeholder &&
+                                <Typography position={'absolute'} style={{pointerEvents: 'none'}} left={12} top={8} zIndex={2} fontSize={'0.8rem'}>{placeholder}</Typography>
+                            }
+                            <Select
+                                disabled={(disabled)}
+                                multiple={multiple}
+                                sx={{
+                                    '&ul': {
+                                        maxHeight: 100
+                                    },
+                                    '& > svg': (button_props) ? button_props : {
+                                        fontSize: '2rem',
+                                        position: 'absolute',
+                                        height: '100%',
+                                        top: 0,
+                                        right: '0px'
+                                    },
+                                    ...style
+                                }}
+                                onClick={onClick}
+                                labelId={id}
+                                id={id}
+                                renderValue={renderValue}
+                                /*
+                                // @ts-ignore */
+                                value={multiple_values}
+                                className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
+                                onChange={onChange}
+                                MenuProps={{ classes: { paper: 'select-children' }, style: styleMenuProps }}
+                            >
+                                {options.map((e, index) => {
+                                    return (
+                                        <MenuItem key={index} value={e.value}>
+                                            <Checkbox checked={((value as string[]).indexOf(e.value) > -1)} />
+                                            {e.label}
+                                        </MenuItem>
+                                    )
+                                })}
+                            </Select>
+                        </Box>
+                    }
+                    {!multiple &&
+                        <Select
+                            disabled={(disabled)}
+                            multiple={multiple}
+                            sx={{
+                                '&ul': {
+                                    maxHeight: 100
+                                },
+                                '& > svg': (button_props) ? button_props : {
+                                    fontSize: '2rem',
+                                    position: 'absolute',
+                                    height: '100%',
+                                    top: 0,
+                                    right: '0px'
+                                },
+                                ...style
+                            }}
+                            onClick={onClick}
+                            labelId={id}
+                            id={id}
+                            renderValue={renderValue}
+                            value={value as string}
+                            className={`form-control form-control-sm text_custom ${(select_class) ? select_class : ''} ${(className) ? className : ''}`}
+                            onChange={onChange}
+                            MenuProps={{ classes: { paper: 'select-children' }, style: styleMenuProps }}
+                        >
+                            {_default_option.concat(options).map((e, index) => <MenuItem style={(highlight_default_option && index === 0) ? {backgroundColor: 'gray', color: 'white'} : (e.value === value) ? {backgroundColor: '#069cb1', color: 'white'} : {}} key={index} value={e.value}>{e.label}</MenuItem>)}
+                        </Select>
+                    }
                     {inferiorBlueText && <Typography fontSize={14} sx={{ color: '#069cb1' }}>{inferiorBlueText}</Typography>}
                 </>
 

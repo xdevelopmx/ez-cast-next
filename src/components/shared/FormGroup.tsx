@@ -29,14 +29,15 @@ interface Props {
     rows?: number,
     textBlueLabel?: string,
     disabled?: boolean,
-    tooltip?: ReactNode;
+    tooltip?: ReactNode,
+    placeholder?: string,
 }
 
 export const FormGroup: FC<Props> = ({
-    disabled, show_error_message, rows, error, loading, icon, innerIcon, rootStyle, className, labelClassName, label, id, type = 'text',
+    disabled, show_error_message, rows, error, placeholder, loading, icon, innerIcon, rootStyle, className, labelClassName, label, id, type = 'text',
     onChange, value, labelStyle, style, textBlueLabel, tooltip
 }) => {
-    let input: JSX.Element = <input disabled={(disabled)} style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id}/>;
+    let input: JSX.Element = <input placeholder={placeholder} disabled={(disabled)} style={{ fontSize: 16, ...style, borderColor: (error != null) ? 'red' : 'black' }} value={(value) ? value : ''} onChange={onChange} type={type} className={`form-control form-control-sm text_custom ${(className) ? className : ''}`} id={id}/>;
     if (innerIcon) {
         input = <Box style={{maxWidth: style?.width, position: 'relative'}} >
             {input}
@@ -47,6 +48,7 @@ export const FormGroup: FC<Props> = ({
     }
     if (type === 'text-area') {
         input = <TextField
+            placeholder={placeholder}
             disabled={(disabled)}
             id={id}
             className={className}

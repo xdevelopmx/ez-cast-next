@@ -1,50 +1,82 @@
-import { Box, Button, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Typography } from '@mui/material'
 import { GetServerSideProps, type NextPage } from 'next'
 import { User } from 'next-auth'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import React, { useState } from 'react'
-import { Alertas, FormGroup, MCheckboxGroup, MSelect, MainLayout, MenuLateral, RolesTable } from '~/components'
+import React, { useState, useEffect } from 'react'
+import { Alertas, FormGroup, MCheckboxGroup, MSelect, MainLayout, MenuLateral, RolesTable, Tag } from '~/components'
 import Constants from '~/constants'
 import { TipoUsuario } from '~/enums'
 import Image from 'next/image';
 import { api } from '~/utils/api'
 import MotionDiv from '~/components/layout/MotionDiv'
+import { MContainer } from '~/components/layout/MContainer'
+import { MTooltip } from '~/components/shared/MTooltip'
+import useNotify from '~/hooks/useNotify'
+import { Close } from '@mui/icons-material'
 
 type BillboardTalentosPageProps = {
     user: User,
     id_proyecto: number
 }
 
+const filtros_initial_state = {
+    tipo_busqueda: 'todos',
+    id_estado_republica: [],
+    id_union: [],
+    id_tipo_rol: [],
+    tipo_rango_edad: ' ',
+    edad_inicio: 0,
+    edad_fin: 0,
+    id_tipo_proyecto: [],
+    id_genero_rol: [],
+    id_apariencia_etnica: [],
+    id_preferencias_de_pago: [],
+    autorellenar: false
+}
 
 const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto }) => {
+    const { notify } = useNotify();
+    const [dialog, setDialog] = useState({id: '', open: false, title: ''});
     const [form_filtros, setFormFiltros] = useState<{
         tipo_busqueda: string,
-        id_estado_republica: number,
-        id_union: number,
-        id_tipo_rol: number,
+        id_estado_republica: number[],
+        id_union: number[],
+        id_tipo_rol: string[],
         tipo_rango_edad: string,
         edad_inicio: number,
         edad_fin: number,
-        id_tipo_proyecto: number,
-        id_genero_rol: number,
-        id_apariencia_etnica: number,
-        id_preferencias_de_pago: number,
+        id_tipo_proyecto: number[],
+        id_genero_rol: number[],
+        id_apariencia_etnica: number[],
+        id_preferencias_de_pago: number[],
         autorellenar: boolean
-    }>({
-        tipo_busqueda: 'todos',
-        id_estado_republica: 0,
-        id_union: 0,
-        id_tipo_rol: 0,
-        tipo_rango_edad: '',
-        edad_inicio: 0,
-        edad_fin: 0,
-        id_tipo_proyecto: 0,
-        id_genero_rol: 0,
-        id_apariencia_etnica: 0,
-        id_preferencias_de_pago: 0,
-        autorellenar: false
+    }>(filtros_initial_state);
+
+    const talento = api.talentos.getCompleteById.useQuery({id: parseInt(user.id)}, {
+        refetchOnWindowFocus: false
     });
+
+    useEffect(() => {
+        if (talento.data && form_filtros.autorellenar) {
+            setFormFiltros(prev => { 
+                const id_union = talento.data?.info_basica?.union?.id_union;
+                const edad = talento.data?.info_basica?.edad;
+                const genero = talento.data?.filtros_aparencias?.genero.id;
+                const apariencia_etnica = talento.data?.filtros_aparencias?.apariencia_etnica.id;
+                const preferencia_de_pago = talento.data?.preferencias?.interes_en_proyectos.map( i => i.id_interes_en_proyecto);
+                return{
+                    ...prev,
+                    id_union: (id_union) ? [id_union] : [],
+                    edad_inicio: (edad) ? edad : 0,
+                    edad_fin: (edad) ? edad : 0,
+                    id_genero_rol: (genero) ? [genero] : [],
+                    id_apariencia_etnica: (apariencia_etnica) ? [apariencia_etnica] : [],
+                    id_preferencias_de_pago: (preferencia_de_pago) ? preferencia_de_pago : []
+                }
+            })
+        }
+    }, [talento.data, form_filtros.autorellenar]);
 
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false,
@@ -139,7 +171,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                                 { value: 'por_proyecto', label: 'Por proyecto' },
                                                             ]}
                                                             styleRoot={{ width: 128 }}
-                                                            style={{ width: '100%' }}
+                                                            style={{ width: '100%',  fontSize: '0.8rem' }}
                                                             value={form_filtros.tipo_busqueda}
                                                             onChange={(e) => {
                                                                 setFormFiltros(prev => { return { ...prev, tipo_busqueda: e.target.value } })
@@ -151,23 +183,28 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                             className={'form-input-md'}
                                                             type="search"
                                                             rootStyle={{ margin: 0, width: '130px' }}
-                                                            style={{ border: 'none', width: '100%' }}
+                                                            style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
                                                             onChange={(e) => {
                                                                 
                                                             }}
                                                         />
                                                         <MCheckboxGroup
                                                             onChange={(e, i) => {
+                                                                setFormFiltros(prev => { return { ...prev, autorellenar: e } })
                                                             } }
                                                             direction='vertical'
-                                                            id="talento-debera-incluir-rol"
+                                                            id="talento-autorellenar"
                                                             options={['Auto-rellenar basado en perfil']}
-                                                            labelStyle={{ fontWeight: '400', fontSize: '1.1rem', margin: 0 }} values={[]}                                                            
+                                                            labelStyle={{ fontWeight: '400', fontSize: '1.1rem', margin: 0 }} 
+                                                            values={[form_filtros.autorellenar]}                                                            
                                                         />
                                                     </Box>
                                                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                        <Typography sx={{ color: '#069cb1' }}>Eliminar filtros</Typography>
+                                                        <Button variant='text' onClick={() => { setFormFiltros(filtros_initial_state)}}>
+                                                            Eliminar filtros
+                                                        </Button>
                                                         <Button
+                                                            onClick={() => { setDialog({ id: 'filtros', title: 'Filtros Aplicados', open: true }) }}
                                                             sx={{
                                                                 backgroundColor: '#069cb1',
                                                                 borderRadius: '2rem',
@@ -187,50 +224,75 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                             <Grid container xs={12} mt={2} gap={1}>
                                                 <MSelect
                                                     id="ubicacion-select"
-                                                    value={form_filtros.id_estado_republica.toString()}
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder={'Ubicacion'}
+                                                    value={form_filtros.id_estado_republica.map(r => r.toString())}
+                                                    styleRoot={{ width: '100px', padding: 0 }}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_estado_republica: parseInt(e.target.value) } })
-                                                    } } 
-                                                    default_value_label="Ubicación"
+                                                        setFormFiltros(prev => { return { ...prev, id_estado_republica: `${e.target.value}`.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) } })
+                                                    }} 
+                                                    multiple
                                                     options={(estados_republica.data) ? estados_republica.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}                                                
                                                 />
                                                 <MSelect
                                                     id="union-select"
-
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
-                                                    value={form_filtros.id_union.toString()}
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder={'Union'}
+                                                    disabled={form_filtros.autorellenar}
+                                                    styleRoot={{ width: '76px' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    value={form_filtros.id_union.map(r => r.toString())}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_union: parseInt(e.target.value) } })
+                                                        setFormFiltros(prev => { return { ...prev, id_union: `${e.target.value}`.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) } })
                                                     } }
-                                                    default_value_label="Selecciona una union"
+                                                    multiple
                                                     options={(uniones.data) ? uniones.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}   
                                                 />
 
                                                 <MSelect
                                                     id="tipos-roles-select"
 
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
-                                                    value={form_filtros.id_tipo_rol.toString()}
+                                                    styleRoot={{ width: '90px' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    value={form_filtros.id_tipo_rol.map(r => r)}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_tipo_rol: parseInt(e.target.value) } })
+                                                        setFormFiltros(prev => { return { ...prev, id_tipo_rol: `${e.target.value}`.split(',').map(id => id).filter(id => id !== '') } })
                                                     } } 
-                                                    default_value_label="Selecciona un tipo de rol"
-                                                    options={(tipos_roles.data) ? tipos_roles.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}                                               
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder={'Tipo Rol'}
+                                                    multiple
+                                                    options={[{ label: 'Principal', value: 'PRINCIPAL' }, { label: 'Extra', value: 'EXTRA' }]}                                               
                                                 />
 
                                                 <MSelect
                                                     id="rango-de-edad-select"
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
+                                                    styleRoot={{ width: '110px'}}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
                                                     value={form_filtros.tipo_rango_edad}
                                                     onChange={(e) => {
                                                         setFormFiltros(prev => { return { ...prev, tipo_rango_edad: e.target.value } })
                                                     } } 
-                                                    default_value_label="Selecciona un tipo de rango"
+                                                    renderValue={(selected) => {
+                                                        if (selected.trim().length === 0) {
+                                                          return 'Rango Edad';
+                                                        }
+                                                        switch (selected) {
+                                                            case 'rango': return 'Rango';
+                                                            case 'mayor_que': return 'Mayor que';
+                                                            case 'menor_que': return 'Menor que';
+                                                            case 'igual_que': return 'Igual que';
+                                                        }
+                                                        return 'ND';
+                                                    }}
+                                                    highlight_default_option
+                                                    default_option={{value: ' ', label: 'Limpiar Filtro'}}
                                                     options={[
                                                         { label: 'Rango', value: 'rango' },
                                                         { label: 'Mayor que', value: 'mayor_que' },
@@ -238,69 +300,174 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                         { label: 'Igual que', value: 'igual_que' }  
                                                     ]}                                                
                                                 />
-                                                <MotionDiv show={form_filtros.tipo_rango_edad.trim().length === 0}>
+                                                <MotionDiv show={form_filtros.tipo_rango_edad === 'rango'} animation='fade'>
+                                                    <Box display={'flex'} flexDirection={'row'} gap={1}>
+                                                        <FormGroup
+                                                            placeholder='Desde Edad'
+                                                            className={'form-input-md'}
+                                                            type='number'
+                                                            value={form_filtros.edad_inicio.toString()}
+                                                            rootStyle={{ margin: 0, width: '48px' }}
+                                                            style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
+                                                            onChange={(e) => {
+                                                                setFormFiltros(prev => { return { ...prev, edad_inicio: parseInt(e.target.value) } })
+                                                            }}
+                                                        />
+                                                        <FormGroup
+                                                            placeholder='Hasta Edad'
+                                                            className={'form-input-md'}
+                                                            type="number"
+                                                            value={form_filtros.edad_fin.toString()}
+                                                            rootStyle={{ margin: 0, width: '48px' }}
+                                                            style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
+                                                            onChange={(e) => {
+                                                                setFormFiltros(prev => { return { ...prev, edad_fin: parseInt(e.target.value) } })
+                                                            }}
+                                                        />
 
+                                                    </Box>
                                                 </MotionDiv>
+                                                <MotionDiv show={form_filtros.tipo_rango_edad.trim().length > 0 && form_filtros.tipo_rango_edad !== 'rango'} animation='fade'>
+                                                    <FormGroup
+                                                        placeholder='Edad'
+                                                        className={'form-input-md'}
+                                                        type='number'
+                                                        value={form_filtros.edad_inicio.toString()}
+                                                        rootStyle={{ margin: 0, width: '48px' }}
+                                                        style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
+                                                        onChange={(e) => {
+                                                            setFormFiltros(prev => { return { ...prev, edad_inicio: parseInt(e.target.value) } })
+                                                        }}
+                                                    />
+                                                </MotionDiv>
+                                                
 
                                                 <MSelect
                                                     id="tipos-proyectos-select"
 
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
-                                                    value={form_filtros.id_tipo_proyecto.toString()}
+                                                    styleRoot={{ width: '120px' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem'}}
+                                                    value={form_filtros.id_tipo_proyecto.map(r => r.toString())}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_tipo_proyecto: parseInt(e.target.value) } })
+                                                        setFormFiltros(prev => { return { ...prev, id_tipo_proyecto: `${e.target.value}`.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) } })
                                                     } } 
-                                                    default_value_label="Selecciona un tipo de proyecto"
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder='Tipo Proyecto'
+                                                    multiple
                                                     options={(tipos_proyectos.data) ? tipos_proyectos.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}                                                 
                                                 />
 
                                                 <MSelect
                                                     id="generos-select"
-
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
-                                                    value={form_filtros.id_genero_rol.toString()}
+                                                    disabled={form_filtros.autorellenar}
+                                                    styleRoot={{ width: '110px' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    value={form_filtros.id_genero_rol.map(r => r.toString())}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_genero_rol: parseInt(e.target.value) } })
+                                                        const v_exploded = `${e.target.value}`.split(',');
+                                                        const v = v_exploded[v_exploded.length - 1];
+                                                        const value: number = parseInt((v) ? v : '');
+                                                        setFormFiltros(prev => { return { ...prev, id_genero_rol: !isNaN(value) ? [value] : [] } })
                                                     } } 
-                                                    default_value_label="Selecciona un genero"
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder={'Genero Rol'}
+                                                    multiple
                                                     options={(generos_rol.data) ? generos_rol.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}                                                 
                                                 />
-
                                                 <MSelect
                                                     id="apariencias-etnicas-select"
-
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
-                                                    value={form_filtros.id_apariencia_etnica.toString()}
+                                                    styleRoot={{ width: '150px' }}
+                                                    style={{ fontSize: '0.8rem' }}
+                                                    value={form_filtros.id_apariencia_etnica.map(r => r.toString())}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_apariencia_etnica: parseInt(e.target.value) } })
+                                                        const v_exploded = `${e.target.value}`.split(',');
+                                                        const v = v_exploded[v_exploded.length - 1];
+                                                        const value: number = parseInt((v) ? v : '');
+                                                        setFormFiltros(prev => { return { ...prev, id_apariencia_etnica: !isNaN(value) ? [value] : [] } })
                                                     } } 
-                                                    default_value_label="Selecciona un tipo de etnia"
+                                                    button_props={{
+                                                        fontSize: '2rem',
+                                                        position: 'absolute',
+                                                        height: '100%',
+                                                        top: 0,
+                                                        right: '16px'
+                                                    }}
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder={'Apariencia Etnica'}
+                                                    multiple
                                                     options={(apariencias_etnicas.data) ? apariencias_etnicas.data.map(er => { return { label: er.nombre, value: er.id.toString() } }) : []}                                                                                     
                                                 />
                                                 <MSelect
                                                     id="preferencias-pago-select"
 
-                                                    styleRoot={{ width: '200px' }}
-                                                    style={{ width: '100%' }}
-                                                    value={form_filtros.id_preferencias_de_pago.toString()}
+                                                    styleRoot={{ width: '138px' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    value={form_filtros.id_preferencias_de_pago.map(r => r.toString())}
                                                     onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, id_preferencias_de_pago: parseInt(e.target.value) } })
+                                                        setFormFiltros(prev => { return { ...prev, id_preferencias_de_pago: `${e.target.value}`.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) } })
                                                     } } 
-                                                    default_value_label="Selecciona un tipo de pago"
-                                                    options={(preferencias_pago.data) ? preferencias_pago.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}                                                                                     
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder='Preferencia pago'
+                                                    multiple
+                                                    options={[{ label: 'Pagado', value: '1' }, { label: 'No Pagado', value: '2' }]}                                                                                     
                                                 />
-                                            </Grid>
-
-                                            <Grid xs={12}>
-
                                             </Grid>
                                         </Grid>
 
                                         <Grid xs={12} container gap={2} mt={4}>
-                                         
+                                            <MContainer direction='horizontal'>
+                                                <Typography mr={1}>Filtros Aplicados: </Typography>
+                                                <MContainer direction='horizontal' justify='space-between' styles={{gap: 8}}>
+                                                    {form_filtros.id_estado_republica.length > 0 && <Tag text={`Ubicacion`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_estado_republica: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_union.length > 0 && <Tag text={`Union`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_union: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_tipo_rol.length > 0 && <Tag text={`Tipo Rol`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_tipo_rol: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.tipo_rango_edad.trim().length > 0 && <Tag text={`Rango Edad`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, tipo_rango_edad: ' '}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_tipo_proyecto.length > 0 && <Tag text={`Tipo Proyecto`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_tipo_proyecto: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_genero_rol.length > 0 && <Tag text={`Genero Rol`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_genero_rol: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_apariencia_etnica.length > 0 && <Tag text={`Apariencia Etnica`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_apariencia_etnica: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_preferencias_de_pago.length > 0 && <Tag text={`Preferencias Pago`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_preferencias_de_pago: []}})
+                                                        }}
+                                                    />}
+                                                </MContainer>
+                                            </MContainer>
                                         </Grid>
 
                                         <Grid xs={12} mt={4}>
@@ -337,6 +504,185 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                         </div>
                     </div>
                 </div>
+                <Dialog  maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} open={dialog.id === 'filtros'  && dialog.open} onClose={() => setDialog({ ...dialog, open: false })}>
+                    <DialogTitle align='left' style={{color: '#069cb1'}}>{dialog.title}</DialogTitle>
+                    <DialogContent style={{padding: 0, width: 650, overflow: 'hidden'}}>
+                        <Box px={4} width={700}>
+                            <MContainer direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Tipos de Rol</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_tipo_rol: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_tipo_rol.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_tipo_rol.map(tipo => {
+                                return (
+                                    <Tag styles={{marginRight: 1}} text={tipo === 'PRINCIPAL' ? 'Principal' : 'Extra'}
+                                        onRemove={(e) => {
+                                            setFormFiltros(prev => {return {...prev, id_tipo_rol: form_filtros.id_tipo_rol.filter(i => i !== tipo)}})
+                                        }}
+                                    />
+                                )
+                            })}      
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Tipos de Proyecto</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_tipo_proyecto: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_tipo_proyecto.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_tipo_proyecto.map(tipo => {
+                                const tipo_proyecto = tipos_proyectos.data?.filter(tp => tp.id === tipo)[0];
+                                if (tipo_proyecto) {
+                                    return (
+                                        <Tag styles={{marginRight: 1}} text={tipo_proyecto.es}
+                                            onRemove={(e) => {
+                                                setFormFiltros(prev => {return {...prev, id_tipo_proyecto: form_filtros.id_tipo_proyecto.filter(i => i !== tipo)}})
+                                            }}
+                                        />
+                                    )
+                                }
+                            })}
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Preferencias de Pago</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_preferencias_de_pago: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_preferencias_de_pago.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_preferencias_de_pago.map(tipo => {
+                                return (
+                                    <Tag styles={{marginRight: 1}} text={tipo === 1 ? 'Pagado' : 'No Pagado'}
+                                        onRemove={(e) => {
+                                            setFormFiltros(prev => {return {...prev, id_preferencias_de_pago: form_filtros.id_preferencias_de_pago.filter(i => i !== tipo)}})
+                                        }}
+                                    />
+                                )
+                            })}   
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Unión</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_union: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_union.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_union.map(tipo => {
+                                const union = uniones.data?.filter(tp => tp.id === tipo)[0];
+                                if (union) {
+                                    return (
+                                        <Tag styles={{marginRight: 1}} text={union.es}
+                                            onRemove={(e) => {
+                                                setFormFiltros(prev => {return {...prev, id_union: form_filtros.id_union.filter(i => i !== tipo)}})
+                                            }}
+                                        />
+                                    )
+                                }
+                            })} 
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Género de rol</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_genero_rol: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_genero_rol.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_genero_rol.map(tipo => {
+                                const genero = generos_rol.data?.filter(tp => tp.id === tipo)[0];
+                                if (genero) {
+                                    return (
+                                        <Tag styles={{marginRight: 1}} text={genero.es}
+                                            onRemove={(e) => {
+                                                setFormFiltros(prev => {return {...prev, id_genero_rol: form_filtros.id_genero_rol.filter(i => i !== tipo)}})
+                                            }}
+                                        />
+                                    )
+                                }
+                            })}   
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Apariencia Étnica</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_apariencia_etnica: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_apariencia_etnica.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_apariencia_etnica.map(tipo => {
+                                const etnia = apariencias_etnicas.data?.filter(tp => tp.id === tipo)[0];
+                                if (etnia) {
+                                    return (
+                                        <Tag styles={{marginRight: 1}} text={etnia.nombre}
+                                            onRemove={(e) => {
+                                                setFormFiltros(prev => {return {...prev, id_apariencia_etnica: form_filtros.id_apariencia_etnica.filter(i => i !== tipo)}})
+                                            }}
+                                        />
+                                    )
+                                }
+                            })}   
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Ubicación</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_estado_republica: [] }}) }}  style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_estado_republica.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_estado_republica.map(tipo => {
+                                const ubicacion = estados_republica.data?.filter(tp => tp.id === tipo)[0];
+                                if (ubicacion) {
+                                    return (
+                                        <Tag styles={{marginRight: 1}} text={ubicacion.es}
+                                            onRemove={(e) => {
+                                                setFormFiltros(prev => {return {...prev, id_estado_republica: form_filtros.id_estado_republica.filter(i => i !== tipo)}})
+                                            }}
+                                        />
+                                    )
+                                }
+                            })}
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Rango de edad</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, tipo_rango_edad: ' ', edad_inicio: 0, edad_fin: 0 }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.tipo_rango_edad.trim().length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.tipo_rango_edad === 'rango' &&
+                                <Tag styles={{marginRight: 1}} text={`De ${form_filtros.edad_inicio} a ${form_filtros.edad_fin}`}
+                                    onRemove={(e) => {
+                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0, edad_fin: 0}})
+                                    }}
+                                />
+                            }
+                            {form_filtros.tipo_rango_edad === 'mayor_que' &&
+                                <Tag styles={{marginRight: 1}} text={`Mayor que ${form_filtros.edad_inicio}`}
+                                    onRemove={(e) => {
+                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0}})
+                                    }}
+                                />
+                            }
+                            {form_filtros.tipo_rango_edad === 'menor_que' &&
+                                <Tag styles={{marginRight: 1}} text={`Menor que ${form_filtros.edad_inicio}`}
+                                    onRemove={(e) => {
+                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0}})
+                                    }}
+                                />
+                            }
+                            {form_filtros.tipo_rango_edad === 'igual_que' &&
+                                <Tag styles={{marginRight: 1}} text={`Igual que ${form_filtros.edad_inicio}`}
+                                    onRemove={(e) => {
+                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0}})
+                                    }}
+                                />
+                            }
+                        </Box>
+                    </DialogContent>
+                    <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                        <Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>Cerrar</Button>
+                    </Box>
+                </Dialog>
             </MainLayout>
         </>
     )
