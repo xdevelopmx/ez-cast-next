@@ -2,7 +2,7 @@ import { Divider, Grid, Typography } from '@mui/material'
 import Head from 'next/head'
 import Image from 'next/image'
 import React from 'react'
-import { Alertas, DatosAudicion, Flotantes, MainLayout, MenuLateral } from '~/components'
+import { Alertas, DatosAudicion, Flotantes, MainLayout, MenuLateral, TalentosReclutadosGrid } from '~/components'
 
 const AudicionPorId = () => {
     return (
@@ -41,8 +41,14 @@ const AudicionPorId = () => {
                                         <Grid xs={12} mt={2}>
                                             <Divider />
                                         </Grid>
-                                        
+
                                         <DatosAudicion />
+
+                                        <Grid container xs={12} mt={4}>
+                                            <Grid xs={5}>
+                                                <TalentosReclutadosGrid />
+                                            </Grid>
+                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
