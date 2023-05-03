@@ -20,18 +20,16 @@ export const ModalLocacion: FC<Props> = ({ isOpen, setIsOpen }) => {
             onClose={() => setIsOpen(false)}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
-            sx={{ padding: '30px 60px' }}
         >
-            <DialogTitle id="alert-dialog-title">
+            <DialogTitle id="alert-dialog-title" sx={{ padding: '30px 100px 30px 100px' }}>
                 <Typography fontWeight={600} sx={{ fontSize: '1.4rem', color: '#069cb1' }}>
                     Añadir locación
                 </Typography>
             </DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{ padding: '0px 100px' }}>
                 <Grid xs={12}>
                     <Grid xs={12}>
                         <FormGroup
-                            className={'form-input-md'}
                             labelClassName={'form-input-label'}
                             labelStyle={{ fontWeight: 600 }}
                             label='País'
@@ -39,7 +37,6 @@ export const ModalLocacion: FC<Props> = ({ isOpen, setIsOpen }) => {
                     </Grid>
                     <Grid xs={12}>
                         <FormGroup
-                            className={'form-input-md'}
                             labelClassName={'form-input-label'}
                             labelStyle={{ fontWeight: 600 }}
                             label='Dirección*'
@@ -47,7 +44,6 @@ export const ModalLocacion: FC<Props> = ({ isOpen, setIsOpen }) => {
                     </Grid>
                     <Grid xs={12}>
                         <FormGroup
-                            className={'form-input-md'}
                             labelClassName={'form-input-label'}
                             labelStyle={{ fontWeight: 600 }}
                             label='Dirección 2'
@@ -70,7 +66,6 @@ export const ModalLocacion: FC<Props> = ({ isOpen, setIsOpen }) => {
                     </Grid>
                     <Grid xs={12}>
                         <FormGroup
-                            className={'form-input-md'}
                             labelClassName={'form-input-label'}
                             labelStyle={{ fontWeight: 600 }}
                             label='Código postal*'
@@ -98,14 +93,29 @@ export const ModalLocacion: FC<Props> = ({ isOpen, setIsOpen }) => {
                             }) : */ [false]}
                         />
                     </Grid>
-                    <Grid xs={12}>
+                    <Grid xs={12} sx={{ paddingBottom: '30px' }}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <Button>
+                            <Button sx={{
+                                borderRadius: '2rem',
+                                backgroundColor: '#069cb1',
+                                color: '#fff',
+                                textTransform: 'none',
+                                minWidth: '80%',
+                                '&:hover': {
+                                    backgroundColor: '#06acc2',
+                                }
+                            }}>
                                 <Typography>
                                     Añadir locación
                                 </Typography>
                             </Button>
-                            <Button>
+                            <Button
+                                sx={{
+                                    color: '#069cb1',
+                                    textTransform: 'none',
+                                    textDecoration: 'underline'
+                                }}
+                                onClick={() => setIsOpen(false)}>
                                 <Typography>
                                     Cancelar
                                 </Typography>
