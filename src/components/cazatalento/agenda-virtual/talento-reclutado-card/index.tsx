@@ -15,11 +15,26 @@ export const TalentoReclutadoCard = () => {
                 </Box>
             </Grid>
             <Grid xs={7} sx={{ backgroundColor: '#069cb1', padding: '10px' }}>
-                <Box>
-                    <Typography fontWeight={500} sx={{ color: '#fff', lineHeight: '20px' }}>
-                        Nombre del actor
+                <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                    <Typography
+                        variant="body1"
+                        component="p"
+                        fontWeight={500}
+                        sx={{
+                            display: '-webkit-box',
+                            WebkitBoxOrient: 'vertical',
+                            WebkitLineClamp: 2,
+                            color: '#fff',
+                            lineHeight: '20px',
+                            height: '40px',
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            //whiteSpace: 'nowrap'
+                        }}
+                    >
+                        Nombre del actor dasdas dsadas
                     </Typography>
-
+                    <Image src="/assets/img/iconos/control_rol_edit.svg" width={20} height={20} alt="" />
                 </Box>
                 <Typography fontWeight={500} sx={{ color: '#fff', lineHeight: '20px' }}>
                     Unión
@@ -35,6 +50,13 @@ export const TalentoReclutadoCard = () => {
                     <Image src="/assets/img/iconos/icono_star_blue_active.svg" width={12} height={12} alt="" />
                     <Image src="/assets/img/iconos/icono_star_blue_active.svg" width={12} height={12} alt="" />
                 </Box>
+            </Grid>
+            <Grid xs={12}>
+                <Typography sx={{ lineHeight: '20px', padding: '20px', border: '2px solid #069cb1' }}>
+                    Notas sobre el actor,
+                    detalles que comparte
+                    O lo que sea.
+                </Typography>
             </Grid>
         </Grid>
     )
