@@ -32,7 +32,7 @@ export const TalentoReclutadoCard = () => {
                             //whiteSpace: 'nowrap'
                         }}
                     >
-                        Nombre del actor dasdas dsadas
+                        Nombre del actor
                     </Typography>
                     <Image src="/assets/img/iconos/control_rol_edit.svg" width={20} height={20} alt="" />
                 </Box>

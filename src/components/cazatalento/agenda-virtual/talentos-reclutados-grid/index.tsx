@@ -118,6 +118,7 @@ export const TalentosReclutadosGrid = () => {
                     }
                 </Grid>
 
+                
             </Grid>
         </Grid>
     )
