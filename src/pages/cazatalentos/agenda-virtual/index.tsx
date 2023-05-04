@@ -1,18 +1,47 @@
-import { Box, Button, Divider, Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Skeleton, SxProps, Theme, Typography } from "@mui/material";
 import Head from "next/head";
 import Image from 'next/image';
 import Link from "next/link";
 import { Alertas, MainLayout, MenuLateral } from "~/components";
 
-import Calendar from 'react-calendar';
 import { useState } from "react";
+import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
-import 'react-calendar/dist/Calendar.css';
+const estilos_calendario: SxProps<Theme> = {
+    '& .MuiPickersCalendarHeader-label': {
+        fontWeight: 'bold'
+    },
+    '& .MuiDayCalendar-weekDayLabel': {
+        color: '#069cb1',
+        fontWeight: 'bold',
+        margin: 0,
+        borderBottom: '2px solid #069cb1',
+        fontSize: '1rem'
+    },
+    '& .MuiDayCalendar-header': {
 
+    },
+    '& .MuiPickersDay-root': {
+        margin: 0,
+        fontWeight: 'bold',
+        fontSize: '1rem'
+    },
+    '& .MuiPickersDay-today': {
+        borderRadius: 0,
+        backgroundColor: '#FCD081',
+        color: '#000',
+        border: 'none'
+    },
+    '& .Mui-selected, & .Mui-selected:hover, & .Mui-selected:focus': {
+        borderRadius: 0,
+        backgroundColor: '#9CF2FD',
+        color: '#000',
+        border: 'none'
+    }
+}
 
 const AgendaVirtual = () => {
-
-    const [value, onChange] = useState(new Date());
 
     return (
         <>
@@ -153,12 +182,29 @@ const AgendaVirtual = () => {
                                         </Grid>
                                     </Grid>
 
-                                    <Grid container xs={12} sx={{ border: '2px solid #069cb1', padding: '30px' }} mt={4}>
-                                        <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <Calendar locale="mx-ES" onChange={() => { console.log(''); }} value={value} />
+                                    <Grid container xs={13} columns={13} sx={{ border: '3px solid #069cb1', padding: '30px' }} mt={4}>
+                                        <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center', }}>
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
+                                            >
+                                                <DateCalendar
+                                                    sx={estilos_calendario}
+                                                />
+                                            </LocalizationProvider>
+                                        </Grid>
+                                        <Grid xs={1} sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <Divider sx={{
+                                                border: '2px solid #069cb1'
+                                            }} orientation="vertical" />
                                         </Grid>
                                         <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <Calendar locale="mx-ES" onChange={() => { console.log(''); }} value={value} />
+                                            <LocalizationProvider
+                                                dateAdapter={AdapterDayjs}
+                                            >
+                                                <DateCalendar
+                                                    sx={estilos_calendario}
+                                                />
+                                            </LocalizationProvider>
                                         </Grid>
                                     </Grid>
                                 </Grid>
