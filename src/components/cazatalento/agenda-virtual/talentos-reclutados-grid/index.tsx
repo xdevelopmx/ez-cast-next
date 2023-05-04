@@ -7,7 +7,11 @@ import { TalentoReclutadoCard } from '../talento-reclutado-card'
 export const TalentosReclutadosGrid = () => {
     return (
         <Grid xs={12}>
-            <Grid container xs={12} sx={{ backgroundColor: '#069cb1', padding: '20px', alignItems: 'center' }}>
+            <Grid container xs={12} sx={{
+                backgroundColor: '#069cb1',
+                padding: '20px',
+                alignItems: 'center',
+            }}>
                 <Grid xs={8}>
                     <Typography fontWeight={600} sx={{ color: '#fff', fontSize: '1.4rem' }}>
                         Talentos reclutados
@@ -27,8 +31,12 @@ export const TalentosReclutadosGrid = () => {
                 </Grid>
             </Grid>
             <Grid xs={12}>
-                <Grid xs={12} sx={{ padding: '10px 30px 5px 30px' }}>
-                    <Grid xs={12} >
+                <Grid xs={12} sx={{
+                    padding: '10px 30px 5px 30px',
+                    borderLeft: '3px solid #EBEBEB',
+                    borderRight: '3px solid #EBEBEB',
+                }}>
+                    <Grid xs={12}>
                         <MSelect
                             id="posicion-contenido-select"
                             labelStyle={{ fontWeight: 600 }}
