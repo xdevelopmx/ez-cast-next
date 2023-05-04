@@ -28,6 +28,7 @@ export const HorariosTable = () => {
                             '&:hover': {
                                 backgroundColor: '#07a6bb'
                             },
+                            lineHeight: '20px',
                         }}>
                             <Image src="/assets/img/iconos/cruz_white.svg" width={15} height={15} alt="" />
                             <Typography sx={{ paddingLeft: '10px' }}>
@@ -36,6 +37,7 @@ export const HorariosTable = () => {
                         </Button>
 
                         <Button sx={{
+                            display: 'block',
                             textTransform: 'none',
                             color: '#fff',
                             border: '1px solid #fff',
@@ -44,7 +46,11 @@ export const HorariosTable = () => {
                             backgroundColor: '#069cb1',
                             '&:hover': {
                                 backgroundColor: '#07a6bb'
-                            }
+                            },
+                            lineHeight: '20px',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis'
                         }}>
                             <Image src="/assets/img/iconos/cruz_white.svg" width={15} height={15} alt="" />
                             <Typography sx={{ paddingLeft: '10px' }}>
