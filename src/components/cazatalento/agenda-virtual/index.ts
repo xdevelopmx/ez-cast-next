@@ -1,1 +1,6 @@
 export * from './modal-locacion'
+export * from './datos-audicion'
+export * from './talentos-reclutados-grid'
+export * from './talento-reclutado-card'
+export * from './horarios-tabla'
+export * from './modal-bloques-tiempos'
