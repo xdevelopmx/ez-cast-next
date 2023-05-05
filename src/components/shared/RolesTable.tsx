@@ -12,7 +12,7 @@ import type {
     CatalogoGeneros, AparenciasEtnicasPorRoles, CatalogoAparenciasEtnicas, CatalogoPaises, HabilidadesPorTalentos,
     HabilidadesSelecPorRoles, CatalogoHabilidades, NSFWPorRoles, NSFWSeleccionadosPorRoles, CatalogoNSFW,
     CastingPorRoles, CatalogoEstadosRepublica, FilmacionPorRoles, RequisitosPorRoles, CatalogoTipoUsosHorario,
-    MediosMultimediaPorRoles, CatalogoMediosMultimedia
+    MediosMultimediaPorRoles, CatalogoMediosMultimedia, Media, Cazatalentos, RedesSocialesPorCazatalentos
 } from "@prisma/client"
 import { RolPreviewLoader } from "./RolPreviewLoader"
 
@@ -23,6 +23,11 @@ export interface RolCompletoPreview extends Roles {
         };
         sindicato: SindicatoPorProyecto & {
             sindicato: CatalogoUniones;
+        };
+        foto_portada: Media | null;
+        cazatalentos: Cazatalentos & {
+            foto_perfil: Media | null;
+            redes_sociales: RedesSocialesPorCazatalentos[];
         };
     };
     compensaciones?: CompensacionesPorRoles & {

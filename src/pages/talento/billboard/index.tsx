@@ -1,10 +1,10 @@
-import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Slide, Typography } from '@mui/material'
 import { GetServerSideProps, type NextPage } from 'next'
 import { User } from 'next-auth'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
-import React, { useState, useEffect } from 'react'
-import { Alertas, FormGroup, MCheckboxGroup, MSelect, MainLayout, MenuLateral, RolesTable, Tag } from '~/components'
+import React, { useState, useEffect, useMemo } from 'react'
+import { Alertas, FormGroup, MCheckboxGroup, MSelect, MainLayout, MenuLateral, RolCompletoPreview, RolesTable, Tag } from '~/components'
 import Constants from '~/constants'
 import { TipoUsuario } from '~/enums'
 import Image from 'next/image';
@@ -14,12 +14,8 @@ import { MContainer } from '~/components/layout/MContainer'
 import { MTooltip } from '~/components/shared/MTooltip'
 import useNotify from '~/hooks/useNotify'
 import { Close } from '@mui/icons-material'
-
-type BillboardTalentosPageProps = {
-    user: User,
-    id_proyecto: number
-}
-
+import { RolPreview } from '~/components/shared/RolPreview'
+import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader'
 const filtros_initial_state = {
     tipo_busqueda: 'todos',
     id_estado_republica: [],
@@ -32,12 +28,18 @@ const filtros_initial_state = {
     id_genero_rol: [],
     id_apariencia_etnica: [],
     id_preferencias_de_pago: [],
-    autorellenar: false
+    autorellenar: true
+}
+
+type BillboardTalentosPageProps = {
+    user: User,
+    id_proyecto: number
 }
 
 const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto }) => {
     const { notify } = useNotify();
     const [dialog, setDialog] = useState({id: '', open: false, title: ''});
+    const [pagination, setPagination] = useState({page: 0, page_size: 5});
     const [form_filtros, setFormFiltros] = useState<{
         tipo_busqueda: string,
         id_estado_republica: number[],
@@ -56,6 +58,28 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
     const talento = api.talentos.getCompleteById.useQuery({id: parseInt(user.id)}, {
         refetchOnWindowFocus: false
     });
+
+    const roles_billboard = api.roles.getRolesBillboardTalentos.useQuery({
+        tipo_busqueda: form_filtros.tipo_busqueda,
+        id_estados_republica: form_filtros.id_estado_republica,
+        id_uniones: form_filtros.id_union,
+        tipos_roles: form_filtros.id_tipo_rol,
+        tipo_rango_edad: form_filtros.tipo_rango_edad,
+        edad_inicio: form_filtros.edad_inicio,
+        edad_fin: form_filtros.edad_fin,
+        id_tipos_proyectos: form_filtros.id_tipo_proyecto,
+        id_generos_rol: form_filtros.id_genero_rol,
+        id_apariencias_etnicas: form_filtros.id_apariencia_etnica,
+        id_preferencias_de_pago: form_filtros.id_preferencias_de_pago
+    }, {
+        refetchOnWindowFocus: false
+    })
+
+    useEffect(() => {
+        if (roles_billboard.data) {
+            setPagination({page: 0, page_size: pagination.page_size});
+        }
+    }, [roles_billboard.data]);
 
     useEffect(() => {
         if (talento.data && form_filtros.autorellenar) {
@@ -108,10 +132,31 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         refetchOnMount: false
     })
 
-    const preferencias_pago = api.catalogos.getTiposCompensacionesNoMonetarias.useQuery(undefined, {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false
-    })
+    const _data = useMemo(() => {
+		if (roles_billboard.isFetching) {
+			return Array.from({ length: 5 }).map((n, i) => {
+				return <RolPreviewLoader key={i} />
+			})
+		} else {
+            if (roles_billboard.data) {
+                return roles_billboard.data.map((rol, i) => (
+                    <RolPreview key={rol.id} rol={rol as unknown as RolCompletoPreview} />
+                ))
+            }
+		}
+        return [];
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [roles_billboard.isFetching, roles_billboard.data]);
+
+	const paginated_data = useMemo(() => {
+		const start = (pagination.page * pagination.page_size);
+		const end = (pagination.page * pagination.page_size) + pagination.page_size;
+        const sliced_data = _data.slice(start, end);
+        if (sliced_data.length === 0 && pagination.page > 0) {
+			setPagination(v => { return { ...v, page: v.page - 1 } });
+		}
+		return sliced_data;
+	}, [pagination, _data]);
 
     return (
         <>
@@ -141,16 +186,21 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                 <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '1.1rem' }}>Filtros</Typography>
                                             </Grid>
                                             <Grid xs={4}>
-                                                <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '1.1rem', textAlign: 'center' }}>
-                                                    12 de 25 resultados totales
-                                                </Typography>
+                                                {roles_billboard.data && roles_billboard.data.length > 0 && 
+                                                    <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '1.1rem', textAlign: 'center' }}>
+                                                        {((pagination.page + 1) * pagination.page_size) > roles_billboard.data?.length ? roles_billboard.data?.length : (pagination.page + 1) * pagination.page_size} de {roles_billboard.data?.length} resultados totales
+                                                    </Typography>
+                                                }
+                                                    
                                             </Grid>
                                             <Grid xs={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                                 <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '1.1rem' }}>
-                                                    Ver 25 resultados por página
-                                                    <Typography fontWeight={600} component={'span'} sx={{ paddingLeft: '40px' }}>
-                                                        Pagina 1 de 1
-                                                    </Typography>
+                                                    Ver {pagination.page_size} resultados por página
+                                                    {roles_billboard.data && roles_billboard.data.length > 0 &&
+                                                        <Typography fontWeight={600} component={'span'} sx={{ paddingLeft: '40px' }}>
+                                                            Pagina {(pagination.page + 1)} de {Math.ceil(roles_billboard.data.length / pagination.page_size)}
+                                                        </Typography>                
+                                                    }
                                                 </Typography>
                                             </Grid>
                                         </Grid>
@@ -200,7 +250,9 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                         />
                                                     </Box>
                                                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                        <Button variant='text' onClick={() => { setFormFiltros(filtros_initial_state)}}>
+                                                        <Button variant='text' onClick={() => { 
+                                                            setFormFiltros(prev => { return {...prev, ...filtros_initial_state, autorellenar: false}})}}
+                                                        >
                                                             Eliminar filtros
                                                         </Button>
                                                         <Button
@@ -245,7 +297,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     placeholder={'Union'}
                                                     disabled={form_filtros.autorellenar}
                                                     styleRoot={{ width: '76px' }}
-                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem', backgroundColor: (form_filtros.autorellenar) ? 'lightgrey' : '' }}
                                                     value={form_filtros.id_union.map(r => r.toString())}
                                                     onChange={(e) => {
                                                         setFormFiltros(prev => { return { ...prev, id_union: `${e.target.value}`.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) } })
@@ -274,7 +326,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                 <MSelect
                                                     id="rango-de-edad-select"
                                                     styleRoot={{ width: '110px'}}
-                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem', marginTop: 0.25 }}
                                                     value={form_filtros.tipo_rango_edad}
                                                     onChange={(e) => {
                                                         setFormFiltros(prev => { return { ...prev, tipo_rango_edad: e.target.value } })
@@ -363,7 +415,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     id="generos-select"
                                                     disabled={form_filtros.autorellenar}
                                                     styleRoot={{ width: '110px' }}
-                                                    style={{ width: '100%', fontSize: '0.8rem' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem', backgroundColor: (form_filtros.autorellenar) ? 'lightgrey' : '' }}
                                                     value={form_filtros.id_genero_rol.map(r => r.toString())}
                                                     onChange={(e) => {
                                                         const v_exploded = `${e.target.value}`.split(',');
@@ -426,6 +478,12 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                             <MContainer direction='horizontal'>
                                                 <Typography mr={1}>Filtros Aplicados: </Typography>
                                                 <MContainer direction='horizontal' justify='space-between' styles={{gap: 8}}>
+                                                    {form_filtros.id_estado_republica.length === 0 && form_filtros.id_union.length === 0 &&
+                                                        form_filtros.id_tipo_rol.length === 0 && form_filtros.tipo_rango_edad.trim().length === 0 &&
+                                                        form_filtros.id_tipo_proyecto.length === 0 && form_filtros.id_genero_rol.length === 0 &&
+                                                        form_filtros.id_apariencia_etnica.length === 0 && form_filtros.id_preferencias_de_pago.length === 0 &&
+                                                        <Typography mt={0.5} variant='body2'>No se ha agregado ningun filtro</Typography>
+                                                    }
                                                     {form_filtros.id_estado_republica.length > 0 && <Tag text={`Ubicacion`}
                                                         onRemove={(e) => {
                                                             setFormFiltros(prev => {return {...prev, id_estado_republica: []}})
@@ -433,7 +491,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     />}
                                                     {form_filtros.id_union.length > 0 && <Tag text={`Union`}
                                                         onRemove={(e) => {
-                                                            setFormFiltros(prev => {return {...prev, id_union: []}})
+                                                            if (form_filtros.autorellenar) {
+                                                                notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
+                                                            } else {
+                                                                setFormFiltros(prev => {return {...prev, id_union: []}})
+                                                            }
                                                         }}
                                                     />}
                                                     {form_filtros.id_tipo_rol.length > 0 && <Tag text={`Tipo Rol`}
@@ -453,7 +515,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     />}
                                                     {form_filtros.id_genero_rol.length > 0 && <Tag text={`Genero Rol`}
                                                         onRemove={(e) => {
-                                                            setFormFiltros(prev => {return {...prev, id_genero_rol: []}})
+                                                            if (form_filtros.autorellenar) {
+                                                                notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
+                                                            } else {
+                                                                setFormFiltros(prev => {return {...prev, id_genero_rol: []}})
+                                                            }
                                                         }}
                                                     />}
                                                     {form_filtros.id_apariencia_etnica.length > 0 && <Tag text={`Apariencia Etnica`}
@@ -469,13 +535,16 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                 </MContainer>
                                             </MContainer>
                                         </Grid>
-
+                                        <Grid xs={12} container gap={2} mt={4}>
+                                            {paginated_data}
+                                        </Grid>
                                         <Grid xs={12} mt={4}>
                                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <Button
+                                                    disabled={!roles_billboard.data || ((pagination.page + 1) * pagination.page_size - pagination.page_size) <= 0}
                                                     sx={{ textTransform: 'none' }}
                                                     onClick={() => {
-                                                      
+                                                        setPagination(prev => { return {...prev, page: prev.page - 1}});
                                                     }}>
                                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                         <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
@@ -483,12 +552,16 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     </Box>
                                                 </Button>
 
-                                                <Typography sx={{ color: '#069cb1' }} fontWeight={600} >1 de 1</Typography>
-
+                                                {roles_billboard.data && roles_billboard.data.length > 0 &&
+                                                    <Typography sx={{ color: '#069cb1' }} fontWeight={600}>
+                                                        Pagina {(pagination.page + 1)} de {Math.ceil(roles_billboard.data.length / pagination.page_size)}
+                                                    </Typography>                
+                                                }
                                                 <Button
+                                                    disabled={!roles_billboard.data || (pagination.page + 1) * pagination.page_size > roles_billboard.data.length}
                                                     sx={{ textTransform: 'none' }}
                                                     onClick={() => {
-                                                       
+                                                       setPagination(prev => { return {...prev, page: prev.page + 1}});
                                                     }}>
                                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                         <Typography fontWeight={600}>Siguiente página</Typography>
@@ -564,7 +637,13 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
 
                             <MContainer styles={{marginTop: 16}} direction='horizontal'>
                                 <Typography fontSize={'1.2rem'} mr={2}>Unión</Typography>
-                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_union: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                                <Button onClick={() => { 
+                                    if (form_filtros.autorellenar) {
+                                        notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
+                                    } else {
+                                        setFormFiltros(prev => { return { ...prev, id_union: [] }}) 
+                                    }
+                                }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
                             </MContainer>
                             {form_filtros.id_union.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
@@ -575,7 +654,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                     return (
                                         <Tag styles={{marginRight: 1}} text={union.es}
                                             onRemove={(e) => {
-                                                setFormFiltros(prev => {return {...prev, id_union: form_filtros.id_union.filter(i => i !== tipo)}})
+                                                if (form_filtros.autorellenar) {
+                                                    notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
+                                                } else {
+                                                    setFormFiltros(prev => {return {...prev, id_union: form_filtros.id_union.filter(i => i !== tipo)}})
+                                                }
                                             }}
                                         />
                                     )
@@ -584,7 +667,13 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
 
                             <MContainer styles={{marginTop: 16}} direction='horizontal'>
                                 <Typography fontSize={'1.2rem'} mr={2}>Género de rol</Typography>
-                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_genero_rol: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                                <Button onClick={() => { 
+                                    if (form_filtros.autorellenar) {
+                                        notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
+                                    } else {
+                                        setFormFiltros(prev => { return { ...prev, id_genero_rol: [] }}) 
+                                    }
+                                }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
                             </MContainer>
                             {form_filtros.id_genero_rol.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
@@ -595,7 +684,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                     return (
                                         <Tag styles={{marginRight: 1}} text={genero.es}
                                             onRemove={(e) => {
-                                                setFormFiltros(prev => {return {...prev, id_genero_rol: form_filtros.id_genero_rol.filter(i => i !== tipo)}})
+                                                if (form_filtros.autorellenar) {
+                                                    notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
+                                                } else {
+                                                    setFormFiltros(prev => {return {...prev, id_genero_rol: form_filtros.id_genero_rol.filter(i => i !== tipo)}})
+                                                }
                                             }}
                                         />
                                     )

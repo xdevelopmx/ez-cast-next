@@ -8,6 +8,7 @@ import {
 	protectedProcedure,
 } from "~/server/api/trpc";
 import { TipoUsuario } from "~/enums";
+import { Troubleshoot } from "@mui/icons-material";
 
 export type NewRol = {
 	id_rol: number,
@@ -2063,7 +2064,226 @@ export const RolesRouter = createTRPCRouter({
 				backCursor
 			};
 		}
-		),
+	),
+	getRolesBillboardTalentos: publicProcedure
+		.input(z.object({
+			tipo_busqueda: z.string(),
+			id_estados_republica: z.array(z.number()),
+			id_uniones: z.array(z.number()),
+			tipos_roles: z.array(z.string()),
+			tipo_rango_edad: z.string(),
+			edad_inicio: z.number(),
+			edad_fin: z.number(),
+			id_tipos_proyectos: z.array(z.number()),
+			id_generos_rol: z.array(z.number()),
+			id_apariencias_etnicas: z.array(z.number()),
+			id_preferencias_de_pago: z.array(z.number())
+		}))
+		.query(async ({ input, ctx }) => {
+			if (ctx.session) {
+				const user = ctx.session.user; 
+
+				if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+					const talento = await ctx.prisma.talentos.findFirst({
+						where: {
+							id: parseInt(user.id)
+						},
+						include: {
+							filtros_aparencias: true,
+							habilidades: true
+						}
+					})
+					if (talento) {
+
+						const roles = await ctx.prisma.roles.findMany({
+							include: {
+								compensaciones: {
+									include: {
+										sueldo: true,
+										compensaciones_no_monetarias: {
+											include: {
+												compensacion: true
+											}
+										}
+									}
+								},
+								filtros_demograficos: {
+									include: {
+										pais: true,
+										generos: {
+											include: {
+												genero: true
+											}
+										},
+										aparencias_etnicas: {
+											include: {
+												aparencia_etnica: true
+											}
+										},
+										animal: {
+											include: {
+												animal: true
+											}
+										}
+									}
+								},
+								habilidades: {
+									include: {
+										habilidades_seleccionadas: {
+											include: {
+												habilidad: true
+											}
+										}
+									}
+								},
+								requisitos: {
+									include: {
+										estado_republica: true,
+										idioma: true,
+										uso_horario: true,
+										medios_multimedia: {
+											include: {
+												medio_multimedia: true
+											}
+										}
+									}
+								},
+								nsfw: {
+									include: {
+										nsfw_seleccionados: {
+											include: {
+												nsfw: true
+											}
+										}
+									}
+								},
+								casting: {
+									include: {
+										estado_republica: true
+									}
+								},
+								filmaciones: {
+									include: {
+										estado_republica: true
+									}
+								},
+								selftape: true,
+								tipo_rol: true,
+			
+								proyecto: {
+									include: {
+										tipo: {
+											include: {
+												tipo_proyecto: true
+											}
+										},
+										sindicato: {
+											include: {
+												sindicato: true
+											}
+										},
+										foto_portada: true,
+										cazatalentos: {
+											include: {
+												foto_perfil: true,
+												redes_sociales: true
+											}
+										}
+									}
+								}
+							},
+							orderBy: {
+								id: 'asc',
+							},
+							
+						});
+			
+						if (roles) {
+							const result = roles.filter(r => {
+								let porcentaje_filter = 0;
+								if (r.filtros_demograficos) {
+									let genero_found = false;
+									r.filtros_demograficos.generos.map(g => g.id_genero).forEach(id_genero => {
+										if (!genero_found && input.id_generos_rol.includes(id_genero)) {
+											porcentaje_filter += 15;
+											genero_found = true;
+										}
+									});
+									if (!r.filtros_demograficos.rango_edad_en_meses) {
+										if (r.filtros_demograficos.rango_edad_inicio <= input.edad_inicio && r.filtros_demograficos.rango_edad_fin >= input.edad_fin) {
+											porcentaje_filter += 15;
+										}
+									}
+									let apariencias_etnias_found = false;
+									r.filtros_demograficos.aparencias_etnicas.map(a => a.id_aparencia_etnica).forEach(id_etnia => {
+										if (!apariencias_etnias_found && input.id_apariencias_etnicas.includes(id_etnia)) {
+											porcentaje_filter += 10;
+											apariencias_etnias_found = true;
+										}
+									});
+									//if (r.filtros_demograficos.id_pais)
+								}
+								if (input.tipos_roles.includes(r.tipo_rol.tipo)) {
+									porcentaje_filter += 5;
+								}
+								if (r.compensaciones) {
+									if (input.id_preferencias_de_pago.includes((r.compensaciones.sueldo) ? 1 : 2)) {
+										porcentaje_filter += 5;
+									}
+								}
+								if (input.id_estados_republica.includes(r.proyecto.id_estado_republica)) {
+									porcentaje_filter += 5;
+								}
+								if (r.habilidades) {
+									let found_habilidades = 0;
+									r.habilidades.habilidades_seleccionadas.forEach(h => {
+										if (talento.habilidades.map(th => th.id_habilidad).includes(h.id_habilidad)) {
+											found_habilidades += 1;
+										}
+									});
+									if (found_habilidades > 1) {
+										porcentaje_filter += 10;
+									}
+								}
+
+								return porcentaje_filter >= 50;
+								//if (talento.filtros_aparencias.)
+								//if (input.)
+								
+			
+								//• Sexo / Genero : 15 % (REQUISITO)
+								//(Selección del Sexo o genero con el que se identifica o dispuesto a interpretar)
+								
+								//• Rango de Edad: 15 % (REQUISITO)
+								//(Dentro del rango de Edad a interpretar)
+								//• Preferencias de Rol y Compensación: 15 % (REQUISITO)
+								//-Tipo de Trabajo (requisito)
+								//-Selección Proyecto pagado/no pagado (requisito)
+								//-Locación de Trabajo, dentro de la selección principal o adicionales (requisito) %COMPARAR CON LA LOCACION DEL CASTING
+								//-Disponibilidad para... (No requisito)
+								//• Apariencia o Rasgos: 15% (REQUISITO)
+								//-Color de Cabello (Requisito)
+								//-Estilo de Cabello (No requisito)
+								//-Vello Facial (No requisito)
+								//-Color de Ojos (Requisito)
+								
+								//• Apariencia Étnica: 10 %
+								//(Afroamericano, Asiático Oriental, Blanco, Europeo, Indio Oriental, Latino/Hispano, etc...)
+								//• Nacionalidad: + 5 %
+								//(Extra)
+								//• Habilidades: + 10 %
+								//(A partir de 2 habilidades compatibles, Extra)
+								//• Activos: + 5 %
+								//(Extra)
+							})
+							return result;
+						}
+					} 
+				}
+			}
+			return [];
+		}
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

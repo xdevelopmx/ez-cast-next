@@ -332,13 +332,13 @@ export const CazatalentosRouter = createTRPCRouter({
 							}
 						})
 					}
-					if (destacado.calificacion === 5) {
-						const aplicacion_rol_por_talento = await ctx.prisma.aplicacionRolPorTalento.findFirst({
-							where: {
-								id_rol: input.id_rol,
-								id_talento: input.id_talento
-							}
-						})
+					const aplicacion_rol_por_talento = await ctx.prisma.aplicacionRolPorTalento.findFirst({
+						where: {
+							id_rol: input.id_rol,
+							id_talento: input.id_talento
+						}
+					})
+					if (input.calificacion === 5) {
 						if (aplicacion_rol_por_talento && ![Constants.ESTADOS_APLICACION_ROL.CALLBACK, Constants.ESTADOS_APLICACION_ROL.AUDICION, Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(aplicacion_rol_por_talento.id_estado_aplicacion)) {
 							await ctx.prisma.aplicacionRolPorTalento.update({
 								where: {
@@ -346,6 +346,17 @@ export const CazatalentosRouter = createTRPCRouter({
 								},
 								data: {
 									id_estado_aplicacion: Constants.ESTADOS_APLICACION_ROL.DESTACADO
+								}
+							})
+						}
+					} else {
+						if (aplicacion_rol_por_talento && [Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(aplicacion_rol_por_talento.id_estado_aplicacion)) {
+							await ctx.prisma.aplicacionRolPorTalento.update({
+								where: {
+									id: aplicacion_rol_por_talento.id
+								},
+								data: {
+									id_estado_aplicacion: Constants.ESTADOS_APLICACION_ROL.VISTO
 								}
 							})
 						}

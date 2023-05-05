@@ -1,16 +1,30 @@
 import Image from 'next/image'
-import { Box, Button, Divider, Grid, Typography } from '@mui/material'
+import { Avatar, Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Slide, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { motion } from 'framer-motion';
 import { type RolCompletoPreview } from './RolesTable';
 import { conversorFecha } from '~/utils/conversor-fecha';
+import { TransitionProps } from '@mui/material/transitions'
+import { User } from 'next-auth';
+import { Cazatalentos } from '@prisma/client';
+import { Close } from '@mui/icons-material';
+
 
 interface PropsIndividualData {
     title: ReactNode;
     children: ReactNode;
     stylesContainerData?: CSSProperties;
 }
+
+const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>,
+  ) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
 
 const IndividualData: FC<PropsIndividualData> = ({ title, children, stylesContainerData = {} }) => {
     return (
@@ -51,15 +65,16 @@ const containerVariants = {
 };
 
 export const RolPreview: FC<PropsRol> = ({ rol }) => {
-
+    const [dialogImage, setDialogImage] = useState<{open: boolean, image: string}>({open: false, image: ''});
+    const [dialogInfoProductor, setDialogInfoProductor] = useState<{open: boolean}>({open: false});
+    
     const [showPreview, setShowPreview] = useState(false)
-
     return (
         <Grid item container xs={12} sx={{ border: '2px solid #928F8F' }}>
             <GridMotion container item xs={12} sx={{ alignItems: 'flex-start' }}>
                 <Grid item xs={4}>
                     <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/12' }}>
-                        <Image src="/assets/img/granja.jpg" style={{ objectFit: 'cover' }} fill alt="" />
+                        <Image onClick={() => { setDialogImage({open: true, image: (rol.proyecto.foto_portada) ? rol.proyecto.foto_portada.url : '/assets/img/no-image.png' }) }}  src={(rol.proyecto.foto_portada) ? rol.proyecto.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover', cursor: 'pointer' }} fill alt="" />
                     </Box>
                 </Grid>
                 <Grid
@@ -124,13 +139,13 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
 
                         <Grid item xs={12}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src="/assets/img/slider_modelo_01.png" width={30} height={30} alt="" />
+                                <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src={(rol.proyecto.cazatalentos.foto_perfil) ? rol.proyecto.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} width={30} height={30} alt="" />
 
                                 <Typography sx={{ fontSize: '1rem' }}>Proyecto por: {rol.proyecto.productor}</Typography>
 
-                                <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1, cursor: 'pointer' }}>
                                     <Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" />
-                                    <Typography sx={{ color: '#069cb1', fontSize: '1rem' }}>Ver perfil</Typography>
+                                    <Button onClick={() => { setDialogInfoProductor({ open: true })}} style={{textTransform: 'capitalize'}}>Ver perfil</Button>
                                 </Box>
                             </Box>
                         </Grid>
@@ -376,6 +391,74 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia2.jpg</Typography>
                 </IndividualData>
             </GridMotion>
+            <Dialog  
+                maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} 
+                open={dialogInfoProductor.open} 
+                onClose={() => setDialogInfoProductor({ ...dialogInfoProductor, open: false })}
+                TransitionComponent={Transition}
+            >
+                <IconButton
+                    style={{
+                        position: 'absolute',
+                        right: 0,
+                        color: '#069cb1'
+                    }}
+                    aria-label="Cancelar edicion usuario"
+                    onClick={() => {
+                        setDialogInfoProductor({ ...dialogInfoProductor, open: false })
+                    }}
+                >
+                    <Close />
+                </IconButton>
+                <DialogContent style={{padding: 0, width: 400, overflow: 'hidden'}}>
+                    <MContainer direction='vertical' styles={{padding: 40, alignItems: 'center'}} justify='center'>
+                        <Avatar sx={{ width: 156, height: 156 }} alt="Foto productor" src={rol.proyecto.cazatalentos.foto_perfil ? rol.proyecto.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} />
+                        <MContainer direction='horizontal'>
+                            <motion.img style={{marginRight: 16}}  src="/assets/img/iconos/chair_dir_blue.svg" alt="icono" />
+                            <Typography fontSize={'2rem'}>{rol.proyecto.cazatalentos.nombre} {rol.proyecto.cazatalentos.apellido}</Typography>
+                        </MContainer>
+                        <Divider style={{borderColor: '#069cb1', width: '70%', borderWidth: '1px'}}/>
+                        <Typography style={{color: '#069cb1', marginTop: 16}}>
+                            {rol.proyecto.cazatalentos.posicion}
+                        </Typography>
+                        <Typography variant='body2' paddingLeft={2} paddingRight={2}>
+                            {rol.proyecto.cazatalentos.biografia}
+                        </Typography>
+                        <Box my={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} width={'80%'}>
+                            {rol.proyecto.cazatalentos.redes_sociales && rol.proyecto.cazatalentos.redes_sociales.map(red => {
+                                switch (red.nombre) {
+                                    case 'vimeo': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="icono" />;
+                                    case 'linkedin': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="icono" />;
+                                    case 'youtube': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_youtube_blue.svg" alt="icono" />;
+                                    case 'imdb': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_imbd_blue.svg" alt="icono" />;
+                                    case 'twitter': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="icono" />;
+                                    case 'instagram': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_insta_blue.svg" alt="icono" />;
+                                    
+                                }
+                                return null;
+                            })}
+                        </Box>
+                        {rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').length > 0 &&
+                            rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').map(r => {
+                                return <MContainer direction='horizontal' justify='start' styles={{width: '80%', alignItems: 'end'}}>
+                                    <motion.img width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="icono" />
+                                    <Typography ml={2}>{r.url}</Typography>
+                                </MContainer>
+                            })
+                        }
+                    </MContainer>
+                </DialogContent>
+            </Dialog>
+            <Dialog  
+                maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} 
+                open={dialogImage.open} 
+                onClose={() => setDialogImage({ ...dialogImage, open: false })}
+                TransitionComponent={Transition}
+            >
+                <div style={{ position: 'relative', width: 500, aspectRatio: '500/720', maxWidth: '100%' }}>
+                    <Image fill src={dialogImage.image} style={{ objectFit: 'cover' }} alt="" />
+                </div>
+            </Dialog>
         </Grid>
     )
 }
