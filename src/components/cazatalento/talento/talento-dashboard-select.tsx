@@ -94,6 +94,17 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		}
 	})
 
+	const deleteNotaTalento = api.cazatalentos.deleteNotaTalento.useMutation({
+		onSuccess: (data) => {
+			void talento_nota.refetch();
+			notify('success', 'Se elimino la nota con exito');
+			setDialog({ ...dialog, open: false });
+		},
+		onError: (error) => {
+			notify('error', parseErrorBody(error.message));
+		}
+	})
+
 	const marcar_aplicacion_como_visto = api.cazatalentos.marcarComoVistoAplicacionRolTalento.useMutation({
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
@@ -161,7 +172,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                             <MContainer direction="horizontal">
                                 <Typography mr={2}>Nota</Typography>
                                 <MessageOutlined style={{marginRight: 64}}/>
-                                <Button style={{textDecoration: 'underline'}} variant="text" onClick={() => {
+                                <Button size='small' style={{textDecoration: 'underline'}} variant="text" onClick={() => {
                                     updateNotaTalento.mutate({
                                         id_talento: id_talento,
                                         nota: form_nota_talento.nota
@@ -183,15 +194,23 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                     <MContainer direction="horizontal" justify='space-between'>
                         <Box>
                             <MotionDiv show={talento_nota.data != null} animation="fade">
-                                <FormGroup
-                                    type={'text-area'}
-                                    className={'form-input-md'}
-                                    style={{ width: '100%' }}
-                                    value={form_nota_talento.nota}
-                                    onChange={(e) => {
-                                        setFormNotaTalento({nota: e.target.value})
-                                    }}
-                                />
+                                <>
+									<FormGroup
+										type={'text-area'}
+										className={'form-input-md'}
+										style={{ width: '100%' }}
+										value={form_nota_talento.nota}
+										onChange={(e) => {
+											setFormNotaTalento({nota: e.target.value})
+										}}
+									/>
+									<Button startIcon={<Image src={'/assets/img/iconos/trash_blue.png'} width={16} height={16} alt="archivar" />} size='small' variant='outlined' onClick={() => {
+										deleteNotaTalento.mutate({
+											id_talento: id_talento
+										});
+									}}>Eliminar</Button>
+								</>
+								
                             </MotionDiv>
                         </Box>
                         <Box>

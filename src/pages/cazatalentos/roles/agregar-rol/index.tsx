@@ -29,7 +29,8 @@ export type RolInformacionGeneralForm = {
     nombre: string,
     id_tipo_rol: number,
     id_proyecto: number,
-    rol_principal_secundario: string
+    rol_principal_secundario: string,
+    tipo_trabajo: number[],
 }
 
 export type RolCompensacionForm = {
@@ -45,7 +46,6 @@ export type RolCompensacionForm = {
         id_compensacion: number,
         descripcion_compensacion: string
     }[],
-
     //extras para el formulario
     se_pagara_sueldo: 'Sí' | 'No',
     se_otorgaran_compensaciones: 'Sí' | 'No',
@@ -81,6 +81,8 @@ export type DescripcionDelRolForm = {
         ids: number[],
         descripcion: string
     },
+    id_color_cabello: number,
+    id_color_ojos: number,
     files: {
         lineas?: Archivo,
         foto_referencia?: Archivo,
@@ -150,7 +152,8 @@ const initialState: RolForm = {
         nombre: '',
         id_tipo_rol: 0,
         id_proyecto: 0,
-        rol_principal_secundario: 'Principal'
+        rol_principal_secundario: 'Principal',
+        tipo_trabajo: [],
     },
     compensacion: {
         compensacion: {
@@ -162,7 +165,6 @@ const initialState: RolForm = {
             periodo_sueldo: 'Diario'
         },
         compensaciones_no_monetarias: [],
-
         //extras para el formulario
         se_pagara_sueldo: 'No',
         se_otorgaran_compensaciones: 'No',
@@ -191,6 +193,8 @@ const initialState: RolForm = {
             ids: [],
             descripcion: ''
         },
+        id_color_cabello: 0,
+        id_color_ojos: 0,
         files: {
             lineas: undefined,
             foto_referencia: undefined,
@@ -289,7 +293,6 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
     })
 
     const initDescripcionFiles = async () => {
-        console.log('FILEEES XSSSA', state.descripcion_rol.files);
         const files: {
             lineas?: Archivo,
             foto_referencia?: Archivo
@@ -395,7 +398,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                         nombre: rol.data.nombre,
                         id_tipo_rol: rol.data.id_tipo_rol,
                         id_proyecto: rol.data.id_proyecto,
-                        rol_principal_secundario: (rol.data.tipo_rol.tipo.toUpperCase() === 'PRINCIPAL') ? 'Principal' : 'Extra'
+                        rol_principal_secundario: (rol.data.tipo_rol.tipo.toUpperCase() === 'PRINCIPAL') ? 'Principal' : 'Extra',
+                        tipo_trabajo: (rol.data.tipo_trabajos) ? rol.data.tipo_trabajos.map(t => t.id_tipo_trabajo) : []
                     },
                     compensacion: {
                         compensacion: {
@@ -446,6 +450,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                             ids: (rol.data && rol.data.nsfw) ? rol.data.nsfw.nsfw_seleccionados.map(n => n.id_nsfw) : [],
                             descripcion: (rol.data && rol.data.nsfw) ? rol.data.nsfw.descripcion : ''
                         },
+                        id_color_cabello: (rol.data.id_color_cabello) ? rol.data.id_color_cabello : 0,
+                        id_color_ojos: (rol.data.id_color_ojos) ? rol.data.id_color_ojos : 0,
                         files: {
                             media: {
                                 lineas: rol.data.lineas,
@@ -504,6 +510,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                     nombre: '', 
                     id_tipo_rol: 0,
                     id_proyecto: 0,
+                    tipo_trabajo: []
                 },
                 compensaciones: {
                     compensacion: {
@@ -520,6 +527,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                     descripcion: '',
                     habilidades: [],
                     especificacion_habilidad: '',
+                    id_color_cabello: 0,
+                    id_color_ojos: 0
                 },
                 casting: {
                     id_estado_republica: 0,
@@ -551,10 +560,14 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
         if (state.informacion_general.id_tipo_rol < 1) {
             return { ...form, error: 'El tipo del rol es invalido' };
         }
+        if (state.informacion_general.tipo_trabajo.length === 0) {
+            return { ...form, error: 'Debes elegir al menos un tipo de trabajo' };
+        }
         form.data.info_gral = {
             nombre: state.informacion_general.nombre,
             id_tipo_rol: state.informacion_general.id_tipo_rol,
-            id_proyecto: state.id_proyecto
+            id_proyecto: state.id_proyecto,
+            tipo_trabajo: state.informacion_general.tipo_trabajo
         }
 
         if (state.compensacion.se_pagara_sueldo === 'Sí') {
@@ -637,16 +650,26 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
             id_pais: state.filtros_demograficos.id_pais
         }
 
-        if (state.descripcion_rol.descripcion.length <= 0) {
+        if (!state.descripcion_rol.descripcion || state.descripcion_rol.descripcion.length <= 0) {
             return { ...form, error: 'No se especifico la descripcion del rol' };
+        }
+
+        if (state.descripcion_rol.id_color_cabello <= 0) {
+            return { ...form, error: 'No se especifico el color de cabello del rol' };
+        }
+
+        if (state.descripcion_rol.id_color_ojos <= 0) {
+            return { ...form, error: 'No se especifico el color de ojos del rol' };
         }
 
         form.data.descripcion_rol = {
             ...form.data.descripcion_rol,
             descripcion: state.descripcion_rol.descripcion,
-            detalles_adicionales: (state.descripcion_rol.detalles_adicionales.length > 0) ? state.descripcion_rol.detalles_adicionales : '',
+            detalles_adicionales: (state.descripcion_rol.detalles_adicionales && state.descripcion_rol.detalles_adicionales.length > 0) ? state.descripcion_rol.detalles_adicionales : '',
             habilidades: state.descripcion_rol.habilidades,
             especificacion_habilidad: state.descripcion_rol.especificacion_habilidad,
+            id_color_cabello: state.descripcion_rol.id_color_cabello,
+            id_color_ojos: state.descripcion_rol.id_color_ojos
         }
 
         if (state.descripcion_rol.tiene_nsfw === 'Desnudos/Situaciones Sexuales') {
@@ -823,7 +846,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                             if (e[0] === `${state.descripcion_rol.files.lineas?.file.name}-${time}`) {
                                 const arch = state.descripcion_rol.files.lineas;
                                 files.lineas = {
-                                    id: (arch?.id) ? arch.id : 0,
+                                    id: 0,
                                     nombre: (arch) ? arch.file.name : '',
                                     type: (arch?.file.type) ? arch.file.type : '',
                                     url: url,
@@ -835,7 +858,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                             if (e[0] === `${state.descripcion_rol.files.foto_referencia?.file.name}-${time}`) {
                                 const foto = state.descripcion_rol.files.foto_referencia;
                                 files.foto_referencia = {
-                                    id: (foto?.id) ? foto.id : 0,
+                                    id: 0,
                                     nombre: (foto) ? foto.file.name : '',
                                     type: (foto?.file.type) ? foto.file.type : '',
                                     url: url,
@@ -847,7 +870,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                             if (e[0] === `${state.selftape.files.lineas?.file.name}-${time}`) {
                                 const lineas = state.selftape.files.lineas;
                                 files.lineas_selftape = {
-                                    id: (lineas && lineas.id) ? lineas.id : 0,
+                                    id: 0,
                                     nombre: (lineas) ? lineas.file.name : '',
                                     type: (lineas?.file.type) ? lineas.file.type : '',
                                     url: url,
@@ -872,76 +895,84 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
 
     const info_gral = useMemo(() => {
         return <InformacionGeneralRol
+            fetching={rol.isFetching}
             state={state.informacion_general}
             onFormChange={(input) => {
                 dispatch({ type: 'update-info-gral', value: input });
             }}
         />
-    }, [state.informacion_general]);
+    }, [state.informacion_general, rol.isFetching]);
 
     const compensacion = useMemo(() => {
         return <CompensacionRol
+            fetching={rol.isFetching}
             state={state.compensacion}
             onFormChange={(input) => {
                 dispatch({ type: 'update-compensacion', value: input });
             }}
         />
-    }, [state.compensacion]);
+    }, [state.compensacion, rol.isFetching]);
 
     const filtros_demograficos = useMemo(() => {
         return <FiltrosDemograficosRol
+            fetching={rol.isFetching}
             state={state.filtros_demograficos}
             onFormChange={(input) => {
                 dispatch({ type: 'update-filtros-demograficos', value: input });
             }}
         />
-    }, [state.filtros_demograficos]);
+    }, [state.filtros_demograficos, rol.isFetching]);
 
     const descripcion_rol = useMemo(() => {
         return <DescripcionDelRol
+            fetching={rol.isFetching}
             state={state.descripcion_rol}
             onFormChange={(input) => {
                 dispatch({ type: 'update-descripcion-rol', value: input });
             }}
         />
-    }, [state.descripcion_rol]);
+    }, [state.descripcion_rol, rol.isFetching]);
 
     const info_casting = useMemo(() => {
         return <InformacionCastingRol
+            fetching={rol.isFetching}
             state={state.castings}
             onFormChange={(input) => {
                 dispatch({ type: 'update-castings-rol', value: input });
             }}
         />
-    }, [state.castings]);
+    }, [state.castings, rol.isFetching]);
 
     const info_filmaciones = useMemo(() => {
         return <InformacionFilmacionRol
+            fetching={rol.isFetching}
             state={state.filmaciones}
             onFormChange={(input) => {
                 dispatch({ type: 'update-filmaciones-rol', value: input });
             }}
         />
-    }, [state.filmaciones]);
+    }, [state.filmaciones, rol.isFetching]);
 
     const requisitos = useMemo(() => {
         return <RequisitosRol
+            fetching={rol.isFetching}
             state={state.requisitos}
             onFormChange={(input) => {
                 console.log(input);
                 dispatch({ type: 'update-requisitos-rol', value: input });
             }}
         />
-    }, [state.requisitos]);
+    }, [state.requisitos, rol.isFetching]);
 
     const selftape = useMemo(() => {
         return <SelfTapeRol
+            fetching={rol.isFetching}
             state={state.selftape}
             onFormChange={(input) => {
                 dispatch({ type: 'update-selftape-rol', value: input });
             }}
         />
-    }, [state.selftape]);
+    }, [state.selftape, rol.isFetching]);
 
     return (
         <>

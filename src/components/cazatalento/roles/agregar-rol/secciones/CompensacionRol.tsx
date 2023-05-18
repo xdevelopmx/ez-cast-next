@@ -8,6 +8,7 @@ import { type RolCompensacionForm } from '~/pages/cazatalentos/roles/agregar-rol
 import { api } from '~/utils/api';
 
 interface Props {
+    fetching: boolean,
     state: RolCompensacionForm,
     onFormChange: (input: { [id: string]: unknown }) => void
 }
@@ -229,7 +230,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                 />
             </Grid>
 
-            <Grid item xs={12} mt={2}>
+            <Grid item xs={12} md={6} mt={2}>
                 <FormGroup
                     type={'text-area'}
                     className={'form-input-md'}

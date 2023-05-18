@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from 'next/image';
 import { motion } from 'framer-motion'
 import { AccordionDetails, AccordionSummary, Button, IconButton, Typography } from '@mui/material'
-import { Alertas, Destacados, Flotantes, ListadoProyectos, MainLayout, MenuLateral } from "~/components";
+import { Alertas, TalentosDestacados, Flotantes, ListadoProyectos, MainLayout, MenuLateral } from "~/components";
 import { api, parseErrorBody } from "~/utils/api";
 import { getSession } from "next-auth/react";
 import { MTable } from "~/components/shared/MTable/MTable";
@@ -125,7 +125,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 										</div>
 									</div>
 								</div>
-								<Destacados />
+								<TalentosDestacados />
 							</div>
 						</div>
 						<div className="row title_list_proyects">
@@ -175,46 +175,67 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({us
 									loading={proyectos.isFetching}
 									data={(filtered_proyectos) ? filtered_proyectos.map(p => {
 										return {
-											nombre: <MContainer direction="horizontal">
-												<CircleIcon style={{color: (p.estatus.toUpperCase() === 'ACTIVO') ? 'green' : 'grey', width: 12, height: 12, marginTop: 6, marginRight: 4}} />
-												<Typography variant="subtitle2">
-													{p.nombre}
-												</Typography>
-											</MContainer>, 
-											estado: p.estatus, 
+											nombre: (() => {
+												let color = 'grey';
+												switch (p.estatus.toUpperCase()) {
+													case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
+													case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
+													case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
+												}
+												return (
+													<MContainer direction="horizontal">
+														<CircleIcon style={{color: color, width: 12, height: 12, marginTop: 6, marginRight: 4}} />
+														<Typography variant="subtitle2">
+															{p.nombre}
+														</Typography>
+													</MContainer>
+												);
+											})(), 
+											estado: (() => {
+												switch (p.estatus.toUpperCase()) {
+													case Constants.ESTADOS_PROYECTO.POR_VALIDAR: return 'Por validar';
+													case Constants.ESTADOS_PROYECTO.ARCHIVADO: return 'Archivado';
+													case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: return 'Enviado a aprobacion';
+													case Constants.ESTADOS_PROYECTO.RECHAZADO: return 'Rechazado';
+													case Constants.ESTADOS_PROYECTO.APROBADO: return 'Aprobado';
+												}
+												return p.estatus;
+											})(), 
 											tipo: (p.tipo) ? (p.tipo.id_tipo_proyecto === 99) ? p.tipo.descripcion : p.tipo.tipo_proyecto.es : 'ND', 
 											fecha: p.created.toLocaleDateString('es-mx'), 
-											acciones: <MContainer direction="horizontal" justify='space-between'>
+											acciones: <MContainer direction="horizontal" justify='center'>
 												<>
-													{['ARCHIVADO', 'POR VALIDAR'].includes(p.estatus.toUpperCase()) &&
-														<IconButton 
-															onClick={(e) => {
-																const params = new Map<string, unknown>();
-																params.set('id', p.id);
-																params.set('state', (p.estatus.toUpperCase() === 'ARCHIVADO') ? 'Por Validar' : 'Archivado');
-																setConfirmationDialog({action: 'STATE_CHANGE', data: params, opened: true, title: (p.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Proyecto' : 'Archivar Proyecto', content: <Typography variant="body2">{`Seguro que deseas ${(p.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este proyecto?`}</Typography>});
-																e.stopPropagation();
-															}} 
-															color="primary" 
-															aria-label="archivar" 
-															component="label"
-														>
-															<Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar"/>
-														</IconButton>
+													{[Constants.ESTADOS_PROYECTO.POR_VALIDAR, Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.RECHAZADO].includes(p.estatus.toUpperCase()) &&
+														<>
+															<IconButton 
+																onClick={(e) => {
+																	const params = new Map<string, unknown>();
+																	params.set('id', p.id);
+																	params.set('state', (p.estatus.toUpperCase() === 'ARCHIVADO') ? 'POR_VALIDAR' : 'ARCHIVADO');
+																	setConfirmationDialog({action: 'STATE_CHANGE', data: params, opened: true, title: (p.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Proyecto' : 'Archivar Proyecto', content: <Typography variant="body2">{`Seguro que deseas ${(p.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este proyecto?`}</Typography>});
+																	e.stopPropagation();
+																}} 
+																color="primary" 
+																aria-label="archivar" 
+																component="label"
+															>
+																<Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar"/>
+															</IconButton>
+															<IconButton 
+																onClick={(e) => {
+																	void router.push(`/cazatalentos/proyecto?id_proyecto=${p.id}`);
+																	e.stopPropagation();
+																}} 
+																color="primary" 
+																aria-label="editar" 
+																component="label"
+															>
+																<Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar"/>
+															</IconButton>
+														</>
 													}
 												
 												</>
-												<IconButton 
-													onClick={(e) => {
-														void router.push(`/cazatalentos/proyecto?id_proyecto=${p.id}`);
-														e.stopPropagation();
-													}} 
-													color="primary" 
-													aria-label="editar" 
-													component="label"
-												>
-													<Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar"/>
-												</IconButton>
 												<IconButton 
 													onClick={(e) => {
 														void router.push(`/cazatalentos/roles?id_proyecto=${p.id}`);

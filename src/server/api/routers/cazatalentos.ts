@@ -17,6 +17,47 @@ export const CazatalentosRouter = createTRPCRouter({
 			return await ctx.prisma.cazatalentos.findMany();
 		}
 	),
+	getTalentosDestacadosByCazatalento: protectedProcedure
+		.query(async ({ctx }) => {
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				let talentos_destacados = await ctx.prisma.talentosDestacados.findMany({
+					where: {
+						id_cazatalentos: parseInt(user.id),
+						calificacion: 5
+					},
+					include: {
+						talento: {
+							include: {
+								info_basica: {
+									include: {
+										union: {
+											include: {
+												union: true
+											}
+										},
+										estado_republica: true,
+									}
+								},
+								media: {
+									include: {
+										media: true
+									}
+								}
+							},
+						},
+					}
+				});
+				return talentos_destacados;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalento puede consultar sus talentos destacados',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
 	getById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
@@ -219,6 +260,30 @@ export const CazatalentosRouter = createTRPCRouter({
 					})
 				}
 				return nota;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de cazatalento puede modificar las notas del talento',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
+	deleteNotaTalento: protectedProcedure
+		.input(z.object({ 
+			id_talento: z.number()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const user = ctx.session.user; 
+			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+				const result = await ctx.prisma.notasTalentos.deleteMany({
+					where: {
+						id_cazatalentos: parseInt(user.id),
+						id_talento: input.id_talento
+					}
+				});
+				
+				return result;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',

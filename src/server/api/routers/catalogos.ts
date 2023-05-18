@@ -172,7 +172,11 @@ export const CatalogosRouter = createTRPCRouter({
 	),
 	getEstadosAplicacionesRoles: publicProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.catalogoEstadosAplicacionesRoles.findMany();
+			return await ctx.prisma.catalogoEstadosAplicacionesRoles.findMany({
+				orderBy: {
+					id: 'asc',
+				},
+			});
 		},
 	),
 	getTipoReportesTalento: publicProcedure

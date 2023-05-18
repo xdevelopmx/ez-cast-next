@@ -209,7 +209,7 @@ model Proyecto {
   created              DateTime                 @default(now())
   id_foto_portada_media Int?
   compartir_nombre     Boolean                  @default(true)
-  estatus              String                   @default("Por Validar")
+  estatus              String                   @default("POR_VALIDAR")
   id_cazatalentos      Int
   estado_republica     CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   cazatalentos         Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
@@ -333,7 +333,10 @@ model Roles {
   detalles_adicionales String?
   estatus              String                  @default("SIN_FINALIZAR")
   id_proyecto          Int
+  id_color_ojos Int @default(1)
+  id_color_cabello Int @default(1)
   proyecto             Proyecto                @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  tipo_trabajos TipoTrabajoPorRoles[]
   compensaciones       CompensacionesPorRoles?
   filtros_demograficos FiltrosDemoPorRoles?
   habilidades          HabilidadesPorRoles?
@@ -347,7 +350,19 @@ model Roles {
   lineas Media?  @relation("media_lineas", map: "media_lineas", fields: [id_media_lineas], references: [id])
   foto_referencia Media? @relation("media_foto_referencia", map: "media_foto_referencia", fields: [id_media_foto_referencia], references: [id])
   audiciones_talentos AudicionTalento[]
+  color_ojos CatalogoColorOjos @relation(fields: [id_color_ojos], references: [id])
+  color_cabello CatalogoColorCabello @relation(fields: [id_color_cabello], references: [id])
+
 }
+
+model TipoTrabajoPorRoles {
+  id             Int     @id @default(autoincrement())
+  id_rol         Int     
+  rol            Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  id_tipo_trabajo Int
+  tipo_trabajo CatalogoTipoTrabajo  @relation(fields: [id_tipo_trabajo], references: [id])
+}
+
 
 model SelftapePorRoles {
   id             Int     @id @default(autoincrement())
@@ -500,6 +515,7 @@ model CatalogoPaises {
   es                  String
   en                  String
   FiltrosDemoPorRoles FiltrosDemoPorRoles[]
+  FiltrosAparenciasPorTalentos FiltrosAparenciasPorTalentos[]
 }
 
 model CompensacionesPorRoles {
@@ -694,6 +710,7 @@ model FiltrosAparenciasPorTalentos {
   id_vello_facial                           Int
   disposicion_afeitar_o_crecer_vello_facial Boolean
   id_color_ojos                             Int
+  id_pais Int @default(1)
   color_ojos                                CatalogoColorOjos                            @relation(fields: [id_color_ojos], references: [id])
   vello_facial                              CatalogoVelloFacial                          @relation(fields: [id_vello_facial], references: [id])
   estilo_cabello                            CatalogoEstiloCabello                        @relation(fields: [id_estilo_cabello], references: [id])
@@ -705,6 +722,7 @@ model FiltrosAparenciasPorTalentos {
   piercings                                 PiercingsPorTalentos[]
   hermanos                                  TipoHermanosPorTalento?
   particularidades                          ParticularidadesPorTalentos[]
+  nacionalidad CatalogoPaises @relation(fields: [id_pais], references: [id])
   talento                                   Talentos                                     @relation(fields: [id_talento], references: [id])
 }
 
@@ -903,6 +921,7 @@ model CatalogoTipoTrabajo {
   es                             String
   en                             String
   tipos_de_trabajos_por_talentos TiposDeTrabajoPorTalentos[]
+  tipo_trabajo_por_roles TipoTrabajoPorRoles[]
 }
 
 model CatalogoTipoDocumentos {
@@ -919,6 +938,7 @@ model CatalogoColorCabello {
   es                               String
   en                               String
   filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
+  rol Roles[]
 }
 
 model CatalogoEstiloCabello {
@@ -940,6 +960,7 @@ model CatalogoColorOjos {
   es                               String
   en                               String
   filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
+  rol Roles[]
 }
 
 model CatalogoParticularidades {

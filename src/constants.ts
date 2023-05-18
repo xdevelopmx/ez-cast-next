@@ -5,11 +5,22 @@ const Constants = {
         REPRESENTANTE: 'REPRESENTANTE'
     },
     ESTADOS_APLICACION_ROL: {
-        CALLBACK: 1, 
-        NO_VISTO: 2, 
-        VISTO: 3, 
-        DESTACADO: 4, 
-        AUDICION: 5
+        NO_VISTO: 1, 
+        VISTO: 2, 
+        DESTACADO: 3, 
+        AUDICION: 4,
+        CALLBACK: 5, 
+    },
+    ESTADOS_ROLES: {
+        ARCHIVADO: 'ARCHIVADO',
+        SIN_FINALIZAR: 'SIN_FINALIZAR'
+    },
+    ESTADOS_PROYECTO: {
+        POR_VALIDAR: 'POR_VALIDAR',
+        ARCHIVADO: 'ARCHIVADO',
+        ENVIADO_A_APROBACION: 'ENVIADO_A_APROBACION',
+        APROBADO: 'APROBADO',
+        RECHAZADO: 'RECHAZADO'
     },
     PATTERNS: {
         EMAIL: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,

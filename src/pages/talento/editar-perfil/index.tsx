@@ -196,6 +196,7 @@ export type FiltrosAparienciaForm = {
     tipo_hermano_selected: string,
     descripcion_otra_particularidad?: string,
     apariencia: {
+        id_pais: number,
         rango_inicial_edad: number,
         rango_final_edad: number,
         id_genero: number,
@@ -345,6 +346,7 @@ const initialState: TalentoForm = {
         has_hermanos: false,
         tipo_hermano_selected: '',
         apariencia: {
+            id_pais: 0,
             rango_inicial_edad: 18,
             rango_final_edad: 50,
             id_genero: 0,
@@ -408,8 +410,6 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         refetchOnMount: false,
         refetchOnWindowFocus: false
     });
-
-    console.log('TALENTO DATA', talento.data);
 
     const saveInfoGralMedia = api.talentos.saveInfoGralMedia.useMutation({
         onSuccess(input) {
@@ -942,6 +942,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         descripcion_otra_particularidad: field_other_particularidad,
                         tipo_hermano_selected: hermanos_option_default,
                         apariencia: {
+                            id_pais: talento.data.filtros_aparencias.id_pais,
                             rango_inicial_edad: talento.data.filtros_aparencias.rango_inicial_edad,
                             rango_final_edad: talento.data.filtros_aparencias.rango_final_edad,
                             id_genero: talento.data.filtros_aparencias.id_genero,

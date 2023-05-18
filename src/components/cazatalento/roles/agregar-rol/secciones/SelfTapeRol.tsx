@@ -7,6 +7,7 @@ import { FC, useReducer } from 'react';
 import { FileManager } from '~/utils/file-manager';
 
 interface Props {
+    fetching: boolean,
     state: SelftapeRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
 }

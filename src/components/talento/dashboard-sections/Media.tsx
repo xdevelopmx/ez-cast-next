@@ -2,10 +2,10 @@ import Image from 'next/image';
 import { Button, Divider, Grid, Typography } from '@mui/material';
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { AddButton, AudioBar, SectionTitle } from '~/components/shared'
-import { Carroucel } from '~/components/shared/Carroucel';
 import { MContainer } from '~/components/layout/MContainer';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
+import { Carroucel } from '~/components/shared/Carroucel';
 
 export const Media = (props: { id_talento: number, read_only: boolean }) => {
     const router = useRouter();

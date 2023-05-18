@@ -7,8 +7,10 @@ import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { DescripcionDelRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { FC, useReducer} from 'react';
 import { FileManager } from '~/utils/file-manager';
+import { MContainer } from '~/components/layout/MContainer';
 
 interface Props {
+    fetching: boolean,
     state: DescripcionDelRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
 }
@@ -24,6 +26,16 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
         refetchOnWindowFocus: false,
         refetchOnMount: false,
     })
+
+    const colores_cabello = api.catalogos.getColorCabello.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+    
+    const colores_ojos = api.catalogos.getColorOjos.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
 
     return (
         <Grid container item xs={12} mt={8}>
@@ -188,6 +200,47 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                 </Grid>
                 <Grid item container xs={6}>
                     <Grid item xs={12}>
+                        <MContainer direction="vertical" styles={{gap: 2, marginBottom: 16}}>
+
+                            <MSelect
+                                id="tipo-cabello-select"
+                                loading={colores_cabello.isFetching}
+                                labelStyle={{ marginTop: 32, fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                label='Color de Cabello*'
+                                options={
+                                    (colores_cabello.data)
+                                        ? colores_cabello.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        : []
+                                }
+                                value={(state.id_color_cabello) ? state.id_color_cabello.toString() : '0'}
+                                className={'form-input-md'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        id_color_cabello: parseInt(e.target.value)
+                                    })
+                                }}
+                            />
+                            <MSelect
+                                id="tipo-ojos-select"
+                                loading={colores_ojos.isFetching}
+                                labelStyle={{ marginTop: 32, fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                label='Color de Ojos*'
+                                options={
+                                    (colores_ojos.data)
+                                        ? colores_ojos.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        : []
+                                }
+                                value={(state.id_color_ojos) ? state.id_color_ojos.toString() : '0'}
+                                className={'form-input-md'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        id_color_ojos: parseInt(e.target.value)
+                                    })
+                                }}
+                            />
+                        </MContainer>
                         <MRadioGroup
                             label='Desnudos/Situaciones Sexuales*'
                             labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}

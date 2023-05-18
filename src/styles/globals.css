@@ -31,8 +31,9 @@ button:focus {
 }
 
 .swiper-button-next:after, .swiper-button-prev:after {
-  color: #fff;
+  color: --swiper-theme-color;
   font-size: 25px !important;
+  transform: scale(1.5);
 }
 
 
@@ -3253,10 +3254,6 @@ p.edo_pendiente {
   width: 200px;
   height: 32px;
 }
-
-
-
-
 
 .select-form-control>div {
   padding: 0;

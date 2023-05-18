@@ -200,6 +200,7 @@ export const TalentosRouter = createTRPCRouter({
 							genero: true
 						}
 					},
+					nacionalidad: true,
 					apariencia_etnica: true,
 					color_cabello: true,
 					estilo_cabello: true,
@@ -355,6 +356,7 @@ export const TalentosRouter = createTRPCRouter({
 							estilo_cabello: true,
 							vello_facial: true,
 							color_ojos: true,
+							nacionalidad: true,
 							tatuajes: {
 								include: {
 									tipo_tatuaje: true,
@@ -1885,7 +1887,8 @@ export const TalentosRouter = createTRPCRouter({
 				disposicion_corte_cabello: z.boolean(),
 				id_vello_facial: z.number(),
 				disposicion_afeitar_o_crecer_vello_facial: z.boolean(),
-				id_color_ojos: z.number()
+				id_color_ojos: z.number(),
+				id_pais: z.number()
 			}),
 			generos_interesado_en_interpretar: z.array(z.number()),
 			tatuajes: z.array(z.object({

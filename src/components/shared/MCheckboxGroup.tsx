@@ -1,5 +1,5 @@
 
-import { Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup, Typography } from '@mui/material';
+import { Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup, Skeleton, Typography } from '@mui/material';
 import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
 import { MContainer } from '../layout/MContainer';
 import { MTooltip } from './MTooltip';
@@ -17,7 +17,7 @@ interface Props {
     title?: string,
     titleStyle?: CSSProperties,
     direction?: 'vertical' | 'horizontal'
-
+    loading?: boolean,
     fontWeight?: number,
 
     textTooltip?: string,
@@ -28,8 +28,9 @@ interface Props {
 
 export const MCheckboxGroup: FC<Props> = ({
     disabled, direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle,
-    style, options, fontWeight, textTooltip, styleTooltip = {}, colorTooltip = 'orange'
+    style, options, fontWeight, textTooltip, styleTooltip = {}, colorTooltip = 'orange', loading
 }) => {
+    const elements_count = (options.length > 0) ? options.length : 5;
     return (
         <div>
             {title &&
@@ -38,7 +39,12 @@ export const MCheckboxGroup: FC<Props> = ({
                     {textTooltip && <MTooltip sx={styleTooltip} text={textTooltip} color={colorTooltip} placement='right' />}
                 </Typography>
             }
-            {onAllOptionChecked &&
+            {loading &&
+                Array.from({length: elements_count}).map(s => {
+                    return <Skeleton style={style}></Skeleton>; 
+                })
+            }
+            {!loading && onAllOptionChecked &&
                 <FormGroup id={id}>
                     <MContainer direction='vertical'>
                         <FormControlLabel
@@ -62,29 +68,31 @@ export const MCheckboxGroup: FC<Props> = ({
                     </MContainer>
                 </FormGroup>
             }
-            <FormGroup id={id}>
-                <MContainer direction={(direction) ? direction : 'vertical'}>
+            {!loading &&
+                <FormGroup id={id}>
+                    <MContainer direction={(direction) ? direction : 'vertical'}>
 
-                    {options.map((e, i) => {
-                        const value = values[i];
-                        return <FormControlLabel className={labelClassName} style={labelStyle} key={i}
-                            control={
-                                <Checkbox
-                                    disabled={(disabled)}
-                                    checked={(value && value === true) ? value : false}
-                                    onChange={onChange ? (e) => onChange(e.target.checked, i) : () => { console.log('nothing'); }}
-                                    style={style}
-                                    sx={{
-                                        color: '#069CB1',
-                                        '&.Mui-checked': {
+                        {options.map((e, i) => {
+                            const value = values[i];
+                            return <FormControlLabel className={labelClassName} style={labelStyle} key={i}
+                                control={
+                                    <Checkbox
+                                        disabled={(disabled)}
+                                        checked={(value && value === true) ? value : false}
+                                        onChange={onChange ? (e) => onChange(e.target.checked, i) : () => { console.log('nothing'); }}
+                                        style={style}
+                                        sx={{
                                             color: '#069CB1',
-                                        },
-                                    }}
-                                />
-                            } label={e} />
-                    })}
-                </MContainer>
-            </FormGroup>
+                                            '&.Mui-checked': {
+                                                color: '#069CB1',
+                                            },
+                                        }}
+                                    />
+                                } label={e} />
+                        })}
+                    </MContainer>
+                </FormGroup>
+            }
         </div>
     )
 }

@@ -352,7 +352,7 @@ export const ProyectosRouter = createTRPCRouter({
 						id: (input.id) ? input.id : 0
 					},
 					update: input.proyecto,
-					create: { ...input.proyecto, id_cazatalentos: parseInt(ctx.session.user.id), estatus: 'Por Validar' },
+					create: { ...input.proyecto, id_cazatalentos: parseInt(ctx.session.user.id), estatus: 'POR_VALIDAR' },
 				});
 				if (!proyecto) {
 					throw new TRPCError({

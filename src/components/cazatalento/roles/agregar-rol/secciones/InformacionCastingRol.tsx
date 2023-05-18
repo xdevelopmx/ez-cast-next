@@ -5,6 +5,7 @@ import { CastingsRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
 interface Props {
+    fetching: boolean,
     state: CastingsRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
 }

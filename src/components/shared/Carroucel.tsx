@@ -1,4 +1,4 @@
-import { type ReactNode, type FC, Children } from 'react';
+import { type ReactNode, type FC, Children, CSSProperties } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -15,9 +15,11 @@ interface Props {
     slidesPerView?: number;
     spaceBetween?: number;
     navigation?: boolean;
+    className?: string;
+    arrowsColor?: string;
 }
 
-export const Carroucel: FC<Props> = ({ children, slidesPerView = 5, spaceBetween = 0, navigation = true }) => {
+export const Carroucel: FC<Props> = ({ arrowsColor, className, children, slidesPerView = 5, spaceBetween = 0, navigation = true }) => {
 
     const slides = Children.map(children, (child, i) => (
         <SwiperSlide key={i}>{child}</SwiperSlide>
@@ -25,6 +27,11 @@ export const Carroucel: FC<Props> = ({ children, slidesPerView = 5, spaceBetween
 
     return (
         <Swiper
+            style={{
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                '--swiper-theme-color': arrowsColor
+            }}
             modules={[Navigation, Pagination]}
             spaceBetween={spaceBetween}
             slidesPerView={slidesPerView}

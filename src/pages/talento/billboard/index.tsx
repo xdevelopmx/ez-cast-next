@@ -27,6 +27,7 @@ const filtros_initial_state = {
     id_tipo_proyecto: [],
     id_genero_rol: [],
     id_apariencia_etnica: [],
+    id_nacionalidades: [],
     id_preferencias_de_pago: [],
     autorellenar: true
 }
@@ -51,6 +52,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         id_tipo_proyecto: number[],
         id_genero_rol: number[],
         id_apariencia_etnica: number[],
+        id_nacionalidades: number[],
         id_preferencias_de_pago: number[],
         autorellenar: boolean
     }>(filtros_initial_state);
@@ -58,7 +60,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
     const talento = api.talentos.getCompleteById.useQuery({id: parseInt(user.id)}, {
         refetchOnWindowFocus: false
     });
-
+    
     const roles_billboard = api.roles.getRolesBillboardTalentos.useQuery({
         tipo_busqueda: form_filtros.tipo_busqueda,
         id_estados_republica: form_filtros.id_estado_republica,
@@ -106,6 +108,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         refetchOnWindowFocus: false,
         refetchOnMount: false
     });
+
+    const nacionalidades = api.catalogos.getNacionalidades.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    })
 
     const uniones = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnWindowFocus: false,
@@ -456,6 +463,31 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     options={(apariencias_etnicas.data) ? apariencias_etnicas.data.map(er => { return { label: er.nombre, value: er.id.toString() } }) : []}                                                                                     
                                                 />
                                                 <MSelect
+                                                    id="nacionalidades-etnicas-select"
+                                                    styleRoot={{ width: '170px' }}
+                                                    style={{ fontSize: '0.8rem' }}
+                                                    value={form_filtros.id_nacionalidades.map(r => r.toString())}
+                                                    onChange={(e) => {
+                                                        const v_exploded = `${e.target.value}`.split(',');
+                                                        const v = v_exploded[v_exploded.length - 1];
+                                                        const value: number = parseInt((v) ? v : '');
+                                                        setFormFiltros(prev => { return { ...prev, id_nacionalidades: !isNaN(value) ? [value] : [] } })
+                                                    } } 
+                                                    button_props={{
+                                                        fontSize: '2rem',
+                                                        position: 'absolute',
+                                                        height: '100%',
+                                                        top: 0,
+                                                        right: '16px'
+                                                    }}
+                                                    renderValue={(selected) => {
+                                                        return '';
+                                                    }}
+                                                    placeholder={'Nacionalidad / Etnia'}
+                                                    multiple
+                                                    options={(nacionalidades.data) ? nacionalidades.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}                                                                                     
+                                                />
+                                                <MSelect
                                                     id="preferencias-pago-select"
 
                                                     styleRoot={{ width: '138px' }}
@@ -525,6 +557,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     {form_filtros.id_apariencia_etnica.length > 0 && <Tag text={`Apariencia Etnica`}
                                                         onRemove={(e) => {
                                                             setFormFiltros(prev => {return {...prev, id_apariencia_etnica: []}})
+                                                        }}
+                                                    />}
+                                                    {form_filtros.id_nacionalidades.length > 0 && <Tag text={`Nacionalidad / Etnia`}
+                                                        onRemove={(e) => {
+                                                            setFormFiltros(prev => {return {...prev, id_nacionalidades: []}})
                                                         }}
                                                     />}
                                                     {form_filtros.id_preferencias_de_pago.length > 0 && <Tag text={`Preferencias Pago`}
@@ -709,6 +746,26 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                         <Tag styles={{marginRight: 1}} text={etnia.nombre}
                                             onRemove={(e) => {
                                                 setFormFiltros(prev => {return {...prev, id_apariencia_etnica: form_filtros.id_apariencia_etnica.filter(i => i !== tipo)}})
+                                            }}
+                                        />
+                                    )
+                                }
+                            })}   
+
+                            <MContainer styles={{marginTop: 16}} direction='horizontal'>
+                                <Typography fontSize={'1.2rem'} mr={2}>Nacionalidad / Étna</Typography>
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, id_nacionalidades: [] }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                            </MContainer>
+                            {form_filtros.id_nacionalidades.length === 0 &&
+                                <Typography variant='body2'>No se han seleccionado opciones</Typography>
+                            }
+                            {form_filtros.id_nacionalidades.map(tipo => {
+                                const nacionalidad = nacionalidades.data?.filter(tp => tp.id === tipo)[0];
+                                if (nacionalidad) {
+                                    return (
+                                        <Tag styles={{marginRight: 1}} text={nacionalidad.es}
+                                            onRemove={(e) => {
+                                                setFormFiltros(prev => {return {...prev, id_nacionalidades: form_filtros.id_nacionalidades.filter(i => i !== tipo)}})
                                             }}
                                         />
                                     )

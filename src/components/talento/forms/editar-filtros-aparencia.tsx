@@ -66,7 +66,12 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
         refetchOnWindowFocus: false,
     });
 
-    const is_loading = tipos_piercings.isFetching || tipos_tatuajes.isFetching || apariencias_etnicas.isFetching || colores_cabello.isFetching || estilos_cabello.isFetching || vellos_facial.isFetching || colores_ojos.isFetching;
+    const nacionalidades = api.catalogos.getNacionalidades.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    })
+
+    const is_loading = nacionalidades.isFetching || tipos_piercings.isFetching || tipos_tatuajes.isFetching || apariencias_etnicas.isFetching || colores_cabello.isFetching || estilos_cabello.isFetching || vellos_facial.isFetching || colores_ojos.isFetching;
 
     return (
         <Grid container spacing={2}>
@@ -176,22 +181,43 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
             </Grid>
 
             <Grid item xs={12}>
-                <MSelect
-                    label='Apariencia Étnica'
-                    loading={is_loading}
-                    id='etinia-select'
-                    options={(apariencias_etnicas.isSuccess && apariencias_etnicas.data) ? apariencias_etnicas.data.map(u => { return { value: u.id.toString(), label: u.nombre } }) : []}
-                    style={{ width: 250 }}
-                    value={`${state.apariencia.id_apariencia_etnica}`}
-                    onChange={(e) => {
-                        onFormChange({
-                            apariencia: {
-                                ...state.apariencia,
-                                id_apariencia_etnica: parseInt(e.target.value)
-                            }
-                        })
-                    }}
-                />
+                <MContainer direction="horizontal" styles={{gap: 16}}>
+                    <MSelect
+                        label='Apariencia Étnica'
+                        loading={is_loading}
+                        id='etinia-select'
+                        options={(apariencias_etnicas.isSuccess && apariencias_etnicas.data) ? apariencias_etnicas.data.map(u => { return { value: u.id.toString(), label: u.nombre } }) : []}
+                        style={{ width: 250 }}
+                        value={`${state.apariencia.id_apariencia_etnica}`}
+                        onChange={(e) => {
+                            onFormChange({
+                                apariencia: {
+                                    ...state.apariencia,
+                                    id_apariencia_etnica: parseInt(e.target.value)
+                                }
+                            })
+                        }}
+                    />
+                    <MSelect
+                        id="tipo-nacionalidades-select"
+                        loading={nacionalidades.isFetching}
+                        labelStyle={{ fontWeight: 600 }}
+                        labelClassName={'form-input-label'}
+                        label='Etnia/Nacionalidad*'
+                        options={
+                            (nacionalidades.data)
+                                ? nacionalidades.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                : []
+                        }
+                        value={state.apariencia.id_pais.toString()}
+                        className={'form-input-md'}
+                        onChange={(e) => {
+                            onFormChange({
+                                apariencia: {...state.apariencia, id_pais: parseInt(e.target.value)}
+                            })
+                        }}
+                    />
+                </MContainer>
             </Grid>
 
             <Grid my={4} item xs={12}>

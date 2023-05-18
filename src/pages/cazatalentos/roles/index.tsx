@@ -2,7 +2,7 @@ import { GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image';
 import React, { Fragment, useEffect, useMemo, useReducer, useState } from 'react'
-import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas, Destacados } from '~/components'
+import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas } from '~/components'
 import { motion } from 'framer-motion'
 import { ContactoCasting } from '~/components/cazatalento/proyecto/crear/ContactoCasting'
 import { EquipoCreativo } from '~/components/cazatalento/proyecto/crear/EquipoCreativo'
@@ -12,7 +12,7 @@ import { PublicarProyecto } from '~/components/cazatalento/proyecto/crear/Public
 import { api, parseErrorBody } from '~/utils/api'
 import useNotify from '~/hooks/useNotify'
 import CircleIcon from '@mui/icons-material/Circle';
-import { Button, Divider, Grid, IconButton, Typography } from '@mui/material'
+import { Alert, AlertTitle, Box, Button, Divider, Grid, IconButton, Skeleton, Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
 import { type User } from 'next-auth'
@@ -23,14 +23,24 @@ import { MTable } from '~/components/shared/MTable/MTable'
 import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
 import { TipoUsuario } from '~/enums';
+import useDelay from '~/hooks/useDelay';
 
 type RolesIndexPageProps = {
     user: User,
 }
 
+function handleRolApplication(map: Map<string, number>, key: string) {
+    let count = map.get(key);
+    if (count) {
+        map.set(key, count + 1);
+    } else {
+        map.set(key, 1);
+    }
+}
+
 const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
     const [tabSelected, setTabSelected] = useState<'ACTIVOS' | 'ARCHIVADOS'>('ACTIVOS');
-    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'STATE_CHANGE' | 'DELETE', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'DELETE', data: new Map });
+    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'STATE_CHANGE' | 'DELETE' | 'PROYECTO_ENVIADO_A_APROBACION', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'DELETE', data: new Map });
     const [proyecto_details_expanded, setProyectoDetailsExpanded] = useState(false);
     const { notify } = useNotify();
     const router = useRouter();
@@ -51,7 +61,42 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
         refetchOnWindowFocus: false
     });
 
-    console.table(roles.data);
+    const delayed_proyecto_fetching = useDelay(proyecto.isFetched, 1500);
+
+    console.log('proyecto isfetching', proyecto.isFetching);
+    
+    const talentos_applications_stats = useMemo(() => {
+        const map = new Map<string, number>(); 
+        if (roles.data) {
+            roles.data.forEach((r) => {
+                r.aplicaciones_por_talento.forEach(apt => {
+                    switch (apt.id_estado_aplicacion) {
+                        case Constants.ESTADOS_APLICACION_ROL.NO_VISTO: {
+                            handleRolApplication(map, `${apt.id_rol}-no-vistos`);
+                            break;
+                        }
+                        case Constants.ESTADOS_APLICACION_ROL.VISTO: {
+                            handleRolApplication(map, `${apt.id_rol}-vistos`);
+                            break;
+                        }
+                        case Constants.ESTADOS_APLICACION_ROL.DESTACADO: {
+                            handleRolApplication(map, `${apt.id_rol}-destacados`);
+                            break;
+                        }
+                        case Constants.ESTADOS_APLICACION_ROL.AUDICION: {
+                            handleRolApplication(map, `${apt.id_rol}-audicion`);
+                            break;
+                        }
+                        case Constants.ESTADOS_APLICACION_ROL.CALLBACK: {  
+                            handleRolApplication(map, `${apt.id_rol}-callback`);
+                            break;
+                        }
+                    }
+                });
+            });
+        }
+        return map;
+    }, [roles.data]);
 
     const filtered_roles = useMemo(() => {
         if (roles.data) {
@@ -101,7 +146,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
         }
     });
 
-    console.log({ roles: roles.data });
+    const updateEstadoProyecto = api.proyectos.updateEstadoProyecto.useMutation({
+        onSuccess() {
+            notify('success', 'Se cambio el estado del proyecto con exito');
+            void proyecto.refetch();
+        },
+        onError(error) {
+            notify('error', parseErrorBody(error.message));
+        }
+    });
 
     return (
         <>
@@ -151,54 +204,89 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
 
                                     </motion.div>
                                 </MContainer>
+                                <Box>
+                                    {!proyecto.isFetched &&
+                                        <MContainer direction='horizontal' styles={{ gap: 16, alignItems: 'start' }}>
+                                            <Skeleton style={{borderRadius: 16}} width={200} height={64}></Skeleton>
+                                            <Skeleton style={{borderRadius: 16}} width={200} height={64}></Skeleton>
+                                        </MContainer>
+                                    } 
+                                    <MotionDiv show={proyecto.isFetched} animation='fade'>
 
-                                <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
-                                    <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
-                                        <Button
-                                            className="btn btn-intro btn-price btn_out_line mb-2"
-                                            startIcon={
-                                                <Image
-                                                    src={`/assets/img/iconos/cruz_ye.svg`}
-                                                    height={16}
-                                                    width={16}
-                                                    alt={'agregar-rol'}
-                                                />
-                                            }
-                                            style={{
-                                                padding: '8px 40px',
-                                                marginTop: 0,
-                                                marginRight: 10,
-                                                fontWeight: 500
-                                            }}
-                                        >
-                                            Nuevo rol
-                                        </Button>
+                                        <MContainer direction='horizontal' styles={{ alignItems: 'start' }}>
+                                            <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
+                                                <Button
+                                                    className="btn btn-intro btn-price btn_out_line mb-2"
+                                                    startIcon={
+                                                        <Image
+                                                            src={`/assets/img/iconos/cruz_ye.svg`}
+                                                            height={16}
+                                                            width={16}
+                                                            alt={'agregar-rol'}
+                                                        />
+                                                    }
+                                                    style={{
+                                                        padding: '8px 40px',
+                                                        marginTop: 0,
+                                                        marginRight: 10,
+                                                        fontWeight: 500
+                                                    }}
+                                                >
+                                                    Nuevo rol
+                                                </Button>
 
-                                    </Link>
+                                            </Link>
+                                            <MContainer direction='vertical'>
+                                                <>
+                                                    {![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus : '') &&
+                                                        <Button
+                                                            onClick={() => { 
+                                                                setConfirmationDialog({ action: 'PROYECTO_ENVIADO_A_APROBACION', data: new Map<string, unknown>(), opened: true, title: 'Enviar Proyecto A Aprobación', content: <Typography variant="body2">{`Seguro que deseas mandar este proyecto a aprobación?`}</Typography> });
+                                                            }}
+                                                            className="btn btn-sm btn-intro btn-price mb-2"
+                                                            style={{
+                                                                padding: '8px 40px',
+                                                                marginTop: 0,
+                                                                display: 'block',
+                                                                height: 40,
+                                                                fontWeight: 500
+                                                            }}
+                                                        >
+                                                            Enviar proyecto para aprobación
+                                                        </Button>
+                                                    }
 
-                                    <Link href="/cazatalentos/proyecto" >
-                                        <Button
-                                            className="btn btn-sm btn-intro btn-price mb-2"
-                                            style={{
-                                                padding: '8px 40px',
-                                                marginTop: 0,
-                                                display: 'block',
-                                                height: 40,
-                                                fontWeight: 500
-                                            }}
-                                        >
-                                            Enviar proyecto para aprobación
-                                        </Button>
-
-                                    </Link>
-                                </MContainer>
+                                                    <Alert icon={false} sx={{justifyContent: 'center'}}  severity='info' style={{ color: 'white', backgroundColor: (() => {
+                                                        let color = 'grey';
+                                                        switch (proyecto.data?.estatus.toUpperCase()) {
+                                                            case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
+                                                            case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
+                                                            case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
+                                                        }
+                                                        return color;
+                                                    })()}}>
+                                                        PROYECTO {proyecto.data?.estatus.replaceAll('_', ' ')}
+                                                    </Alert>
+                                                </>
+                                            </MContainer>
+                                        </MContainer>
+                                    </MotionDiv>
+                                </Box>
 
 
                             </MContainer>
                             <MContainer direction='vertical'>
                                 <MContainer direction='horizontal'>
                                     <MContainer direction="horizontal">
-                                        <CircleIcon style={{ color: (proyecto.data && proyecto.data.estatus.toUpperCase() === 'ACTIVO') ? 'green' : 'grey', width: 12, height: 12, marginTop: 6, marginRight: 4 }} />
+                                        <CircleIcon style={{ color: (() => {
+                                            let color = 'grey';
+                                            switch (proyecto.data?.estatus.toUpperCase()) {
+                                                case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
+                                                case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
+                                                case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
+                                            }
+                                            return color;
+                                        })(), width: 12, height: 12, marginTop: 6, marginRight: 4 }} />
                                         <Typography variant="subtitle2">
                                             {(proyecto.data) ? proyecto.data.nombre : 'ND'}
                                         </Typography>
@@ -352,115 +440,121 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                 <MTable
                                     styleTableRow={{ cursor: 'pointer' }}
                                     alternate_colors={false}
-                                    columnsHeader={[
-                                        <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Nombre
-                                        </Typography>,
-                                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Estado
-                                        </Typography>,
-                                        <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            No Vistos
-                                        </Typography>,
-                                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Vistos
-                                        </Typography>,
-                                        <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Destacados
-                                        </Typography>,
-                                        <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Audición
-                                        </Typography>,
-                                        <Typography key={7} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Callback
-                                        </Typography>,
-                                        <Typography key={8} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Acciones
-                                        </Typography>,
-                                    ]}
+                                    columnsHeader={(() => {
+                                        const cols = [
+                                            <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Nombre
+                                            </Typography>,
+                                            <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Estado
+                                            </Typography>,
+                                            <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                No Vistos
+                                            </Typography>,
+                                            <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Vistos
+                                            </Typography>,
+                                            <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Destacados
+                                            </Typography>,
+                                            <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Audición
+                                            </Typography>,
+                                            <Typography key={7} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Callback
+                                            </Typography>
+                                        ]
+                                        if (![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus.toUpperCase() : '')) {
+                                            cols.push(<Typography key={8} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                                Acciones
+                                            </Typography>)
+                                        }
+                                        return cols;
+                                    })()}
                                     backgroundColorHeader='#069cb1'
                                     styleHeaderTableCell={{ padding: '5px !important' }}
                                     loading={roles.isFetching}
                                     data={(filtered_roles) ? filtered_roles.map(r => {
-                                        return {
+                                        let content: {nombre: JSX.Element, estado: string, no_vistos: JSX.Element, vistos: JSX.Element, destacados: JSX.Element, audicion: JSX.Element, callback: JSX.Element, acciones?: JSX.Element } = {
                                             nombre: <MContainer direction="horizontal">
                                                 <CircleIcon style={{ color: (r.estatus.toUpperCase() === 'ACTIVO') ? 'green' : 'grey', width: 12, height: 12, marginTop: 6, marginRight: 4 }} />
                                                 <Typography variant="subtitle2">
                                                     {r.nombre}
                                                 </Typography>
                                             </MContainer>,
-                                            estado: r.estatus === 'SIN_FINALIZAR' ? 'Sin finalizar' : 'Archivado',
+                                            estado: r.estatus === 'SIN_FINALIZAR' ? 'SIN_FINALIZAR' : 'ARCHIVADO',
                                             no_vistos: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icon_no_vistos.svg'} width={16} height={16} alt="no vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>1</Typography>
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-no-vistos`)) ? talentos_applications_stats.get(`${r.id}-no-vistos`) : 0 }</Typography>
                                             </MContainer>,
                                             vistos: <MContainer direction='horizontal' justify='center'>
-                                                <Image src={'/assets/img/iconos/icon_vistos.svg'} width={16} height={16} alt="no vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>1</Typography>
+                                                <Image src={'/assets/img/iconos/icon_vistos.svg'} width={16} height={16} alt="vistos" />
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-vistos`)) ? talentos_applications_stats.get(`${r.id}-vistos`) : 0 }</Typography>
                                             </MContainer>,
                                             destacados: <MContainer direction='horizontal' justify='center'>
-                                                <Image src={'/assets/img/iconos/icono_claqueta_blue.svg'} width={16} height={16} alt="no vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>1</Typography>
+                                                <Image src={'/assets/img/iconos/icono_claqueta_blue.svg'} width={16} height={16} alt="destacados" />
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-destacados`)) ? talentos_applications_stats.get(`${r.id}-destacados`) : 0 }</Typography>
                                             </MContainer>,
                                             audicion: <MContainer direction='horizontal' justify='center'>
-                                                <Image src={'/assets/img/iconos/icono_lampara_blue.svg'} width={16} height={16} alt="no vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>1</Typography>
+                                                <Image src={'/assets/img/iconos/icono_lampara_blue.svg'} width={16} height={16} alt="audicion" />
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-audicion`)) ? talentos_applications_stats.get(`${r.id}-audicion`) : 0 }</Typography>
                                             </MContainer>,
                                             callback: <MContainer direction='horizontal' justify='center'>
-                                                <Image src={'/assets/img/iconos/icono_claqueta_blue.svg'} width={16} height={16} alt="no vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>1</Typography>
+                                                <Image src={'/assets/img/iconos/icono_claqueta_blue.svg'} width={16} height={16} alt="callback" />
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-callback`)) ? talentos_applications_stats.get(`${r.id}-callback`) : 0 }</Typography>
                                             </MContainer>,
-                                            acciones: <MContainer direction="horizontal" justify='space-between'>
+                                            acciones: <MContainer direction="horizontal" justify='center'>
                                                 <>
-                                                    {['ARCHIVADO', 'SIN_FINALIZAR'].includes(r.estatus.toUpperCase()) &&
-                                                        <IconButton
-                                                            onClick={(e) => {
-                                                                const params = new Map<string, unknown>();
-                                                                params.set('id', r.id);
-                                                                params.set('state', (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'SIN_FINALIZAR' : 'Archivado');
-                                                                setConfirmationDialog({ action: 'STATE_CHANGE', data: params, opened: true, title: (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Rol' : 'Archivar Rol', content: <Typography variant="body2">{`Seguro que deseas ${(r.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este rol?`}</Typography> });
-                                                                e.stopPropagation();
-                                                            }}
-                                                            color="primary"
-                                                            aria-label="archivar"
-                                                            component="label"
-                                                        >
-                                                            <Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar" />
-                                                        </IconButton>
+                                                    {![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus.toUpperCase() : '') &&
+                                                        <>
+                                                            <IconButton
+                                                                onClick={(e) => {
+                                                                    const params = new Map<string, unknown>();
+                                                                    params.set('id', r.id);
+                                                                    params.set('state', (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'SIN_FINALIZAR' : 'ARCHIVADO');
+                                                                    setConfirmationDialog({ action: 'STATE_CHANGE', data: params, opened: true, title: (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Rol' : 'Archivar Rol', content: <Typography variant="body2">{`Seguro que deseas ${(r.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este rol?`}</Typography> });
+                                                                    e.stopPropagation();
+                                                                }}
+                                                                color="primary"
+                                                                aria-label="archivar"
+                                                                component="label"
+                                                            >
+                                                                <Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar" />
+                                                            </IconButton>
+                                                            <IconButton
+                                                                onClick={(e) => {
+                                                                    void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`);
+                                                                    e.stopPropagation();
+                                                                }}
+                                                                color="primary"
+                                                                aria-label="editar"
+                                                                component="label"
+                                                            >
+                                                                <Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar" />
+                                                            </IconButton>   
+                                                            <IconButton
+                                                                onClick={(e) => {
+                                                                    const params = new Map<string, unknown>();
+                                                                    params.set('id', r.id);
+                                                                    setConfirmationDialog({ action: 'DELETE', data: params, opened: true, title: 'Eliminar Rol', content: <Typography variant="body2">Seguro que deseas eliminar este rol?</Typography> });
+                                                                    e.stopPropagation();
+                                                                }}
+                                                                color="primary"
+                                                                aria-label="eliminar"
+                                                                component="label"
+                                                            >
+                                                                <Image src={'/assets/img/iconos/trash_blue.png'} width={16} height={16} alt="archivar" />
+                                                            </IconButton>
+                                                        </>
                                                     }
 
-                                                </>
-                                                <IconButton
-                                                    onClick={(e) => {
-                                                        void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`);
-                                                        e.stopPropagation();
-                                                    }}
-                                                    color="primary"
-                                                    aria-label="editar"
-                                                    component="label"
-                                                >
-                                                    <Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar" />
-                                                </IconButton>
-
-                                                <>
-                                                    {['ACTIVO'].includes(r.estatus.toUpperCase()) &&
-                                                        <IconButton
-                                                            onClick={(e) => {
-                                                                const params = new Map<string, unknown>();
-                                                                params.set('id', r.id);
-                                                                setConfirmationDialog({ action: 'DELETE', data: params, opened: true, title: 'Eliminar Rol', content: <Typography variant="body2">Seguro que deseas eliminar este rol?</Typography> });
-                                                                e.stopPropagation();
-                                                            }}
-                                                            color="primary"
-                                                            aria-label="eliminar"
-                                                            component="label"
-                                                        >
-                                                            <Image src={'/assets/img/iconos/trash_blue.png'} width={16} height={16} alt="archivar" />
-                                                        </IconButton>
-                                                    }
                                                 </>
                                             </MContainer>
+                                        };
+                                        if ([Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus.toUpperCase() : '')) {
+                                            delete content.acciones;
                                         }
+                                        return content;
                                     }) : []}
                                     accordionContent={(element_index: number, container_width: number) => {
                                         const element = filtered_roles[element_index];
@@ -752,6 +846,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                 if (id) {
                                     deleteRol.mutate(id as number);
                                 }
+                                break;
+                            }
+                            case 'PROYECTO_ENVIADO_A_APROBACION': {
+                                updateEstadoProyecto.mutate({
+                                    id: id_proyecto,
+			                        estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION,
+                                })
                                 break;
                             }
                             case 'STATE_CHANGE': {

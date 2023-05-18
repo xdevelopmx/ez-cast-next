@@ -8,6 +8,7 @@ import { MTooltip } from '~/components/shared/MTooltip';
 import { type FiltrosDemograficosRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 
 interface Props {
+    fetching: boolean,
     state: FiltrosDemograficosRolForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
 }

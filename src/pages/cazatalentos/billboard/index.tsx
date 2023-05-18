@@ -57,11 +57,31 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 	});
 
 	useEffect(() => {
+		if (estados_aplicaciones_roles.data) {
+			const id = estados_aplicaciones_roles.data[0]?.id;
+			if (id) {
+				setEstadoAplicacionRol(id);
+			}
+		}
+	}, [estados_aplicaciones_roles.data]);
+
+	useEffect(() => {
 		if (proyectos.data && proyectos.data.length > 0) {
+
+			const latest_proyecto_touched = localStorage.getItem('BILLBOARD-CAZATALENTOS-LATEST-CHANGE-PROYECTO-ID');
+			if (latest_proyecto_touched) {
+				const proyecto = proyectos.data.filter(p => p.id === parseInt(latest_proyecto_touched))[0];
+				if (proyecto) {
+					setSelectedProyecto(proyecto.id);
+				}
+				return;
+			}
+			// si no se tiene un ultimo proyecto tocado entonces elegimos el primer proyecto
 			const proyecto = proyectos.data[0];
 			if (proyecto) {
 				setSelectedProyecto(proyecto.id);
 			}
+
 		}
 	}, [proyectos.data]);
 
@@ -233,6 +253,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 													}, classes: { paper: 'select-children-billboard' } }}
 													value={selected_proyecto.toString()}
 													onChange={(e) => {
+														localStorage.setItem('BILLBOARD-CAZATALENTOS-LATEST-CHANGE-PROYECTO-ID', e.target.value);
 														setSelectedProyecto(parseInt(e.target.value))
 													}}
 												>
@@ -252,22 +273,6 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 										<Grid container item xs={20} sx={{ backgroundColor: '#069cb1', padding: '20px 10px' }} columns={20}>
 											<Grid item xs={4}>
 												<MContainer direction='horizontal' styles={{ gap: 10 }}>
-													<Typography sx={{ paddingRight: 1 }}>Ver</Typography>
-													<MSelect
-														id="estado-aplicacion-rol-select"
-														loading={estados_aplicaciones_roles.isFetching}
-														options={(estados_aplicaciones_roles.data) ? estados_aplicaciones_roles.data.map(e => { return { value: e.id.toString(), label: e.es}}) : []}
-														styleRoot={{ width: '70%' }}
-														value={estado_aplicacion_rol.toString()}
-														onChange={(e) => {
-															setEstadoAplicacionRol(parseInt(e.target.value));
-														}}
-														label=''
-													/>
-												</MContainer>
-											</Grid>
-											<Grid item xs={4}>
-												<MContainer direction='horizontal' styles={{ gap: 10 }}>
 													<Typography>Rol</Typography>
 													<MSelect
 														id="nombre-rol-select"
@@ -280,6 +285,23 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 														value={selected_rol.toString()}
 														onChange={(e) => {
 															setSelectedRol(parseInt(e.target.value))
+														}}
+														label=''
+													/>
+												</MContainer>
+											</Grid>
+											<Grid item xs={4}>
+												<MContainer direction='horizontal' styles={{ gap: 10 }}>
+													<Typography sx={{ paddingRight: 1 }}>Ver</Typography>
+													<MSelect
+														id="estado-aplicacion-rol-select"
+														loading={estados_aplicaciones_roles.isFetching}
+														options={(estados_aplicaciones_roles.data) ? estados_aplicaciones_roles.data.map(e => { return { value: e.id.toString(), label: e.es}}) : []}
+														styleRoot={{ width: '70%' }}
+														value={estado_aplicacion_rol.toString()}
+														disable_default_option
+														onChange={(e) => {
+															setEstadoAplicacionRol(parseInt(e.target.value));
 														}}
 														label=''
 													/>

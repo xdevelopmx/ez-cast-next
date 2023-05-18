@@ -16,6 +16,7 @@ export type NewRol = {
 		nombre: string,
 		id_tipo_rol: number,
 		id_proyecto: number,
+		tipo_trabajo: number[]
 	},
 	compensaciones: {
 		compensacion: {
@@ -46,6 +47,8 @@ export type NewRol = {
 		detalles_adicionales?: string,
 		habilidades: number[],
 		especificacion_habilidad: string,
+		id_color_cabello: number,
+        id_color_ojos: number,
 		nsfw?: {
 			ids: number[],
 			descripcion: string
@@ -245,6 +248,7 @@ export const RolesRouter = createTRPCRouter({
 				include: {
 					lineas: true,
 					foto_referencia: true,
+					tipo_trabajos: true,
 					compensaciones: {
 						include: {
 							sueldo: true,
@@ -335,6 +339,7 @@ export const RolesRouter = createTRPCRouter({
 				id_proyecto: input
 			},
 			include: {
+				aplicaciones_por_talento: true,
 				compensaciones: {
 					include: {
 						sueldo: true,
@@ -415,6 +420,9 @@ export const RolesRouter = createTRPCRouter({
 		return await ctx.prisma.roles.findMany({
 			where: {
 				id_proyecto: input
+			},
+			orderBy: {
+				id: 'asc',
 			},
 		});
 	}),
@@ -525,7 +533,7 @@ export const RolesRouter = createTRPCRouter({
 				});
 
 				if (rol) {
-					if (rol.id_media_lineas) {
+					if (rol.id_media_lineas && (!input.lineas || (input.lineas && input.lineas.id && input.lineas.id === 0))) {
 						const lineas = await ctx.prisma.media.findFirst({
 							where: {
 								id: rol.id_media_lineas
@@ -573,9 +581,21 @@ export const RolesRouter = createTRPCRouter({
 								id_media_lineas: updated_lineas.id,
 							}
 						})
+					} else {
+						rol = await ctx.prisma.roles.update({
+							where: {
+								id: rol.id
+							},
+							include: {
+								selftape: true,
+							},
+							data: {
+								id_media_lineas: null,
+							}
+						})
 					}
 	
-					if (rol.id_media_foto_referencia) {
+					if (rol.id_media_foto_referencia && (!input.foto_referencia || (input.foto_referencia && input.foto_referencia.id && input.foto_referencia.id === 0))) {
 						const foto = await ctx.prisma.media.findFirst({
 							where: {
 								id: rol.id_media_foto_referencia
@@ -625,10 +645,22 @@ export const RolesRouter = createTRPCRouter({
 							}
 						})
 						
+					} else {
+						rol = await ctx.prisma.roles.update({
+							where: {
+								id: rol.id
+							},
+							include: {
+								selftape: true,
+							},
+							data: {
+								id_media_foto_referencia: null
+							}
+						})
 					}
 
 					if (rol.selftape) {
-						if (rol.selftape.id_media_lineas) {
+						if (rol.selftape.id_media_lineas && (!input.lineas_selftape || (input.lineas_selftape && input.lineas_selftape.id && input.lineas_selftape.id === 0))) {
 							const self_lines = await ctx.prisma.media.findFirst({
 								where: {
 									id: rol.selftape.id_media_lineas
@@ -674,6 +706,15 @@ export const RolesRouter = createTRPCRouter({
 									id_media_lineas: updated_lineas.id, 
 								}
 							})
+						} else {
+							rol.selftape = await ctx.prisma.selftapePorRoles.update({
+								where: {
+									id_rol: rol.id
+								},
+								data: {
+									id_media_lineas: null, 
+								}
+							})
 						}
 					}
 				}
@@ -695,6 +736,7 @@ export const RolesRouter = createTRPCRouter({
 				nombre: z.string(),
 				id_tipo_rol: z.number(),
 				id_proyecto: z.number(),
+				tipo_trabajo: z.array(z.number())
 			}),
 			compensaciones: z.object({
 				compensacion: z.object({
@@ -770,6 +812,8 @@ export const RolesRouter = createTRPCRouter({
 				detalles_adicionales: z.string().nullish(),
 				habilidades: z.array(z.number()),
 				especificacion_habilidad: z.string(),
+				id_color_cabello: z.number(),
+				id_color_ojos: z.number(),
 				nsfw: z.object({
 					ids: z.array(z.number()),
 					descripcion: z.string({
@@ -856,13 +900,32 @@ export const RolesRouter = createTRPCRouter({
 				},
 				update: {
 					nombre: input.info_gral.nombre,
-					id_tipo_rol: input.info_gral.id_tipo_rol
+					id_tipo_rol: input.info_gral.id_tipo_rol,
+					id_color_ojos: input.descripcion_rol.id_color_cabello,
+					id_color_cabello: input.descripcion_rol.id_color_cabello
 				},
 				create: {
 					nombre: input.info_gral.nombre,
 					id_tipo_rol: input.info_gral.id_tipo_rol,
 					id_proyecto: input.info_gral.id_proyecto,
+					id_color_ojos: input.descripcion_rol.id_color_cabello,
+					id_color_cabello: input.descripcion_rol.id_color_cabello
 				},
+			})
+
+			// TIPO DE TRABAJO
+
+			await ctx.prisma.tipoTrabajoPorRoles.deleteMany({
+				where: {
+					id_rol: rol.id
+				}
+			})
+
+			await ctx.prisma.tipoTrabajoPorRoles.createMany({
+				data: input.info_gral.tipo_trabajo.map(t => { return {
+					id_rol: rol.id,
+					id_tipo_trabajo: t	
+				}})
 			})
 
 			// COMPENSACIONES
@@ -1288,6 +1351,8 @@ export const RolesRouter = createTRPCRouter({
 					nombre: input.nombre,
 					id_tipo_rol: input.id_tipo_rol,
 					id_proyecto: input.id_proyecto,
+					id_color_cabello: 0,
+					id_color_ojos: 0
 				},
 			})
 			return rol;
@@ -2257,10 +2322,13 @@ export const RolesRouter = createTRPCRouter({
 								//• Rango de Edad: 15 % (REQUISITO)
 								//(Dentro del rango de Edad a interpretar)
 								//• Preferencias de Rol y Compensación: 15 % (REQUISITO)
-								//-Tipo de Trabajo (requisito)
+								//-Tipo de Trabajo (requisito) agregar filtroooo
+
 								//-Selección Proyecto pagado/no pagado (requisito)
 								//-Locación de Trabajo, dentro de la selección principal o adicionales (requisito) %COMPARAR CON LA LOCACION DEL CASTING
-								//-Disponibilidad para... (No requisito)
+								
+								//-Disponibilidad para... (No requisito) ignorar
+								
 								//• Apariencia o Rasgos: 15% (REQUISITO)
 								//-Color de Cabello (Requisito)
 								//-Estilo de Cabello (No requisito)
@@ -2273,8 +2341,7 @@ export const RolesRouter = createTRPCRouter({
 								//(Extra)
 								//• Habilidades: + 10 %
 								//(A partir de 2 habilidades compatibles, Extra)
-								//• Activos: + 5 %
-								//(Extra)
+							
 							})
 							return result;
 						}

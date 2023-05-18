@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { type CSSProperties } from "react";
+import { useRef, type CSSProperties, useEffect, useState } from "react";
 
 export default function MotionDiv(props: {
     children: JSX.Element,

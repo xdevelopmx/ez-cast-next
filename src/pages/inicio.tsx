@@ -71,7 +71,9 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
           </div>
           <hr className="mb-1 hr_gold" />
           {destacados.data && destacados.data.length > 0 &&
-             <Carroucel slidesPerView={6}>
+             <Carroucel 
+              arrowsColor="#F9B233"
+              slidesPerView={6}>
                {destacados.data.map((proyecto, i) => {
                 return <MContainer key={i} direction='vertical'>
                   <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
@@ -91,7 +93,9 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
           }
           <p className="mt-5 h5">Ahora casteando en EZ-Cast</p>
           <hr className="hr_blue" />
-          <Carroucel slidesPerView={6}>
+          <Carroucel 
+            arrowsColor="#069cb1"
+            slidesPerView={6}>
               {proyectos.data && proyectos.data.map((proyecto, i) => {
                   return <MContainer key={i} direction='vertical'>
                       <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.url) ? proyecto.url : '/assets/img/no-image.png'} alt="" /> 

@@ -51,9 +51,6 @@ const containerVariants = {
 };
 
 export const DetallesProyecto: FC<PropsProyecto> = (props) => {
-
-    const [showPreview, setShowPreview] = useState(false)
-
     const proyecto = api.proyectos.getById.useQuery(props.id_proyecto, {
         refetchOnWindowFocus: false
     });
@@ -63,7 +60,7 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
             <GridMotion container item xs={12} sx={{ alignItems: 'flex-start' }}>
                 <Grid item xs={4}>
                     <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/12' }}>
-                        <Image src={(proyecto.data && proyecto.data.foto_portada) ? proyecto.data.foto_portada.url : ''} style={{ objectFit: 'cover' }} fill alt="" />
+                        <Image src={(proyecto.data && proyecto.data.foto_portada) ? proyecto.data.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover' }} fill alt="" />
                     </Box>
                 </Grid>
                 <Grid
@@ -110,18 +107,6 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                                     {(proyecto.data && proyecto.data.tipo) ? (proyecto.data.tipo.id_tipo_proyecto === 99) ? proyecto.data.tipo.descripcion : proyecto.data.tipo.tipo_proyecto.es : 'N/D'}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-
-                                <Button onClick={() => setShowPreview(v => !v)}>
-                                    <MotionImage
-                                        src="/assets/img/iconos/arrow_d_blue.svg"
-                                        width={20}
-                                        height={20}
-                                        alt=""
-                                        animate={{
-                                            rotate: showPreview ? '180deg' : '0'
-                                        }}
-                                    />
-                                </Button>
                             </Box>
                             <Typography>
                                 <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Sinopsis:</Typography>
@@ -131,53 +116,50 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                     </Grid>
                 </Grid>
             </GridMotion>
-            {showPreview &&
-            
-                <GridMotion
-                    item container xs={12}
-                    variants={containerVariants}
-                    initial="closed"
-                    animate={showPreview ? "open" : "closed"}
-                    transition={{ duration: 0.3 }}
-                >
-                    {proyecto.data && proyecto.data.detalles_adicionales && 
-                        <IndividualData title={'Detalles adicionales:'}>
-                            <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
-                                {proyecto.data.detalles_adicionales}
-                            </Typography>
-                        </IndividualData>
-                    }
-
-                    <IndividualData title={'Director Casting:'}>
-                        <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                            {proyecto.data?.director_casting}
+            <GridMotion
+                item container xs={12}
+                variants={containerVariants}
+                initial="closed"
+                animate={"open"}
+                transition={{ duration: 0.3 }}
+            >
+                {proyecto.data && proyecto.data.detalles_adicionales && 
+                    <IndividualData title={'Detalles adicionales:'}>
+                        <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
+                            {proyecto.data.detalles_adicionales}
                         </Typography>
                     </IndividualData>
-                    {proyecto.data && proyecto.data.productor &&
-                        <IndividualData title={'Productor:'}>
-                        
-                        </IndividualData>
-                    }
+                }
 
-                    {proyecto.data && proyecto.data.casa_productora &&
-                        <IndividualData title={'Casa productora:'}>
-                            {proyecto.data.casa_productora}
-                        </IndividualData>
-                    }
+                <IndividualData title={'Director Casting:'}>
+                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                        {proyecto.data?.director_casting}
+                    </Typography>
+                </IndividualData>
+                {proyecto.data && proyecto.data.productor &&
+                    <IndividualData title={'Productor:'}>
+                    
+                    </IndividualData>
+                }
 
-                    {proyecto.data && proyecto.data.director &&
-                        <IndividualData title={'Director:'}>
-                            {proyecto.data.director}
-                        </IndividualData>
-                    }
+                {proyecto.data && proyecto.data.casa_productora &&
+                    <IndividualData title={'Casa productora:'}>
+                        {proyecto.data.casa_productora}
+                    </IndividualData>
+                }
 
-                    {proyecto.data && proyecto.data.agencia_publicidad &&
-                        <IndividualData title={'Agencia de publicidad:'}>
-                            {proyecto.data.agencia_publicidad}
-                        </IndividualData>
-                    } 
-                </GridMotion>
-            }
+                {proyecto.data && proyecto.data.director &&
+                    <IndividualData title={'Director:'}>
+                        {proyecto.data.director}
+                    </IndividualData>
+                }
+
+                {proyecto.data && proyecto.data.agencia_publicidad &&
+                    <IndividualData title={'Agencia de publicidad:'}>
+                        {proyecto.data.agencia_publicidad}
+                    </IndividualData>
+                } 
+            </GridMotion>
         </Grid>
     )
 }

@@ -1,20 +1,27 @@
 import { Grid, Typography } from "@mui/material"
-import { type FC, useReducer } from "react";
-import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
+import { type FC, useReducer, useEffect } from "react";
+import { MContainer } from "~/components/layout/MContainer";
+import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import { MTooltip } from "~/components/shared/MTooltip"
 import { type RolInformacionGeneralForm } from "~/pages/cazatalentos/roles/agregar-rol";
 import { api } from '~/utils/api';
 
 
 interface Props {
+    fetching: boolean,
     state: RolInformacionGeneralForm,
     onFormChange: (input: { [id: string]: unknown }) => void;
     //onSaveChanges: (...args: unknown[]) => unknown;
 }
 
-export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange }) => {
+export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange }) => {
 
     const tipos_roles = api.catalogos.getTiposRoles.useQuery(undefined, {
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+    });
+
+    const tipos_trabajo = api.catalogos.getTipoDeTrabajos.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
     });
@@ -63,39 +70,75 @@ export const InformacionGeneralRol: FC<Props> = ({ state, onFormChange }) => {
                     label='Nombre de rol*'
                 />
             </Grid>
-            <Grid item xs={12} mt={4}>
-                <MRadioGroup
-                    label='¿Este es un rol principal o rol extra?*'
-                    labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
-                    style={{ gap: 0 }}
-                    id="rol-principal-o-extra"
-                    options={['Principal', 'Extra']}
-                    value={state.rol_principal_secundario}
-                    direction='vertical'
-                    onChange={(e) => {
-                        onFormChange({
-                            rol_principal_secundario: e.target.value
-                        })
-                    }}
-                />
+            <Grid item xs={12} md={6} mt={4}>
+                <MContainer direction="vertical" styles={{gap: 8}}>
+
+                    <MRadioGroup
+                        label='¿Este es un rol principal o rol extra?*'
+                        labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
+                        style={{ gap: 0 }}
+                        id="rol-principal-o-extra"
+                        options={['Principal', 'Extra']}
+                        value={state.rol_principal_secundario}
+                        direction='vertical'
+                        onChange={(e) => {
+                            let tipo_rol = (!tipos_roles.data) ? null : tipos_roles.data.filter(tr => tr.tipo.toLowerCase() === e.target.value.toLowerCase())[0];
+                            
+                            onFormChange({
+                                rol_principal_secundario: e.target.value,
+                                id_tipo_rol: (e.target.value !== state.rol_principal_secundario) ? (tipo_rol) ? tipo_rol.id : 0 : state.id_tipo_rol
+                            })
+                        }}
+                    />
+                    <MSelect
+                        id="tipo-rol-select"
+                        loading={tipos_roles.isFetching}
+                        options={
+                            (tipos_roles.data)
+                                ? tipos_roles.data.filter(tr => tr.tipo.toLowerCase() === state.rol_principal_secundario.toLowerCase()).map(s => { return { value: s.id.toString(), label: s.es } })
+                                : []
+                        }
+                        value={`${state.id_tipo_rol}`}
+                        className={'form-input-md'}
+                        onChange={(e) => {
+                            onFormChange({
+                                id_tipo_rol: parseInt(e.target.value)
+                            })
+                        }}
+                        label='Tipo de rol*'
+                    />
+                </MContainer>
             </Grid>
-            <Grid item xs={12}>
-                <MSelect
-                    id="tipo-rol-select"
-                    loading={tipos_roles.isFetching}
-                    options={
-                        (tipos_roles.data)
-                            ? tipos_roles.data.map(s => { return { value: s.id.toString(), label: s.es } })
-                            : []
-                    }
-                    value={`${state.id_tipo_rol}`}
-                    className={'form-input-md'}
-                    onChange={(e) => {
+            <Grid item xs={12} md={6} mt={2}>
+                <MCheckboxGroup
+                    loading={fetching}
+                    onAllOptionChecked={(checked) => {
                         onFormChange({
-                            id_tipo_rol: parseInt(e.target.value)
+                            tipo_trabajo: (!checked) ? [] : tipos_trabajo.data ? tipos_trabajo.data.map((v) => v.id) : []
                         })
                     }}
-                    label='Tipo de rol*'
+                    direction='vertical'
+                    title="Tipo de trabajo"
+                    onChange={(e, i) => {
+                        if (tipos_trabajo.data) {
+                            const tipo_trabajo = tipos_trabajo.data[i]
+                            if (tipo_trabajo) {
+                                let nuevosTipos = []
+                                if (state.tipo_trabajo.includes(tipo_trabajo?.id)) {
+                                    nuevosTipos = state.tipo_trabajo.filter((id) => id !== tipo_trabajo.id)
+                                } else {
+                                    nuevosTipos = [...state.tipo_trabajo, tipo_trabajo.id]
+                                }
+                                onFormChange({
+                                    tipo_trabajo: nuevosTipos
+                                })
+                            }
+                        }
+                    }}
+                    id="tipo-trabajo"
+                    labelStyle={{ marginBottom: 0 }}
+                    options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
+                    values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
             </Grid>
         </Grid>

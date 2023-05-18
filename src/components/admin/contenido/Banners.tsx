@@ -140,78 +140,87 @@ export const Banners = () => {
 						}
 					</>
 				</MotionDiv>
-				<Button style={{ minWidth: 150, padding: 6, fontWeight: 800, color: '#069cb1', marginTop: 8 }} className="btn  btn-social mr-1 ml-1" variant="outlined" component="label">
-					Seleccionar Archivo
-					<input onChange={async (ev) => {
-						if (ev.target.files) {
-							const file = ev.target.files[0];
-							if (file) {
-								const base64 = await FileManager.convertFileToBase64(file);
-								setBanner(prev => { 
-									return {
-										...prev,
-										archivo: {
-											base64: base64,
-											name: file.name,
-											file: file
-										}
-									}
-								})
-							}
-						}
-					}} hidden accept="video/mp4, video/mov, image/png, image/jpg, image/jpeg, image/gif" type="file" />
-				</Button>
-				<MContainer direction="horizontal" justify='space-between' styles={{padding: 16}}>
+				<MContainer direction="horizontal">
 
-					<MSelect
-						id="posicion-contenido-select"
-						labelStyle={{ fontWeight: 600 }}
-						labelClassName={'form-input-label'}
-						label='Posicion Contenido*'
-						options={[{value: 'top', label: 'Arriba'}, {value: 'bottom', label: 'Abajo'}, {value: 'left', label: 'Izquierda'}, {value: 'Right', label: 'Derecha'}]}
-						value={banner.position}
-						className={'form-input-md'}
-						onChange={(e) => {
-							setBanner(prev => { 
-								return {
-									...prev,
-									position: e.target.value
+					<Button style={{ minWidth: 150, padding: 6, fontWeight: 800, color: '#069cb1', marginTop: 8 }} className="btn  btn-social mr-1 ml-1" variant="outlined" component="label">
+						Seleccionar Archivo
+						<input onChange={async (ev) => {
+							if (ev.target.files) {
+								const file = ev.target.files[0];
+								if (file) {
+									let fr = new FileReader;
+									fr.onload = function() { // file is loaded
+										let img = document.createElement('img');
+										img.onload = async function() {
+
+											if (img.width === 1000 && img.height === 250) {
+												const base64 = await FileManager.convertFileToBase64(file);
+												setBanner(prev => { 
+													return {
+														...prev,
+														archivo: {
+															base64: base64,
+															name: file.name,
+															file: file
+														}
+													}
+												})
+											} else {
+												notify('warning', 'La resolucion de la imagen debe ser de 1000 x 250 pixeles');
+											}
+
+											alert(`${img.width} x ${img.height}`); // image is loaded; sizes are available
+										};
+
+										img.src = fr.result as string; // is the data URL because called with readAsDataURL
+									};
+
+									fr.readAsDataURL(file); 
 								}
-							})
-						}}
-					/>
-					<FormGroup
-						className={'form-input-md'}
-						style={{ width: 300}}
-						labelStyle={{ fontWeight: 600, width: '100%' }}
-						labelClassName={'form-input-label'}
-						value={banner.text}
-						label='Texto Contenido'
-						onChange={(e) => {
-							setBanner(prev => { 
-								return {
-									...prev,
-									text: e.target.value
-								}
-							})
-						}}
-					/>
-					<FormGroup
-						className={'form-input-md'}
-						labelStyle={{ fontWeight: 600 }}
-						labelClassName={'form-input-label'}
-						label='Link Redireccion*'
-						value={banner.redirect_url}
-						onChange={(e) => {
-							setBanner(prev => { 
-								return {
-									...prev,
-									redirect_url: e.target.value
-								}
-							})
-						}}
-					/>
-					<MRadioGroup
+							}
+						}} hidden accept="video/mp4, video/mov, image/png, image/jpg, image/jpeg, image/gif" type="file" />
+					</Button>
+					<Alert style={{margin: 8}} severity="info">Resolucion Requerida: 1000 x 250 pixeles</Alert>
+				</MContainer>
+				<MContainer direction="horizontal" justify='space-between' styles={{padding: 16}}>
+					{
+						/*
+						
+						
+							<MSelect
+								id="posicion-contenido-select"
+								labelStyle={{ fontWeight: 600 }}
+								labelClassName={'form-input-label'}
+								label='Posicion Contenido*'
+								options={[{value: 'top', label: 'Arriba'}, {value: 'bottom', label: 'Abajo'}, {value: 'left', label: 'Izquierda'}, {value: 'Right', label: 'Derecha'}]}
+								value={banner.position}
+								className={'form-input-md'}
+								onChange={(e) => {
+									setBanner(prev => { 
+										return {
+											...prev,
+											position: e.target.value
+										}
+									})
+								}}
+							/>
+							<FormGroup
+								className={'form-input-md'}
+								style={{ width: 300}}
+								labelStyle={{ fontWeight: 600, width: '100%' }}
+								labelClassName={'form-input-label'}
+								value={banner.text}
+								label='Texto Contenido'
+								onChange={(e) => {
+									setBanner(prev => { 
+										return {
+											...prev,
+											text: e.target.value
+										}
+									})
+								}}
+							/>
+							<MRadioGroup
 						label='¿Mostrar como boton?'
 						labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
 						style={{ gap: 0 }}
@@ -224,6 +233,25 @@ export const Banners = () => {
 								return {
 									...prev,
 									isButton: e.target.value === 'Si'
+								}
+							})
+						}}
+					/>
+						*/
+					}
+					<FormGroup
+						className={'form-input-md'}
+						labelStyle={{ fontWeight: 600 }}
+						labelClassName={'form-input-label'}
+						label='Link Redireccion*'
+						value={banner.redirect_url}
+						style={{width: '50%'}}
+						rootStyle={{width: '100%'}}
+						onChange={(e) => {
+							setBanner(prev => { 
+								return {
+									...prev,
+									redirect_url: e.target.value
 								}
 							})
 						}}
