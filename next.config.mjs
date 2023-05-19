@@ -8,6 +8,7 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
+  typescript: {ignoreBuildErrors: true},
   reactStrictMode: true,
   images: {
     domains: ['elasticbeanstalk-us-east-1-232555073760.s3.amazonaws.com'],

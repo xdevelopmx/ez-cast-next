@@ -166,7 +166,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 	const rol_applications_content = useMemo(() => {
 		if (rol_applications.isFetching && selected_rol > 0) {
 			return Array.from({length: pagination.page_size}).map((v, i) => {
-				return <Skeleton sx={{width: '100%', border: '4px solid #069cb1', height: 850, transformOrigin: 'top'}}/>;
+				return <Skeleton key={i} sx={{width: '100%', border: '4px solid #069cb1', height: 850, transformOrigin: 'top'}}/>;
 			});
 		}
 		if (rol_applications.data && rol_applications.data.rol.aplicaciones_por_talento.length > 0) {
@@ -257,7 +257,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 														setSelectedProyecto(parseInt(e.target.value))
 													}}
 												>
-														{proyectos.data?.map(p => (<MenuItem value={p.id}>{p.nombre}</MenuItem>))}
+														{proyectos.data?.map((p, i) => (<MenuItem key={i} value={p.id}>{p.nombre}</MenuItem>))}
 												</Select>
 											</Box>
 										</Box>

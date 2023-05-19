@@ -12,9 +12,6 @@ interface Props {
 
 export const PerfilTable: FC<Props> = ({ rol }) => {
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    console.log({ rol });
-
     return (
         <Grid container item xs={12} mt={1}>
             <Grid container item xs={20} sx={{ backgroundColor: '#069cb1', padding: '20px 10px' }} columns={20}>
@@ -131,11 +128,15 @@ export const PerfilTable: FC<Props> = ({ rol }) => {
                 </Box>
             </Grid>
             <Grid container item xs={12} gap={1} sx={{ justifyContent: 'space-between' }} mt={1}>
-                {
-                    Array.from({ length: 12 }).map((_, i) => (
-                        <TalentoTableItem key={i} />
-                    ))
-                }
+                {/*
+                
+                    {
+                        Array.from({ length: 12 }).map((_, i) => (
+                            <TalentoTableItem key={i} />
+                        ))
+                    }
+            
+                */}
             </Grid>
             <Grid xs={12} mt={4}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

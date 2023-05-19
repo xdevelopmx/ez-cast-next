@@ -110,14 +110,12 @@ export const FileManager = {
                 const error = e as Error;
                 response.error = error.message;
             }
-            console.log('URL PARA ELIMINAR ', clave);
-            console.log('\n\n\n\n', response.url);
             if (response.url) {
 
                 try {
-                    const result_delete = await (await fetch(response.url, {
+                    const result_delete = await fetch(response.url, {
                         method: 'DELETE'
-                    }));   
+                    });   
                     console.log('RESULT_DELETE', result_delete.ok);
                     response.deleted = result_delete.ok;
                 } catch (e) {

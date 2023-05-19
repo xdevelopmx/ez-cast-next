@@ -108,7 +108,7 @@ export const RolesRouter = createTRPCRouter({
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
 			if (input <= 0) return null;
-			let rol = await ctx.prisma.roles.findUnique({
+			const rol = await ctx.prisma.roles.findUnique({
 				where: {id: input},
 				include: {
 					casting: true
@@ -165,7 +165,7 @@ export const RolesRouter = createTRPCRouter({
 			const count_applications = await ctx.prisma.aplicacionRolPorTalento.count({
 				where: applications_where
 			});
-			let rol_con_cazatalento = await ctx.prisma.roles.findUnique({
+			const rol_con_cazatalento = await ctx.prisma.roles.findUnique({
 				where: {id: input.id_rol},
 				include: {
 					proyecto: true

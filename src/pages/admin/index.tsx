@@ -12,7 +12,7 @@ import { TipoUsuario } from "~/enums";
 
 const AdminIndexPage: NextPage = () => {
     const [option_selected, setOptionSelected] = useState< {
-        title: String,
+        title: string,
         icon?: JSX.Element,
         key: string
     }>({title: '', key: ''});

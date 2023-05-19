@@ -30,7 +30,7 @@ type RolesIndexPageProps = {
 }
 
 function handleRolApplication(map: Map<string, number>, key: string) {
-    let count = map.get(key);
+    const count = map.get(key);
     if (count) {
         map.set(key, count + 1);
     } else {
@@ -475,7 +475,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     styleHeaderTableCell={{ padding: '5px !important' }}
                                     loading={roles.isFetching}
                                     data={(filtered_roles) ? filtered_roles.map(r => {
-                                        let content: {nombre: JSX.Element, estado: string, no_vistos: JSX.Element, vistos: JSX.Element, destacados: JSX.Element, audicion: JSX.Element, callback: JSX.Element, acciones?: JSX.Element } = {
+                                        const content: {nombre: JSX.Element, estado: string, no_vistos: JSX.Element, vistos: JSX.Element, destacados: JSX.Element, audicion: JSX.Element, callback: JSX.Element, acciones?: JSX.Element } = {
                                             nombre: <MContainer direction="horizontal">
                                                 <CircleIcon style={{ color: (r.estatus.toUpperCase() === 'ACTIVO') ? 'green' : 'grey', width: 12, height: 12, marginTop: 6, marginRight: 4 }} />
                                                 <Typography variant="subtitle2">

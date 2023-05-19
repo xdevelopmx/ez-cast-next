@@ -21,7 +21,7 @@ export const CazatalentosRouter = createTRPCRouter({
 		.query(async ({ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				let talentos_destacados = await ctx.prisma.talentosDestacados.findMany({
+				const talentos_destacados = await ctx.prisma.talentosDestacados.findMany({
 					where: {
 						id_cazatalentos: parseInt(user.id),
 						calificacion: 5
@@ -93,7 +93,7 @@ export const CazatalentosRouter = createTRPCRouter({
 		.query(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				let reporte = await ctx.prisma.reporteTalentos.findFirst({
+				const reporte = await ctx.prisma.reporteTalentos.findFirst({
 					where: {
 						id_cazatalentos: parseInt(user.id),
 						id_talento: input.id_talento
@@ -119,7 +119,7 @@ export const CazatalentosRouter = createTRPCRouter({
 		.query(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				let nota = await ctx.prisma.notasTalentos.findFirst({
+				const nota = await ctx.prisma.notasTalentos.findFirst({
 					where: {
 						id_cazatalentos: parseInt(user.id),
 						id_talento: input.id_talento
@@ -142,7 +142,7 @@ export const CazatalentosRouter = createTRPCRouter({
 		.query(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				let destacado = await ctx.prisma.talentosDestacados.findFirst({
+				const destacado = await ctx.prisma.talentosDestacados.findFirst({
 					where: {
 						id_cazatalentos: parseInt(user.id),
 						id_talento: input.id_talento
@@ -166,7 +166,7 @@ export const CazatalentosRouter = createTRPCRouter({
 		.query(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				let audicion = await ctx.prisma.audicionTalento.findFirst({
+				const audicion = await ctx.prisma.audicionTalento.findFirst({
 					where: {
 						id_rol: input.id_rol,
 						id_talento: input.id_talento

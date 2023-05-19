@@ -148,9 +148,9 @@ export const Banners = () => {
 							if (ev.target.files) {
 								const file = ev.target.files[0];
 								if (file) {
-									let fr = new FileReader;
+									const fr = new FileReader;
 									fr.onload = function() { // file is loaded
-										let img = document.createElement('img');
+										const img = document.createElement('img');
 										img.onload = async function() {
 
 											if (img.width === 1000 && img.height === 250) {

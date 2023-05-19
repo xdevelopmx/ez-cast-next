@@ -82,7 +82,7 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                         value={state.rol_principal_secundario}
                         direction='vertical'
                         onChange={(e) => {
-                            let tipo_rol = (!tipos_roles.data) ? null : tipos_roles.data.filter(tr => tr.tipo.toLowerCase() === e.target.value.toLowerCase())[0];
+                            const tipo_rol = (!tipos_roles.data) ? null : tipos_roles.data.filter(tr => tr.tipo.toLowerCase() === e.target.value.toLowerCase())[0];
                             
                             onFormChange({
                                 rol_principal_secundario: e.target.value,

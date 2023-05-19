@@ -185,7 +185,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                             <Typography style={{ marginRight: 16 }}>Destacar </Typography>
                             <Box sx={{ display: 'flex', gap: .5 }}>
                                 {Array.from({length: 5}).map((v, i) => {
-                                    return <Image style={{cursor: 'pointer'}} onClick={() => { handleTalentoStars(i + 1) }} src={(talento_stars.data && talento_stars.data  >= (i + 1)) ? '/assets/img/iconos/estrella-fill.svg' : '/assets/img/iconos/estrella_empty.svg'} width={20} height={20} alt="" />
+                                    return <Image key={i} style={{cursor: 'pointer'}} onClick={() => { handleTalentoStars(i + 1) }} src={(talento_stars.data && talento_stars.data  >= (i + 1)) ? '/assets/img/iconos/estrella-fill.svg' : '/assets/img/iconos/estrella_empty.svg'} width={20} height={20} alt="" />
                                 })}
                             </Box>
                         </MContainer>

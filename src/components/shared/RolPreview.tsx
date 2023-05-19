@@ -451,8 +451,8 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                             })}
                         </Box>
                         {rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').length > 0 &&
-                            rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').map(r => {
-                                return <MContainer direction='horizontal' justify='start' styles={{width: '80%', alignItems: 'end'}}>
+                            rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').map((r, i) => {
+                                return <MContainer key={i} direction='horizontal' justify='start' styles={{width: '80%', alignItems: 'end'}}>
                                     <motion.img width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="icono" />
                                     <Typography ml={2}>{r.url}</Typography>
                                 </MContainer>

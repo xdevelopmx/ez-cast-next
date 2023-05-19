@@ -241,13 +241,13 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                             rootStyle={{ margin: 0, width: '130px' }}
                                                             style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
                                                             onChange={(e) => {
-                                                                
+                                                                console.log(e);
                                                             }}
                                                         />
                                                         <MCheckboxGroup
                                                             onChange={(e, i) => {
                                                                 setFormFiltros(prev => { return { ...prev, autorellenar: e } })
-                                                            } }
+                                                            }}
                                                             direction='vertical'
                                                             id="talento-autorellenar"
                                                             options={['Auto-rellenar basado en perfil']}
@@ -586,9 +586,9 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_tipo_rol.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_tipo_rol.map(tipo => {
+                            {form_filtros.id_tipo_rol.map((tipo, i) => {
                                 return (
-                                    <Tag styles={{marginRight: 1}} text={tipo === 'PRINCIPAL' ? 'Principal' : 'Extra'}
+                                    <Tag key={i} styles={{marginRight: 1}} text={tipo === 'PRINCIPAL' ? 'Principal' : 'Extra'}
                                         onRemove={(e) => {
                                             setFormFiltros(prev => {return {...prev, id_tipo_rol: form_filtros.id_tipo_rol.filter(i => i !== tipo)}})
                                         }}
@@ -603,11 +603,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_tipo_proyecto.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_tipo_proyecto.map(tipo => {
+                            {form_filtros.id_tipo_proyecto.map((tipo, i) => {
                                 const tipo_proyecto = tipos_proyectos.data?.filter(tp => tp.id === tipo)[0];
                                 if (tipo_proyecto) {
                                     return (
-                                        <Tag styles={{marginRight: 1}} text={tipo_proyecto.es}
+                                        <Tag key={i} styles={{marginRight: 1}} text={tipo_proyecto.es}
                                             onRemove={(e) => {
                                                 setFormFiltros(prev => {return {...prev, id_tipo_proyecto: form_filtros.id_tipo_proyecto.filter(i => i !== tipo)}})
                                             }}
@@ -623,9 +623,9 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_preferencias_de_pago.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_preferencias_de_pago.map(tipo => {
+                            {form_filtros.id_preferencias_de_pago.map((tipo, i) => {
                                 return (
-                                    <Tag styles={{marginRight: 1}} text={tipo === 1 ? 'Pagado' : 'No Pagado'}
+                                    <Tag key={i} styles={{marginRight: 1}} text={tipo === 1 ? 'Pagado' : 'No Pagado'}
                                         onRemove={(e) => {
                                             setFormFiltros(prev => {return {...prev, id_preferencias_de_pago: form_filtros.id_preferencias_de_pago.filter(i => i !== tipo)}})
                                         }}
@@ -646,11 +646,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_union.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_union.map(tipo => {
+                            {form_filtros.id_union.map((tipo, i) => {
                                 const union = uniones.data?.filter(tp => tp.id === tipo)[0];
                                 if (union) {
                                     return (
-                                        <Tag styles={{marginRight: 1}} text={union.es}
+                                        <Tag key={i} styles={{marginRight: 1}} text={union.es}
                                             onRemove={(e) => {
                                                 if (form_filtros.autorellenar) {
                                                     notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
@@ -676,11 +676,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_genero_rol.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_genero_rol.map(tipo => {
+                            {form_filtros.id_genero_rol.map((tipo, i) => {
                                 const genero = generos_rol.data?.filter(tp => tp.id === tipo)[0];
                                 if (genero) {
                                     return (
-                                        <Tag styles={{marginRight: 1}} text={genero.es}
+                                        <Tag key={i} styles={{marginRight: 1}} text={genero.es}
                                             onRemove={(e) => {
                                                 if (form_filtros.autorellenar) {
                                                     notify('warning', 'No se puede quitar este filtro cuando esta activada la opcion de autorellenado');
@@ -700,11 +700,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_apariencia_etnica.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_apariencia_etnica.map(tipo => {
+                            {form_filtros.id_apariencia_etnica.map((tipo, i) => {
                                 const etnia = apariencias_etnicas.data?.filter(tp => tp.id === tipo)[0];
                                 if (etnia) {
                                     return (
-                                        <Tag styles={{marginRight: 1}} text={etnia.nombre}
+                                        <Tag key={i} styles={{marginRight: 1}} text={etnia.nombre}
                                             onRemove={(e) => {
                                                 setFormFiltros(prev => {return {...prev, id_apariencia_etnica: form_filtros.id_apariencia_etnica.filter(i => i !== tipo)}})
                                             }}
@@ -720,11 +720,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_nacionalidades.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_nacionalidades.map(tipo => {
+                            {form_filtros.id_nacionalidades.map((tipo, i) => {
                                 const nacionalidad = nacionalidades.data?.filter(tp => tp.id === tipo)[0];
                                 if (nacionalidad) {
                                     return (
-                                        <Tag styles={{marginRight: 1}} text={nacionalidad.es}
+                                        <Tag key={i} styles={{marginRight: 1}} text={nacionalidad.es}
                                             onRemove={(e) => {
                                                 setFormFiltros(prev => {return {...prev, id_nacionalidades: form_filtros.id_nacionalidades.filter(i => i !== tipo)}})
                                             }}
@@ -740,11 +740,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                             {form_filtros.id_estado_republica.length === 0 &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.id_estado_republica.map(tipo => {
+                            {form_filtros.id_estado_republica.map((tipo, i) => {
                                 const ubicacion = estados_republica.data?.filter(tp => tp.id === tipo)[0];
                                 if (ubicacion) {
                                     return (
-                                        <Tag styles={{marginRight: 1}} text={ubicacion.es}
+                                        <Tag key={i} styles={{marginRight: 1}} text={ubicacion.es}
                                             onRemove={(e) => {
                                                 setFormFiltros(prev => {return {...prev, id_estado_republica: form_filtros.id_estado_republica.filter(i => i !== tipo)}})
                                             }}

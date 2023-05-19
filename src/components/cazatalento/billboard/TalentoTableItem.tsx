@@ -100,7 +100,7 @@ export const TalentoTableItem = (props: {
                 <Typography fontWeight={800} sx={{ color: '#069cb1' }}>{props.nombre}</Typography>
                 <Box sx={{ display: 'flex', gap: .5 }}>
                     {Array.from({length: 5}).map((v, i) => {
-                        return <Image style={{cursor: 'pointer'}} src={(props.rating >= (i + 1)) ? '/assets/img/iconos/estrella-fill.svg' : '/assets/img/iconos/estrella_empty.svg'} width={10} height={10} alt="" />
+                        return <Image key={i} style={{cursor: 'pointer'}} src={(props.rating >= (i + 1)) ? '/assets/img/iconos/estrella-fill.svg' : '/assets/img/iconos/estrella_empty.svg'} width={10} height={10} alt="" />
                     })}
                 </Box>
                 <Box sx={{ display: 'flex' }}>
@@ -125,7 +125,7 @@ export const TalentoTableItem = (props: {
                 <Box sx={{ display: 'flex', gap: 1.5, marginTop: 1 }}>
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}&scroll_section=media`);
+                            void router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}&scroll_section=media`);
                         }}
                         text='Videos Talento'
                         color='blue'
@@ -134,7 +134,7 @@ export const TalentoTableItem = (props: {
                     />
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`)
+                            void router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`)
                         }}
                         text='Documento Talento'
                         color='blue'
@@ -143,7 +143,7 @@ export const TalentoTableItem = (props: {
                     />
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}&scroll_section=media`);
+                            void router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}&scroll_section=media`);
                         }}
                         text='Fotos Talento'
                         color='blue'
@@ -152,7 +152,7 @@ export const TalentoTableItem = (props: {
                     />
                     <MTooltip
                         onClick={() => {
-                            router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`)
+                            void router.push(`/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`)
                         }}
                         text='Sitio Web'
                         color='blue'

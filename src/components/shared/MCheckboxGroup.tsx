@@ -40,8 +40,8 @@ export const MCheckboxGroup: FC<Props> = ({
                 </Typography>
             }
             {loading &&
-                Array.from({length: elements_count}).map(s => {
-                    return <Skeleton style={style}></Skeleton>; 
+                Array.from({length: elements_count}).map((s, i) => {
+                    return <Skeleton key={i} style={style}></Skeleton>; 
                 })
             }
             {!loading && onAllOptionChecked &&
