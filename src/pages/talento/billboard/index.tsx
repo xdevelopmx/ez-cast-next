@@ -46,7 +46,6 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         id_estado_republica: number[],
         id_union: number[],
         id_tipo_rol: string[],
-        tipo_rango_edad: string,
         edad_inicio: number,
         edad_fin: number,
         id_tipo_proyecto: number[],
@@ -66,12 +65,12 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         id_estados_republica: form_filtros.id_estado_republica,
         id_uniones: form_filtros.id_union,
         tipos_roles: form_filtros.id_tipo_rol,
-        tipo_rango_edad: form_filtros.tipo_rango_edad,
         edad_inicio: form_filtros.edad_inicio,
         edad_fin: form_filtros.edad_fin,
         id_tipos_proyectos: form_filtros.id_tipo_proyecto,
         id_generos_rol: form_filtros.id_genero_rol,
         id_apariencias_etnicas: form_filtros.id_apariencia_etnica,
+        id_nacionalidades: form_filtros.id_nacionalidades,
         id_preferencias_de_pago: form_filtros.id_preferencias_de_pago
     }, {
         refetchOnWindowFocus: false
@@ -304,11 +303,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     placeholder={'Union'}
                                                     disabled={form_filtros.autorellenar}
                                                     styleRoot={{ width: '76px' }}
-                                                    style={{ width: '100%', fontSize: '0.8rem', backgroundColor: (form_filtros.autorellenar) ? 'lightgrey' : '' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem' }}
                                                     value={form_filtros.id_union.map(r => r.toString())}
                                                     onChange={(e) => {
                                                         setFormFiltros(prev => { return { ...prev, id_union: `${e.target.value}`.split(',').map(id => parseInt(id)).filter(id => !isNaN(id)) } })
-                                                    } }
+                                                    }}
                                                     multiple
                                                     options={(uniones.data) ? uniones.data.map(er => { return { label: er.es, value: er.id.toString() } }) : []}   
                                                 />
@@ -330,65 +329,17 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     options={[{ label: 'Principal', value: 'PRINCIPAL' }, { label: 'Extra', value: 'EXTRA' }]}                                               
                                                 />
 
-                                                <MSelect
-                                                    id="rango-de-edad-select"
-                                                    styleRoot={{ width: '110px'}}
-                                                    style={{ width: '100%', fontSize: '0.8rem', marginTop: 0.25 }}
-                                                    value={form_filtros.tipo_rango_edad}
-                                                    onChange={(e) => {
-                                                        setFormFiltros(prev => { return { ...prev, tipo_rango_edad: e.target.value } })
-                                                    } } 
-                                                    renderValue={(selected) => {
-                                                        if (selected.trim().length === 0) {
-                                                          return 'Rango Edad';
-                                                        }
-                                                        switch (selected) {
-                                                            case 'rango': return 'Rango';
-                                                            case 'mayor_que': return 'Mayor que';
-                                                            case 'menor_que': return 'Menor que';
-                                                            case 'igual_que': return 'Igual que';
-                                                        }
-                                                        return 'ND';
-                                                    }}
-                                                    highlight_default_option
-                                                    default_option={{value: ' ', label: 'Limpiar Filtro'}}
-                                                    options={[
-                                                        { label: 'Rango', value: 'rango' },
-                                                        { label: 'Mayor que', value: 'mayor_que' },
-                                                        { label: 'Menor que', value: 'menor_que' },
-                                                        { label: 'Igual que', value: 'igual_que' }  
-                                                    ]}                                                
-                                                />
-                                                <MotionDiv show={form_filtros.tipo_rango_edad === 'rango'} animation='fade'>
-                                                    <Box display={'flex'} flexDirection={'row'} gap={1}>
-                                                        <FormGroup
-                                                            placeholder='Desde Edad'
-                                                            className={'form-input-md'}
-                                                            type='number'
-                                                            value={form_filtros.edad_inicio.toString()}
-                                                            rootStyle={{ margin: 0, width: '48px' }}
-                                                            style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
-                                                            onChange={(e) => {
-                                                                setFormFiltros(prev => { return { ...prev, edad_inicio: parseInt(e.target.value) } })
-                                                            }}
-                                                        />
-                                                        <FormGroup
-                                                            placeholder='Hasta Edad'
-                                                            className={'form-input-md'}
-                                                            type="number"
-                                                            value={form_filtros.edad_fin.toString()}
-                                                            rootStyle={{ margin: 0, width: '48px' }}
-                                                            style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
-                                                            onChange={(e) => {
-                                                                setFormFiltros(prev => { return { ...prev, edad_fin: parseInt(e.target.value) } })
-                                                            }}
-                                                        />
-
-                                                    </Box>
-                                                </MotionDiv>
-                                                <MotionDiv show={form_filtros.tipo_rango_edad.trim().length > 0 && form_filtros.tipo_rango_edad !== 'rango'} animation='fade'>
+                                                
+                                                <Box display={'flex'} position={'relative'} flexDirection={'row'} gap={1}>
+                                                    <Typography textAlign={'center'} fontSize={'1rem'} style={{
+                                                        position: 'absolute',
+                                                        top: -24,
+                                                        left: 4
+                                                    }}>
+                                                        Rango de edad
+                                                    </Typography>
                                                     <FormGroup
-                                                        placeholder='Edad'
+                                                        placeholder='Desde Edad'
                                                         className={'form-input-md'}
                                                         type='number'
                                                         value={form_filtros.edad_inicio.toString()}
@@ -398,9 +349,19 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                             setFormFiltros(prev => { return { ...prev, edad_inicio: parseInt(e.target.value) } })
                                                         }}
                                                     />
-                                                </MotionDiv>
-                                                
+                                                    <FormGroup
+                                                        placeholder='Hasta Edad'
+                                                        className={'form-input-md'}
+                                                        type="number"
+                                                        value={form_filtros.edad_fin.toString()}
+                                                        rootStyle={{ margin: 0, width: '48px' }}
+                                                        style={{ border: 'none', width: '100%',  fontSize: '0.8rem' }}
+                                                        onChange={(e) => {
+                                                            setFormFiltros(prev => { return { ...prev, edad_fin: parseInt(e.target.value) } })
+                                                        }}
+                                                    />
 
+                                                </Box>
                                                 <MSelect
                                                     id="tipos-proyectos-select"
 
@@ -422,7 +383,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     id="generos-select"
                                                     disabled={form_filtros.autorellenar}
                                                     styleRoot={{ width: '110px' }}
-                                                    style={{ width: '100%', fontSize: '0.8rem', backgroundColor: (form_filtros.autorellenar) ? 'lightgrey' : '' }}
+                                                    style={{ width: '100%', fontSize: '0.8rem'}}
                                                     value={form_filtros.id_genero_rol.map(r => r.toString())}
                                                     onChange={(e) => {
                                                         const v_exploded = `${e.target.value}`.split(',');
@@ -511,7 +472,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                 <Typography mr={1}>Filtros Aplicados: </Typography>
                                                 <MContainer direction='horizontal' justify='space-between' styles={{gap: 8}}>
                                                     {form_filtros.id_estado_republica.length === 0 && form_filtros.id_union.length === 0 &&
-                                                        form_filtros.id_tipo_rol.length === 0 && form_filtros.tipo_rango_edad.trim().length === 0 &&
+                                                        form_filtros.id_tipo_rol.length === 0 && (form_filtros.edad_inicio <= 0 || form_filtros.edad_fin <= 0 || (form_filtros.edad_fin < form_filtros.edad_inicio)) &&
                                                         form_filtros.id_tipo_proyecto.length === 0 && form_filtros.id_genero_rol.length === 0 &&
                                                         form_filtros.id_apariencia_etnica.length === 0 && form_filtros.id_preferencias_de_pago.length === 0 &&
                                                         <Typography mt={0.5} variant='body2'>No se ha agregado ningun filtro</Typography>
@@ -535,7 +496,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                             setFormFiltros(prev => {return {...prev, id_tipo_rol: []}})
                                                         }}
                                                     />}
-                                                    {form_filtros.tipo_rango_edad.trim().length > 0 && <Tag text={`Rango Edad`}
+                                                    {form_filtros.edad_inicio > 0 && form_filtros.edad_fin > 0 && (form_filtros.edad_fin >= form_filtros.edad_inicio) && <Tag text={`Rango Edad`}
                                                         onRemove={(e) => {
                                                             setFormFiltros(prev => {return {...prev, tipo_rango_edad: ' '}})
                                                         }}
@@ -794,36 +755,15 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
 
                             <MContainer styles={{marginTop: 16}} direction='horizontal'>
                                 <Typography fontSize={'1.2rem'} mr={2}>Rango de edad</Typography>
-                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, tipo_rango_edad: ' ', edad_inicio: 0, edad_fin: 0 }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
+                                <Button onClick={() => { setFormFiltros(prev => { return { ...prev, edad_inicio: 0, edad_fin: 0 }}) }} style={{textDecoration: 'underline'}} size="small" variant='text'>Eliminar Todos</Button>                 
                             </MContainer>
-                            {form_filtros.tipo_rango_edad.trim().length === 0 &&
+                            {(form_filtros.edad_inicio <= 0 || form_filtros.edad_fin <= 0 || (form_filtros.edad_fin < form_filtros.edad_inicio)) &&
                                 <Typography variant='body2'>No se han seleccionado opciones</Typography>
                             }
-                            {form_filtros.tipo_rango_edad === 'rango' &&
+                            {form_filtros.edad_inicio > 0 && form_filtros.edad_fin > 0 && (form_filtros.edad_fin >= form_filtros.edad_inicio) &&
                                 <Tag styles={{marginRight: 1}} text={`De ${form_filtros.edad_inicio} a ${form_filtros.edad_fin}`}
                                     onRemove={(e) => {
                                         setFormFiltros(prev => {return {...prev, edad_inicio: 0, edad_fin: 0}})
-                                    }}
-                                />
-                            }
-                            {form_filtros.tipo_rango_edad === 'mayor_que' &&
-                                <Tag styles={{marginRight: 1}} text={`Mayor que ${form_filtros.edad_inicio}`}
-                                    onRemove={(e) => {
-                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0}})
-                                    }}
-                                />
-                            }
-                            {form_filtros.tipo_rango_edad === 'menor_que' &&
-                                <Tag styles={{marginRight: 1}} text={`Menor que ${form_filtros.edad_inicio}`}
-                                    onRemove={(e) => {
-                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0}})
-                                    }}
-                                />
-                            }
-                            {form_filtros.tipo_rango_edad === 'igual_que' &&
-                                <Tag styles={{marginRight: 1}} text={`Igual que ${form_filtros.edad_inicio}`}
-                                    onRemove={(e) => {
-                                        setFormFiltros(prev => {return {...prev, edad_inicio: 0}})
                                     }}
                                 />
                             }

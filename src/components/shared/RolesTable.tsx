@@ -68,6 +68,7 @@ export interface RolCompletoPreview extends Roles {
             medio_multimedia: CatalogoMediosMultimedia;
         })[];
     };
+    porcentaje_filter?: number;   
 }
 
 export const RolesTable = () => {

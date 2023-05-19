@@ -104,6 +104,9 @@ export const MSelect: FC<Props> = ({
                                 onClick={onClick}
                                 labelId={id}
                                 id={id}
+                                style={{
+                                    backgroundColor: (disabled) ? 'lightgray' : ''
+                                }}
                                 renderValue={renderValue}
                                 /*
                                 // @ts-ignore */

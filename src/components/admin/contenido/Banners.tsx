@@ -168,8 +168,6 @@ export const Banners = () => {
 											} else {
 												notify('warning', 'La resolucion de la imagen debe ser de 1000 x 250 pixeles');
 											}
-
-											alert(`${img.width} x ${img.height}`); // image is loaded; sizes are available
 										};
 
 										img.src = fr.result as string; // is the data URL because called with readAsDataURL

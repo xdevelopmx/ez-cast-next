@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Avatar, Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Slide, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Slide, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { motion } from 'framer-motion';
@@ -8,7 +8,7 @@ import { conversorFecha } from '~/utils/conversor-fecha';
 import { TransitionProps } from '@mui/material/transitions'
 import { User } from 'next-auth';
 import { Cazatalentos } from '@prisma/client';
-import { Close } from '@mui/icons-material';
+import { Check, Close } from '@mui/icons-material';
 
 
 interface PropsIndividualData {
@@ -82,9 +82,21 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                 >
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
-                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
-                                {rol.proyecto.nombre} id: {rol.id}
-                            </Typography>
+                            <MContainer direction='horizontal'>
+                                <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                    {rol.proyecto.nombre}
+                                </Typography>
+                                <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                    {' - ' + rol.nombre}
+                                </Typography>
+                            </MContainer>
+                            {rol.porcentaje_filter &&
+                                <Alert style={{padding: 0, width: '45%', marginTop: 8, marginBottom: 8}} icon={<Check fontSize="inherit" />} severity="success">
+                                    <Typography variant='body2'>
+                                        {rol.porcentaje_filter}% de compatibilidad con tu perfil
+                                    </Typography>
+                                </Alert>
+                            }
                         </Grid>
                         <Grid item xs={3}>
                             <Button

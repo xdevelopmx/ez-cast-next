@@ -156,6 +156,40 @@ export const ProyectosRouter = createTRPCRouter({
 			});
 		}
 	),
+	updateDestacado: protectedProcedure
+		.input(z.object({
+			id: z.number(),
+			destacado: z.boolean(),
+		}))
+		.mutation(async ({ input, ctx }) => {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.ADMIN) {
+				const proyecto: Proyecto = await ctx.prisma.proyecto.update({
+					where: {
+						id: input.id
+					},
+					data: {
+						destacado: input.destacado
+					}
+				});
+				if (!proyecto) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar el proyecto',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+				return proyecto;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: 'Solo el rol de admin puede marcar un proyecto como destacado',
+				// optional: pass the original error to retain stack trace
+				//cause: theError,
+			});
+		}
+	),
 	saveProyectoFiles: protectedProcedure
     	.input(z.object({ 
 			id_proyecto: z.number(),
@@ -435,7 +469,7 @@ export const ProyectosRouter = createTRPCRouter({
 			}
 		}
 	),
-	getAll: publicProcedure
+	getAllComplete: publicProcedure
 		.input(z.object({
 			limit: z.number().min(1).max(100).nullish(),
 			cursor: z.number().nullish(),
@@ -466,6 +500,30 @@ export const ProyectosRouter = createTRPCRouter({
 					}
 				},
 				cursor: cursor ? { id: cursor } : undefined,
+				orderBy: {
+					id: 'asc',
+				},
+			});
+			return proyectos;
+		}
+	),
+	getAll: publicProcedure
+		.query(async ({ input, ctx }) => {
+			const proyectos = await ctx.prisma.proyecto.findMany({
+				include: {
+					tipo: {
+						include: {
+							tipo_proyecto: true
+						}
+					},
+					sindicato: {
+						include: {
+							sindicato: true
+						}
+					},
+					foto_portada: true,
+					archivo: true
+				},
 				orderBy: {
 					id: 'asc',
 				},

@@ -2136,12 +2136,12 @@ export const RolesRouter = createTRPCRouter({
 			id_estados_republica: z.array(z.number()),
 			id_uniones: z.array(z.number()),
 			tipos_roles: z.array(z.string()),
-			tipo_rango_edad: z.string(),
 			edad_inicio: z.number(),
 			edad_fin: z.number(),
 			id_tipos_proyectos: z.array(z.number()),
 			id_generos_rol: z.array(z.number()),
 			id_apariencias_etnicas: z.array(z.number()),
+			id_nacionalidades: z.array(z.number()),
 			id_preferencias_de_pago: z.array(z.number())
 		}))
 		.query(async ({ input, ctx }) => {
@@ -2155,6 +2155,12 @@ export const RolesRouter = createTRPCRouter({
 						},
 						include: {
 							filtros_aparencias: true,
+							info_basica: true,
+							preferencias: {
+								include: {
+									tipos_de_trabajo: true
+								}
+							},
 							habilidades: true
 						}
 					})
@@ -2172,6 +2178,7 @@ export const RolesRouter = createTRPCRouter({
 										}
 									}
 								},
+								tipo_trabajos: true,
 								filtros_demograficos: {
 									include: {
 										pais: true,
@@ -2213,6 +2220,8 @@ export const RolesRouter = createTRPCRouter({
 										}
 									}
 								},
+								color_cabello: true,
+								color_ojos: true,
 								nsfw: {
 									include: {
 										nsfw_seleccionados: {
@@ -2264,7 +2273,7 @@ export const RolesRouter = createTRPCRouter({
 						});
 			
 						if (roles) {
-							const result = roles.filter(r => {
+							const result = roles.map(r => {
 								let porcentaje_filter = 0;
 								if (r.filtros_demograficos) {
 									let genero_found = false;
@@ -2286,7 +2295,28 @@ export const RolesRouter = createTRPCRouter({
 											apariencias_etnias_found = true;
 										}
 									});
-									//if (r.filtros_demograficos.id_pais)
+									if (r.filtros_demograficos.id_pais === talento.filtros_aparencias?.id_pais) {
+										porcentaje_filter += 10;
+									}
+								}
+								if (talento.preferencias) {
+									if (r.tipo_trabajos.filter(t => talento.preferencias?.tipos_de_trabajo.map(tp => tp.id_tipo_de_trabajo).includes(t.id_tipo_trabajo)).length > 0) {
+										porcentaje_filter += 5;
+									}
+								}
+								if (r.proyecto.tipo) {
+									if (input.id_tipos_proyectos.includes(r.proyecto.tipo.id_tipo_proyecto)) {
+										porcentaje_filter += 5;
+									}
+								}
+								if (r.casting.length > 0 && r.casting[0]?.id_estado_republica === talento.info_basica?.id_estado_republica) {
+									porcentaje_filter += 10;
+								}
+								if (r.color_cabello.id === talento.filtros_aparencias?.id_color_cabello) {
+									porcentaje_filter += 5;
+								}
+								if (r.color_ojos.id === talento.filtros_aparencias?.id_color_ojos) {
+									porcentaje_filter += 5;
 								}
 								if (input.tipos_roles.includes(r.tipo_rol.tipo)) {
 									porcentaje_filter += 5;
@@ -2295,9 +2325,6 @@ export const RolesRouter = createTRPCRouter({
 									if (input.id_preferencias_de_pago.includes((r.compensaciones.sueldo) ? 1 : 2)) {
 										porcentaje_filter += 5;
 									}
-								}
-								if (input.id_estados_republica.includes(r.proyecto.id_estado_republica)) {
-									porcentaje_filter += 5;
 								}
 								if (r.habilidades) {
 									let found_habilidades = 0;
@@ -2311,7 +2338,7 @@ export const RolesRouter = createTRPCRouter({
 									}
 								}
 
-								return porcentaje_filter >= 50;
+								return {...r, porcentaje_filter: porcentaje_filter};
 								//if (talento.filtros_aparencias.)
 								//if (input.)
 								
@@ -2342,7 +2369,7 @@ export const RolesRouter = createTRPCRouter({
 								//• Habilidades: + 10 %
 								//(A partir de 2 habilidades compatibles, Extra)
 							
-							})
+							}).filter(r => r.porcentaje_filter >= 60)
 							return result;
 						}
 					} 
