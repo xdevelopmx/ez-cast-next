@@ -38,7 +38,7 @@ declare module "next-auth/jwt" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-	secret: process.env.NEXTAUTH_SECRET,
+	secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
 	session: {
 		strategy: "jwt",
 		maxAge: 604800, // 7 dias
@@ -86,7 +86,7 @@ export const authOptions: NextAuthOptions = {
 				correo_usuario: { label: 'correo_usuario', type: 'text' }
 			},
 			async authorize(credentials, req) {
-				const APP_URL = (process.env.APP_URL) ? process.env.APP_URL : '';
+				const APP_URL = (process.env.NEXT_PUBLIC_APP_URL) ? process.env.NEXT_PUBLIC_APP_URL : '';
 				const login = async (username: string | null, email: string | null, password: string, tipo_usuario: TipoUsuario): Promise<{ id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null } | null>  => {
 					try {
 						return fetch(`${APP_URL}/api/auth/login`, {

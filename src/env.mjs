@@ -5,19 +5,19 @@ import { z } from "zod";
  * built with invalid env vars.
  */
 const server = z.object({
-  DATABASE_URL: z.string(),
-  FILES_ROOT_FOLDER: z.string(),
+  NEXT_PUBLIC_DATABASE_URL: z.string(),
+  //NEXT_PUBLIC_FILES_ROOT_FOLDER: z.string(),
   NODE_ENV: z.enum(["development", "test", "production"]),
-  APP_URL: z.string(),
-  NEXT_APP_BUCKET_NAME: z.string(),
-  NEXT_APP_AWSDEFAULTREGION: z.string(),
-  NEXT_APP_AWSACCESSKEYID: z.string(),
-  NEXT_APP_AWSSECRETACCESSKEY: z.string(),
-  NEXTAUTH_SECRET:
+  NEXT_PUBLIC_APP_URL: z.string(),
+  NEXT_PUBLIC_BUCKET_NAME: z.string(),
+  NEXT_PUBLIC_AWSDEFAULTREGION: z.string(),
+  NEXT_PUBLIC_AWSACCESSKEYID: z.string(),
+  NEXT_PUBLIC_AWSSECRETACCESSKEY: z.string(),
+  NEXT_PUBLIC_NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)
       : z.string().min(1).optional(),
-  NEXTAUTH_URL: z.preprocess(
+    NEXT_PUBLIC_NEXTAUTH_URL: z.preprocess(
     // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
     // Since NextAuth.js automatically uses the VERCEL_URL if present.
     (str) => process.env.VERCEL_URL ?? str,
@@ -44,16 +44,16 @@ const client = z.object({
  * @type {Record<keyof z.infer<typeof server> | keyof z.infer<typeof client>, string | undefined>}
  */
 const processEnv = {
-  DATABASE_URL: process.env.DATABASE_URL,
-  APP_URL: process.env.APP_URL,
+  NEXT_PUBLIC_DATABASE_URL: process.env.NEXT_PUBLIC_DATABASE_URL,
+  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   NODE_ENV: process.env.NODE_ENV,
-  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
-  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
-  FILES_ROOT_FOLDER: process.env.FILES_ROOT_FOLDER,
-  NEXT_APP_BUCKET_NAME: process.env.NEXT_APP_BUCKET_NAME,
-  NEXT_APP_AWSDEFAULTREGION: process.env.NEXT_APP_AWSDEFAULTREGION,
-  NEXT_APP_AWSACCESSKEYID: process.env.NEXT_APP_AWSACCESSKEYID,
-  NEXT_APP_AWSSECRETACCESSKEY: process.env.NEXT_APP_AWSSECRETACCESSKEY
+  NEXT_PUBLIC_NEXTAUTH_SECRET: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
+  NEXT_PUBLIC_NEXTAUTH_URL: process.env.NEXT_PUBLIC_NEXTAUTH_URL,
+  //NEXT_PUBLIC_FILES_ROOT_FOLDER: process.env.NEXT_PUBLIC_FILES_ROOT_FOLDER,
+  NEXT_PUBLIC_BUCKET_NAME: process.env.NEXT_PUBLIC_BUCKET_NAME,
+  NEXT_PUBLIC_AWSDEFAULTREGION: process.env.NEXT_PUBLIC_AWSDEFAULTREGION,
+  NEXT_PUBLIC_AWSACCESSKEYID: process.env.NEXT_PUBLIC_AWSACCESSKEYID,
+  NEXT_PUBLIC_AWSSECRETACCESSKEY: process.env.NEXT_PUBLIC_AWSSECRETACCESSKEY
   //DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
   //DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,

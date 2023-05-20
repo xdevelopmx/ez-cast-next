@@ -3,9 +3,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import S3 from "aws-sdk/clients/s3";
 
 const s3 = new S3({
-	region: process.env.NEXT_APP_AWSDEFAULTREGION,
-	accessKeyId: process.env.NEXT_APP_AWSACCESSKEYID,
-	secretAccessKey: process.env.NEXT_APP_AWSSECRETACCESSKEY,
+	region: process.env.NEXT_PUBLIC_AWSDEFAULTREGION,
+	accessKeyId: process.env.NEXT_PUBLIC_AWSACCESSKEYID,
+	secretAccessKey: process.env.NEXT_PUBLIC_AWSSECRETACCESSKEY,
 	signatureVersion: "v4",
 });
 
@@ -27,7 +27,7 @@ export const createPresignedUrl = async (req: NextApiRequest, res: NextApiRespon
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const body: Body = JSON.parse(req.body as string);
 		const fileParams = {
-			Bucket: process.env.BUCKET_NAME,
+			Bucket: process.env.NEXT_PUBLIC_BUCKET_NAME,
 			Key: (body.action.toUpperCase() === 'PUTOBJECT' ? `${body.path}/${body.name}` : body.path),
 			Expires: 1200,
 			ContentType: (body.action.toUpperCase() === 'PUTOBJECT') ? body.type : null,

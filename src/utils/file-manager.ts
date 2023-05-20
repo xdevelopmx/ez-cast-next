@@ -99,7 +99,7 @@ export const FileManager = {
             console.log('ELIMINAR ARCHIVO S3', clave);
             const response: {clave: string, deleted: boolean, error: string | null, url: string | null} = {clave: clave, deleted: false, error: null, url: null};
             try {
-                const result = await (await fetch(`${(process.env.APP_URL) ? process.env.APP_URL : ''}/api/s3/create-presigned-url`, {
+                const result = await (await fetch(`${(process.env.NEXT_PUBLIC_APP_URL) ? process.env.NEXT_PUBLIC_APP_URL : ''}/api/s3/create-presigned-url`, {
                     method: 'POST',
                     body: JSON.stringify({path: clave, name: null, type: null, action: 'deleteObject'})
                 })).json() as {url: string};
@@ -136,7 +136,7 @@ export const FileManager = {
                 const response: {[name: string]: {presigned_url: string | null, url: string | null, error: string | null}} = {};
                 response[file.name] = {presigned_url: null, url: null, error: null};
                 try {
-                    const result = await (await fetch(`${(process.env.APP_URL) ? process.env.APP_URL : ''}/api/s3/create-presigned-url`, {
+                    const result = await (await fetch(`${(process.env.NEXT_PUBLIC_APP_URL) ? process.env.NEXT_PUBLIC_APP_URL : ''}/api/s3/create-presigned-url`, {
                         method: 'POST',
                         body: JSON.stringify({path: file.path, name: file.name, type: file.file.type, action: 'putObject'})
                     })).json() as {url: string};
@@ -149,7 +149,7 @@ export const FileManager = {
                 }
                 if (response[file.name]) {
                     try {
-                        const result_save = await (await fetch(`${(process.env.APP_URL) ? process.env.APP_URL : ''}/api/s3/upload`, {
+                        const result_save = await (await fetch(`${(process.env.NEXT_PUBLIC_APP_URL) ? process.env.NEXT_PUBLIC_APP_URL : ''}/api/s3/upload`, {
                             method: 'POST',
                             //body: JSON.stringify({path: file.path, name: file.name, type: file.type, action: 'putObject'})
                             body: JSON.stringify({
