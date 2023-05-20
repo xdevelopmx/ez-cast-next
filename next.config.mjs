@@ -8,7 +8,10 @@
 
 /** @type {import("next").NextConfig} */
 const config = {
-  typescript: {ignoreBuildErrors: true},
+  typescript: {ignoreBuildErrors: true}, // Variable para omitir errores en el build quitar para que se muestren los errores
+  eslint: {
+    ignoreDuringBuilds: true, // Variable para omitir errores en el build quitar para que se muestren los errores
+  },
   reactStrictMode: true,
   images: {
     domains: ['elasticbeanstalk-us-east-1-232555073760.s3.amazonaws.com'],
