@@ -13,11 +13,11 @@ const server = z.object({
   NEXT_PUBLIC_AWSDEFAULTREGION: z.string(),
   NEXT_PUBLIC_AWSACCESSKEYID: z.string(),
   NEXT_PUBLIC_AWSSECRETACCESSKEY: z.string(),
-  NEXT_PUBLIC_NEXTAUTH_SECRET:
+  NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
       ? z.string().min(1)
       : z.string().min(1).optional(),
-    NEXT_PUBLIC_NEXTAUTH_URL: z.preprocess(
+    NEXTAUTH_URL: z.preprocess(
     // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
     // Since NextAuth.js automatically uses the VERCEL_URL if present.
     (str) => process.env.VERCEL_URL ?? str,
@@ -47,8 +47,8 @@ const processEnv = {
   NEXT_PUBLIC_DATABASE_URL: process.env.NEXT_PUBLIC_DATABASE_URL,
   NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   NODE_ENV: process.env.NODE_ENV,
-  NEXT_PUBLIC_NEXTAUTH_SECRET: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
-  NEXT_PUBLIC_NEXTAUTH_URL: process.env.NEXT_PUBLIC_NEXTAUTH_URL,
+  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+  NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   //NEXT_PUBLIC_FILES_ROOT_FOLDER: process.env.NEXT_PUBLIC_FILES_ROOT_FOLDER,
   NEXT_PUBLIC_BUCKET_NAME: process.env.NEXT_PUBLIC_BUCKET_NAME,
   NEXT_PUBLIC_AWSDEFAULTREGION: process.env.NEXT_PUBLIC_AWSDEFAULTREGION,
