@@ -15,7 +15,7 @@ export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, sty
     const { isLoadingData } = useContext(AppContext)
     return (
         <>
-            <Header menuSiempreBlanco={menuSiempreBlanco} />
+            <Header menuSiempreBlanco={menuSiempreBlanco}  />
             <div style={{ marginTop: 76, ...style }}>
                 <MotionDiv show={isLoadingData} animation="fade">
                     <LoadingPage />

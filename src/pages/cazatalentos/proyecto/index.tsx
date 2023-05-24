@@ -1,4 +1,4 @@
-import { GetServerSideProps, type NextPage } from 'next'
+import { type GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import React, { useEffect, useMemo, useReducer, useState } from 'react'
 import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas } from '~/components'
@@ -14,8 +14,8 @@ import { Typography } from '@mui/material'
 import Constants from '~/constants'
 import { useRouter } from 'next/router'
 import { FileManager } from '~/utils/file-manager'
-import { Archivo } from '~/server/api/root';
-import { Media } from '@prisma/client';
+import { type Archivo } from '~/server/api/root';
+import { type Media } from '@prisma/client';
 import { getSession } from 'next-auth/react'
 import { TipoUsuario } from '~/enums'
 
@@ -193,7 +193,7 @@ const Proyecto: NextPage = () => {
                     estatus: proyecto.data.estatus,
                     files: {
                         media: {
-                            archivo: proyecto.data.archivo, 
+                            archivo: proyecto.data.archivo,
                             foto_portada: proyecto.data.foto_portada
                         },
                         touched: {
@@ -222,7 +222,7 @@ const Proyecto: NextPage = () => {
                     void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${data.id}`);
                 }
             } else {
-                notify('error', 'Ocurrio un problema al actualizar el proyecto, por favor contacta a soporte');    
+                notify('error', 'Ocurrio un problema al actualizar el proyecto, por favor contacta a soporte');
             }
         },
         onError: (error) => {
@@ -232,12 +232,12 @@ const Proyecto: NextPage = () => {
 
     const updateProyecto = api.proyectos.updateProyecto.useMutation({
         onSuccess: async (data) => {
-            const files: { foto_portada: Media | null, archivo: Media | null} = { foto_portada: null, archivo: null };
-            const files_to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+            const files: { foto_portada: Media | null, archivo: Media | null } = { foto_portada: null, archivo: null };
+            const files_to_be_saved: { path: string, name: string, file: File, base64: string }[] = [];
             const time = new Date().getTime();
             if (state.files.archivo) {
                 if (state.files.touched.archivo) {
-                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: `${state.files.archivo.file.name}-${time}`, file: state.files.archivo.file, base64: state.files.archivo.base64});
+                    files_to_be_saved.push({ path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo`, name: `${state.files.archivo.file.name}-${time}`, file: state.files.archivo.file, base64: state.files.archivo.base64 });
                 } else {
                     files.archivo = {
                         id: (state.files.archivo?.id) ? state.files.archivo.id : 0,
@@ -252,7 +252,7 @@ const Proyecto: NextPage = () => {
             }
             if (state.files.foto_portada) {
                 if (state.files.touched.foto_portada) {
-                    files_to_be_saved.push({path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada`, name: `${state.files.foto_portada.file.name}-${time}`, file: state.files.foto_portada.file, base64: state.files.foto_portada.base64});
+                    files_to_be_saved.push({ path: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada`, name: `${state.files.foto_portada.file.name}-${time}`, file: state.files.foto_portada.file, base64: state.files.foto_portada.base64 });
                 } else {
                     files.foto_portada = {
                         id: (state.files.foto_portada?.id) ? state.files.foto_portada.id : 0,
@@ -264,12 +264,12 @@ const Proyecto: NextPage = () => {
                         identificador: `foto-portada-proyecto-${data.id}`
                     }
                 }
-            } 
+            }
             const urls_saved = await FileManager.saveFiles(files_to_be_saved);
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
                     Object.entries(res).forEach((e) => {
-                        const url = e[1].url;  
+                        const url = e[1].url;
                         if (url) {
                             if (e[0] === `${state.files.archivo?.file.name}-${time}`) {
                                 const arch = state.files.archivo;
@@ -312,7 +312,7 @@ const Proyecto: NextPage = () => {
     const handleSave = (action_redirect: 'back' | 'roles') => {
         setRedirect(action_redirect);
         if (!state.hasErrors) {
-            
+
             updateProyecto.mutate({
                 id: (state.id && state.id > 0) ? state.id : null,
                 sindicato: {
@@ -472,8 +472,8 @@ const Proyecto: NextPage = () => {
                                     <div className="mr-3">
                                         <button
                                             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                                            onClick={() => { 
-                                                handleSave('back') 
+                                            onClick={() => {
+                                                handleSave('back')
                                             }}
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
@@ -512,7 +512,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     user: session.user,
                 }
             }
-        } 
+        }
         return {
             redirect: {
                 destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
@@ -526,6 +526,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: true,
         },
     }
-  }
+}
 
 export default Proyecto

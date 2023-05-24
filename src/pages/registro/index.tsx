@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import { motion } from 'framer-motion'
 import { signIn } from 'next-auth/react'
 
-import { CreaTuPerfil, MainLayout, Pago, TipoDeMembresia } from "~/components";
+import { AceptarTerminos, CreaTuPerfil, MainLayout, Pago, TipoDeMembresia } from "~/components";
 import MotionDiv from "~/components/layout/MotionDiv";
 import Link from "next/link";
 import { Box } from "@mui/material";
@@ -24,7 +24,7 @@ export type PerfilForm = {
 	email: string,
 	contrasenia: string,
 	confirmacion_contrasenia: string,
-	profile_img_url?: string, 
+	profile_img_url?: string,
 	tipo_membresia: TipoMembresia,
 	cobro_membresia: TipoCobro,
 	id_openpay?: string,
@@ -33,11 +33,11 @@ export type PerfilForm = {
 	biografia?: string,
 	errors: {
 		nombre?: string,
-        apellido?: string,
-        usuario?: string,
-        email?: string,
-        contrasenia?: string,
-        confirmacion_contrasenia?: string,
+		apellido?: string,
+		usuario?: string,
+		email?: string,
+		contrasenia?: string,
+		confirmacion_contrasenia?: string,
 	}
 }
 
@@ -50,12 +50,12 @@ type CreateUserForm = {
 const initialState = {
 	perfil: {
 		tipo_usuario: TipoUsuario.TALENTO,
-		nombre: '', 
-		apellido: '', 
-		contrasenia: '', 
-		confirmacion_contrasenia: '', 
-		usuario: '', 
-		email: '', 
+		nombre: '',
+		apellido: '',
+		contrasenia: '',
+		confirmacion_contrasenia: '',
+		usuario: '',
+		email: '',
 		errors: {},
 		tipo_membresia: TipoMembresia.GRATIS,
 		cobro_membresia: TipoCobro.ANUAL,
@@ -63,17 +63,17 @@ const initialState = {
 	step_active: 1,
 }
 
-function reducer(state: CreateUserForm, action: {type: string, value: {[key: string]: unknown }}) {
+function reducer(state: CreateUserForm, action: { type: string, value: { [key: string]: unknown } }) {
 	switch (action.type) {
 		case 'update-form': {
 			return { ...state, ...action.value }
 		}
 		case 'update-perfil': {
-			return {...state, perfil: {...state.perfil, ...action.value}} as CreateUserForm;
+			return { ...state, perfil: { ...state.perfil, ...action.value } } as CreateUserForm;
 		}
 	}
-	return {...state};
-  }
+	return { ...state };
+}
 
 const RegistroPage: NextPage = () => {
 
@@ -81,7 +81,7 @@ const RegistroPage: NextPage = () => {
 
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const {notify} = useNotify();
+	const { notify } = useNotify();
 
 	const router = useRouter();
 
@@ -111,7 +111,7 @@ const RegistroPage: NextPage = () => {
 	});
 
 	const validationStepPerfil = useMemo(() => {
-		const result = { 
+		const result = {
 			errors: {
 				nombre: (!state.perfil.nombre || state.perfil.nombre.length < 2) ? 'El nombre es demasiado corto' : undefined,
 				apellido: (!state.perfil.apellido || state.perfil.apellido.length < 2) ? 'El apellido es demasiado corto' : undefined,
@@ -119,7 +119,7 @@ const RegistroPage: NextPage = () => {
 				email: (!Constants.PATTERNS.EMAIL.test(state.perfil.email)) ? 'El email es invalido' : undefined,
 				contrasenia: (!state.perfil.contrasenia || state.perfil.contrasenia.length < 8) ? 'La contraseña es demasiado corta' : undefined,
 				confirmacion_contrasenia: (!state.perfil.confirmacion_contrasenia || !state.perfil.contrasenia || state.perfil.contrasenia !== state.perfil.confirmacion_contrasenia) ? 'Las contraseñas no son la misma' : undefined
-			}, 
+			},
 			hasErrors: false
 		}
 		result.hasErrors = Object.entries(result.errors).filter(e => (e[1] != null)).length > 0;
@@ -130,27 +130,33 @@ const RegistroPage: NextPage = () => {
 		const steps_arr: JSX.Element[] = [];
 		if (state.perfil) {
 			steps_arr.push(
-				<CreaTuPerfil state={{...state.perfil}} key={1} onFormChange={(input: {[key: string]: unknown}) => {
-					dispatch({type: 'update-perfil', value: input})
+				<CreaTuPerfil state={{ ...state.perfil }} key={1} onFormChange={(input: { [key: string]: unknown }) => {
+					dispatch({ type: 'update-perfil', value: input })
 					console.log(input);
-				}}/>,
-				<TipoDeMembresia state={{...state.perfil}} key={2} onFormChange={(input: {[key: string]: unknown}) => {
-					dispatch({type: 'update-perfil', value: input})
+				}} />,
+				<TipoDeMembresia state={{ ...state.perfil }} key={2} onFormChange={(input: { [key: string]: unknown }) => {
+					dispatch({ type: 'update-perfil', value: input })
 					console.log(input);
-				}}/>
+				}} />
 			)
-			
+
 			if (state.perfil.tipo_membresia !== TipoMembresia.GRATIS) {
 				steps_arr.push(
-					<Pago key={3} onFormChange={(input: {[key: string]: string | number}) => {
-						dispatch({type: 'update-perfil', value: input})
+					<Pago key={3} onFormChange={(input: { [key: string]: string | number }) => {
+						dispatch({ type: 'update-perfil', value: input })
 						console.log(input);
-					}}/>
+					}} />
 				)
 			}
-		} 
+
+			steps_arr.push(
+				<AceptarTerminos key={4} />
+			)
+		}
 		return steps_arr;
 	}, [state.perfil]);
+
+
 
 	return (
 		<MotionDiv show={true} animation='down-to-up'>
@@ -178,24 +184,37 @@ const RegistroPage: NextPage = () => {
 						</Link>
 						<Box sx={{ width: '100%' }}>
 							<br />
-							<div style={{width: '200px', margin: '0 auto'}}>
-								
+							<div style={{ width: '200px', margin: '0 auto' }}>
+
 							</div>
-							<form autoComplete="off" style={{minHeight: 531}}>
+							<form autoComplete="off" style={{ minHeight: 531 }}>
 								<MStepper
+									stylesStepper={{
+										width: '600px',
+										margin: 'auto',
+										maxWidth: '100%'
+									}}
+									styleH3Paso={{
+										fontSize: '1.2rem',
+										color: '#000',
+									}}
+									styleSpanH3PasoTitulo={{
+										paddingLeft: '30px',
+										color: '#069cb1'
+									}}
 									onStepChange={(step: number) => {
 										switch (step) {
 											case 2: {
 												console.log(validationStepPerfil)
 												if (validationStepPerfil.hasErrors) {
 													notify('warning', 'Por favor primero corrige los errores del formulario');
-													dispatch({type: 'update-perfil', value: {errors: validationStepPerfil.errors}});
+													dispatch({ type: 'update-perfil', value: { errors: validationStepPerfil.errors } });
 												} else {
-													dispatch({type: 'update-form', value: {step_active: step}});
+													dispatch({ type: 'update-form', value: { step_active: step } });
 												}
 												break;
-											}	
-											default: dispatch({type: 'update-form', value: {step_active: step}});
+											}
+											default: dispatch({ type: 'update-form', value: { step_active: step } });
 										}
 									}}
 									onFinish={() => {
@@ -211,14 +230,23 @@ const RegistroPage: NextPage = () => {
 											notify('warning', 'Hay errores en el formulario, por favor corrigelos y intenta de nuevo');
 										}
 									}}
-    								current_step={state.step_active}
-    								step_titles={{
+									current_step={state.step_active}
+									step_titles={{
 										1: 'Crea tu perfil',
 										2: 'Tipo de membresía',
-										3: 'Pago'
+										...(() => {
+											return (steps.length === 4
+												? ({
+													3: 'Pago',
+													4: 'Aceptar términos y condiciones'
+												})
+												: ({
+													3: 'Aceptar términos y condiciones',
+												}))
+										})()
 									}}
 								>
-								{steps.map(e => e)}	
+									{steps.map(e => e)}
 								</MStepper>
 							</form>
 						</Box>

@@ -1,7 +1,7 @@
-import { useEffect, useState, type FC } from 'react'
+import { type FC } from 'react'
 import { motion } from 'framer-motion'
 import { FormGroup } from '../shared'
-import { PerfilForm } from '~/pages/registro';
+import { type PerfilForm } from '~/pages/registro';
 import Constants from '~/constants';
 
 interface Props {
@@ -103,7 +103,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, confirmacion_contrasenia: (!e.target.value || !state.contrasenia || state.contrasenia !== e.target.value) ? 'Las contraseñas no son la misma' : undefined}
                             })
                         }} 
-                        label='Repetir Contraseña' 
+                        label='Confirmar Contraseña' 
                         type="password" 
                     />
                 </div>

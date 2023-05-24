@@ -1,23 +1,30 @@
 import { type CSSProperties, useEffect, useRef, useState, type FC, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import MotionDiv from '../layout/MotionDiv';
-import { Step, StepLabel, Stepper } from '@mui/material';
+import { Step, StepLabel, Stepper, type SxProps } from '@mui/material';
 import { MContainer } from '../layout/MContainer';
 
 interface Props {
     onStepChange: (step: number) => void;
     current_step: number;
-    step_titles: { [step: number]: string };
+    step_titles: { [step: number]: string | undefined };
     onStepSave?: (step: number) => void;
     children: JSX.Element[];
     style?: CSSProperties,
     onFinish?: () => void,
 
     tooltips?: { [step: number]: ReactNode },
+
+    stylesStepper?: SxProps;
+    stylesStep?: SxProps;
+    stylesStepLabel?: SxProps;
+    styleH3Paso?: CSSProperties;
+    styleSpanH3PasoTitulo?: CSSProperties;
 }
 
 export const MStepper: FC<Props> = ({
-    onStepSave, onStepChange, current_step, step_titles, children, onFinish, tooltips
+    onStepSave, onStepChange, current_step, step_titles, children, onFinish, tooltips, stylesStepper,
+    style, styleH3Paso, stylesStep, stylesStepLabel, styleSpanH3PasoTitulo
 }) => {
 
     const animation_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -35,15 +42,15 @@ export const MStepper: FC<Props> = ({
         <MotionDiv show={showContent} animation={'fade'}>
             <>
 
-                <Stepper activeStep={current_step - 1} alternativeLabel>
+                <Stepper sx={stylesStepper} activeStep={current_step - 1} alternativeLabel>
                     {children.map((_, i) => (
-                        <Step key={`step${i}`}>
-                            <StepLabel onClick={() => onStepChange(i + 1)}></StepLabel>
+                        <Step sx={stylesStep} key={`step${i}`}>
+                            <StepLabel sx={stylesStepLabel} onClick={() => onStepChange(i + 1)}></StepLabel>
                         </Step>
                     ))}
                 </Stepper>
-                <h3 className="paso-stepper">
-                    PASO {current_step} <span> {step_titles[current_step]}</span>
+                <h3 className="paso-stepper" style={styleH3Paso}>
+                    PASO {current_step} <span style={styleSpanH3PasoTitulo}> {step_titles[current_step]}</span>
                     {tooltips && tooltips[current_step]}
                 </h3>
 
