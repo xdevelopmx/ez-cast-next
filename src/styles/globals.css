@@ -3364,6 +3364,28 @@ p.edo_pendiente {
   font-size: 1rem;
 }
 
+/* Estilo para que el calendario se expanda completo */
+.MuiPickersArrowSwitcher-root {
+  display: none!important;
+}
+.MuiPickersCalendarHeader-labelContainer {
+  margin-left: auto;
+}
+.MuiDateCalendar-root .MuiDayCalendar-weekDayLabel {
+  border-bottom: unset;
+}
+.MuiDayCalendar-header {
+  justify-content: space-between!important;
+  border-bottom: solid 4px var(--ezcast);
+
+}
+.MuiDateCalendar-root {
+  width: 100%!important;
+}
+.MuiDayCalendar-weekContainer {
+  justify-content: space-between!important;
+}
+
 @media screen and (min-width: 300px) {
   [class*="wd-carousel-spacing-"] .owl-nav>div[class*="next"] {
     right: calc(-30px + var(--wd-car-sp) / 2);

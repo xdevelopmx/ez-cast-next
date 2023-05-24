@@ -7,6 +7,7 @@ import { Alertas, MainLayout, MenuLateral } from "~/components";
 import { useState } from "react";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import DualDatePicker from "~/components/shared/DualDatePicker";
 
 const estilos_calendario: SxProps<Theme> = {
     '& .MuiPickersCalendarHeader-label': {
@@ -182,29 +183,9 @@ const AgendaVirtual = () => {
                                         </Grid>
                                     </Grid>
 
-                                    <Grid container xs={13} columns={13} sx={{ border: '3px solid #069cb1', padding: '30px' }} mt={4}>
-                                        <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center', }}>
-                                            <LocalizationProvider
-                                                dateAdapter={AdapterDayjs}
-                                            >
-                                                <DateCalendar
-                                                    sx={estilos_calendario}
-                                                />
-                                            </LocalizationProvider>
-                                        </Grid>
-                                        <Grid xs={1} sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <Divider sx={{
-                                                border: '2px solid #069cb1'
-                                            }} orientation="vertical" />
-                                        </Grid>
-                                        <Grid xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <LocalizationProvider
-                                                dateAdapter={AdapterDayjs}
-                                            >
-                                                <DateCalendar
-                                                    sx={estilos_calendario}
-                                                />
-                                            </LocalizationProvider>
+                                    <Grid container xs={12} columns={12} sx={{ border: '3px solid #069cb1', padding: '30px' }} mt={4}>
+                                        <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
+                                            <DualDatePicker direction="horizontal" sx={estilos_calendario}/>
                                         </Grid>
                                     </Grid>
                                 </Grid>
