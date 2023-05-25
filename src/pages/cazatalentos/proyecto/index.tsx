@@ -435,7 +435,9 @@ const Proyecto: NextPage = () => {
 
             <MainLayout menuSiempreBlanco={true} >
                 <div className="d-flex wrapper_ezc">
-                    <MenuLateral />
+                    <MenuLateral stylesRoot={{
+                        paddingTop: '0px'
+                    }} />
                     <div className="seccion_container col" style={{ paddingTop: '0px !important' }}>
                         <br /><br />
                         <div className="container_box_header">
@@ -445,8 +447,8 @@ const Proyecto: NextPage = () => {
                             <div className="d-flex" style={{ marginBottom: 64 }}>
                                 <motion.img style={{ width: 35 }} src="/assets/img/silla-ezcast.svg" alt="icono" />
                                 <div>
-                                    <p style={{ marginLeft: 20 }} className="color_a h4 font-weight-bold mb-0"><b>Nuevo proyecto</b></p>
-                                    <p style={{ marginLeft: 20 }} className="mb-0"><b>¡Comencemos!</b></p>
+                                    <p style={{ marginLeft: 20, fontSize: '1.7rem' }} className="color_a h4 font-weight-bold mb-0"><b>Nuevo proyecto</b></p>
+                                    <p style={{ marginLeft: 20, fontSize: '1.3rem' }} className="mb-0"><b>¡Comencemos!</b></p>
                                 </div>
                             </div>
 

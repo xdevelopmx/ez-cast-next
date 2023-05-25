@@ -1,19 +1,17 @@
-import React, { type ReactNode, useEffect, useRef, useState } from "react";
+import React, { type ReactNode, useEffect, useRef, useState, CSSProperties } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import Image from 'next/image';
-import { Alert, Button, IconButton, Typography } from "@mui/material";
-import { styled } from '@mui/material/styles';
-import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
-import classes from './DragNDrop.module.css';
+import { Alert, Button, IconButton } from "@mui/material";
+//import classes from './DragNDrop.module.css';
 import MotionDiv from "../../layout/MotionDiv";
 import { type Archivo } from "~/server/api/root";
 import { Tag } from "../Tag";
-import { Close, QuestionMark } from "@mui/icons-material";
+import { Close } from "@mui/icons-material";
 import { MTooltip } from "../MTooltip";
 import { MContainer } from "~/components/layout/MContainer";
 import { FileManager } from "~/utils/file-manager";
 
-const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
+//const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
 interface Props {
     id: string,
@@ -36,7 +34,13 @@ interface Props {
     text_button?: string,
     noIconLabel?: boolean,
 
-    mainIcon?:ReactNode,
+    mainIcon?: ReactNode,
+
+    styleContainerDrag?: CSSProperties;
+    styleBoxBtnUpload?: CSSProperties;
+    textoArrastrarArchivos?: ReactNode;
+    hasNoIconInButton?: boolean;
+    stylesButton?: CSSProperties;
 }
 
 function DragNDrop(props: Props) {
@@ -72,14 +76,14 @@ function DragNDrop(props: Props) {
             const all_files = Array.from(files.values());
             const dont_have_repeated = await FileManager.checkFilesRepeatedInArray(all_files.concat(Array.from(selected_files)));
             if (!dont_have_repeated) {
-                setError({ type: 'FILE_ALREADY_ADDED', message: `El archivo ya habia sido agregado`});
+                setError({ type: 'FILE_ALREADY_ADDED', message: `El archivo ya habia sido agregado` });
                 return false;
             }
             Object.entries(selected_files).every((f) => {
                 const file_size = Math.round((f[1].size / 1024));
                 if (props.max_file_size && file_size > props.max_file_size) {
-                    const max_size = props.max_file_size; 
-                    setError({ type: 'MAX_SIZE_REACHED', message: `El archivo super el limite maximo de espacio de ${(max_size) ? max_size : 0} kb`});
+                    const max_size = props.max_file_size;
+                    setError({ type: 'MAX_SIZE_REACHED', message: `El archivo super el limite maximo de espacio de ${(max_size) ? max_size : 0} kb` });
                     return false;
                 }
                 files.set(`${f[1].name}-${f[1].size}-${f[1].type}`, f[1]);
@@ -120,7 +124,7 @@ function DragNDrop(props: Props) {
         >
             <>
                 {props.download_url &&
-                    <MContainer direction="horizontal" justify='space-between' styles={{width: '100%'}}>
+                    <MContainer direction="horizontal" justify='space-between' styles={{ width: '100%' }}>
                         <Button
                             size='small'
                             className='font-weight-bold color_a'
@@ -140,7 +144,7 @@ function DragNDrop(props: Props) {
                                     }
                                 }}
                             >
-                                <Close style={{color: '#069cb1'}} />
+                                <Close style={{ color: '#069cb1' }} />
                             </IconButton>
                         }
                     </MContainer>
@@ -167,14 +171,15 @@ function DragNDrop(props: Props) {
                                 <MTooltip text={props.tooltip.text} color={props.tooltip.color} placement={props.tooltip.placement} />
                             }
                         </div>
-                        <div className="btn_talent_upload">
+                        <div className="btn_talent_upload" style={props.styleContainerDrag}>
                             <div className="box_btn_upload"
                                 style={{
                                     display: 'flex',
                                     flexFlow: 'column wrap',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    height: props.height
+                                    height: props.height,
+                                    ...props.styleBoxBtnUpload
                                 }}>
                                 {/* <p className="mb-1">{`Acepta ${props.filetypes.join(', ')}`}</p> */}
 
@@ -186,17 +191,25 @@ function DragNDrop(props: Props) {
                                         alignItems: 'center',
                                         justifyContent: 'center',
                                         padding: '3px 10px',
+
+                                        ...props.stylesButton
                                     }}>
-                                    <Image
+                                    {!props.hasNoIconInButton && <Image
                                         width={14}
                                         height={14}
                                         src="/assets/img/iconos/cruz_blue.svg"
                                         alt="icono"
                                         className="mr-2"
-                                    />
+                                    />}
                                     <span>{props.text_button || 'Subir Archivo(s)'}</span>
                                 </div>
-                                <p className="mb-1 txt_arrastrar">{`Arrastrar archivo(s) al recuadro ${(props.max_files) ? '(Hasta ' + props.max_files.toString() + ' archivos)' : ''}`}</p>
+                                {
+                                    !props.textoArrastrarArchivos
+                                        ? (<p className="mb-1 txt_arrastrar">
+                                            {`Arrastrar archivo(s) al recuadro ${(props.max_files) ? '(Hasta ' + props.max_files.toString() + ' archivos)' : ''}`}
+                                        </p>)
+                                        : props.textoArrastrarArchivos
+                                }
                             </div>
                         </div>
                     </div>

@@ -1,9 +1,10 @@
 import { Grid, Typography } from '@mui/material';
 import { type FC } from 'react'
-import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from '~/components'
+import { MRadioGroup, SectionTitle } from '~/components'
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { FileManager } from '~/utils/file-manager';
+import Image from 'next/image'
 
 interface Props {
     state: ProyectoForm;
@@ -31,8 +32,8 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     files={(state.files.foto_portada) ? [state.files.foto_portada] : []}
                     filetypes={['png', 'jpg', 'jpeg']}
                     maxWidth={400}
-                    height={100}
-                    
+                    //height={100}
+
                     onChange={(files: File[]) => {
                         const files_converted = Promise.all(files.map(async (f) => {
                             const base64 = await FileManager.convertFileToBase64(f);
@@ -40,18 +41,41 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                         }));
                         files_converted.then((files_conv) => {
                             console.log(files_conv)
-                            onFormChange({ files: { 
-                                ...state.files, 
-                                foto_portada: files_conv[0],
-                                touched: {
-                                    ...state.files.touched,
-                                    foto_portada: true
-                                } 
-                            } })
+                            onFormChange({
+                                files: {
+                                    ...state.files,
+                                    foto_portada: files_conv[0],
+                                    touched: {
+                                        ...state.files.touched,
+                                        foto_portada: true
+                                    }
+                                }
+                            })
                         }).catch((err) => {
                             console.log(err);
                             onFormChange({ files: { ...state.files, archivo: undefined } })
                         });
+                    }}
+                    styleContainerDrag={{
+                        backgroundColor: '#fff',
+                    }}
+                    styleBoxBtnUpload={{
+                        border: '1px solid #000',
+                        borderRadius: '.5rem'
+                    }}
+                    mainIcon={
+                        <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
+                    }
+                    textoArrastrarArchivos={
+                        <Typography sx={{ fontSize: '1rem' }}>O arrastrar al recuadro</Typography>
+                    }
+                    hasNoIconInButton={true}
+                    text_button='Agregar foto'
+                    stylesButton={{
+                        backgroundColor: '#069cb1',
+                        color: '#fff',
+                        width: '150px',
+                        maxWidth: '100%'
                     }}
                 />
             </Grid>

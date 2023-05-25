@@ -72,7 +72,7 @@ button:focus {
 
 .container_text_scroll::-webkit-scrollbar-thumb {
   background-color: #069cb1;
-/*   border-radius: 8px; */
+  /*   border-radius: 8px; */
   /* Color del pulgar de la barra de desplazamiento */
 }
 
@@ -89,7 +89,7 @@ button:focus {
 
 .container_text_scroll::-moz-scrollbar-thumb {
   background-color: #069cb1;
-/*   border-radius: 8px; */
+  /*   border-radius: 8px; */
   /* Color del pulgar de la barra de desplazamiento */
 }
 
@@ -102,7 +102,25 @@ button:focus {
 /*****************************SCROLBAR*****************************************/
 
 
+/*******************************ELIMINAR FLECHAS EN INPUTS NUMBER************************************/
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-moz-number-spin-box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+
+/*******************************ELIMINAR FLECHAS EN INPUTS NUMBER************************************/
 
 
 
@@ -3378,6 +3396,7 @@ p.edo_pendiente {
 
 .form-input-md {
   width: 200px;
+  max-width: 100%;
 }
 
 .link-input-label {

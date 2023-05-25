@@ -1,5 +1,5 @@
 import { Grid, type SxProps, Typography } from '@mui/material'
-import React, { useId } from 'react'
+import React from 'react'
 import { MCheckboxGroup } from '../shared'
 
 const estilos_link: SxProps = {
@@ -8,8 +8,6 @@ const estilos_link: SxProps = {
 
 export const AceptarTerminos = () => {
 
-    const idTerminos = useId()
-    const idAviso = useId()
 
     return (
         <div className="row ml-lg-5 mt-lg-4 jc-c">
@@ -35,7 +33,7 @@ export const AceptarTerminos = () => {
                                 })
                             } */
                         }}
-                        id={idTerminos}
+                        id={'id-terminos-condiciones'}
                         //labelStyle={{ marginBottom: 0, width: '32%' }}
                         options={['Acepto términos y condiciones']}
                         values={/* (generos.data) ? generos.data.map(g => {
@@ -66,7 +64,7 @@ export const AceptarTerminos = () => {
                                 })
                             } */
                         }}
-                        id={idAviso}
+                        id={'id-aviso-privacidad'}
                         //labelStyle={{ marginBottom: 0, width: '32%' }}
                         options={['Acepto aviso de privacidad']}
                         values={/* (generos.data) ? generos.data.map(g => {

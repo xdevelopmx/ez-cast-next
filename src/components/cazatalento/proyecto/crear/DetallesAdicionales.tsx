@@ -5,6 +5,7 @@ import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { FileManager } from '~/utils/file-manager';
+import Image from 'next/image'
 
 interface Props {
     state: ProyectoForm;
@@ -55,7 +56,7 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                 />
             </Grid>
             <Grid item xs={4} mt={3} marginLeft={16}>
-                <div style={{ marginTop: 40 }}>
+                <div style={{ marginTop: 20 }}>
                     <DragNDrop
                         id='id-drag-n-drop-archivo'
                         noIconLabel={true}
@@ -69,7 +70,7 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                         text_label_download='Descargar archivo'
                         files={(state.files.archivo) ? [state.files.archivo] : []}
                         filetypes={['pdf', 'doc', 'docx', 'mp4']}
-                        height={100}
+                        //height={100}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
                                 const base64 = await FileManager.convertFileToBase64(f);
@@ -89,6 +90,27 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                                 console.log(err);
                                 onFormChange({ files: { ...state.files, archivo: undefined } })
                             });
+                        }}
+                        styleContainerDrag={{
+                            backgroundColor: '#fff',
+                        }}
+                        styleBoxBtnUpload={{
+                            border: '1px solid #000',
+                            borderRadius: '.5rem'
+                        }}
+                        mainIcon={
+                            <Image src="/assets/img/iconos/ico_pdf_blue.svg" width={20} height={25} alt=""/>
+                        }
+                        textoArrastrarArchivos={
+                            <Typography sx={{fontSize: '1rem'}}>PDF</Typography>
+                        }
+                        hasNoIconInButton={true}
+                        text_button='Subir archivo'
+                        stylesButton={{
+                            backgroundColor: '#069cb1',
+                            color: '#fff',
+                            width: '150px',
+                            maxWidth: '100%'
                         }}
                     />
                 </div>
