@@ -89,6 +89,8 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
           <hr className="hr_gold" style={{margin: '20px 0 30px 0'}} />
           {destacados.data && destacados.data.length > 0 &&
              <Carroucel 
+              navigationNew
+              navigation={false}
               arrowsColor="#F9B233"
               slidesPerView={6}>
                {destacados.data.map((proyecto, i) => {
@@ -133,9 +135,11 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
             Ahora casteando en EZ-Cast
           </p>
           <hr className="hr_blue"
-              style={{margin: '30px 0 20px 0'}}
+              style={{margin: '30px 0 40px 0'}}
           />
           <Carroucel 
+            navigationNew
+            navigation={false}
             arrowsColor="#069cb1"
             slidesPerView={6}>
               {proyectos.data && proyectos.data.map((proyecto, i) => {

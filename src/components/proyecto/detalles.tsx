@@ -56,15 +56,15 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
     });
 
     return (
-        <Grid item container xs={12} sx={{ border: '2px solid #928F8F' }}>
-            <GridMotion container item xs={12} sx={{ alignItems: 'flex-start' }}>
+        <Grid item container xs={12} sx={{ border: '2px solid #928F8F', paddingBottom: '0' }}>
+            <GridMotion container item xs={12} sx={{ alignItems: 'center', padding: '10px' }}>
                 <Grid item xs={4}>
-                    <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/12' }}>
+                    <Box sx={{ position: 'relative', width: '100%', aspectRatio: '6/11' }}>
                         <Image src={(proyecto.data && proyecto.data.foto_portada) ? proyecto.data.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover' }} fill alt="" />
                     </Box>
                 </Grid>
                 <Grid
-                    container item xs={8} sx={{ padding: '24px', paddingBottom: 0 }}
+                    container item xs={8} sx={{ padding: '15px 24px' }}
                 >
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
@@ -113,52 +113,44 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                                 {proyecto.data?.sinopsis}
                             </Typography>
                         </Grid>
+                        {proyecto.data && proyecto.data.detalles_adicionales && 
+                            <IndividualData title={'Detalles adicionales:'}>
+                                <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
+                                    {proyecto.data.detalles_adicionales}
+                                </Typography>
+                            </IndividualData>
+                        }
+
+                        <IndividualData title={'Director Casting:'}>
+                            <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                {proyecto.data?.director_casting}
+                            </Typography>
+                        </IndividualData>
+                        {proyecto.data && proyecto.data.productor &&
+                            <IndividualData title={'Productor:'}>
+                            
+                            </IndividualData>
+                        }
+
+                        {proyecto.data && proyecto.data.casa_productora &&
+                            <IndividualData title={'Casa productora:'}>
+                                {proyecto.data.casa_productora}
+                            </IndividualData>
+                        }
+
+                        {proyecto.data && proyecto.data.director &&
+                            <IndividualData title={'Director:'}>
+                                {proyecto.data.director}
+                            </IndividualData>
+                        }
+
+                        {proyecto.data && proyecto.data.agencia_publicidad &&
+                            <IndividualData title={'Agencia de publicidad:'}>
+                                {proyecto.data.agencia_publicidad}
+                            </IndividualData>
+                        } 
                     </Grid>
                 </Grid>
-            </GridMotion>
-            <GridMotion
-                item container xs={12}
-                variants={containerVariants}
-                initial="closed"
-                animate={"open"}
-                transition={{ duration: 0.3 }}
-            >
-                {proyecto.data && proyecto.data.detalles_adicionales && 
-                    <IndividualData title={'Detalles adicionales:'}>
-                        <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
-                            {proyecto.data.detalles_adicionales}
-                        </Typography>
-                    </IndividualData>
-                }
-
-                <IndividualData title={'Director Casting:'}>
-                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                        {proyecto.data?.director_casting}
-                    </Typography>
-                </IndividualData>
-                {proyecto.data && proyecto.data.productor &&
-                    <IndividualData title={'Productor:'}>
-                    
-                    </IndividualData>
-                }
-
-                {proyecto.data && proyecto.data.casa_productora &&
-                    <IndividualData title={'Casa productora:'}>
-                        {proyecto.data.casa_productora}
-                    </IndividualData>
-                }
-
-                {proyecto.data && proyecto.data.director &&
-                    <IndividualData title={'Director:'}>
-                        {proyecto.data.director}
-                    </IndividualData>
-                }
-
-                {proyecto.data && proyecto.data.agencia_publicidad &&
-                    <IndividualData title={'Agencia de publicidad:'}>
-                        {proyecto.data.agencia_publicidad}
-                    </IndividualData>
-                } 
             </GridMotion>
         </Grid>
     )

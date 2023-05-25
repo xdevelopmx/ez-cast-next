@@ -36,9 +36,21 @@ button:focus {
   transform: scale(1.5);
 }
 
+/*  Carrusel Personalizado */
+.carrusel-personalizado {
+  align-items: center;
+}
 
+.carrusel-personalizado button {
+  padding: 0;
+  height: 100px;
+  border-radius: 0;
+  font-size: 50px;
+}
 
-
+.carrusel-personalizado button:hover {
+  background-color: #d6d6d627;
+}
 
 
 /*****************************SCROLBAR*****************************************/
