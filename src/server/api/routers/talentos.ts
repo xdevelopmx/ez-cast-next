@@ -24,7 +24,17 @@ function exclude<Talentos, Key extends keyof Talentos>(
 export const TalentosRouter = createTRPCRouter({
     getAll: publicProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.talentos.findMany();
+			return await ctx.prisma.talentos.findMany({
+				/* select: {
+					apellido: true,
+					cobro_membresia: true,
+					email: true,
+					id: true,
+					nombre: true,
+					tipo_membresia: true,
+					usuario: true,
+				} */
+			});
 		}
 	),
 	getInfoBasicaByIdTalento: publicProcedure

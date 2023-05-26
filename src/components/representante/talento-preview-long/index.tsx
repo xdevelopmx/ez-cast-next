@@ -2,12 +2,21 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type SetStateAction, type FC, type Dispatch } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import type { Talentos } from "@prisma/client";
+import { useRouter } from 'next/router'
 
 interface Props {
+    talento: Talentos;
     setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
-export const TalentoPreviewLong: FC<Props> = ({ setShowModal }) => {
+export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
+    const router = useRouter()
+
+    const redirect = async () => {
+        await router.push(`/representante/casting-billboard?talentoId=${talento.id}`)
+    }
+
     return (
         <Grid container item xs={12} mt={4}>
             <Grid xs={3}>
@@ -29,7 +38,9 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal }) => {
                     </Box>
                 </Grid>
                 <Grid xs={12}>
-                    <Typography fontWeight={600} sx={{}}>Nombre Talento</Typography>
+                    <Typography fontWeight={600} sx={{}}>
+                        {`${talento.nombre ?? ''}${`${talento.apellido ? ` ${talento.apellido}` : ''}`}`}
+                    </Typography>
                 </Grid>
                 <Grid container xs={12} mt={2}>
                     <Grid xs={4}>
@@ -38,7 +49,10 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal }) => {
                         </Button>
                     </Grid>
                     <Grid xs={8}>
-                        <Button sx={{ textTransform: 'none' }}>
+                        <Button
+                            sx={{ textTransform: 'none' }}
+                            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                            onClick={redirect}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>Ir a Casting Billboard</Typography>
                         </Button>
                     </Grid>

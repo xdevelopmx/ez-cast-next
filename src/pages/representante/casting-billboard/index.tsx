@@ -1,21 +1,20 @@
-import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Slide, Typography } from '@mui/material'
-import { GetServerSideProps, type NextPage } from 'next'
-import { User } from 'next-auth'
+import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, Grid, Typography } from '@mui/material'
+import { type GetServerSideProps, type NextPage } from 'next'
+import { type User } from 'next-auth'
 import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import React, { useState, useEffect, useMemo } from 'react'
-import { Alertas, FormGroup, MCheckboxGroup, MSelect, MainLayout, MenuLateral, RolCompletoPreview, RolesTable, Tag } from '~/components'
+import { Alertas, FormGroup, MCheckboxGroup, MSelect, MainLayout, MenuLateral, type RolCompletoPreview, Tag } from '~/components'
 import Constants from '~/constants'
-import { TipoUsuario } from '~/enums'
 import Image from 'next/image';
 import { api } from '~/utils/api'
-import MotionDiv from '~/components/layout/MotionDiv'
 import { MContainer } from '~/components/layout/MContainer'
-import { MTooltip } from '~/components/shared/MTooltip'
 import useNotify from '~/hooks/useNotify'
 import { Close } from '@mui/icons-material'
 import { RolPreview } from '~/components/shared/RolPreview'
 import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader'
+import { useRouter } from 'next/router'
+
 const filtros_initial_state = {
     tipo_busqueda: 'todos',
     id_estado_republica: [],
@@ -38,6 +37,10 @@ type BillboardTalentosPageProps = {
 }
 
 const RepresentanteBillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto }) => {
+
+    const { query } = useRouter()
+    const { talentoId = '-1' } = query
+
     const { notify } = useNotify();
     const [dialog, setDialog] = useState({ id: '', open: false, title: '' });
     const [pagination, setPagination] = useState({ page: 0, page_size: 5 });
@@ -56,7 +59,7 @@ const RepresentanteBillboardPage: NextPage<BillboardTalentosPageProps> = ({ user
         autorellenar: boolean
     }>(filtros_initial_state);
 
-    const talento = api.talentos.getCompleteById.useQuery({ id: parseInt(user.id) }, {
+    const talento = api.talentos.getCompleteById.useQuery({ id: parseInt(talentoId as string) }, {
         refetchOnWindowFocus: false
     });
 
@@ -786,14 +789,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         id_proyecto = parseInt(context.query['id-proyecto'] as string);
     }
     if (session && session.user) {
-        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
-            return {
-                props: {
-                    user: session.user,
-                    id_proyecto: id_proyecto
-                }
+        //if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+        return {
+            props: {
+                user: session.user,
+                id_proyecto: id_proyecto
             }
         }
+        //}
         return {
             redirect: {
                 destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
