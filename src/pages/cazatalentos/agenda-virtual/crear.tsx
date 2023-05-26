@@ -1,14 +1,16 @@
 import { CalendarMonth, CheckBox } from "@mui/icons-material";
-import { Box, Button, ButtonGroup, Card, CardContent, Divider, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Checkbox, Chip, Divider, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
 import { DatePicker, esES } from "@mui/x-date-pickers";
-import { HorarioAgenda, Proyecto, Roles } from "@prisma/client";
+import { HorarioAgenda, LocalizacionesPorHorarioAgenda, Proyecto, Roles } from "@prisma/client";
 import { Dayjs } from "dayjs";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from 'next/image';
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useState } from "react";
 import { Alertas, MainLayout, MenuLateral, FormGroup, MRadioGroup, Tag, AddButton, MSelect, ModalLocacion, SectionTitle, ModalLocacionState } from "~/components";
+import { MContainer } from "~/components/layout/MContainer";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { TipoUsuario } from "~/enums";
@@ -32,27 +34,77 @@ const NuevoHorarioAgendaVirtual = () => {
 	const [fechas_audicion, setFechasAudicion] = useState<Map<string, { fecha_inicio: Date, fecha_fin: Date | null }>>(new Map());
 	const [fechas_selected, setFechasSelected] = useState<{fecha_inicio: Date | null, fecha_fin: Date | null}>({fecha_inicio: null, fecha_fin: null});
 	const [fechas_audicion_por_roles, setFechasAudicionPorRoles] = useState<Map<string, { fecha_inicio: Date, fecha_fin: Date | null }[]>>(new Map());
-	const [locaciones, setLocaciones] = useState<ModalLocacionState[]>([]);
-	const [location_selected, setLocationSelected] = useState<ModalLocacionState>();
+	const [locaciones, setLocaciones] = useState<(ModalLocacionState & {checked: boolean})[]>([]);
+	const [location_selected, setLocationSelected] = useState<(ModalLocacionState & {checked: boolean})>();
 	const [notas, setNotas] = useState('');
 	const [uso_horario_selected, setUsoHorarioSelected] = useState(1);
+	const router = useRouter();
 
-	const proyectos = api.agenda_virtual.getAllProyectosByCazatalentosWithoutHorarioAgenda.useQuery(undefined, {
+	const proyectos = api.agenda_virtual.getAllProyectosByCazatalentosWithHorarioAgenda.useQuery(undefined, {
 		refetchOnWindowFocus: false
 	});
+
+	const localizaciones_guardadas = api.agenda_virtual.getLocalizacionesGuardadas.useQuery(undefined, {
+		refetchOnWindowFocus: false
+	})
+
+	const { id_horario } = useMemo(() => {
+        const { id_horario } = router.query;
+        if (id_horario) {
+            return { id_horario: parseInt(id_horario as string) };
+        }
+        return { id_horario: 0 };
+    }, [router.query]);
+
+	const horario = api.agenda_virtual.getHorarioAgendaById.useQuery((id_horario) ? id_horario : 0, {
+		refetchOnWindowFocus: false
+	});
+
+	useEffect(() => {
+		if (localizaciones_guardadas.data) {
+			const map = new Map<string, (ModalLocacionState & {checked: boolean})>();
+			locaciones.forEach(loc => {
+				map.set(`${loc.id + 300}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}-${loc.id_estado_republica}`, loc);
+			})
+			localizaciones_guardadas.data.forEach(loc => {
+				map.set(`${loc.id + 100}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}-${loc.id_estado_republica}`, {...loc, direccion2: (loc.direccion2) ? loc.direccion2 : undefined, guardado_en_bd: true, checked: false});
+			})
+			if (horario.data) {
+				horario.data.localizaciones.forEach(loc => {
+					map.set(`${loc.id + 200}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}-${loc.id_estado_republica}`, {...loc, direccion2: (loc.direccion2) ? loc.direccion2 : undefined, guardado_en_bd: true, checked: false});
+				})
+			}
+			setLocaciones(Array.from(map).map(l => l[1]));
+		}
+	}, [localizaciones_guardadas.data, horario.data]);
 
 	const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
     });
+	
+	useEffect(() => {
+		if (horario.data) {
+			setSelectedProyecto(horario.data.id_proyecto);
+			setTipoAudicion((horario.data.tipo_agenda === 'AUDICION') ? 'AUDICION' : 'CALLBACK');
+			setTipoFechas((horario.data.tipo_fechas === 'NUEVAS') ? 'NUEVAS' : 'ESTABLECIDAS');
+			setTipoLocacion((horario.data.tipo_localizacion === 'PRESENCIAL') ? 'PRESENCIAL' : 'VIRTUAL');
+			if (horario.data.tipo_fechas === 'NUEVAS') {
+				horario.data.fechas.forEach((f) => {
+					fechas_audicion.set(`${f.fecha_inicio}-${f.fecha_fin}`, {fecha_inicio: f.fecha_inicio, fecha_fin: f.fecha_fin});			
+				})
+				setFechasAudicion(new Map(fechas_audicion));
+			}
+		}
+	}, [horario.data]);
 
 	useEffect(() => {
-		if (proyectos.data) {
-			const p = proyectos.data[0];
+		if (proyectos.data && id_horario === 0) {
+			const p = proyectos.data.filter(p => !p.horario_agenda)[0];
 			if (p) {
 				setSelectedProyecto(p.id);
 			}
 		}
-	}, [proyectos.data]);
+	}, [proyectos.data, id_horario]);
 
 	useEffect(() => {
 		if (selected_proyecto > 0 && proyectos.data) {
@@ -81,6 +133,7 @@ const NuevoHorarioAgendaVirtual = () => {
 						})
 					}
 				})
+			
 				setFechasAudicionPorRoles(new Map(fechas_casting_por_roles));
 			}
 		}
@@ -93,7 +146,6 @@ const NuevoHorarioAgendaVirtual = () => {
 
 	const save_horario = api.agenda_virtual.create.useMutation({
         onSuccess: (data) => {
-			
             notify('success', 'Se actualizo el proyecto con exito');
 		},
 		onError: (error) => {
@@ -150,21 +202,30 @@ const NuevoHorarioAgendaVirtual = () => {
 											</ButtonGroup>
 										</Grid>
 										<Grid xs={12} mt={4}>
-											<MSelect
-												id="proyecto-select"
-												loading={proyectos.isFetching}
-												options={
-													(proyectos.data)
-														? proyectos.data.map(s => { return { value: s.id.toString(), label: s.nombre } })
-														: []
-												}
-												className={'form-input-md'}
-												value={selected_proyecto.toString()}
-												onChange={(e) => {
-													setSelectedProyecto(parseInt(e.target.value))
-												}}
-												label='Proyecto al que se le creara un horario *'
-											/>
+											{id_horario === 0 &&
+												<MSelect
+													id="proyecto-select"
+													loading={proyectos.isFetching}
+													options={
+														(proyectos.data)
+															? proyectos.data.filter(p => !p.horario_agenda).map(s => { return { value: s.id.toString(), label: s.nombre } })
+															: []
+													}
+													className={'form-input-md'}
+													value={selected_proyecto.toString()}
+													onChange={(e) => {
+														setSelectedProyecto(parseInt(e.target.value))
+													}}
+													label='Proyecto al que se le creara un horario *'
+												/>
+											}
+											{id_horario > 0 &&
+												<>
+													<Typography>Proyecto al que se le creara un horario</Typography>
+													<Typography variant={'h5'}>{horario.data?.proyecto.nombre}</Typography>
+
+												</>
+											}
 											<p style={{ color: '#069cb1' }}>
 												Para tu control interno. No será visto por talento o representantes.
 											</p>
@@ -366,12 +427,15 @@ const NuevoHorarioAgendaVirtual = () => {
 															locaciones.map((loc, i) => (
 																<Grid key={i} container xs={12} sx={{ alignItems: 'center' }}>
 																	<Grid xs={1}>
-																		<CheckBox />
+																		<Checkbox checked={false} />
 																	</Grid>
 																	<Grid xs={7}>
-																		<Typography>
-																			{loc.direccion}, {estados_republica.data?.filter(e => e.id === loc.id_estado_republica)[0]?.es}
-																		</Typography>
+																		<MContainer direction='horizontal'>
+																			<Typography>
+																				{loc.direccion}, {estados_republica.data?.filter(e => e.id === loc.id_estado_republica)[0]?.es} - {loc.id}
+																			</Typography> 
+																			{loc.guardado_en_bd && <Chip sx={{marginLeft: 2, backgroundColor: '#069cb1', color: 'white'}} label="Guardado" />}
+																		</MContainer>
 																	</Grid>
 																	<Grid xs={2}>
 																		<Button onClick={() => { 
@@ -402,7 +466,10 @@ const NuevoHorarioAgendaVirtual = () => {
 														<AddButton
 															aStyles={{ margin: 0, borderRadius: '2rem' }}
 															text="Agregar locación"
-															onClick={() => { setShowModal(true) }}
+															onClick={() => { 
+																setLocationSelected(undefined);
+																setShowModal(true) 
+															}}
 														/>
 
 														<MTooltip
@@ -485,6 +552,7 @@ const NuevoHorarioAgendaVirtual = () => {
 														fechas: dates,
 														tipo_agenda: tipoAudicion,
 														tipo_localizacion: tipoLocacion,
+														tipo_fechas: tipoFechas,
 														notas: notas,
 														id_uso_horario: uso_horario_selected,
 														id_proyecto: selected_proyecto
@@ -526,7 +594,22 @@ const NuevoHorarioAgendaVirtual = () => {
 					setIsOpen={setShowModal}
 					initialData={location_selected}
 					onChange={(data) => {
-						setLocaciones(prev => prev.concat([{...data, id: new Date().getTime()}]));
+						setLocationSelected(undefined);
+						if (data.id > 0) {
+							setLocaciones(locaciones.map(loc => {
+								if (loc.id === data.id) {
+									loc.checked = false;
+									loc.codigo_postal = data.codigo_postal;
+									loc.direccion = data.direccion;
+									loc.direccion2 = data.direccion2;
+									loc.guardado_en_bd = data.guardado_en_bd;
+									loc.id_estado_republica = data.id_estado_republica;
+								} 
+								return loc;
+							}));
+						} else {
+							setLocaciones(prev => prev.concat([{...data, id: new Date().getTime(), checked: false}]));
+						}
 					}}
 				/>
 			</MainLayout>

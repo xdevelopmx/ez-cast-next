@@ -1,15 +1,16 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, Typography } from '@mui/material';
 import React, { type Dispatch, type SetStateAction, type FC, useState, useEffect } from 'react'
 import { FormGroup, MCheckboxGroup, MSelect } from '~/components/shared';
-import { api } from '~/utils/api';
+import useNotify from '~/hooks/useNotify';
+import { api, parseErrorBody } from '~/utils/api';
 
 export type ModalLocacionState = {
-    id?: number,
+    id: number,
     direccion: string, 
     direccion2?: string,
     id_estado_republica: number,
     codigo_postal: number,
-    guardar_en_bd: boolean
+    guardado_en_bd: boolean,
 }
 
 interface Props {
@@ -21,20 +22,47 @@ interface Props {
 
 export const ModalLocacion: FC<Props> = ({ initialData, isOpen, setIsOpen, onChange }) => {
 
+    const { notify } = useNotify();
+
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
     });
 
+    const localizaciones_guardadas = api.agenda_virtual.getLocalizacionesGuardadas.useQuery(undefined, {
+		refetchOnWindowFocus: false
+	})
+
     const [data, setData] = useState<ModalLocacionState>({
+        id: 0,
         direccion: '', 
         id_estado_republica: 1,
         codigo_postal: 0,
-        guardar_en_bd: false
+        guardado_en_bd: false
+    });
+
+    const update_locacion = api.agenda_virtual.updateLocalizacion.useMutation({
+        onSuccess: (input) => {
+            notify('success', 'Se la locacion con exito');
+            localizaciones_guardadas.refetch();
+            onChange({...data, id: input.id });
+            setIsOpen(false);
+		},
+		onError: (error) => {
+			notify('error', parseErrorBody(error.message));
+		}
     });
 
     useEffect(() => {
         if (initialData) {
             setData(initialData);
+        } else {
+            setData({
+                id: 0,
+                direccion: '', 
+                id_estado_republica: 1,
+                codigo_postal: 0,
+                guardado_en_bd: false
+            })
         }
     }, [initialData]);
 
@@ -103,22 +131,21 @@ export const ModalLocacion: FC<Props> = ({ initialData, isOpen, setIsOpen, onCha
                         <MCheckboxGroup
                             direction='vertical'
                             onChange={(e, i) => {
-                                setData(prev => { return { ...prev, guardar_en_bd: e}})
+                                setData(prev => { return { ...prev, guardado_en_bd: e}})
                             }}
                             id="guardar-para-uso-futuro"
                             //labelStyle={{ marginBottom: 0, width: '32%' }}
                             options={['Guardar para uso futuro']}
                             values={/* (generos.data) ? generos.data.map(g => {
                                 return state.generos.includes(g.id);
-                            }) : */ [data.guardar_en_bd]}
+                            }) : */ [data.guardado_en_bd]}
                         />
                     </Grid>
                     <Grid xs={12} sx={{ paddingBottom: '30px' }}>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <Button 
                                 onClick={() => {
-                                    onChange(data);
-                                    setIsOpen(false);
+                                    update_locacion.mutate(data);
                                 }}
                                 sx={{
                                     borderRadius: '2rem',

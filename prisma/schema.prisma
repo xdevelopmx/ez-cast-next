@@ -15,55 +15,67 @@ datasource db {
 }
 
 model HorarioAgenda {
-  id  Int                            @id @default(autoincrement())
-  tipo_agenda String
+  id                Int                              @id @default(autoincrement())
+  tipo_agenda       String
   tipo_localizacion String
-  notas String
-  id_uso_horario Int
-  id_proyecto Int @unique
-  proyecto Proyecto @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
-  fechas FechasPorHorarioAgenda[]
-  localizaciones LocalizacionesPorHorarioAgenda[]
+  tipo_fechas       String
+  notas             String
+  fecha_creacion    DateTime
+  id_uso_horario    Int
+  id_proyecto       Int                              @unique
+  proyecto          Proyecto                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  fechas            FechasPorHorarioAgenda[]
+  localizaciones    LocalizacionesPorHorarioAgenda[]
+}
+
+model LocalizacionesGuardadas {
+  id                  Int     @id @default(autoincrement())
+  id_estado_republica Int
+  direccion           String
+  direccion2          String?
+  codigo_postal       Int
+  id_usuario          Int
+  tipo_usuario        String
 }
 
 model LocalizacionesPorHorarioAgenda {
-  id                  Int                      @id @default(autoincrement())
+  id                  Int           @id @default(autoincrement())
   id_estado_republica Int
-  direccion String
-  direccion2 String?
-  codigo_postal Int
-  id_horario_agenda              Int
-  horario_agenda HorarioAgenda                    @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+  direccion           String
+  direccion2          String?
+  codigo_postal       Int
+  id_horario_agenda   Int
+  horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
 model FechasPorHorarioAgenda {
-  id                  Int                      @id @default(autoincrement())
-  fecha_inicio        DateTime
-  fecha_fin           DateTime?
-  id_horario_agenda              Int
-  horario_agenda HorarioAgenda                    @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+  id                Int           @id @default(autoincrement())
+  fecha_inicio      DateTime
+  fecha_fin         DateTime?
+  id_horario_agenda Int
+  horario_agenda    HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
 model Cazatalentos {
-  id              Int                            @id @default(autoincrement())
-  usuario         String
-  email           String
-  contrasenia     String
-  nombre          String
-  apellido        String
-  tipo_membresia  String
-  cobro_membresia String
-  id_openpay      String
+  id                   Int                            @id @default(autoincrement())
+  usuario              String
+  email                String
+  contrasenia          String
+  nombre               String
+  apellido             String
+  tipo_membresia       String
+  cobro_membresia      String
+  id_openpay           String
   id_foto_perfil_media Int?
-  posicion        String
-  compania        String
-  biografia       String
-  proyectos       Proyecto[]
-  foto_perfil Media? @relation(fields: [id_foto_perfil_media], references: [id])
-  redes_sociales  RedesSocialesPorCazatalentos[]
-  reportes_talentos ReporteTalentos[]
-  talentos_destacados TalentosDestacados[]
-  notas_talentos NotasTalentos[]
+  posicion             String
+  compania             String
+  biografia            String
+  proyectos            Proyecto[]
+  foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
+  redes_sociales       RedesSocialesPorCazatalentos[]
+  reportes_talentos    ReporteTalentos[]
+  talentos_destacados  TalentosDestacados[]
+  notas_talentos       NotasTalentos[]
 }
 
 model Talentos {
@@ -85,11 +97,11 @@ model Talentos {
   preferencias       PreferenciasPorTalentos?
   filtros_aparencias FiltrosAparenciasPorTalentos?
   medidas            MedidasPorTalentos?
-  aplicaciones AplicacionRolPorTalento[]
-  audiciones AudicionTalento[]
-  reportes ReporteTalentos[]
-  notas NotasTalentos[]
-  destacados TalentosDestacados[]
+  aplicaciones       AplicacionRolPorTalento[]
+  audiciones         AudicionTalento[]
+  reportes           ReporteTalentos[]
+  notas              NotasTalentos[]
+  destacados         TalentosDestacados[]
 }
 
 model MedidasPorTalentos {
@@ -127,8 +139,8 @@ model RepresentantesPorTalentos {
   email                     String
   telefono                  String
   //url_carta_responsiva String?
-  id_media_carta_responsiva Int? 
-  media                     Media? @relation(fields: [id_media_carta_responsiva], references: [id])  
+  id_media_carta_responsiva Int?
+  media                     Media?   @relation(fields: [id_media_carta_responsiva], references: [id])
   id_talento                Int      @unique
   talento                   Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
@@ -143,7 +155,7 @@ model InfoBasicaPorTalentos {
   id_talento          Int                        @unique
   id_estado_republica Int
   id_media_cv         Int?
-  media               Media? @relation(map: "media_cv", fields: [id_media_cv], references: [id])                     
+  media               Media?                     @relation(map: "media_cv", fields: [id_media_cv], references: [id])
   union               UnionPorInfoBasicaTalento?
   talento             Talentos                   @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   estado_republica    CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
@@ -167,7 +179,7 @@ model CreditoTalento {
   anio                    Int
   destacado               Boolean
   id_media_clip           Int?
-  media                   Media? @relation(map: "creditos_talento", fields: [id_media_clip], references: [id])
+  media                   Media?              @relation(map: "creditos_talento", fields: [id_media_clip], references: [id])
   creditos_por_talentos   CreditosPorTalentos @relation(fields: [id_creditos_por_talento], references: [id], onDelete: Cascade)
 }
 
@@ -222,111 +234,110 @@ model Administradores {
 }
 
 model Proyecto {
-  id                   Int                      @id @default(autoincrement())
-  nombre               String
-  director_casting     String
-  telefono_contacto    String
-  email_contacto       String
-  productor            String
-  casa_productora      String
-  director             String
-  agencia_publicidad   String
-  sinopsis             String
-  destacado Boolean @default(false)
-  id_archivo_media Int?
-  detalles_adicionales String
-  id_estado_republica  Int
-  created              DateTime                 @default(now())
+  id                    Int                      @id @default(autoincrement())
+  nombre                String
+  director_casting      String
+  telefono_contacto     String
+  email_contacto        String
+  productor             String
+  casa_productora       String
+  director              String
+  agencia_publicidad    String
+  sinopsis              String
+  destacado             Boolean                  @default(false)
+  id_archivo_media      Int?
+  detalles_adicionales  String
+  id_estado_republica   Int
+  created               DateTime                 @default(now())
   id_foto_portada_media Int?
-  compartir_nombre     Boolean                  @default(true)
-  estatus              String                   @default("POR_VALIDAR")
-  id_cazatalentos      Int
-  estado_republica     CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
-  cazatalentos         Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
-  archivo Media?  @relation("media_archivo", map: "media_archivo", fields: [id_archivo_media], references: [id])
-  foto_portada Media? @relation("media_foto_portada", map: "media_foto_portada", fields: [id_foto_portada_media], references: [id])
-  rol                  Roles[]
-  tipo                 TipoProyectoPorProyecto?
-  sindicato            SindicatoPorProyecto?
-  horario_agenda HorarioAgenda?
+  compartir_nombre      Boolean                  @default(true)
+  estatus               String                   @default("POR_VALIDAR")
+  id_cazatalentos       Int
+  estado_republica      CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  cazatalentos          Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  archivo               Media?                   @relation("media_archivo", map: "media_archivo", fields: [id_archivo_media], references: [id])
+  foto_portada          Media?                   @relation("media_foto_portada", map: "media_foto_portada", fields: [id_foto_portada_media], references: [id])
+  rol                   Roles[]
+  tipo                  TipoProyectoPorProyecto?
+  sindicato             SindicatoPorProyecto?
+  horario_agenda        HorarioAgenda?
 }
 
 model AplicacionRolPorTalento {
-  id                   Int                      @id @default(autoincrement())
-  id_rol Int
-  rol Roles @relation(fields: [id_rol], references: [id], onDelete: Cascade)
-  id_talento Int
-  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  id                   Int                              @id @default(autoincrement())
+  id_rol               Int
+  rol                  Roles                            @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  id_talento           Int
+  talento              Talentos                         @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   id_estado_aplicacion Int
-  estado_aplicacion CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
+  estado_aplicacion    CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
 }
 
 model NotasTalentos {
-  id Int                      @id @default(autoincrement())
+  id              Int          @id @default(autoincrement())
   id_cazatalentos Int
-  id_talento Int
-  nota String
-  cazatlentos Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
-  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  id_talento      Int
+  nota            String
+  cazatlentos     Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model TalentosDestacados {
-  id Int       @id @default(autoincrement())
-  id_cazatalentos Int               
-  id_talento Int
-  calificacion Int
-  cazatlentos Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
-  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  id              Int          @id @default(autoincrement())
+  id_cazatalentos Int
+  id_talento      Int
+  calificacion    Int
+  cazatlentos     Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model ReporteTalentos {
-  id Int                      @id @default(autoincrement())
-  id_talento Int
+  id              Int                          @id @default(autoincrement())
+  id_talento      Int
   id_cazatalentos Int
   id_tipo_reporte Int
-  comentario String
-  cazatlentos Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
-  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  reporte CatalogoTiposReportesTalento @relation(fields: [id_tipo_reporte], references: [id], onDelete: Cascade)
+  comentario      String
+  cazatlentos     Cazatalentos                 @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  talento         Talentos                     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  reporte         CatalogoTiposReportesTalento @relation(fields: [id_tipo_reporte], references: [id], onDelete: Cascade)
 }
 
 model AudicionTalento {
-  id Int                      @id @default(autoincrement())
-  id_talento Int
-  id_rol Int
+  id             Int      @id @default(autoincrement())
+  id_talento     Int
+  id_rol         Int
   fecha_audicion DateTime
-  tipo_audicion String
-  mensaje String
-  talento Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  rol Roles @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  tipo_audicion  String
+  mensaje        String
+  talento        Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  rol            Roles    @relation(fields: [id_rol], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTiposReportesTalento {
-  id                   Int                      @id 
-  es String
-  en String
+  id              Int               @id
+  es              String
+  en              String
   ReporteTalentos ReporteTalentos[]
 }
 
-
 model CatalogoEstadosAplicacionesRoles {
-  id                   Int                      @id 
-  es String
-  en String
+  id                      Int                       @id
+  es                      String
+  en                      String
   AplicacionRolPorTalento AplicacionRolPorTalento[]
 }
 
 model Banners {
-  id                   Int                      @id @default(autoincrement())
-  position String
-  isButton Boolean
-  text String
-  redirect_url String
-  type String 
+  id               Int     @id @default(autoincrement())
+  position         String
+  isButton         Boolean
+  text             String
+  redirect_url     String
+  type             String
   id_media_content Int
-  identificador String
-  ref String
-  content Media @relation(fields: [id_media_content], references: [id])
+  identificador    String
+  ref              String
+  content          Media   @relation(fields: [id_media_content], references: [id])
 }
 
 model TipoProyectoPorProyecto {
@@ -355,54 +366,52 @@ model CatalogoTipoProyectos {
 }
 
 model Roles {
-  id                   Int                     @id @default(autoincrement())
-  nombre               String
-  id_tipo_rol          Int
-  descripcion          String?
-  id_media_foto_referencia      Int?
-  id_media_lineas      Int?
-  detalles_adicionales String?
-  estatus              String                  @default("SIN_FINALIZAR")
-  id_proyecto          Int
-  id_color_ojos Int @default(1)
-  id_color_cabello Int @default(1)
-  proyecto             Proyecto                @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
-  tipo_trabajos TipoTrabajoPorRoles[]
-  compensaciones       CompensacionesPorRoles?
-  filtros_demograficos FiltrosDemoPorRoles?
-  habilidades          HabilidadesPorRoles?
-  requisitos           RequisitosPorRoles?
-  nsfw                 NSFWPorRoles?
-  casting              CastingPorRoles[]
-  filmaciones          FilmacionPorRoles[]
-  selftape             SelftapePorRoles?
-  tipo_rol             CatalogoTiposRoles      @relation(fields: [id_tipo_rol], references: [id])
+  id                       Int                       @id @default(autoincrement())
+  nombre                   String
+  id_tipo_rol              Int
+  descripcion              String?
+  id_media_foto_referencia Int?
+  id_media_lineas          Int?
+  detalles_adicionales     String?
+  estatus                  String                    @default("SIN_FINALIZAR")
+  id_proyecto              Int
+  id_color_ojos            Int                       @default(1)
+  id_color_cabello         Int                       @default(1)
+  proyecto                 Proyecto                  @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  tipo_trabajos            TipoTrabajoPorRoles[]
+  compensaciones           CompensacionesPorRoles?
+  filtros_demograficos     FiltrosDemoPorRoles?
+  habilidades              HabilidadesPorRoles?
+  requisitos               RequisitosPorRoles?
+  nsfw                     NSFWPorRoles?
+  casting                  CastingPorRoles[]
+  filmaciones              FilmacionPorRoles[]
+  selftape                 SelftapePorRoles?
+  tipo_rol                 CatalogoTiposRoles        @relation(fields: [id_tipo_rol], references: [id])
   aplicaciones_por_talento AplicacionRolPorTalento[]
-  lineas Media?  @relation("media_lineas", map: "media_lineas", fields: [id_media_lineas], references: [id])
-  foto_referencia Media? @relation("media_foto_referencia", map: "media_foto_referencia", fields: [id_media_foto_referencia], references: [id])
-  audiciones_talentos AudicionTalento[]
-  color_ojos CatalogoColorOjos @relation(fields: [id_color_ojos], references: [id])
-  color_cabello CatalogoColorCabello @relation(fields: [id_color_cabello], references: [id])
-
+  lineas                   Media?                    @relation("media_lineas", map: "media_lineas", fields: [id_media_lineas], references: [id])
+  foto_referencia          Media?                    @relation("media_foto_referencia", map: "media_foto_referencia", fields: [id_media_foto_referencia], references: [id])
+  audiciones_talentos      AudicionTalento[]
+  color_ojos               CatalogoColorOjos         @relation(fields: [id_color_ojos], references: [id])
+  color_cabello            CatalogoColorCabello      @relation(fields: [id_color_cabello], references: [id])
 }
 
 model TipoTrabajoPorRoles {
-  id             Int     @id @default(autoincrement())
-  id_rol         Int     
-  rol            Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  id              Int                 @id @default(autoincrement())
+  id_rol          Int
+  rol             Roles               @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   id_tipo_trabajo Int
-  tipo_trabajo CatalogoTipoTrabajo  @relation(fields: [id_tipo_trabajo], references: [id])
+  tipo_trabajo    CatalogoTipoTrabajo @relation(fields: [id_tipo_trabajo], references: [id])
 }
 
-
 model SelftapePorRoles {
-  id             Int     @id @default(autoincrement())
-  id_rol         Int     @unique
-  rol            Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
-  pedir_selftape Boolean
-  indicaciones   String  @db.VarChar(512)
-  id_media_lineas         Int?
-  lineas Media?  @relation(fields: [id_media_lineas], references: [id])
+  id              Int     @id @default(autoincrement())
+  id_rol          Int     @unique
+  rol             Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  pedir_selftape  Boolean
+  indicaciones    String  @db.VarChar(512)
+  id_media_lineas Int?
+  lineas          Media?  @relation(fields: [id_media_lineas], references: [id])
 }
 
 model CatalogoTiposRoles {
@@ -542,10 +551,10 @@ model CatalogoGeneros {
 }
 
 model CatalogoPaises {
-  id                  Int                   @id
-  es                  String
-  en                  String
-  FiltrosDemoPorRoles FiltrosDemoPorRoles[]
+  id                           Int                            @id
+  es                           String
+  en                           String
+  FiltrosDemoPorRoles          FiltrosDemoPorRoles[]
   FiltrosAparenciasPorTalentos FiltrosAparenciasPorTalentos[]
 }
 
@@ -588,23 +597,23 @@ model Media {
   identificador             String // Se utiliza para identificar ese elemento dentro de un conjunto
   MediaPorTalentos          MediaPorTalentos[]
   InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
-  CreditoTalento            CreditoTalento[] 
-  cazatalentos Cazatalentos[] 
+  CreditoTalento            CreditoTalento[]
+  cazatalentos              Cazatalentos[]
   RepresentantesPorTalentos RepresentantesPorTalentos[]
-  archivo_proyecto Proyecto[] @relation("media_archivo", map: "media_archivo")
-  foto_portada_proyecto Proyecto[] @relation("media_foto_portada", map: "media_foto_portada")
-  lineas_roles Roles[] @relation("media_lineas", map: "media_lineas")
-  foto_referencia_roles Roles[] @relation("media_foto_referencia", map: "media_foto_referencia")
-  lineas_selftape SelftapePorRoles[]
-  banners Banners[]
+  archivo_proyecto          Proyecto[]                  @relation("media_archivo", map: "media_archivo")
+  foto_portada_proyecto     Proyecto[]                  @relation("media_foto_portada", map: "media_foto_portada")
+  lineas_roles              Roles[]                     @relation("media_lineas", map: "media_lineas")
+  foto_referencia_roles     Roles[]                     @relation("media_foto_referencia", map: "media_foto_referencia")
+  lineas_selftape           SelftapePorRoles[]
+  banners                   Banners[]
 }
 
 model MediaPorTalentos {
   id         Int      @id @default(autoincrement())
   id_talento Int
-  id_media   Int 
+  id_media   Int
   talento    Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  media      Media @relation(map: "media_por_talento", fields: [id_media], references: [id], onDelete: Cascade)   
+  media      Media    @relation(map: "media_por_talento", fields: [id_media], references: [id], onDelete: Cascade)
 }
 
 model RequisitosPorRoles {
@@ -741,7 +750,7 @@ model FiltrosAparenciasPorTalentos {
   id_vello_facial                           Int
   disposicion_afeitar_o_crecer_vello_facial Boolean
   id_color_ojos                             Int
-  id_pais Int @default(1)
+  id_pais                                   Int                                          @default(1)
   color_ojos                                CatalogoColorOjos                            @relation(fields: [id_color_ojos], references: [id])
   vello_facial                              CatalogoVelloFacial                          @relation(fields: [id_vello_facial], references: [id])
   estilo_cabello                            CatalogoEstiloCabello                        @relation(fields: [id_estilo_cabello], references: [id])
@@ -753,7 +762,7 @@ model FiltrosAparenciasPorTalentos {
   piercings                                 PiercingsPorTalentos[]
   hermanos                                  TipoHermanosPorTalento?
   particularidades                          ParticularidadesPorTalentos[]
-  nacionalidad CatalogoPaises @relation(fields: [id_pais], references: [id])
+  nacionalidad                              CatalogoPaises                               @relation(fields: [id_pais], references: [id])
   talento                                   Talentos                                     @relation(fields: [id_talento], references: [id])
 }
 
@@ -952,7 +961,7 @@ model CatalogoTipoTrabajo {
   es                             String
   en                             String
   tipos_de_trabajos_por_talentos TiposDeTrabajoPorTalentos[]
-  tipo_trabajo_por_roles TipoTrabajoPorRoles[]
+  tipo_trabajo_por_roles         TipoTrabajoPorRoles[]
 }
 
 model CatalogoTipoDocumentos {
@@ -969,7 +978,7 @@ model CatalogoColorCabello {
   es                               String
   en                               String
   filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
-  rol Roles[]
+  rol                              Roles[]
 }
 
 model CatalogoEstiloCabello {
@@ -991,7 +1000,7 @@ model CatalogoColorOjos {
   es                               String
   en                               String
   filtros_apariencias_por_talentos FiltrosAparenciasPorTalentos[]
-  rol Roles[]
+  rol                              Roles[]
 }
 
 model CatalogoParticularidades {
