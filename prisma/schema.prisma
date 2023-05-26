@@ -14,6 +14,36 @@ datasource db {
   url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
 
+model HorarioAgenda {
+  id  Int                            @id @default(autoincrement())
+  tipo_agenda String
+  tipo_localizacion String
+  notas String
+  id_uso_horario Int
+  id_proyecto Int @unique
+  proyecto Proyecto @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  fechas FechasPorHorarioAgenda[]
+  localizaciones LocalizacionesPorHorarioAgenda[]
+}
+
+model LocalizacionesPorHorarioAgenda {
+  id                  Int                      @id @default(autoincrement())
+  id_estado_republica Int
+  direccion String
+  direccion2 String?
+  codigo_postal Int
+  id_horario_agenda              Int
+  horario_agenda HorarioAgenda                    @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+}
+
+model FechasPorHorarioAgenda {
+  id                  Int                      @id @default(autoincrement())
+  fecha_inicio        DateTime
+  fecha_fin           DateTime?
+  id_horario_agenda              Int
+  horario_agenda HorarioAgenda                    @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+}
+
 model Cazatalentos {
   id              Int                            @id @default(autoincrement())
   usuario         String
@@ -218,6 +248,7 @@ model Proyecto {
   rol                  Roles[]
   tipo                 TipoProyectoPorProyecto?
   sindicato            SindicatoPorProyecto?
+  horario_agenda HorarioAgenda?
 }
 
 model AplicacionRolPorTalento {

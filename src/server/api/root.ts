@@ -6,6 +6,7 @@ import { CatalogosRouter } from './routers/catalogos';
 import { TalentosRouter } from "./routers/talentos";
 import { CazatalentosRouter } from "./routers/cazatalentos";
 import { BannersRouter } from "./routers/banners";
+import { AgendaVirtualRouter } from "./routers/agenda-virtual";
 
 export type Archivo = {
   id?: number,
@@ -38,7 +39,8 @@ export const appRouter = createTRPCRouter({
   catalogos: CatalogosRouter,
   talentos: TalentosRouter,
   cazatalentos: CazatalentosRouter,
-  banners: BannersRouter
+  banners: BannersRouter,
+  agenda_virtual: AgendaVirtualRouter
 });
 
 // export type definition of API

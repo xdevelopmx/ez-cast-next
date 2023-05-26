@@ -3369,14 +3369,14 @@ p.edo_pendiente {
   display: none!important;
 }
 .MuiPickersCalendarHeader-labelContainer {
-  margin-left: auto;
+  margin-left: auto!important;
 }
 .MuiDateCalendar-root .MuiDayCalendar-weekDayLabel {
-  border-bottom: unset;
+  border-bottom: unset!important;
 }
 .MuiDayCalendar-header {
   justify-content: space-between!important;
-  border-bottom: solid 4px var(--ezcast);
+  border-bottom: solid 4px var(--ezcast) !important;
 
 }
 .MuiDateCalendar-root {
