@@ -4,6 +4,7 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import { Alertas, MainLayout, MenuLateral, ModalTalento } from '~/components'
 import { TalentoPreviewLong } from '~/components/representante/talento-preview-long'
 import { useState } from 'react'
+import { api } from '~/utils/api'
 
 const RepresentanteTusTalentosPage = () => {
 
@@ -12,6 +13,10 @@ const RepresentanteTusTalentosPage = () => {
     const [option_selected, setOptionSelected] = useState<'APLICACIONES' | 'AUDICIONES' | 'CALLBACK'>('APLICACIONES');
 
     const [requisitoSelected, setRequisitoSelected] = useState<'PROYECTO' | 'ROL' | 'SELF-TAPE'>('PROYECTO');
+
+    const talentos = api.talentos.getAll.useQuery()
+
+    console.log(talentos.data);
 
     return (
         <>
@@ -110,8 +115,8 @@ const RepresentanteTusTalentosPage = () => {
 
                                 <Grid xs={12}>
                                     {
-                                        Array.from({ length: 4 }).map((_, i) => (
-                                            <TalentoPreviewLong setShowModal={setShowModal} key={i} />
+                                        talentos.isSuccess && talentos.data.map((talento, i) => (
+                                            <TalentoPreviewLong talento={talento} setShowModal={setShowModal} key={i} />
                                         ))
                                     }
                                 </Grid>

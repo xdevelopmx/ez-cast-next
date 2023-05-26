@@ -1,6 +1,6 @@
 
-import { Cazatalentos, Talentos, Administradores } from "@prisma/client";
-import { NextApiRequest, NextApiResponse } from "next";
+import type { Cazatalentos, Talentos, Administradores } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { TipoUsuario } from "~/enums";
 import { prisma } from "~/server/db";
 import bcrypt from 'bcrypt';
