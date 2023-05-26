@@ -21,19 +21,19 @@ const InvitarTalentoPage = () => {
                             borderRadius: '8px',
                             padding: '50px 70px'
                         }}>
-                        <Grid container xs={12}>
-                            <Grid xs={12}>
+                        <Grid item container xs={12}>
+                            <Grid item xs={12}>
                                 <Typography sx={{ fontWeight: 600, color: '#069cb1', fontSize: '1.6rem' }}>
                                     Invitar a Talento
                                 </Typography>
                             </Grid>
-                            <Grid xs={12}>
+                            <Grid item xs={12}>
                                 <Divider style={{ borderWidth: 1, borderColor: '#069cb1' }} />
                             </Grid>
-                            <Grid xs={12} mt={2}>
+                            <Grid item xs={12} mt={2}>
                                 <Typography sx={{ fontWeight: 600, color: '#069cb1', fontSize: '1.1rem' }}>Información de Talento</Typography>
                             </Grid>
-                            <Grid xs={12} mt={2}>
+                            <Grid item xs={12} mt={2}>
                                 <Box sx={{
                                     display: 'flex', gap: 2
                                 }}>
@@ -65,7 +65,7 @@ const InvitarTalentoPage = () => {
                                     />
                                 </Box>
                             </Grid>
-                            <Grid xs={12} mt={2}>
+                            <Grid item xs={12} mt={2}>
                                 <FormGroup
                                     type='email'
                                     className={'form-input-md'}
@@ -80,7 +80,7 @@ const InvitarTalentoPage = () => {
                                     label='Correo electrónico'
                                 />
                             </Grid>
-                            <Grid xs={12} mt={2}>
+                            <Grid item xs={12} mt={2}>
                                 <FormGroup
                                     type={'text-area'}
                                     className={'form-input-md'}
@@ -107,11 +107,11 @@ const InvitarTalentoPage = () => {
                                 />
                             </Grid>
 
-                            <Grid xs={12} mt={2}>
-                                <Grid xs={12}>
+                            <Grid item xs={12} mt={2}>
+                                <Grid item xs={12}>
                                     <Typography sx={{ fontWeight: 600, color: '#069cb1', fontSize: '1.1rem' }}>Invitación con tu correo o Correo Talent Corner</Typography>
                                 </Grid>
-                                <Grid xs={12}>
+                                <Grid item xs={12}>
                                     <MRadioGroup
                                         label='¿Deseas compartir el proyecto en formato poster mantenerlo oculto y solo poner la casa productora?'
                                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
@@ -127,7 +127,7 @@ const InvitarTalentoPage = () => {
                                         }}
                                     />
                                 </Grid>
-                                <Grid xs={12}>
+                                <Grid item xs={12}>
                                     <Box sx={{
                                         display: 'flex', gap: 2
                                     }}>
@@ -147,6 +147,34 @@ const InvitarTalentoPage = () => {
                                         />
                                         <Typography>sandra.rodriguez@talentcorner.com</Typography>
                                     </Box>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <div className="col d-flex justify-content-center" >
+                                        <div className="mr-3">
+
+                                            <button
+                                                className="btn btn-intro btn-price btn_out_line mb-2"
+                                                type="button"
+                                            >
+                                                <Typography>Cancelar</Typography>
+                                            </button>
+
+                                        </div>
+
+                                        <div>
+                                            <button
+                                                className="btn btn-intro btn-price btn_out_line mb-2"
+                                                type="button"
+                                                style={{
+                                                    backgroundColor: '#f9b233'
+                                                }}
+                                            >
+                                                <Typography>Enviar invitación</Typography>
+                                            </button>
+                                        </div>
+
+                                    </div>
                                 </Grid>
                             </Grid>
                         </Grid>
