@@ -3,19 +3,17 @@ import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from 'next/image';
 import { motion } from 'framer-motion'
-import { MainLayout, SlideImagenesLinks } from "~/components";
+import { MainLayout } from "~/components";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { type User } from "next-auth";
 import { getSession } from "next-auth/react";
 import { Carroucel } from "~/components/shared/Carroucel";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
-import { useRouter } from "next/router";
+import { Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
+//import { useRouter } from "next/router";
 import { TipoUsuario } from "~/enums";
-import Constants from "~/constants";
-import { useMemo, useRef, useState } from "react";
-import { RolPreview } from "~/components/shared/RolPreview";
+import { useRef, useState } from "react";
 import { DetallesProyecto } from "~/components/proyecto/detalles";
 import { MBanner } from "~/components/shared/MBanner";
 
@@ -35,7 +33,7 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
     refetchOnWindowFocus: false
   });
 
-  const router = useRouter();
+  //const router = useRouter();
   
   const redirect = (user.tipo_usuario) ? (user.tipo_usuario === TipoUsuario.TALENTO) ? '/talento/dashboard' : (user.tipo_usuario === TipoUsuario.CAZATALENTOS) ? '/cazatalentos/dashboard' : '/representante/dashboard' : '';
 

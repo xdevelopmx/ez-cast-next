@@ -14,7 +14,7 @@ const Login: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <MainLayout>
+      <MainLayout menuSiempreBlanco>
         <Titulos />
         <Preguntas /> 
       </MainLayout>
