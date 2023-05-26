@@ -6,16 +6,18 @@ import { LoadingPage } from '../shared'
 import MotionDiv from './MotionDiv'
 
 interface Props {
-    children: ReactNode,
-    menuSiempreBlanco?: boolean,
-    style?: CSSProperties
+    children: ReactNode;
+    style?: CSSProperties;
+
+    menuSiempreBlanco?: boolean;
+    menuAzul?: boolean;
 }
 
-export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, style }) => {
+export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, style, menuAzul = false }) => {
     const { isLoadingData } = useContext(AppContext)
     return (
         <>
-            <Header menuSiempreBlanco={menuSiempreBlanco}  />
+            <Header menuSiempreBlanco={menuSiempreBlanco} menuAzul={menuAzul} />
             <div style={{ marginTop: 76, ...style }}>
                 <MotionDiv show={isLoadingData} animation="fade">
                     <LoadingPage />

@@ -160,7 +160,7 @@ const RegistroPage: NextPage = () => {
 
 	return (
 		<MotionDiv show={true} animation='down-to-up'>
-			<MainLayout menuSiempreBlanco>
+			<MainLayout menuAzul>
 				<>
 					<div className="intro_container text-center ezcast_container pb-3">
 						<motion.img src="assets/img/iconos/EZ_Claqueta_N_S.svg" className="logo_head_registro" alt="" />
