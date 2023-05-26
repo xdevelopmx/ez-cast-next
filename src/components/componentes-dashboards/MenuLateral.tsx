@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { type CSSProperties, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Grid, IconButton, Button, Typography, Skeleton, Box } from '@mui/material'
 import { motion } from 'framer-motion'
@@ -11,12 +11,15 @@ import { api, parseErrorBody } from '~/utils/api';
 import { useSession } from "next-auth/react"
 import { TipoUsuario } from '~/enums';
 import useNotify from '~/hooks/useNotify';
-import { Media } from '@prisma/client';
-import { Archivo } from '~/server/api/root';
+import { type Archivo } from '~/server/api/root';
 import { FileManager } from '~/utils/file-manager';
 import { useRouter } from 'next/router';
 
-export const MenuLateral = () => {
+type Props = {
+	stylesRoot?: CSSProperties;
+}
+
+export const MenuLateral = ({ stylesRoot }: Props) => {
 	const [form, setForm] = useState<{
 		tipo_usuario: string,
 		nombre: string,
@@ -51,14 +54,14 @@ export const MenuLateral = () => {
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
 		refetchOnWindowFocus: false
 	});
-	
+
 	const talento = api.talentos.getById.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
 	const info_gral_talento = api.talentos.getInfoBasicaByIdTalento.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
-	const media_por_talento = api.talentos.getMediaByIdTalento.useQuery({id: (talento.data) ? talento.data.id : 0}, {
+	const media_por_talento = api.talentos.getMediaByIdTalento.useQuery({ id: (talento.data) ? talento.data.id : 0 }, {
 		refetchOnWindowFocus: false
 	});
 
@@ -168,7 +171,9 @@ export const MenuLateral = () => {
 
 	return (
 		<>
-			<div className="menu_container text-center ezcast_container" style={{ position: 'relative' }}>
+			<div
+				className="menu_container text-center ezcast_container"
+				style={{ position: 'relative', ...stylesRoot }}>
 				<motion.div
 					style={{
 						position: 'absolute',
@@ -226,7 +231,7 @@ export const MenuLateral = () => {
 									}}
 									aria-label="Cancelar edicion usuario"
 								>
-									
+
 									<CameraAlt />
 								</IconButton>
 							</div>
@@ -237,7 +242,7 @@ export const MenuLateral = () => {
 										const file = ev.target.files[0];
 										if (file) {
 											void FileManager.convertFileToBase64(file).then(base64 => {
-												setForm({...form, foto_selected: { base64: base64, name: file.name, file: file}})
+												setForm({ ...form, foto_selected: { base64: base64, name: file.name, file: file } })
 											})
 										}
 									}
@@ -588,7 +593,7 @@ export const MenuLateral = () => {
 											case TipoUsuario.TALENTO: {
 												if (talento.data && form.foto_selected) {
 													const time = new Date().getTime();
-													void FileManager.saveFiles([{path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+													void FileManager.saveFiles([{ path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64 }]).then((result) => {
 														result.forEach((res) => {
 															if (talento.data) {
 																const response = res[`foto-perfil-talento-${talento.data.id}-${time}`];
@@ -620,7 +625,7 @@ export const MenuLateral = () => {
 											case TipoUsuario.CAZATALENTOS: {
 												if (cazatalentos.data && form.foto_selected) {
 													const time = new Date().getTime();
-													void FileManager.saveFiles([{path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64}]).then((result) => {
+													void FileManager.saveFiles([{ path: `cazatalentos/${cazatalentos.data.id}/foto-perfil`, name: `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64 }]).then((result) => {
 														result.forEach((res) => {
 															if (cazatalentos.data) {
 																const response = res[`foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`];
@@ -783,7 +788,7 @@ export const MenuLateral = () => {
 							<div className="sub_menu">
 								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
 								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
-								<Link href="/cazatalentos/agenda-virtual" className={(router.pathname === '/cazatalentos/agenda-virtual' ||  '/cazatalentos/agenda-virtual/crear')  ? 'active' : ''}>Agenda Virtual</Link>
+								<Link href="/cazatalentos/agenda-virtual" className={(router.pathname === '/cazatalentos/agenda-virtual' || '/cazatalentos/agenda-virtual/crear') ? 'active' : ''}>Agenda Virtual</Link>
 								<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
 								<a href="#">Ayuda</a>
 							</div>

@@ -38,7 +38,7 @@ export const LocacionProyecto: FC<Props> = ({ state, onFormChange }) => {
                     tooltip={
                         <MTooltip
                             color='orange'
-                            text='Prueba'
+                            text='¿Dónde está tu proyecto? A menos que estés pagando por viáticos, debes elegir solo ubicaciones dentro de unadistancia de conducción razonable para que el talento se reporta al trabajo'
                             placement='right'
                         />
                     }

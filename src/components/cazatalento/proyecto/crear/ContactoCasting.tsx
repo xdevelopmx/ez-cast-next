@@ -2,7 +2,6 @@ import { Grid, Typography } from '@mui/material';
 import { type FC } from 'react'
 import { FormGroup, SectionTitle } from '~/components'
 import { MTooltip } from '~/components/shared/MTooltip';
-import Constants from '~/constants';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 
 interface Props {
@@ -26,7 +25,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                     </Typography>
                 </div>
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <FormGroup
                     error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
                     show_error_message
@@ -59,7 +58,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                     label='Número de teléfono*'
                 />
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <FormGroup
                     error={(state.errors.email_contacto && state.email_contacto != null) ? state.errors.email_contacto : undefined}
                     show_error_message
@@ -76,7 +75,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                     label='Correo electrónico*'
                 />
             </Grid>
-            <Grid item xs={4} mt={8} >
+            <Grid item xs={12} md={3} mt={8} >
                 <FormGroup
                     error={(state.errors.email_contacto_confirmacion && state.email_contacto_confirmacion != null) ? state.errors.email_contacto_confirmacion : undefined}
                     show_error_message
@@ -87,8 +86,19 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                     value={(state.email_contacto_confirmacion) ? state.email_contacto_confirmacion : ''}
                     tooltip={
                         <MTooltip
-                            color='orange'
-                            text='Prueba'
+                            color='blue'
+                            text={
+                                <>
+                                    <Typography fontWeight={600}>
+                                        Información de Contacto
+                                    </Typography>
+                                    <Typography>
+                                        Asegúrate de revisar esta dirección de correo electrónico con frecuencia
+                                        durante el proceso de aprobación en caso de que tengamos alguna pregunta
+                                        sobre tu proyecto.
+                                    </Typography>
+                                </>
+                            }
                             placement='right'
                         />
                     }

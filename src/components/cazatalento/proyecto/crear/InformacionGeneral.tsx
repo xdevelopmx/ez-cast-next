@@ -1,7 +1,8 @@
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { type FC } from 'react'
 import { FormGroup, MSelect, SectionTitle } from '~/components'
 import MotionDiv from '~/components/layout/MotionDiv';
+import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { api } from '~/utils/api';
 
@@ -29,7 +30,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <FormGroup
                     error={(state.errors.nombre && state.nombre != null) ? state.errors.nombre : undefined}
                     show_error_message
@@ -42,10 +43,10 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                             nombre: e.target.value,
                         })
                     }}
-                    label='Nombre*'
+                    label='Nombre de proyecto*'
                 />
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <MSelect
                     id="sindicato-select"
                     loading={tipos_sindicatos.isFetching}
@@ -60,7 +61,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     label='Sindicato*'
                 />
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <MSelect
                     id="tipo-proyectos-select"
                     loading={tipos_proyectos.isFetching}
@@ -72,11 +73,28 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                             id_tipo: parseInt(e.target.value)
                         })
                     }}
+                    tooltip={
+                        <MTooltip
+                            color='blue'
+                            placement='right-start'
+                            text={
+                                <>
+                                    <Typography fontWeight={600}>
+                                        Asegúrate de seleccionar el tipo de proyecto adecuado para ti.
+                                    </Typography>
+                                    <br/>
+                                    <Typography>
+                                        Ten en cuenta que una vez que selecciones un tipo de proyecto y crees tu proyecto, no podrás cambiarlo.Para obtener más orientación, consulte nuestra documentación de ayuda y tutoriales.
+                                    </Typography>
+                                </>
+                            }
+                        />
+                    }
                     label='Tipo Proyecto*'
                 />
             </Grid>
-            <Grid item xs={4} mt={8} justifyContent='end'></Grid>
-            <Grid item xs={4} mt={8} >
+            <Grid item xs={12} md={3} mt={8} justifyContent='end'></Grid>
+            <Grid item xs={12} md={3} mt={8} >
                 <MotionDiv show={state.id_sindicato === 99} animation='fade'>
                     <FormGroup
                         className={'form-input-md'}
@@ -92,7 +110,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     />
                 </MotionDiv>
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <MotionDiv show={state.id_tipo === 99} animation='fade'>
                     <FormGroup
                         className={'form-input-md'}

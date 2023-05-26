@@ -54,8 +54,18 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
           <div>
             <div className="d-flex justify-content-between align-items-start">
               <div>
-                <p className="color_a mb-0"><b>Proyectos Activos</b></p>
-                <p className="mb-5">Ahora siendo casteado…</p>
+                <p className="color_a mb-0" 
+                  style={{
+                    fontSize: '30px',
+                    fontWeight: '800'
+                  }}
+                ><b>Proyectos Activos</b></p>
+                <p className="mb-5"
+                  style={{
+                    fontSize: '24px',
+                    fontWeight: '400'
+                  }}
+                >Ahora siendo casteado…</p>
               </div>
               <div className="d-flex align-items-center">
                 <Link href={redirect} style={{ textDecoration: 'none' }}>
@@ -66,22 +76,47 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
             </div>
             <div className="d-flex">
               <motion.img src="/assets/img/iconos/icon_estrella_dorada.svg" alt="icono" />
-              <p className="mb-0 ml-2 h5">Destacados </p>
+              <p className="mb-0 ml-2 h5" 
+                style={{
+                  fontWeight: '800',
+                  fontSize: '25px'
+                }}
+              >
+                Destacados
+              </p>
             </div>
           </div>
-          <hr className="mb-1 hr_gold" />
+          <hr className="hr_gold" style={{margin: '20px 0 30px 0'}} />
           {destacados.data && destacados.data.length > 0 &&
              <Carroucel 
+              navigationNew
+              navigation={false}
               arrowsColor="#F9B233"
               slidesPerView={6}>
                {destacados.data.map((proyecto, i) => {
                 return <MContainer key={i} direction='vertical'>
-                  <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
-                  <Typography onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                  <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer', border: '1px solid #bababa'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
+                  <Typography 
+                    sx={{
+                      padding: '20px 0 0 0',
+                      fontWeight: '800',
+                      lineHeight: '1.2',
+                      fontSize: '23px'
+                    }}
+                    onClick={() => { 
+                      setDialog({
+                        open: true, 
+                        id_proyecto: proyecto.id
+                      }) 
+                    }} 
+                    style={{cursor: 'pointer'}} align="center" variant="subtitle1">
+                          {proyecto.nombre}
+                  </Typography>
                 </MContainer>
                })}
              </Carroucel>
           }
+          <hr className="hr_gold" style={{margin: '30px 0 40px 0'}} />
           {destacados.data && destacados.data.length === 0 &&
             <>
               <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes proyectos destacados</Typography>
@@ -89,21 +124,43 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
             </>
           }
           {container_ref.current &&
-            <MBanner show_only_media width={container_ref.current.getBoundingClientRect().width} height={250} identificador="banner-cartelera-proyectos-1"/>
+            <MBanner show_only_media width={container_ref.current.getBoundingClientRect().width} height={422} identificador="banner-cartelera-proyectos-1"/>
           }
-          <p className="mt-5 h5">Ahora casteando en EZ-Cast</p>
-          <hr className="hr_blue" />
+          <p className="mt-5 h5"
+            style={{
+              fontWeight: '800',
+              fontSize: '25px'
+            }}
+          >
+            Ahora casteando en EZ-Cast
+          </p>
+          <hr className="hr_blue"
+              style={{margin: '30px 0 40px 0'}}
+          />
           <Carroucel 
+            navigationNew
+            navigation={false}
             arrowsColor="#069cb1"
             slidesPerView={6}>
               {proyectos.data && proyectos.data.map((proyecto, i) => {
                   return <MContainer key={i} direction='vertical'>
-                      <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} width={250} height={330} src={(proyecto.url) ? proyecto.url : '/assets/img/no-image.png'} alt="" /> 
-                      <Typography onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer'}} align="center" variant="subtitle1">{proyecto.nombre}</Typography>
+                      <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer', border: '1px solid #bababa'}} width={250} height={330} src={(proyecto.url) ? proyecto.url : '/assets/img/no-image.png'} alt="" /> 
+                      <Typography 
+                        onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} 
+                        style={{cursor: 'pointer'}} align="center" variant="subtitle1"
+                        sx={{
+                          padding: '20px 0 0 0',
+                          fontWeight: '800',
+                          lineHeight: '1.2',
+                          fontSize: '23px'
+                        }}
+                      >
+                        {proyecto.nombre}
+                      </Typography>
                     </MContainer>
               })}
           </Carroucel>
-          <hr className="hr_blue" />
+          <hr className="hr_blue" style={{margin: '20px 0 20px 0'}} />
           <div className="d-flex justify-content-end align-items-center">
             <Link href={redirect} style={{ textDecoration: 'none' }}>
               <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>

@@ -36,6 +36,93 @@ button:focus {
   transform: scale(1.5);
 }
 
+/*  Carrusel Personalizado */
+.carrusel-personalizado {
+  align-items: center;
+}
+
+.carrusel-personalizado button {
+  padding: 0;
+  height: 100px;
+  border-radius: 0;
+  font-size: 50px;
+}
+
+.carrusel-personalizado button:hover {
+  background-color: #d6d6d627;
+}
+
+
+/*****************************SCROLBAR*****************************************/
+
+.container_text_scroll {
+
+  /* Personaliza la barra de desplazamiento */
+
+  /* Ancho de la barra de desplazamiento */
+  scrollbar-color: #069cb1 #F2F2F2;
+  /* Color de la barra de desplazamiento */
+}
+
+/* Estilos para navegadores basados en WebKit (Chrome, Safari, etc.) */
+.container_text_scroll::-webkit-scrollbar {
+  width: 20px;
+  /* Ancho de la barra de desplazamiento */
+}
+
+.container_text_scroll::-webkit-scrollbar-thumb {
+  background-color: #069cb1;
+  /*   border-radius: 8px; */
+  /* Color del pulgar de la barra de desplazamiento */
+}
+
+.container_text_scroll::-webkit-scrollbar-track {
+  background-color: #F2F2F2;
+  /* Color del track de la barra de desplazamiento */
+}
+
+/* Estilos para navegadores basados en Gecko (Firefox, etc.) */
+.container_text_scroll::-moz-scrollbar {
+  width: 20px;
+  /* Ancho de la barra de desplazamiento */
+}
+
+.container_text_scroll::-moz-scrollbar-thumb {
+  background-color: #069cb1;
+  /*   border-radius: 8px; */
+  /* Color del pulgar de la barra de desplazamiento */
+}
+
+.container_text_scroll::-moz-scrollbar-track {
+  background-color: #F2F2F2;
+  /* Color del track de la barra de desplazamiento */
+}
+
+
+/*****************************SCROLBAR*****************************************/
+
+
+/*******************************ELIMINAR FLECHAS EN INPUTS NUMBER************************************/
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-moz-number-spin-box {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+
+/*******************************ELIMINAR FLECHAS EN INPUTS NUMBER************************************/
+
+
 
 /*Calendario*/
 .react-calendar__month-view__weekdays {
@@ -1276,8 +1363,8 @@ footer {
   padding: 10px 5px;
   max-height: 300px;
   overflow-y: auto;
-  border-top: 3px solid var(--color_a);
-  border-bottom: 3px solid var(--color_a);
+  border-top: 5px solid var(--color_a);
+  border-bottom: 5px solid var(--color_a);
 }
 
 .container_text_scroll ol li {
@@ -3309,6 +3396,7 @@ p.edo_pendiente {
 
 .form-input-md {
   width: 200px;
+  max-width: 100%;
 }
 
 .link-input-label {
@@ -3366,24 +3454,29 @@ p.edo_pendiente {
 
 /* Estilo para que el calendario se expanda completo */
 .MuiPickersArrowSwitcher-root {
-  display: none!important;
+  display: none !important;
 }
+
 .MuiPickersCalendarHeader-labelContainer {
   margin-left: auto!important;
 }
+
 .MuiDateCalendar-root .MuiDayCalendar-weekDayLabel {
   border-bottom: unset!important;
 }
+
 .MuiDayCalendar-header {
   justify-content: space-between!important;
   border-bottom: solid 4px var(--ezcast) !important;
 
 }
+
 .MuiDateCalendar-root {
-  width: 100%!important;
+  width: 100% !important;
 }
+
 .MuiDayCalendar-weekContainer {
-  justify-content: space-between!important;
+  justify-content: space-between !important;
 }
 
 @media screen and (min-width: 300px) {

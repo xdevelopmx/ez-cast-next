@@ -6,13 +6,15 @@ import { signIn } from 'next-auth/react'
 import { motion } from 'framer-motion'
 
 import { CarrucelFondo, FormGroup, MainLayout } from "~/components";
-import { Link } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TipoUsuario } from "~/enums";
 import useLang from "~/hooks/useLang";
 import useNotify from "~/hooks/useNotify";
 import { useRouter } from 'next/navigation';
 import { MContainer } from "~/components/layout/MContainer";
+import Image from "next/image";
+import { MTooltip } from "~/components/shared/MTooltip";
 
 type LoginForm = {
 	user: string,
@@ -56,6 +58,7 @@ const LoginPage: NextPage = () => {
 				<CarrucelFondo>
 					<div className="box_cart_login">
 						<div className="login_container text-center">
+							<Image src="/assets/img/iconos/EZ_Claqueta_N_S.svg" width={50} height={50} alt="" style={{margin: '0 0 10px'}} />
 							<p className="h1 text-uppercase mb-3 text-center">EZ-CAST</p>
 							<p className="text-muted">No tienes cuenta? <Link href="/registro" className="color_a">Registrate aquí</Link></p>
 							<div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
@@ -66,7 +69,10 @@ const LoginPage: NextPage = () => {
 										show_error_message
 										className={`form-control form-control-sm text_custom ${(state.user.length < 2) ? '' : 'login_custom'} m-0`}
 										labelStyle={{ fontWeight: 400 }}
-										style={{ width: 250 }}
+										style={{ 
+											width: 250,
+											borderColor: '#069cb1!important'
+										}}
 										value={state.user}
 										onChange={(e) => {
 											dispatch({
@@ -89,7 +95,10 @@ const LoginPage: NextPage = () => {
 										className={`form-control form-control-sm text_custom ${(state.user.length < 2) ? '' : 'login_custom'} m-0`}
 										labelStyle={{ fontWeight: 400 }}
 										value={state.password}
-										style={{ width: 250 }}
+										style={{ 
+											width: 250,
+											borderColor: '#069cb1!important'
+										}}
 										onChange={(e) => {
 											dispatch({
 												type: 'update-form', value: {
@@ -111,10 +120,21 @@ const LoginPage: NextPage = () => {
 									<span
 										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.CAZATALENTOS ? 'active' : ''}`}
 										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.CAZATALENTOS } }) }}
+										style={{padding: '2px 10px'}}
 									>
 										Cazatalentos
 									</span>
-									<div className="contToolTip" data-toggle="tooltip" data-placement="bottom" title="Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que esté necesita. ">?</div>
+									<MTooltip
+										color='orange'
+										text={
+											<>
+												<Typography fontSize={14}>
+													Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que esté necesita. 
+												</Typography>
+											</>
+										}
+										placement='right'
+									/>
 								</div>
 								<div>
 									<span
@@ -123,21 +143,44 @@ const LoginPage: NextPage = () => {
 									>
 										Talento
 									</span>
-									<div className="contToolTip" data-toggle="tooltip" data-placement="bottom" title="Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.">?</div>
+									<MTooltip
+										color='orange'
+										text={
+											<>
+												<Typography fontSize={14}>
+													Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.
+												</Typography>
+											</>
+										}
+										placement='right'
+									/>
 								</div>
 								<div>
 									<span
 										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.NO_DEFINIDO ? 'active' : ''}`}
 										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.NO_DEFINIDO } }) }}
+										style={{padding: '2px 10px'}}
 									>
 										Representante
 									</span>
-									<div className="contToolTip" data-toggle="tooltip" data-placement="bottom" title="Perfil para la persona que busca facilitar la conexión con sus talentos y encontrar más oportunidades para los mismos.">?</div>
+									<MTooltip
+										color='orange'
+										text={
+											<>
+												<Typography fontSize={14}>
+													Perfil para la persona que busca facilitar la conexión con sus talentos y encontrar más oportunidades para los mismos.
+												</Typography>
+											</>
+										}
+										placement='right'
+									/>
 								</div>
 							</div>
 
-							<div className="text-center mt-3 pl-2 pr-2">
-								<button className="btn btn-intro btn-confirm mt-0" onClick={() => {
+							<div className="text-center mt-5 pl-2 pr-2">
+								<button className="btn btn-intro btn-confirm mt-0"
+								style={{padding: '8px 87px'}}
+								onClick={() => {
 									if (!validationLogin.hasErrors) {
 										signIn('credentials', {
 											user: state.user,
@@ -168,18 +211,22 @@ const LoginPage: NextPage = () => {
 								<p>O accede con</p>
 							</div>
 							<div className="d-lg-flex justify-content-center">
-								<div className="flex_half">
-									<a href="#" className="btn btn-intro btn-social btn-social-login mr-3 ml-3"><motion.img height="16" className="mr-2"
-										src="assets/img/iconos/google-logo.svg" alt="Google" />Google</a>
-								</div>
-								<div className="flex_half">
-									<a href="#" className="btn btn-intro btn-social btn-social-login mr-3 ml-3"><motion.img height="16" className="mr-2"
-										src="assets/img/iconos/facebook-logo.svg" alt="Facebook" />Facebook</a>
-								</div>
+								<a href="#" 
+									style={{width: '120px'}}
+									className="btn btn-intro btn-social btn-social-login mr-3 ml-3"><motion.img height="16" className="mr-2"
+									src="assets/img/iconos/google-logo.svg" alt="Google" />Google</a>
+								<a href="#"
+									style={{width: '120px'}}
+									className="btn btn-intro btn-social btn-social-login mr-3 ml-3"><motion.img height="16" className="mr-2"
+									src="assets/img/iconos/facebook-logo.svg" alt="Facebook" />Facebook</a>
 							</div>
 						</div>
-						<p className="text-white mt-2">Necesitas ayuda? Accede a nuestros &nbsp;
-							<a href="ayuda_ezcast.html" className="text-white">
+						<p className="text-white mt-2">
+							<a href="./ayuda-ezcast" className="text-white">
+								<u>Necesitas ayuda?</u>
+							</a>
+							&nbsp;  Accede a nuestros &nbsp;
+							<a href="./ayuda-ezcast" className="text-white">
 								<u>tutoriales y preguntas frecuentes.</u>
 							</a>
 						</p>

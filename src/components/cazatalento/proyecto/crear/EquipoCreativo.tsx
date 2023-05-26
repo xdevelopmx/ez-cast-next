@@ -18,7 +18,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                 />
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <FormGroup
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
@@ -46,7 +46,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                     label='Casa Productora'
                 />
             </Grid>
-            <Grid item xs={4} mt={8}>
+            <Grid item xs={12} md={3} mt={8}>
                 <FormGroup
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
@@ -60,7 +60,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                     label='Director'
                 />
             </Grid>
-            <Grid item xs={4} mt={8} >
+            <Grid item xs={12} md={3} mt={8} >
                 <FormGroup
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
