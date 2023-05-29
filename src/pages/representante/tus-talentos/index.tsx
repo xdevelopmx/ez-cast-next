@@ -16,8 +16,6 @@ const RepresentanteTusTalentosPage = () => {
 
     const talentos = api.talentos.getTusTalentos.useQuery()
 
-    console.log(talentos.data);
-
     return (
         <>
             <Head>
