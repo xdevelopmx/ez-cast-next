@@ -2,41 +2,32 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
+	createTRPCRouter,
+	protectedProcedure,
+	publicProcedure,
 } from "~/server/api/trpc";
 import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
+import { prisma } from '../../db';
 
 function exclude<Talentos, Key extends keyof Talentos>(
 	talento: Talentos,
 	keys: Key[]
-  ): Omit<Talentos, Key> {
+): Omit<Talentos, Key> {
 	for (const key of keys) {
-	  delete talento[key]
+		delete talento[key]
 	}
 	return talento
-  }
-  // /uploads/talentos/5/fotos-perfil/FOTO_PERFIL/002.png
+}
+// /uploads/talentos/5/fotos-perfil/FOTO_PERFIL/002.png
 
 export const TalentosRouter = createTRPCRouter({
-    getAll: publicProcedure
+	getAll: publicProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.talentos.findMany({
-				/* select: {
-					apellido: true,
-					cobro_membresia: true,
-					email: true,
-					id: true,
-					nombre: true,
-					tipo_membresia: true,
-					usuario: true,
-				} */
-			});
+			return await ctx.prisma.talentos.findMany();
 		}
-	),
+		),
 	getInfoBasicaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
@@ -57,18 +48,18 @@ export const TalentosRouter = createTRPCRouter({
 			})
 
 			const redes_sociales = await ctx.prisma.redesSocialesPorTalentos.findMany({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 			});
 
-			return {info_basica: info_basica, redes_sociales: redes_sociales};
+			return { info_basica: info_basica, redes_sociales: redes_sociales };
 		}
-	),
+		),
 	getMediaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const media = await ctx.prisma.mediaPorTalentos.findMany({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 				include: {
 					media: true
 				}
@@ -76,13 +67,13 @@ export const TalentosRouter = createTRPCRouter({
 
 			return media;
 		}
-	),
+		),
 	getCreditosByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const creditos_por_talento = await ctx.prisma.creditosPorTalentos.findFirst({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 				include: {
 					creditos: {
 						include: {
@@ -93,13 +84,13 @@ export const TalentosRouter = createTRPCRouter({
 			});
 			return creditos_por_talento;
 		}
-	),
+		),
 	getHabilidadesByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const habilidades = await ctx.prisma.habilidadesPorTalentos.findMany({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 				include: {
 					habilidad_especifica: true,
 					habilidad: true
@@ -116,13 +107,13 @@ export const TalentosRouter = createTRPCRouter({
 
 			return habilidades;
 		}
-	),
+		),
 	getActivosByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const activos = await ctx.prisma.activosPorTalentos.findFirst({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 				include: {
 					vehiculos: {
 						include: {
@@ -158,13 +149,13 @@ export const TalentosRouter = createTRPCRouter({
 			});
 			return activos;
 		}
-	),
+		),
 	getPreferenciasRolByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const preferencias = await ctx.prisma.preferenciasPorTalentos.findFirst({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 				include: {
 					tipos_de_trabajo: {
 						include: {
@@ -196,13 +187,13 @@ export const TalentosRouter = createTRPCRouter({
 			});
 			return preferencias;
 		}
-	),
+		),
 	getFiltrosAparienciaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.findFirst({
-				where: {id_talento: input.id},
+				where: { id_talento: input.id },
 				include: {
 					genero: true,
 					generos_interesados_en_interpretar: {
@@ -237,7 +228,7 @@ export const TalentosRouter = createTRPCRouter({
 
 			return filtros;
 		}
-	),
+		),
 	getMedidasByIdTalento: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
@@ -250,13 +241,13 @@ export const TalentosRouter = createTRPCRouter({
 			})
 			return medidas;
 		}
-	),
+		),
 	getById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const talento = await ctx.prisma.talentos.findUnique({
-				where: {id: input.id},
+				where: { id: input.id },
 				include: {
 					media: {
 						include: {
@@ -269,13 +260,13 @@ export const TalentosRouter = createTRPCRouter({
 			return talento;
 			//return exclude(talento, ['contrasenia'])
 		}
-	),
+		),
 	getCompleteById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
 			if (input.id <= 0) return null;
 			const talento = await ctx.prisma.talentos.findUnique({
-				where: {id: input.id},
+				where: { id: input.id },
 				include: {
 					info_basica: {
 						include: {
@@ -336,10 +327,10 @@ export const TalentosRouter = createTRPCRouter({
 									tipo_equipo_deportivo: true
 								}
 							},
-							
+
 						}
 					},
-					preferencias:{
+					preferencias: {
 						include: {
 							tipos_de_trabajo: true,
 							interes_en_proyectos: true,
@@ -384,9 +375,9 @@ export const TalentosRouter = createTRPCRouter({
 			return talento;
 			//return exclude(talento, ['contrasenia'])
 		}
-	),
+		),
 	saveMedidas: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			general_cadera: z.number().min(1).nullish(),
 			general_entrepiernas: z.number().min(1).nullish(),
 			general_guantes: z.number().min(1).nullish(),
@@ -411,7 +402,7 @@ export const TalentosRouter = createTRPCRouter({
 			calzado_ninos: z.string().min(1).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				const saved_medidas = await ctx.prisma.medidasPorTalentos.upsert({
 					where: {
@@ -423,7 +414,7 @@ export const TalentosRouter = createTRPCRouter({
 						id_talento: parseInt(user.id)
 					}
 				})
-				
+
 				return saved_medidas;
 			}
 			throw new TRPCError({
@@ -433,7 +424,7 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	getInfoGralById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
@@ -447,9 +438,9 @@ export const TalentosRouter = createTRPCRouter({
 			return info_gral;
 			//return exclude(talento, ['contrasenia'])
 		}
-	),
+		),
 	saveInfoGralMedia: protectedProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			cv_url: z.string().nullish(),
 			cv: z.object({
 				nombre: z.string(),
@@ -471,8 +462,8 @@ export const TalentosRouter = createTRPCRouter({
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('INPUT saveInfoGralMedia', input)
-			const user = ctx.session.user; 
-			const saved_files: {id_cv: number | null, id_carta_responsiva: number | null} = {id_cv: null, id_carta_responsiva: null};
+			const user = ctx.session.user;
+			const saved_files: { id_cv: number | null, id_carta_responsiva: number | null } = { id_cv: null, id_carta_responsiva: null };
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 
 				const info_gral = await ctx.prisma.infoBasicaPorTalentos.findFirst({
@@ -508,7 +499,7 @@ export const TalentosRouter = createTRPCRouter({
 								identificador: input.cv.identificador
 							}
 						});
-		
+
 						if (media_cv_saved) {
 							saved_files.id_cv = media_cv_saved.id;
 						}
@@ -553,7 +544,7 @@ export const TalentosRouter = createTRPCRouter({
 							if (carta) {
 								await FileManager.deleteFiles([carta.clave]);
 							}
-							
+
 							await ctx.prisma.media.delete({
 								where: {
 									id: representante.id_media_carta_responsiva
@@ -570,7 +561,7 @@ export const TalentosRouter = createTRPCRouter({
 								identificador: input.carta_responsiva.identificador
 							}
 						});
-		
+
 						if (media_carta_saved) {
 							saved_files.id_carta_responsiva = media_carta_saved.id;
 						}
@@ -584,7 +575,7 @@ export const TalentosRouter = createTRPCRouter({
 										id: representante.id_media_carta_responsiva
 									}
 								})
-	
+
 								if (carta) {
 									await FileManager.deleteFiles([carta.clave]);
 								}
@@ -607,9 +598,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	updatePerfil: protectedProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			foto_perfil: z.object({
 				nombre: z.string(),
 				type: z.string(),
@@ -622,10 +613,10 @@ export const TalentosRouter = createTRPCRouter({
 			biografia: z.string({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_big':
-						return { message: 'El maximo de caracteres permitido es 500' };
-					default:
-						return { message: 'Formato de biografia invalido' };
+						case 'too_big':
+							return { message: 'El maximo de caracteres permitido es 500' };
+						default:
+							return { message: 'Formato de biografia invalido' };
 					}
 				},
 			}).max(500),
@@ -635,7 +626,7 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				if (input.foto_perfil) {
 					const foto_perfil = await ctx.prisma.media.findFirst({
@@ -656,7 +647,7 @@ export const TalentosRouter = createTRPCRouter({
 					}
 					const saved_foto_perfil = await ctx.prisma.media.upsert({
 						where: {
-							id: (foto_perfil) ? foto_perfil.id : 0, 
+							id: (foto_perfil) ? foto_perfil.id : 0,
 						},
 						update: input.foto_perfil,
 						create: input.foto_perfil
@@ -681,9 +672,9 @@ export const TalentosRouter = createTRPCRouter({
 						}
 					})
 				}
-			
+
 				const talento = await ctx.prisma.talentos.update({
-					where: {id: parseInt(user.id)},
+					where: { id: parseInt(user.id) },
 					data: {
 						nombre: input.nombre
 					}
@@ -698,7 +689,7 @@ export const TalentosRouter = createTRPCRouter({
 					});
 				}
 
-				
+
 				const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
 					where: {
 						id_talento: parseInt(user.id)
@@ -727,7 +718,7 @@ export const TalentosRouter = createTRPCRouter({
 				}
 
 				const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
-					where: { 
+					where: {
 						id_talento: parseInt(user.id)
 					}
 				});
@@ -744,8 +735,8 @@ export const TalentosRouter = createTRPCRouter({
 				if (input.redes_sociales) {
 					if (Object.keys(input.redes_sociales).length > 0) {
 						const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
-							data: input.redes_sociales.map(red => { 
-								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id)} 
+							data: input.redes_sociales.map(red => {
+								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id) }
 							})
 						})
 						if (!saved_redes_sociales) {
@@ -767,9 +758,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
-  	saveInfoGral: protectedProcedure
-    	.input(z.object({ 
+		),
+	saveInfoGral: protectedProcedure
+		.input(z.object({
 			nombre: z.string(),
 			union: z.object({
 				id: z.number(),
@@ -782,10 +773,10 @@ export const TalentosRouter = createTRPCRouter({
 			biografia: z.string({
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_big':
-						return { message: 'El maximo de caracteres permitido es 500' };
-					default:
-						return { message: 'Formato de biografia invalido' };
+						case 'too_big':
+							return { message: 'El maximo de caracteres permitido es 500' };
+						default:
+							return { message: 'Formato de biografia invalido' };
 					}
 				},
 			}).max(500),
@@ -806,7 +797,7 @@ export const TalentosRouter = createTRPCRouter({
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('INPUT saveInfoGral', input)
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 
 				if (input.edad < 18 && !input.representante) {
@@ -828,7 +819,7 @@ export const TalentosRouter = createTRPCRouter({
 				}
 
 				const talento = await ctx.prisma.talentos.update({
-					where: {id: parseInt(user.id)},
+					where: { id: parseInt(user.id) },
 					data: {
 						nombre: input.nombre
 					}
@@ -900,7 +891,7 @@ export const TalentosRouter = createTRPCRouter({
 				}
 
 				const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
-					where: { 
+					where: {
 						id_talento: parseInt(user.id)
 					}
 				});
@@ -917,8 +908,8 @@ export const TalentosRouter = createTRPCRouter({
 				if (input.redes_sociales) {
 					if (Object.keys(input.redes_sociales).length > 0) {
 						const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
-							data: input.redes_sociales.map(red => { 
-								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id)} 
+							data: input.redes_sociales.map(red => {
+								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id) }
 							})
 						})
 						if (!saved_redes_sociales) {
@@ -954,7 +945,7 @@ export const TalentosRouter = createTRPCRouter({
 								id_talento: parseInt(user.id)
 							},
 						});
-		
+
 						if (!saved_representante) {
 							throw new TRPCError({
 								code: 'INTERNAL_SERVER_ERROR',
@@ -966,12 +957,12 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				} else {
 					const representante_exist = await ctx.prisma.representantesPorTalentos.findFirst({
-						where: {id_talento: parseInt(user.id)}
+						where: { id_talento: parseInt(user.id) }
 					});
 					if (representante_exist) {
 						// si es mayor de edad eliminamos al representante
 						const deleted_representante = await ctx.prisma.representantesPorTalentos.delete({
-							where: {id_talento: parseInt(user.id)}
+							where: { id_talento: parseInt(user.id) }
 						})
 						if (!deleted_representante) {
 							throw new TRPCError({
@@ -992,9 +983,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveMedios: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			fotos: z.array(z.object({
 				id: z.number(),
 				nombre: z.string(),
@@ -1025,10 +1016,10 @@ export const TalentosRouter = createTRPCRouter({
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('INPUT saveMedios', input)
-			const user = ctx.session.user; 
-			const saved_files: {ids_fotos: number[], ids_videos: number[], ids_audios: number[]} = {ids_fotos: [], ids_videos: [], ids_audios: []};
+			const user = ctx.session.user;
+			const saved_files: { ids_fotos: number[], ids_videos: number[], ids_audios: number[] } = { ids_fotos: [], ids_videos: [], ids_audios: [] };
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				
+
 				if (!input.fotos || input.fotos.length > 0) {
 					try {
 						const fotos_perfil = await ctx.prisma.media.findMany({
@@ -1044,7 +1035,7 @@ export const TalentosRouter = createTRPCRouter({
 								referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
 							},
 						})
-					} catch (e) {}
+					} catch (e) { }
 				}
 
 				if (input.fotos) {
@@ -1072,7 +1063,7 @@ export const TalentosRouter = createTRPCRouter({
 						});
 						return saved.id;
 					}));
-	
+
 					if (media_fotos_saved.length > 0) {
 						saved_files.ids_fotos.push(...media_fotos_saved);
 					}
@@ -1120,7 +1111,7 @@ export const TalentosRouter = createTRPCRouter({
 						});
 						return saved.id;
 					}));
-	
+
 					if (media_videos_saved.length > 0) {
 						saved_files.ids_videos.push(...media_videos_saved);
 					}
@@ -1176,25 +1167,25 @@ export const TalentosRouter = createTRPCRouter({
 				}
 
 
-				
+
 
 				if (saved_files.ids_fotos.length > 0) {
 					const fotos_saved = await ctx.prisma.mediaPorTalentos.createMany({
-						data: saved_files.ids_fotos.map(id => { return { id_media: id, id_talento: parseInt(user.id)}})
+						data: saved_files.ids_fotos.map(id => { return { id_media: id, id_talento: parseInt(user.id) } })
 					})
 					console.log(fotos_saved);
 				}
 
 				if (saved_files.ids_videos.length > 0) {
 					const videos_saved = await ctx.prisma.mediaPorTalentos.createMany({
-						data: saved_files.ids_videos.map(id => { return { id_media: id, id_talento: parseInt(user.id)}})
+						data: saved_files.ids_videos.map(id => { return { id_media: id, id_talento: parseInt(user.id) } })
 					})
 					console.log(videos_saved);
 				}
 
 				if (saved_files.ids_audios.length > 0) {
 					const audios_saved = await ctx.prisma.mediaPorTalentos.createMany({
-						data: saved_files.ids_audios.map(id => { return { id_media: id, id_talento: parseInt(user.id)}})
+						data: saved_files.ids_audios.map(id => { return { id_media: id, id_talento: parseInt(user.id) } })
 					})
 					console.log(audios_saved);
 				}
@@ -1208,14 +1199,14 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	updateCreditoDestacado: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			id_credito: z.number(),
 			destacado: z.boolean()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				const credito_saved = await ctx.prisma.creditoTalento.update({
 					where: {
@@ -1244,9 +1235,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveCreditos: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			mostrar_anio_en_perfil: z.boolean(),
 			creditos: z.array(z.object({
 				id_catalogo_proyecto: z.number(),
@@ -1271,7 +1262,7 @@ export const TalentosRouter = createTRPCRouter({
 			input.creditos.forEach(c => {
 				console.log(c.media)
 			})
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				const creditos_por_talentos = await ctx.prisma.creditosPorTalentos.upsert({
 					where: {
@@ -1294,7 +1285,7 @@ export const TalentosRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-				
+
 				const creditos = await ctx.prisma.creditoTalento.findMany({
 					where: {
 						id_creditos_por_talento: creditos_por_talentos.id
@@ -1329,44 +1320,44 @@ export const TalentosRouter = createTRPCRouter({
 				})
 
 				if (input.creditos.length > 0) {
-					
+
 					const created_creditos = await Promise.all(input.creditos.map(async (credito) => {
-							if (credito.media) {
-								const clip_media = await ctx.prisma.media.create({
-									data: {
-										nombre: credito.media.nombre,
-										type: credito.media.type,
-										url: credito.media.url,
-										clave: credito.media.clave,
-										referencia: credito.media.referencia,
-										identificador: credito.media.identificador
-									}
-								});
-								return await ctx.prisma.creditoTalento.create({
-									data: {
-										id_creditos_por_talento: creditos_por_talentos.id,
-										id_catalogo_proyecto: credito.id_catalogo_proyecto,
-										titulo: credito.titulo,
-										rol: credito.rol,
-										director: credito.director,
-										anio: credito.anio,
-										destacado: credito.destacado,
-										id_media_clip: clip_media.id
-									}
-								});
-							} else {
-								return await ctx.prisma.creditoTalento.create({
-									data: {
-										id_creditos_por_talento: creditos_por_talentos.id,
-										id_catalogo_proyecto: credito.id_catalogo_proyecto,
-										titulo: credito.titulo,
-										rol: credito.rol,
-										director: credito.director,
-										anio: credito.anio,
-										destacado: credito.destacado
-									}
-								});
-							}
+						if (credito.media) {
+							const clip_media = await ctx.prisma.media.create({
+								data: {
+									nombre: credito.media.nombre,
+									type: credito.media.type,
+									url: credito.media.url,
+									clave: credito.media.clave,
+									referencia: credito.media.referencia,
+									identificador: credito.media.identificador
+								}
+							});
+							return await ctx.prisma.creditoTalento.create({
+								data: {
+									id_creditos_por_talento: creditos_por_talentos.id,
+									id_catalogo_proyecto: credito.id_catalogo_proyecto,
+									titulo: credito.titulo,
+									rol: credito.rol,
+									director: credito.director,
+									anio: credito.anio,
+									destacado: credito.destacado,
+									id_media_clip: clip_media.id
+								}
+							});
+						} else {
+							return await ctx.prisma.creditoTalento.create({
+								data: {
+									id_creditos_por_talento: creditos_por_talentos.id,
+									id_catalogo_proyecto: credito.id_catalogo_proyecto,
+									titulo: credito.titulo,
+									rol: credito.rol,
+									director: credito.director,
+									anio: credito.anio,
+									destacado: credito.destacado
+								}
+							});
+						}
 					}));
 
 					if (!created_creditos) {
@@ -1388,18 +1379,18 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveHabilidades: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			ids_habilidades: z.array(z.object({
 				id_habilidad: z.number(),
 				id_habilidad_especifica: z.number()
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				
+
 				const deleted_habilidades = await ctx.prisma.habilidadesPorTalentos.deleteMany({
 					where: {
 						id_talento: parseInt(user.id)
@@ -1416,7 +1407,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.ids_habilidades.length > 0) {
 					const saved_habilidades = await ctx.prisma.habilidadesPorTalentos.createMany({
-						data: input.ids_habilidades.map(entry => { return { ...entry, id_talento: parseInt(user.id)}})
+						data: input.ids_habilidades.map(entry => { return { ...entry, id_talento: parseInt(user.id) } })
 					});
 					if (!saved_habilidades) {
 						throw new TRPCError({
@@ -1436,9 +1427,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveActivos: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			vehiculos: z.array(z.object({
 				id_tipo_vehiculo: z.number(),
 				marca: z.string(),
@@ -1465,17 +1456,17 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				
+
 				const activos_por_talento = await ctx.prisma.activosPorTalentos.upsert({
-					where: {id_talento: parseInt(user.id)},
-					update: { },
+					where: { id_talento: parseInt(user.id) },
+					update: {},
 					create: {
 						id_talento: parseInt(user.id)
 					}
 				});
-				
+
 				if (!activos_por_talento) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -1484,7 +1475,7 @@ export const TalentosRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-				
+
 				const deleted_vehiculos = await ctx.prisma.vehiculoTalento.deleteMany({
 					where: {
 						id_activos_talentos: activos_por_talento.id
@@ -1501,7 +1492,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.vehiculos.length > 0) {
 					const saved_vehiculos = await ctx.prisma.vehiculoTalento.createMany({
-						data: input.vehiculos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id}})
+						data: input.vehiculos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
 					});
 					if (!saved_vehiculos) {
 						throw new TRPCError({
@@ -1529,7 +1520,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.mascotas.length > 0) {
 					const saved_mascotas = await ctx.prisma.mascotaTalento.createMany({
-						data: input.mascotas.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id, id_raza: (entry.id_raza && entry.id_raza > 0) ? entry.id_raza : null }})
+						data: input.mascotas.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id, id_raza: (entry.id_raza && entry.id_raza > 0) ? entry.id_raza : null } })
 					});
 					if (!saved_mascotas) {
 						throw new TRPCError({
@@ -1557,7 +1548,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.vestuarios.length > 0) {
 					const saved_vestuarios = await ctx.prisma.vestuarioTalento.createMany({
-						data: input.vestuarios.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id}})
+						data: input.vestuarios.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
 					});
 					if (!saved_vestuarios) {
 						throw new TRPCError({
@@ -1585,7 +1576,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.props.length > 0) {
 					const saved_props = await ctx.prisma.propsTalento.createMany({
-						data: input.props.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id}})
+						data: input.props.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
 					});
 					if (!saved_props) {
 						throw new TRPCError({
@@ -1613,7 +1604,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.equipos_deportivos.length > 0) {
 					const saved_equipos_deportivos = await ctx.prisma.equipoDeportivoTalento.createMany({
-						data: input.equipos_deportivos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id}})
+						data: input.equipos_deportivos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
 					});
 					if (!saved_equipos_deportivos) {
 						throw new TRPCError({
@@ -1633,9 +1624,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	savePreferencias: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			preferencias: z.object({
 				interesado_en_trabajos_de_extra: z.boolean(),
 				nombre_agente: z.string().nullish(),
@@ -1646,14 +1637,14 @@ export const TalentosRouter = createTRPCRouter({
 			interes_en_proyectos: z.array(z.number()),
 			locaciones: z.array(z.object({
 				es_principal: z.boolean(),
-  				id_estado_republica: z.number()
+				id_estado_republica: z.number()
 			}), {
 				errorMap: (issue, _ctx) => {
 					switch (issue.code) {
-					case 'too_small':
-						return { message: 'Se debe enviar al menos una locacion en la peticion' };
-					default:
-						return { message: 'Formato de locacion invalido' };
+						case 'too_small':
+							return { message: 'Se debe enviar al menos una locacion en la peticion' };
+						default:
+							return { message: 'Formato de locacion invalido' };
 					}
 				},
 			}).min(1),
@@ -1661,11 +1652,11 @@ export const TalentosRouter = createTRPCRouter({
 				id_documento: z.number(),
 				descripcion: z.string()
 			})),
-			disponibilidad: z.array(z.number()), 
+			disponibilidad: z.array(z.number()),
 			otras_profesiones: z.array(z.string().min(3)),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 
 				if (input.locaciones.length === 0 || !input.locaciones.some(l => l.es_principal)) {
@@ -1679,7 +1670,7 @@ export const TalentosRouter = createTRPCRouter({
 
 
 				const preferencias = await ctx.prisma.preferenciasPorTalentos.upsert({
-					where: {id_talento: parseInt(user.id)},
+					where: { id_talento: parseInt(user.id) },
 					update: {
 						interesado_en_trabajos_de_extra: input.preferencias.interesado_en_trabajos_de_extra,
 						nombre_agente: input.preferencias.nombre_agente,
@@ -1708,11 +1699,11 @@ export const TalentosRouter = createTRPCRouter({
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
-				} 
+				}
 
 				if (input.tipos_trabajo.length > 0) {
 					const saved_tipos_de_trabajo = await ctx.prisma.tiposDeTrabajoPorTalentos.createMany({
-						data: input.tipos_trabajo.map(tdt => { return {id_tipo_de_trabajo: tdt, id_preferencias_por_talentos: preferencias.id }})
+						data: input.tipos_trabajo.map(tdt => { return { id_tipo_de_trabajo: tdt, id_preferencias_por_talentos: preferencias.id } })
 					})
 
 					if (!saved_tipos_de_trabajo) {
@@ -1722,7 +1713,7 @@ export const TalentosRouter = createTRPCRouter({
 							// optional: pass the original error to retain stack trace
 							//cause: theError,
 						});
-					} 
+					}
 				}
 
 				const deleted_intereses_en_proyectos = await ctx.prisma.interesEnProyectosPorTalentos.deleteMany({
@@ -1739,12 +1730,12 @@ export const TalentosRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
-				
+
 				if (input.interes_en_proyectos.length > 0) {
 					const saved_intereses_en_proyectos = await ctx.prisma.interesEnProyectosPorTalentos.createMany({
-						data: input.interes_en_proyectos.map(e => { return {id_interes_en_proyecto: e, id_preferencias_por_talentos: preferencias.id }})
+						data: input.interes_en_proyectos.map(e => { return { id_interes_en_proyecto: e, id_preferencias_por_talentos: preferencias.id } })
 					})
-	
+
 					if (!saved_intereses_en_proyectos) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
@@ -1784,7 +1775,7 @@ export const TalentosRouter = createTRPCRouter({
 						});
 					}
 				}
-				
+
 				const deleted_documentos = await ctx.prisma.documentosPorTalentos.deleteMany({
 					where: {
 						id_preferencias_por_talentos: preferencias.id
@@ -1883,9 +1874,9 @@ export const TalentosRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveFiltrosApariencias: protectedProcedure
-		.input(z.object({ 
+		.input(z.object({
 			apariencia: z.object({
 				rango_inicial_edad: z.number(),
 				rango_final_edad: z.number(),
@@ -1907,23 +1898,23 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 			piercings: z.array(z.object({
 				id_tipo_piercing: z.number(),
-  				descripcion: z.string()
+				descripcion: z.string()
 			})),
 			hermanos: z.object({
 				id_tipo_hermanos: z.number(),
-  				descripcion: z.string()
+				descripcion: z.string()
 			}).nullish(),
 			particularidades: z.array(z.object({
 				id_particularidad: z.number(),
-  				descripcion: z.string()
+				descripcion: z.string()
 			}))
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
 				const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
-					where: {id_talento: parseInt(user.id)},
-					update: {...input.apariencia},
+					where: { id_talento: parseInt(user.id) },
+					update: { ...input.apariencia },
 					create: {
 						...input.apariencia,
 						id_talento: parseInt(user.id)
@@ -1943,11 +1934,11 @@ export const TalentosRouter = createTRPCRouter({
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
-				} 
+				}
 
 				if (input.generos_interesado_en_interpretar.length > 0) {
 					const saved_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.createMany({
-						data: input.generos_interesado_en_interpretar.map(g => { return {id_genero: g, id_filtros_apariencias_por_talentos: filtros.id }})
+						data: input.generos_interesado_en_interpretar.map(g => { return { id_genero: g, id_filtros_apariencias_por_talentos: filtros.id } })
 					})
 
 					if (!saved_intereses_en_interpretar) {
@@ -1957,7 +1948,7 @@ export const TalentosRouter = createTRPCRouter({
 							// optional: pass the original error to retain stack trace
 							//cause: theError,
 						});
-					} 
+					}
 				}
 
 				const deleted_tatuajes = await ctx.prisma.tatuajesPorTalentos.deleteMany({
@@ -1977,9 +1968,9 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.tatuajes.length > 0) {
 					const saved_tatuajes = await ctx.prisma.tatuajesPorTalentos.createMany({
-						data: input.tatuajes.map(e => { return {descripcion: e.descripcion, id_tipo_tatuaje: e.id_tipo_tatuaje, id_filtros_apariencias_por_talentos: filtros.id }})
+						data: input.tatuajes.map(e => { return { descripcion: e.descripcion, id_tipo_tatuaje: e.id_tipo_tatuaje, id_filtros_apariencias_por_talentos: filtros.id } })
 					})
-	
+
 					if (!saved_tatuajes) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
@@ -2007,9 +1998,9 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.piercings.length > 0) {
 					const saved_piercings = await ctx.prisma.piercingsPorTalentos.createMany({
-						data: input.piercings.map(e => { return {id_tipo_piercing: e.id_tipo_piercing, descripcion: e.descripcion, id_filtros_apariencias_por_talentos: filtros.id }})
+						data: input.piercings.map(e => { return { id_tipo_piercing: e.id_tipo_piercing, descripcion: e.descripcion, id_filtros_apariencias_por_talentos: filtros.id } })
 					})
-	
+
 					if (!saved_piercings) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
@@ -2022,7 +2013,7 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.hermanos) {
 					const saved_hermanos = await ctx.prisma.tipoHermanosPorTalento.upsert({
-						where: {id_filtros_apariencias_por_talentos: filtros.id},
+						where: { id_filtros_apariencias_por_talentos: filtros.id },
 						update: input.hermanos,
 						create: {
 							...input.hermanos,
@@ -2044,7 +2035,7 @@ export const TalentosRouter = createTRPCRouter({
 							id_filtros_apariencias_por_talentos: filtros.id
 						}
 					})
-	
+
 					if (!deleted_hermanos) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
@@ -2073,9 +2064,9 @@ export const TalentosRouter = createTRPCRouter({
 
 				if (input.particularidades.length > 0) {
 					const saved_particularidades = await ctx.prisma.particularidadesPorTalentos.createMany({
-						data: input.particularidades.map(e => { return {descripcion: e.descripcion, id_particularidad: e.id_particularidad, id_filtros_apariencias_por_talentos: filtros.id }})
+						data: input.particularidades.map(e => { return { descripcion: e.descripcion, id_particularidad: e.id_particularidad, id_filtros_apariencias_por_talentos: filtros.id } })
 					})
-	
+
 					if (!saved_particularidades) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
@@ -2085,7 +2076,7 @@ export const TalentosRouter = createTRPCRouter({
 						});
 					}
 				}
-				
+
 				return filtros;
 			}
 			throw new TRPCError({
@@ -2094,6 +2085,37 @@ export const TalentosRouter = createTRPCRouter({
 				// optional: pass the original error to retain stack trace
 				//cause: theError,
 			});
+		}),
+
+	getTusTalentos: protectedProcedure
+		.query(async ({ ctx: { prisma } }) => {
+			const talentos = await prisma.talentos.findMany({
+				select: {
+					apellido: true,
+					email: true,
+					id: true,
+					nombre: true,
+					usuario: true,
+					media: {
+						select: {
+							media: true,
+						}
+					},
+
+					aplicaciones: {
+						select: {
+							id: true
+						}
+					},
+					audiciones: {
+						select: {
+							id: true
+						}
+					},
+				}
+			})
+
+			return talentos;
 		})
-	},
+},
 );

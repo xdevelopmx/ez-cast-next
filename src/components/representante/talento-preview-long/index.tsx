@@ -2,11 +2,23 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type SetStateAction, type FC, type Dispatch } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import type { Talentos } from "@prisma/client";
+import type { Talentos, Media } from "@prisma/client";
 import { useRouter } from 'next/router'
 
+type MediaObj = {
+    media: Media;
+}
+
 interface Props {
-    talento: Talentos;
+    talento: Omit<Talentos & {
+        media: MediaObj[];
+        aplicaciones: {
+            id: number;
+        }[];
+        audiciones: {
+            id: number;
+        }[];
+    }, "contrasenia" | "tipo_membresia" | "cobro_membresia">;
     setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -17,6 +29,16 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
         await router.push(`/representante/casting-billboard?talentoId=${talento.id}`)
     }
 
+    const getFoto = (media: MediaObj[]): string => {
+        if (media.length < 1) {
+            return "/assets/img/no-user-image.png"
+        }
+        if (!media[0]) {
+            return "/assets/img/no-user-image.png"
+        }
+        return media[0].media.url;
+    }
+
     return (
         <Grid container item xs={12} mt={4}>
             <Grid xs={3}>
@@ -24,7 +46,11 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                     sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', cursor: 'pointer' }}
                     onClick={() => setShowModal(true)}
                 >
-                    <Image src="/assets/img/no-user-image.png" fill alt="" style={{ objectFit: 'cover' }} />
+                    <Image
+                        src={getFoto(talento.media)}
+                        fill alt=""
+                        style={{ objectFit: 'cover', borderRadius: '100%' }}
+                    />
                 </Box>
             </Grid>
             <Grid xs={1}></Grid>
@@ -62,7 +88,7 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Image src="/assets/img/iconos/download.svg" width={20} height={20} alt="" />
                             <Typography>Aplicaciones</Typography>
-                            <Typography fontWeight={600}>10</Typography>
+                            <Typography fontWeight={600}>{talento.aplicaciones.length ?? 0}</Typography>
                         </Box>
                     </Grid>
 
@@ -70,7 +96,7 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Image src="/assets/img/iconos/icono_lampara_blue.svg" width={20} height={20} alt="" />
                             <Typography>Audiciones</Typography>
-                            <Typography fontWeight={600}>3</Typography>
+                            <Typography fontWeight={600}>{talento.audiciones.length ?? 0}</Typography>
                         </Box>
                     </Grid>
 
