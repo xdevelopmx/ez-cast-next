@@ -2104,12 +2104,8 @@ export const TalentosRouter = createTRPCRouter({
 
 					aplicaciones: {
 						select: {
-							id: true
-						}
-					},
-					audiciones: {
-						select: {
-							id: true
+							id: true,
+
 						}
 					},
 				}
