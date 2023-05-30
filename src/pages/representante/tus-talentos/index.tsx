@@ -14,9 +14,7 @@ const RepresentanteTusTalentosPage = () => {
 
     const [requisitoSelected, setRequisitoSelected] = useState<'PROYECTO' | 'ROL' | 'SELF-TAPE'>('PROYECTO');
 
-    const talentos = api.talentos.getAll.useQuery()
-
-    console.log(talentos.data);
+    const talentos = api.talentos.getTusTalentos.useQuery()
 
     return (
         <>
@@ -102,7 +100,7 @@ const RepresentanteTusTalentosPage = () => {
                                             fontWeight={900}
                                             component={'span'}
                                             sx={{ padding: '0px 5px', color: '#069cb1' }}>
-                                            0
+                                            {talentos.data?.length ?? 0}
                                         </Typography>
                                         talentos
                                     </Typography>

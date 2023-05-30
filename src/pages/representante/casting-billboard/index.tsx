@@ -74,7 +74,9 @@ const RepresentanteBillboardPage: NextPage<BillboardTalentosPageProps> = ({ user
         id_generos_rol: form_filtros.id_genero_rol,
         id_apariencias_etnicas: form_filtros.id_apariencia_etnica,
         id_nacionalidades: form_filtros.id_nacionalidades,
-        id_preferencias_de_pago: form_filtros.id_preferencias_de_pago
+        id_preferencias_de_pago: form_filtros.id_preferencias_de_pago,
+
+        id_talento: parseInt(talentoId as string)
     }, {
         refetchOnWindowFocus: false
     })
@@ -83,6 +85,7 @@ const RepresentanteBillboardPage: NextPage<BillboardTalentosPageProps> = ({ user
         if (roles_billboard.data) {
             setPagination({ page: 0, page_size: pagination.page_size });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roles_billboard.data]);
 
     useEffect(() => {

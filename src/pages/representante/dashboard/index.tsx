@@ -13,6 +13,7 @@ import Link from 'next/link'
 import MotionDiv from '~/components/layout/MotionDiv'
 import { useState } from 'react'
 import { MTooltip } from '~/components/shared/MTooltip'
+import { api } from '~/utils/api'
 
 type DashboardRepresentante = {
     user: User;
@@ -22,6 +23,8 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
 
     const router = useRouter()
     const [showModal, setShowModal] = useState(false)
+
+    const talentos = api.talentos.getTusTalentos.useQuery()
 
     return (
         <>
@@ -153,7 +156,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                                             fontWeight={900}
                                             component={'span'}
                                             sx={{ padding: '0px 5px', color: '#069cb1' }}>
-                                            0
+                                            {talentos.data?.length ?? 0}
                                         </Typography>
                                         talentos
                                     </Typography>
@@ -161,8 +164,8 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
 
                                     <Grid container xs={12} spacing={3} mt={4}>
                                         {
-                                            Array.from({ length: 4 }).map((_, i) => (
-                                                <TalentoPreviewShort key={i} />
+                                            talentos.isSuccess && talentos.data.map((talento, i) => (
+                                                <TalentoPreviewShort key={i} talento={talento} />
                                             ))
                                         }
                                     </Grid>

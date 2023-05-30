@@ -48,7 +48,7 @@ export type NewRol = {
 		habilidades: number[],
 		especificacion_habilidad: string,
 		id_color_cabello: number,
-        id_color_ojos: number,
+		id_color_ojos: number,
 		nsfw?: {
 			ids: number[],
 			descripcion: string
@@ -103,13 +103,13 @@ export const RolesRouter = createTRPCRouter({
 			});
 			return rol;
 		}
-	),
+		),
 	getFechasCasting: protectedProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
 			if (input <= 0) return null;
 			const rol = await ctx.prisma.roles.findUnique({
-				where: {id: input},
+				where: { id: input },
 				include: {
 					casting: true
 				}
@@ -145,7 +145,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 			return dates;
 		}
-	),
+		),
 	getRolWithApplicationsById: publicProcedure
 		.input(z.object({
 			start: z.number(),
@@ -156,7 +156,7 @@ export const RolesRouter = createTRPCRouter({
 		.query(async ({ input, ctx }) => {
 			console.log('\n\n\n\n\n INPUT getRolWithApplicationsById \n\n\n\n', input);
 			if (input.id_rol <= 0) return null;
-			const applications_where: {id_rol: number, id_estado_aplicacion?: number} = {
+			const applications_where: { id_rol: number, id_estado_aplicacion?: number } = {
 				id_rol: input.id_rol
 			}
 			if (input.id_estado_aplicacion > 0) {
@@ -166,7 +166,7 @@ export const RolesRouter = createTRPCRouter({
 				where: applications_where
 			});
 			const rol_con_cazatalento = await ctx.prisma.roles.findUnique({
-				where: {id: input.id_rol},
+				where: { id: input.id_rol },
 				include: {
 					proyecto: true
 				}
@@ -226,7 +226,7 @@ export const RolesRouter = createTRPCRouter({
 											}
 										}
 									}
-									
+
 								},
 							}
 						}
@@ -234,11 +234,11 @@ export const RolesRouter = createTRPCRouter({
 				}
 			});
 			if (count_applications && rol) {
-				return {count_applications: count_applications, rol: rol};
+				return { count_applications: count_applications, rol: rol };
 			}
 			return null;
 		}
-	),
+		),
 	getCompleteById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
@@ -329,7 +329,7 @@ export const RolesRouter = createTRPCRouter({
 			});
 			return rol;
 		}
-	),
+		),
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.roles.findMany();
 	}),
@@ -500,9 +500,9 @@ export const RolesRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveRolFiles: protectedProcedure
-    	.input(z.object({ 
+		.input(z.object({
 			id_rol: z.number(),
 			foto_referencia: z.object({
 				id: z.number().nullish(),
@@ -534,7 +534,7 @@ export const RolesRouter = createTRPCRouter({
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('INPUT saveRolFiles', input)
-			const user = ctx.session.user; 
+			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				let rol = await ctx.prisma.roles.findFirst({
 					where: {
@@ -607,7 +607,7 @@ export const RolesRouter = createTRPCRouter({
 							}
 						})
 					}
-	
+
 					if (rol.id_media_foto_referencia && (!input.foto_referencia || (input.foto_referencia && input.foto_referencia.id && input.foto_referencia.id === 0))) {
 						const foto = await ctx.prisma.media.findFirst({
 							where: {
@@ -657,7 +657,7 @@ export const RolesRouter = createTRPCRouter({
 								id_media_foto_referencia: updated_foto_referencia.id
 							}
 						})
-						
+
 					} else {
 						rol = await ctx.prisma.roles.update({
 							where: {
@@ -716,7 +716,7 @@ export const RolesRouter = createTRPCRouter({
 									id_rol: rol.id
 								},
 								data: {
-									id_media_lineas: updated_lineas.id, 
+									id_media_lineas: updated_lineas.id,
 								}
 							})
 						} else {
@@ -725,13 +725,13 @@ export const RolesRouter = createTRPCRouter({
 									id_rol: rol.id
 								},
 								data: {
-									id_media_lineas: null, 
+									id_media_lineas: null,
 								}
 							})
 						}
 					}
 				}
-		
+
 				return rol;
 			}
 			throw new TRPCError({
@@ -741,7 +741,7 @@ export const RolesRouter = createTRPCRouter({
 				//cause: theError,
 			});
 		}
-	),
+		),
 	saveRol: publicProcedure
 		.input(z.object({
 			id_rol: z.number(),
@@ -935,10 +935,12 @@ export const RolesRouter = createTRPCRouter({
 			})
 
 			await ctx.prisma.tipoTrabajoPorRoles.createMany({
-				data: input.info_gral.tipo_trabajo.map(t => { return {
-					id_rol: rol.id,
-					id_tipo_trabajo: t	
-				}})
+				data: input.info_gral.tipo_trabajo.map(t => {
+					return {
+						id_rol: rol.id,
+						id_tipo_trabajo: t
+					}
+				})
 			})
 
 			// COMPENSACIONES
@@ -2023,7 +2025,7 @@ export const RolesRouter = createTRPCRouter({
 			const roles = await ctx.prisma.roles.findMany({
 				where: {
 					id_tipo_rol: input.tipo_rol || undefined
-				},  
+				},
 				take: (siguienteCursor ? 1 : anteriorCursor ? -1 : 1) * (limit + 1),
 				include: {
 					compensaciones: {
@@ -2123,7 +2125,7 @@ export const RolesRouter = createTRPCRouter({
 				orderBy: {
 					id: 'asc',
 				},
-				
+
 			});
 
 			let nextCursor: typeof siguienteCursor | undefined = undefined;
@@ -2142,8 +2144,8 @@ export const RolesRouter = createTRPCRouter({
 				backCursor
 			};
 		}
-	),
-	getRolesBillboardTalentos: publicProcedure
+		),
+	getRolesBillboardTalentos: protectedProcedure
 		.input(z.object({
 			tipo_busqueda: z.string(),
 			id_estados_republica: z.array(z.number()),
@@ -2155,242 +2157,244 @@ export const RolesRouter = createTRPCRouter({
 			id_generos_rol: z.array(z.number()),
 			id_apariencias_etnicas: z.array(z.number()),
 			id_nacionalidades: z.array(z.number()),
-			id_preferencias_de_pago: z.array(z.number())
+			id_preferencias_de_pago: z.array(z.number()),
+			id_talento: z.number().optional()
 		}))
 		.query(async ({ input, ctx }) => {
 			if (ctx.session) {
-				const user = ctx.session.user; 
+				const user = ctx.session.user;
 
-				if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-					const talento = await ctx.prisma.talentos.findFirst({
-						where: {
-							id: parseInt(user.id)
-						},
-						include: {
-							filtros_aparencias: true,
-							info_basica: true,
-							preferencias: {
-								include: {
-									tipos_de_trabajo: true
-								}
-							},
-							habilidades: true
-						}
-					})
-					if (talento) {
+				const id = input.id_talento ? input.id_talento : parseInt(user.id)
 
-						const roles = await ctx.prisma.roles.findMany({
+				const talento = await ctx.prisma.talentos.findFirst({
+					where: {
+						id
+					},
+					include: {
+						filtros_aparencias: true,
+						info_basica: true,
+						preferencias: {
 							include: {
-								compensaciones: {
-									include: {
-										sueldo: true,
-										compensaciones_no_monetarias: {
-											include: {
-												compensacion: true
-											}
-										}
-									}
-								},
-								tipo_trabajos: true,
-								filtros_demograficos: {
-									include: {
-										pais: true,
-										generos: {
-											include: {
-												genero: true
-											}
-										},
-										aparencias_etnicas: {
-											include: {
-												aparencia_etnica: true
-											}
-										},
-										animal: {
-											include: {
-												animal: true
-											}
-										}
-									}
-								},
-								habilidades: {
-									include: {
-										habilidades_seleccionadas: {
-											include: {
-												habilidad: true
-											}
-										}
-									}
-								},
-								requisitos: {
-									include: {
-										estado_republica: true,
-										idioma: true,
-										uso_horario: true,
-										medios_multimedia: {
-											include: {
-												medio_multimedia: true
-											}
-										}
-									}
-								},
-								color_cabello: true,
-								color_ojos: true,
-								nsfw: {
-									include: {
-										nsfw_seleccionados: {
-											include: {
-												nsfw: true
-											}
-										}
-									}
-								},
-								casting: {
-									include: {
-										estado_republica: true
-									}
-								},
-								filmaciones: {
-									include: {
-										estado_republica: true
-									}
-								},
-								selftape: true,
-								tipo_rol: true,
-			
-								proyecto: {
-									include: {
-										tipo: {
-											include: {
-												tipo_proyecto: true
-											}
-										},
-										sindicato: {
-											include: {
-												sindicato: true
-											}
-										},
-										foto_portada: true,
-										cazatalentos: {
-											include: {
-												foto_perfil: true,
-												redes_sociales: true
-											}
+								tipos_de_trabajo: true
+							}
+						},
+						habilidades: true
+					}
+				})
+				if (talento) {
+
+					const roles = await ctx.prisma.roles.findMany({
+						include: {
+							compensaciones: {
+								include: {
+									sueldo: true,
+									compensaciones_no_monetarias: {
+										include: {
+											compensacion: true
 										}
 									}
 								}
 							},
-							orderBy: {
-								id: 'asc',
-							},
-							
-						});
-			
-						if (roles) {
-							const result = roles.map(r => {
-								let porcentaje_filter = 0;
-								if (r.filtros_demograficos) {
-									let genero_found = false;
-									r.filtros_demograficos.generos.map(g => g.id_genero).forEach(id_genero => {
-										if (!genero_found && input.id_generos_rol.includes(id_genero)) {
-											porcentaje_filter += 15;
-											genero_found = true;
+							tipo_trabajos: true,
+							filtros_demograficos: {
+								include: {
+									pais: true,
+									generos: {
+										include: {
+											genero: true
 										}
-									});
-									if (!r.filtros_demograficos.rango_edad_en_meses) {
-										if (r.filtros_demograficos.rango_edad_inicio <= input.edad_inicio && r.filtros_demograficos.rango_edad_fin >= input.edad_fin) {
-											porcentaje_filter += 15;
+									},
+									aparencias_etnicas: {
+										include: {
+											aparencia_etnica: true
+										}
+									},
+									animal: {
+										include: {
+											animal: true
 										}
 									}
-									let apariencias_etnias_found = false;
-									r.filtros_demograficos.aparencias_etnicas.map(a => a.id_aparencia_etnica).forEach(id_etnia => {
-										if (!apariencias_etnias_found && input.id_apariencias_etnicas.includes(id_etnia)) {
-											porcentaje_filter += 10;
-											apariencias_etnias_found = true;
+								}
+							},
+							habilidades: {
+								include: {
+									habilidades_seleccionadas: {
+										include: {
+											habilidad: true
 										}
-									});
-									if (r.filtros_demograficos.id_pais === talento.filtros_aparencias?.id_pais) {
+									}
+								}
+							},
+							requisitos: {
+								include: {
+									estado_republica: true,
+									idioma: true,
+									uso_horario: true,
+									medios_multimedia: {
+										include: {
+											medio_multimedia: true
+										}
+									}
+								}
+							},
+							color_cabello: true,
+							color_ojos: true,
+							nsfw: {
+								include: {
+									nsfw_seleccionados: {
+										include: {
+											nsfw: true
+										}
+									}
+								}
+							},
+							casting: {
+								include: {
+									estado_republica: true
+								}
+							},
+							filmaciones: {
+								include: {
+									estado_republica: true
+								}
+							},
+							selftape: true,
+							tipo_rol: true,
+
+							proyecto: {
+								include: {
+									tipo: {
+										include: {
+											tipo_proyecto: true
+										}
+									},
+									sindicato: {
+										include: {
+											sindicato: true
+										}
+									},
+									foto_portada: true,
+									cazatalentos: {
+										include: {
+											foto_perfil: true,
+											redes_sociales: true
+										}
+									}
+								}
+							}
+						},
+						orderBy: {
+							id: 'asc',
+						},
+
+					});
+
+					if (roles) {
+						const result = roles.map(r => {
+							let porcentaje_filter = 0;
+							if (r.filtros_demograficos) {
+								let genero_found = false;
+								r.filtros_demograficos.generos.map(g => g.id_genero).forEach(id_genero => {
+									if (!genero_found && input.id_generos_rol.includes(id_genero)) {
+										porcentaje_filter += 15;
+										genero_found = true;
+									}
+								});
+								if (!r.filtros_demograficos.rango_edad_en_meses) {
+									if (r.filtros_demograficos.rango_edad_inicio >= input.edad_inicio && r.filtros_demograficos.rango_edad_fin <= input.edad_fin) {
+										porcentaje_filter += 15;
+									}
+								}
+								let apariencias_etnias_found = false;
+								r.filtros_demograficos.aparencias_etnicas.map(a => a.id_aparencia_etnica).forEach(id_etnia => {
+									if (!apariencias_etnias_found && input.id_apariencias_etnicas.includes(id_etnia)) {
 										porcentaje_filter += 10;
+										apariencias_etnias_found = true;
 									}
-								}
-								if (talento.preferencias) {
-									if (r.tipo_trabajos.filter(t => talento.preferencias?.tipos_de_trabajo.map(tp => tp.id_tipo_de_trabajo).includes(t.id_tipo_trabajo)).length > 0) {
-										porcentaje_filter += 5;
-									}
-								}
-								if (r.proyecto.tipo) {
-									if (input.id_tipos_proyectos.includes(r.proyecto.tipo.id_tipo_proyecto)) {
-										porcentaje_filter += 5;
-									}
-								}
-								if (r.casting.length > 0 && r.casting[0]?.id_estado_republica === talento.info_basica?.id_estado_republica) {
+								});
+								if (r.filtros_demograficos.id_pais === talento.filtros_aparencias?.id_pais) {
 									porcentaje_filter += 10;
 								}
-								if (r.color_cabello.id === talento.filtros_aparencias?.id_color_cabello) {
+							}
+							if (talento.preferencias) {
+								if (r.tipo_trabajos.filter(t => talento.preferencias?.tipos_de_trabajo.map(tp => tp.id_tipo_de_trabajo).includes(t.id_tipo_trabajo)).length > 0) {
 									porcentaje_filter += 5;
 								}
-								if (r.color_ojos.id === talento.filtros_aparencias?.id_color_ojos) {
+							}
+							if (r.proyecto.tipo) {
+								if (input.id_tipos_proyectos.includes(r.proyecto.tipo.id_tipo_proyecto)) {
 									porcentaje_filter += 5;
 								}
-								if (input.tipos_roles.includes(r.tipo_rol.tipo)) {
+							}
+							if (r.casting.length > 0 && r.casting[0]?.id_estado_republica === talento.info_basica?.id_estado_republica) {
+								porcentaje_filter += 10;
+							}
+							if (r.color_cabello.id === talento.filtros_aparencias?.id_color_cabello) {
+								porcentaje_filter += 5;
+							}
+							if (r.color_ojos.id === talento.filtros_aparencias?.id_color_ojos) {
+								porcentaje_filter += 5;
+							}
+							if (input.tipos_roles.includes(r.tipo_rol.tipo)) {
+								porcentaje_filter += 5;
+							}
+							if (r.compensaciones) {
+								if (input.id_preferencias_de_pago.includes((r.compensaciones.sueldo) ? 1 : 2)) {
 									porcentaje_filter += 5;
 								}
-								if (r.compensaciones) {
-									if (input.id_preferencias_de_pago.includes((r.compensaciones.sueldo) ? 1 : 2)) {
-										porcentaje_filter += 5;
+							}
+							if (r.habilidades) {
+								let found_habilidades = 0;
+								r.habilidades.habilidades_seleccionadas.forEach(h => {
+									if (talento.habilidades.map(th => th.id_habilidad).includes(h.id_habilidad)) {
+										found_habilidades += 1;
 									}
+								});
+								if (found_habilidades > 1) {
+									porcentaje_filter += 10;
 								}
-								if (r.habilidades) {
-									let found_habilidades = 0;
-									r.habilidades.habilidades_seleccionadas.forEach(h => {
-										if (talento.habilidades.map(th => th.id_habilidad).includes(h.id_habilidad)) {
-											found_habilidades += 1;
-										}
-									});
-									if (found_habilidades > 1) {
-										porcentaje_filter += 10;
-									}
-								}
+							}
 
-								return {...r, porcentaje_filter: porcentaje_filter};
-								//if (talento.filtros_aparencias.)
-								//if (input.)
-								
-			
-								//• Sexo / Genero : 15 % (REQUISITO)
-								//(Selección del Sexo o genero con el que se identifica o dispuesto a interpretar)
-								
-								//• Rango de Edad: 15 % (REQUISITO)
-								//(Dentro del rango de Edad a interpretar)
-								//• Preferencias de Rol y Compensación: 15 % (REQUISITO)
-								//-Tipo de Trabajo (requisito) agregar filtroooo
+							return { ...r, porcentaje_filter: porcentaje_filter };
+							//if (talento.filtros_aparencias.)
+							//if (input.)
 
-								//-Selección Proyecto pagado/no pagado (requisito)
-								//-Locación de Trabajo, dentro de la selección principal o adicionales (requisito) %COMPARAR CON LA LOCACION DEL CASTING
-								
-								//-Disponibilidad para... (No requisito) ignorar
-								
-								//• Apariencia o Rasgos: 15% (REQUISITO)
-								//-Color de Cabello (Requisito)
-								//-Estilo de Cabello (No requisito)
-								//-Vello Facial (No requisito)
-								//-Color de Ojos (Requisito)
-								
-								//• Apariencia Étnica: 10 %
-								//(Afroamericano, Asiático Oriental, Blanco, Europeo, Indio Oriental, Latino/Hispano, etc...)
-								//• Nacionalidad: + 5 %
-								//(Extra)
-								//• Habilidades: + 10 %
-								//(A partir de 2 habilidades compatibles, Extra)
-							
-							}).filter(r => r.porcentaje_filter >= 60)
-							return result;
-						}
-					} 
+
+							//• Sexo / Genero : 15 % (REQUISITO)
+							//(Selección del Sexo o genero con el que se identifica o dispuesto a interpretar)
+
+							//• Rango de Edad: 15 % (REQUISITO)
+							//(Dentro del rango de Edad a interpretar)
+							//• Preferencias de Rol y Compensación: 15 % (REQUISITO)
+							//-Tipo de Trabajo (requisito) agregar filtroooo
+
+							//-Selección Proyecto pagado/no pagado (requisito)
+							//-Locación de Trabajo, dentro de la selección principal o adicionales (requisito) %COMPARAR CON LA LOCACION DEL CASTING
+
+							//-Disponibilidad para... (No requisito) ignorar
+
+							//• Apariencia o Rasgos: 15% (REQUISITO)
+							//-Color de Cabello (Requisito)
+							//-Estilo de Cabello (No requisito)
+							//-Vello Facial (No requisito)
+							//-Color de Ojos (Requisito)
+
+							//• Apariencia Étnica: 10 %
+							//(Afroamericano, Asiático Oriental, Blanco, Europeo, Indio Oriental, Latino/Hispano, etc...)
+							//• Nacionalidad: + 5 %
+							//(Extra)
+							//• Habilidades: + 10 %
+							//(A partir de 2 habilidades compatibles, Extra)
+
+						}).filter(r => r.porcentaje_filter >= 60)
+						return result;
+					}
 				}
+
 			}
 			return [];
 		}
-	),
+		),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

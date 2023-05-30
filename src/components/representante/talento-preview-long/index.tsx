@@ -2,11 +2,14 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import React, { type SetStateAction, type FC, type Dispatch } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import type { Talentos } from "@prisma/client";
 import { useRouter } from 'next/router'
+import Constants from '~/constants';
+import { type TalentoInfo, type Aplicacion } from '../interfaces'
+import { convertirMediaObjAString } from '~/utils/fotos'
+
 
 interface Props {
-    talento: Talentos;
+    talento: TalentoInfo;
     setShowModal: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -17,6 +20,14 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
         await router.push(`/representante/casting-billboard?talentoId=${talento.id}`)
     }
 
+    const irPerfilTalento = async () => {
+        await router.push(`/talento/dashboard?talentoId=${talento.id}`)
+    }
+
+    const contarIdRepetido = (aplicaciones: Aplicacion[], id: number): number => {
+        return aplicaciones.reduce((prev, aplicacion) => (prev + (aplicacion.id === id ? 1 : 0)), 0)
+    }
+
     return (
         <Grid container item xs={12} mt={4}>
             <Grid xs={3}>
@@ -24,7 +35,11 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                     sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', cursor: 'pointer' }}
                     onClick={() => setShowModal(true)}
                 >
-                    <Image src="/assets/img/no-user-image.png" fill alt="" style={{ objectFit: 'cover' }} />
+                    <Image
+                        src={convertirMediaObjAString(talento.media)}
+                        fill alt=""
+                        style={{ objectFit: 'cover', borderRadius: '100%' }}
+                    />
                 </Box>
             </Grid>
             <Grid xs={1}></Grid>
@@ -44,7 +59,8 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                 </Grid>
                 <Grid container xs={12} mt={2}>
                     <Grid xs={4}>
-                        <Button sx={{ textTransform: 'none' }}>
+                        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises*/}
+                        <Button sx={{ textTransform: 'none' }} onClick={irPerfilTalento}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>Ir a Perfil</Typography>
                         </Button>
                     </Grid>
@@ -62,7 +78,7 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Image src="/assets/img/iconos/download.svg" width={20} height={20} alt="" />
                             <Typography>Aplicaciones</Typography>
-                            <Typography fontWeight={600}>10</Typography>
+                            <Typography fontWeight={600}>{talento.aplicaciones.length ?? 0}</Typography>
                         </Box>
                     </Grid>
 
@@ -70,7 +86,9 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Image src="/assets/img/iconos/icono_lampara_blue.svg" width={20} height={20} alt="" />
                             <Typography>Audiciones</Typography>
-                            <Typography fontWeight={600}>3</Typography>
+                            <Typography fontWeight={600}>
+                                {contarIdRepetido(talento.aplicaciones, Constants.ESTADOS_APLICACION_ROL.AUDICION)}
+                            </Typography>
                         </Box>
                     </Grid>
 
@@ -78,7 +96,9 @@ export const TalentoPreviewLong: FC<Props> = ({ setShowModal, talento }) => {
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around' }}>
                             <Image src="/assets/img/iconos/icono_claqueta_blue.svg" width={20} height={20} alt="" />
                             <Typography>Callbacks</Typography>
-                            <Typography fontWeight={600}>1</Typography>
+                            <Typography fontWeight={600}>
+                                {contarIdRepetido(talento.aplicaciones, Constants.ESTADOS_APLICACION_ROL.CALLBACK)}
+                            </Typography>
                         </Box>
                     </Grid>
 
