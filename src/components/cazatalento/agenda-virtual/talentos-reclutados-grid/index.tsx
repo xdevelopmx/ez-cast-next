@@ -1,10 +1,32 @@
 import { Box, Grid, Typography } from '@mui/material'
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormGroup, MSelect } from '~/components/shared'
 import { TalentoReclutadoCard } from '../talento-reclutado-card'
+import Constants from '~/constants'
+import { api } from '~/utils/api'
 
-export const TalentosReclutadosGrid = () => {
+export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
+
+    const roles = api.roles.getAllCompleteByProyecto.useQuery(props.id_proyecto, {
+		refetchOnWindowFocus: false
+	})
+
+    const [estado_aplicacion_rol, setEstadoAplicacionRol] = useState(Constants.ESTADOS_APLICACION_ROL.AUDICION.toString());
+
+    const [selected_rol, setSelectedRol] = useState(0);
+
+    useEffect(() => {
+        if (roles.data) {
+            const rol = roles.data[0];
+            if (rol) {
+                setSelectedRol(rol.id);
+            }
+        }
+    }, [roles.data]);
+
+    console.log(roles.data);
+
     return (
         <Grid xs={12}>
             <Grid container xs={12} sx={{
@@ -42,16 +64,12 @@ export const TalentosReclutadosGrid = () => {
                             labelStyle={{ fontWeight: 600 }}
                             labelClassName={'form-input-label'}
                             label='Rol'
-                            options={[{ value: 'top', label: 'Arriba' }, { value: 'bottom', label: 'Abajo' }, { value: 'left', label: 'Izquierda' }, { value: 'Right', label: 'Derecha' }]}
-                            value={''}
+                            options={(roles.data) ? roles.data.map(r => { return { label: r.nombre, value: r.id.toString()}}) : []}
+                            value={selected_rol.toString()}
                             className={'form-input-md'}
+                            disable_default_option
                             onChange={(e) => {
-                                /* setBanner(prev => {
-                                    return {
-                                        ...prev,
-                                        position: e.target.value
-                                    }
-                                }) */
+                                setSelectedRol(parseInt(e.target.value));
                             }}
                         />
                     </Grid>
@@ -64,17 +82,13 @@ export const TalentosReclutadosGrid = () => {
                                 id="posicion-contenido-select"
                                 labelStyle={{ fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
-                                options={[{ value: 'top', label: 'Arriba' }, { value: 'bottom', label: 'Abajo' }, { value: 'left', label: 'Izquierda' }, { value: 'Right', label: 'Derecha' }]}
-                                value={''}
+                                options={[{ value: Constants.ESTADOS_APLICACION_ROL.AUDICION.toString(), label: 'Audicion' }, { value: Constants.ESTADOS_APLICACION_ROL.CALLBACK.toString(), label: 'Callback' }]}
+                                value={estado_aplicacion_rol}
                                 className={'form-input-md'}
                                 onChange={(e) => {
-                                    /* setBanner(prev => {
-                                        return {
-                                            ...prev,
-                                            position: e.target.value
-                                        }
-                                    }) */
+                                    setEstadoAplicacionRol(e.target.value)
                                 }}
+                                disable_default_option
                             />
                         </Box>
                     </Grid>
@@ -102,19 +116,30 @@ export const TalentosReclutadosGrid = () => {
                     </Box>
                 </Grid>
 
-                <Grid container xs={12} gap={2} sx={{
+                <Grid container xs={12} gap={2} maxHeight={700} overflow={'auto'} sx={{
                     justifyContent: 'center',
                     borderLeft: '3px solid #EBEBEB',
                     borderRight: '3px solid #EBEBEB',
                     borderBottom: '3px solid #EBEBEB',
                     padding: '30px 0'
                 }}>
-                    {
-                        Array.from({ length: 4 }).map((_, i) => (
-                            <Grid key={i} xs={5}>
-                                <TalentoReclutadoCard />
-                            </Grid>
-                        ))
+                    {roles.data &&
+                        roles.data.map((rol, i) => {
+                            if (rol.id === selected_rol) {
+                                return rol.aplicaciones_por_talento.map((aplicacion, j) => {
+                                    const profile = aplicacion.talento.media.filter(m => m.media.identificador.match('foto-perfil-talento'))[0];
+                                    return (
+                                        <Grid key={i} xs={5}>
+                                            <TalentoReclutadoCard 
+                                                profile_url={(profile) ? profile.media.url : '/assets/img/no-image.png'}
+                                                nombre={`${aplicacion.talento.nombre} ${aplicacion.talento.apellido}`}
+                                                union={'ND'}
+                                            />
+                                        </Grid>
+                                    )
+                                })
+                            }
+                        })
                     }
                 </Grid>
 

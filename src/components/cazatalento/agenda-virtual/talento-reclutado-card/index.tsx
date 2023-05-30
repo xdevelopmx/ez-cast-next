@@ -2,7 +2,11 @@ import Image from 'next/image'
 import { Box, Grid, Typography } from '@mui/material'
 import React from 'react'
 
-export const TalentoReclutadoCard = () => {
+export const TalentoReclutadoCard = (props: {
+    profile_url: string,
+    nombre: string,
+    union: string
+}) => {
     return (
         <Grid container xs={12}>
             <Grid xs={5}>
@@ -11,7 +15,7 @@ export const TalentoReclutadoCard = () => {
                     width: '100%',
                     aspectRatio: '9/16'
                 }}>
-                    <Image style={{ objectFit: 'cover' }} src={'/assets/img/slider_modelo_02.png'} fill alt="" />
+                    <Image style={{ objectFit: 'cover' }} src={props.profile_url} fill alt="" />
                 </Box>
             </Grid>
             <Grid xs={7} sx={{ backgroundColor: '#069cb1', padding: '10px' }}>
@@ -32,12 +36,12 @@ export const TalentoReclutadoCard = () => {
                             //whiteSpace: 'nowrap'
                         }}
                     >
-                        Nombre del actor
+                        {props.nombre}
                     </Typography>
                     <Image src="/assets/img/iconos/control_rol_edit.svg" width={20} height={20} alt="" />
                 </Box>
                 <Typography fontWeight={500} sx={{ color: '#fff', lineHeight: '20px' }}>
-                    Unión
+                    {props.union}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1, marginTop: '5px' }}>
                     <Image src="/assets/img/iconos/pendiente_table.png" width={8} height={12} alt="" />

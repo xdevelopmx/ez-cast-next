@@ -1,5 +1,5 @@
 import { CalendarMonth, CheckBox } from "@mui/icons-material";
-import { Box, Button, ButtonGroup, Card, CardContent, Checkbox, Chip, Divider, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Checkbox, Chip, Divider, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Radio, Typography } from "@mui/material";
 import { DatePicker, esES } from "@mui/x-date-pickers";
 import { HorarioAgenda, LocalizacionesPorHorarioAgenda, Proyecto, Roles } from "@prisma/client";
 import { Dayjs } from "dayjs";
@@ -34,7 +34,7 @@ const NuevoHorarioAgendaVirtual = () => {
 	const [fechas_audicion, setFechasAudicion] = useState<Map<string, { fecha_inicio: Date, fecha_fin: Date | null }>>(new Map());
 	const [fechas_selected, setFechasSelected] = useState<{fecha_inicio: Date | null, fecha_fin: Date | null}>({fecha_inicio: null, fecha_fin: null});
 	const [fechas_audicion_por_roles, setFechasAudicionPorRoles] = useState<Map<string, { fecha_inicio: Date, fecha_fin: Date | null }[]>>(new Map());
-	const [locaciones, setLocaciones] = useState<(ModalLocacionState & {checked: boolean})[]>([]);
+	const [locaciones, setLocaciones] = useState<(ModalLocacionState & {checked: boolean, state: 'GUARDADO' | 'HORARIO' | 'NUEVOS'})[]>([]);
 	const [location_selected, setLocationSelected] = useState<(ModalLocacionState & {checked: boolean})>();
 	const [notas, setNotas] = useState('');
 	const [uso_horario_selected, setUsoHorarioSelected] = useState(1);
@@ -62,19 +62,32 @@ const NuevoHorarioAgendaVirtual = () => {
 
 	useEffect(() => {
 		if (localizaciones_guardadas.data) {
-			const map = new Map<string, (ModalLocacionState & {checked: boolean})>();
-			locaciones.forEach(loc => {
-				map.set(`${loc.id + 300}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}-${loc.id_estado_republica}`, loc);
-			})
+			const arr = locaciones.filter(l => l.state === 'NUEVOS');
+			const saved_locaciones = new Set();
 			localizaciones_guardadas.data.forEach(loc => {
-				map.set(`${loc.id + 100}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}-${loc.id_estado_republica}`, {...loc, direccion2: (loc.direccion2) ? loc.direccion2 : undefined, guardado_en_bd: true, checked: false});
+				saved_locaciones.add(`${loc.id_estado_republica}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}`);
+				arr.push({
+					...loc,
+					direccion2: (loc.direccion2) ? loc.direccion2 : undefined,
+					guardado_en_bd: true,
+					state: 'GUARDADO',
+					checked: false
+				});
 			})
 			if (horario.data) {
 				horario.data.localizaciones.forEach(loc => {
-					map.set(`${loc.id + 200}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}-${loc.id_estado_republica}`, {...loc, direccion2: (loc.direccion2) ? loc.direccion2 : undefined, guardado_en_bd: true, checked: false});
+					if (!saved_locaciones.has(`${loc.id_estado_republica}-${loc.direccion}-${loc.direccion2}-${loc.codigo_postal}`)) {
+						arr.push({
+							...loc,
+							direccion2: (loc.direccion2) ? loc.direccion2 : undefined,
+							guardado_en_bd: false,
+							state: 'HORARIO',
+							checked: false
+						});
+					}
 				})
 			}
-			setLocaciones(Array.from(map).map(l => l[1]));
+			setLocaciones(arr);
 		}
 	}, [localizaciones_guardadas.data, horario.data]);
 
@@ -146,7 +159,8 @@ const NuevoHorarioAgendaVirtual = () => {
 
 	const save_horario = api.agenda_virtual.create.useMutation({
         onSuccess: (data) => {
-            notify('success', 'Se actualizo el proyecto con exito');
+            notify('success', 'Se actualizo el horario con exito');
+			router.push(`/cazatalentos/agenda-virtual/horario/${data.id}`)
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
@@ -427,7 +441,20 @@ const NuevoHorarioAgendaVirtual = () => {
 															locaciones.map((loc, i) => (
 																<Grid key={i} container xs={12} sx={{ alignItems: 'center' }}>
 																	<Grid xs={1}>
-																		<Checkbox checked={false} />
+																		<Radio 
+																			onClick={() => {
+																				setLocaciones(prev => {
+																					return prev.map(l => {
+																						l.checked = false;
+																						if (l.id === loc.id) {
+																							l.checked = !l.checked;
+																						}
+																						return l;
+																					})
+																				})
+																			}}
+																			checked={loc.checked}
+																		/>
 																	</Grid>
 																	<Grid xs={7}>
 																		<MContainer direction='horizontal'>
@@ -448,11 +475,13 @@ const NuevoHorarioAgendaVirtual = () => {
 																		</Button>
 																	</Grid>
 																	<Grid xs={2}>
-																		<Button onClick={() => { setLocaciones(prev => { return prev.filter(l => l.id !== loc.id)}) }} sx={{ textTransform: 'none' }}>
-																			<Typography sx={{ color: '#069cb1', textDecoration: 'underline' }}>
-																				Borrar
-																			</Typography>
-																		</Button>
+																		{!loc.guardado_en_bd &&
+																			<Button onClick={() => { setLocaciones(prev => { return prev.filter(l => l.id !== loc.id)}) }} sx={{ textTransform: 'none' }}>
+																				<Typography sx={{ color: '#069cb1', textDecoration: 'underline' }}>
+																					Borrar
+																				</Typography>
+																			</Button>
+																		}
 																	</Grid>
 																</Grid>
 															))
@@ -519,7 +548,7 @@ const NuevoHorarioAgendaVirtual = () => {
 										<Grid container xs={12} sx={{ flexDirection: 'column', alignItems: 'center' }} mt={4}>
 											<Button
 												onClick={() => {
-													if (locaciones.length === 0 && tipoLocacion === 'PRESENCIAL') {
+													if (locaciones.length === 0 || locaciones.filter(l => l.checked).length === 0 && tipoLocacion === 'PRESENCIAL') {
 														notify('warning', 'No se han agregado ninguna locacion');
 														return;
 													}
@@ -548,7 +577,12 @@ const NuevoHorarioAgendaVirtual = () => {
 													}
 
 													save_horario.mutate({
-														locaciones: locaciones,
+														locaciones: locaciones.map(l => {
+															return {
+																...l,
+																es_principal: l.checked
+															}
+														}),
 														fechas: dates,
 														tipo_agenda: tipoAudicion,
 														tipo_localizacion: tipoLocacion,
@@ -593,9 +627,15 @@ const NuevoHorarioAgendaVirtual = () => {
 					isOpen={showModal}
 					setIsOpen={setShowModal}
 					initialData={location_selected}
-					onChange={(data) => {
+					onChange={(data, result) => {
 						setLocationSelected(undefined);
-						if (data.id > 0) {
+						if (result > 0) {
+							localizaciones_guardadas.refetch();
+						}
+						if (result === -1) {
+							setLocaciones(prev => prev.concat([{...data, id: new Date().getTime(), checked: false, state: 'NUEVOS'}]));
+						}
+						if (result === 0) {
 							setLocaciones(locaciones.map(loc => {
 								if (loc.id === data.id) {
 									loc.checked = false;
@@ -605,10 +645,8 @@ const NuevoHorarioAgendaVirtual = () => {
 									loc.guardado_en_bd = data.guardado_en_bd;
 									loc.id_estado_republica = data.id_estado_republica;
 								} 
-								return loc;
+								return {...loc, state: 'HORARIO'};
 							}));
-						} else {
-							setLocaciones(prev => prev.concat([{...data, id: new Date().getTime(), checked: false}]));
 						}
 					}}
 				/>

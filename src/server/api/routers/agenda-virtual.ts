@@ -18,13 +18,21 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const proyectos = await ctx.prisma.proyecto.findMany({
 					where: {
-						id_cazatalentos: parseInt(ctx.session.user.id)
+						id_cazatalentos: parseInt(ctx.session.user.id),
+						estatus: {
+							in: [Constants.ESTADOS_PROYECTO.APROBADO]
+						}
 					},
 					include: {
 						horario_agenda: true,
 						rol: {
+							where: {
+								estatus: {
+									notIn: [Constants.ESTADOS_ROLES.ARCHIVADO]
+								}
+							},
 							include: {
-								casting: true
+								casting: true,
 							}
 						}
 					}
@@ -83,7 +91,12 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					},
 					include: {
 						fechas: true,
-						localizaciones: true,
+						localizaciones: {
+							include: {
+								estado_republica: true
+							}
+						},
+						uso_horario: true,
 						proyecto: {
 							include: {
 								rol: {
@@ -170,7 +183,8 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				direccion: z.string(),
 				direccion2: z.string().nullish(),
 				id_estado_republica: z.number(),
-				codigo_postal: z.number()
+				codigo_postal: z.number(),
+				es_principal: z.boolean()
 			})),
 			fechas: z.array(z.object({
 				fecha_inicio: z.date(),
@@ -300,7 +314,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 							}
 						})
 					}
-					return {id: input.id, refetch: false};
+					return {id: input.id, result: 0};
 				}
 				if (input.guardado_en_bd) {
 					const localizacion = await ctx.prisma.localizacionesGuardadas.upsert({
@@ -330,9 +344,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 							//cause: theError,
 						});
 					}	
-					return {id: localizacion.id, refetch: false};
+					return {id: localizacion.id, result: 1};
 				}
-				return {id: -1, refetch: false};
+				return {id: input.id, result: -1};
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',

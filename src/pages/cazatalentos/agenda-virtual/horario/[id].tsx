@@ -1,10 +1,29 @@
 import { Divider, Grid, Typography } from '@mui/material'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { Alertas, DatosAudicion, Flotantes, HorariosTable, MainLayout, MenuLateral, TalentosReclutadosGrid } from '~/components'
+import { api } from '~/utils/api'
+import { expandDates } from '~/utils/dates'
 
 const AudicionPorId = () => {
+
+
+    const router = useRouter();
+
+    const {id} = router.query;
+
+    console.log(id)
+
+    const horario = api.agenda_virtual.getHorarioAgendaById.useQuery(parseInt(id as string), {
+		refetchOnWindowFocus: false
+	});
+
+    const ordered_dates = Array.from(expandDates((horario.data) ? horario.data.fechas : [])).sort();
+
+    const locacion = horario.data ? horario.data.localizaciones.filter(l => l.es_principal)[0] : undefined;
+
     return (
         <>
             <Head>
@@ -32,27 +51,35 @@ const AudicionPorId = () => {
                                                 Agenda Virtual
                                             </Typography>
                                             <Typography fontWeight={600} sx={{ color: '#000', fontSize: '1.4rem' }}>
-                                                Nombre de Horario (Audición o Callback)
+                                                Horario para el proyecto {`${horario.data?.proyecto.nombre}`}
                                             </Typography>
                                             <Typography sx={{ fontSize: '1.4rem' }}>
-                                                25 de septiembre, 2021-25 de septiembre, 2021
+                                                
+                                                Del {ordered_dates[0]} al {ordered_dates[ordered_dates.length - 1]}
                                             </Typography>
                                         </Grid>
                                         <Grid xs={12} mt={2}>
                                             <Divider />
                                         </Grid>
 
-                                        <DatosAudicion />
+                                        <DatosAudicion 
+                                            locacion_principal={`${locacion?.direccion}, ${locacion?.estado_republica.es}`}
+                                            uso_horario={`${horario.data?.uso_horario.es}`}
+                                        />
 
                                         <Grid container xs={12} mt={4}>
                                             <Grid xs={5}>
-                                                <TalentosReclutadosGrid />
+                                                <TalentosReclutadosGrid 
+													id_proyecto={(horario.data) ? horario.data.id_proyecto : 0}
+												/>
                                             </Grid>
                                             <Grid xs={1}>
 
                                             </Grid>
                                             <Grid xs={6}>
-                                                <HorariosTable />
+                                                <HorariosTable
+													dates={ordered_dates} 
+												/>
                                             </Grid>
                                         </Grid>
                                     </Grid>

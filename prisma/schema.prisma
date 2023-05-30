@@ -26,6 +26,7 @@ model HorarioAgenda {
   proyecto          Proyecto                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   fechas            FechasPorHorarioAgenda[]
   localizaciones    LocalizacionesPorHorarioAgenda[]
+  uso_horario CatalogoTipoUsosHorario @relation(fields: [id_uso_horario], references: [id])
 }
 
 model LocalizacionesGuardadas {
@@ -45,6 +46,8 @@ model LocalizacionesPorHorarioAgenda {
   direccion2          String?
   codigo_postal       Int
   id_horario_agenda   Int
+  es_principal Boolean
+  estado_republica CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
@@ -492,6 +495,7 @@ model CatalogoTipoUsosHorario {
   es             String
   en             String
   requisitos_rol RequisitosPorRoles[]
+  agenda_horario HorarioAgenda[]
 }
 
 model FiltrosDemoPorRoles {
@@ -647,6 +651,7 @@ model CatalogoEstadosRepublica {
   filmacion_por_roles     FilmacionPorRoles[]
   locaciones_preferencias LocacionesPrerenciasPorTalentos[]
   proyecto                Proyecto[]
+  localizaciones_por_horario_agenda LocalizacionesPorHorarioAgenda[]
 }
 
 model MediosMultimediaPorRoles {

@@ -17,7 +17,7 @@ interface Props {
     isOpen: boolean;
     initialData?: ModalLocacionState;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    onChange: (data: ModalLocacionState) => void
+    onChange: (data: ModalLocacionState, result: number) => void
 }
 
 export const ModalLocacion: FC<Props> = ({ initialData, isOpen, setIsOpen, onChange }) => {
@@ -27,10 +27,6 @@ export const ModalLocacion: FC<Props> = ({ initialData, isOpen, setIsOpen, onCha
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
     });
-
-    const localizaciones_guardadas = api.agenda_virtual.getLocalizacionesGuardadas.useQuery(undefined, {
-		refetchOnWindowFocus: false
-	})
 
     const [data, setData] = useState<ModalLocacionState>({
         id: 0,
@@ -43,8 +39,7 @@ export const ModalLocacion: FC<Props> = ({ initialData, isOpen, setIsOpen, onCha
     const update_locacion = api.agenda_virtual.updateLocalizacion.useMutation({
         onSuccess: (input) => {
             notify('success', 'Se la locacion con exito');
-            localizaciones_guardadas.refetch();
-            onChange({...data, id: input.id });
+            onChange({...data, id: input.id }, input.result);
             setIsOpen(false);
 		},
 		onError: (error) => {

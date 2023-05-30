@@ -3,7 +3,7 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import { ModalBloquesTiempos } from '../modal-bloques-tiempos'
 
-export const HorariosTable = () => {
+export const HorariosTable = (props: {dates: string[]}) => {
 
     const [opcionSelected, setOpcionSelected] = useState<string>('03/09/21')
 
@@ -21,23 +21,7 @@ export const HorariosTable = () => {
                         Horario
                     </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'center', justifyContent: 'flex-end' }}>
-                        <Button sx={{
-                            textTransform: 'none',
-                            color: '#fff',
-                            border: '1px solid #fff',
-                            borderRadius: '2rem',
-                            padding: '5px 20px',
-                            backgroundColor: '#069cb1',
-                            '&:hover': {
-                                backgroundColor: '#07a6bb'
-                            },
-                            lineHeight: '20px',
-                        }}>
-                            <Image src="/assets/img/iconos/cruz_white.svg" width={15} height={15} alt="" />
-                            <Typography sx={{ paddingLeft: '10px' }}>
-                                Añadir descanso
-                            </Typography>
-                        </Button>
+                        
 
                         <Button sx={{
                             display: 'flex',
@@ -70,36 +54,17 @@ export const HorariosTable = () => {
             }}>
                 <Grid xs={12}>
                     <ButtonGroup sx={{ mt: 2, mb: 0, gap: 1, display: 'flex', flexWrap: 'wrap', boxShadow: 'none' }} variant="contained" aria-label="outlined primary button group">
-                        <Button
-                            onClick={() => { setOpcionSelected('03/09/21') }}
-                            variant={opcionSelected === '03/09/21' ? 'contained' : 'outlined'}
-                        >
-                            03/09/21
-                        </Button>
-                        <Button
-                            onClick={() => { setOpcionSelected('04/09/21') }}
-                            variant={opcionSelected === '04/09/21' ? 'contained' : 'outlined'}
-                        >
-                            04/09/21
-                        </Button>
-                        <Button
-                            onClick={() => { setOpcionSelected('06/09/21') }}
-                            variant={opcionSelected === '06/09/21' ? 'contained' : 'outlined'}
-                        >
-                            06/09/21
-                        </Button>
-                        <Button
-                            onClick={() => { setOpcionSelected('07/09/21') }}
-                            variant={opcionSelected === '07/09/21' ? 'contained' : 'outlined'}
-                        >
-                            07/09/21
-                        </Button>
-                        <Button
-                            onClick={() => { setOpcionSelected('08/09/21') }}
-                            variant={opcionSelected === '08/09/21' ? 'contained' : 'outlined'}
-                        >
-                            08/09/21
-                        </Button>
+                        {props.dates.map(date => {
+                            return (
+                                <Button
+                                    onClick={() => { setOpcionSelected(date) }}
+                                    variant={opcionSelected === date ? 'contained' : 'outlined'}
+                                >
+                                    {date}
+                                </Button>
+                            )
+                        })}
+                        
                     </ButtonGroup>
                 </Grid>
                 <Grid xs={12}>
