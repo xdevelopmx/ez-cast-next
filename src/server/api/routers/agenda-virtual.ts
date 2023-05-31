@@ -100,8 +100,10 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						proyecto: {
 							include: {
 								rol: {
-									select: {
-										id: true
+									where: {
+										estatus: {
+											notIn: [Constants.ESTADOS_ROLES.ARCHIVADO]
+										}
 									}
 								}
 							}
@@ -183,8 +185,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				direccion: z.string(),
 				direccion2: z.string().nullish(),
 				id_estado_republica: z.number(),
-				codigo_postal: z.number(),
-				es_principal: z.boolean()
+				codigo_postal: z.number()
 			})),
 			fechas: z.array(z.object({
 				fecha_inicio: z.date(),

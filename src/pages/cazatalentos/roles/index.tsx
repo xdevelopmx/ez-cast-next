@@ -440,37 +440,32 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                 <MTable
                                     styleTableRow={{ cursor: 'pointer' }}
                                     alternate_colors={false}
-                                    columnsHeader={(() => {
-                                        const cols = [
-                                            <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Nombre
-                                            </Typography>,
-                                            <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Estado
-                                            </Typography>,
-                                            <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                No Vistos
-                                            </Typography>,
-                                            <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Vistos
-                                            </Typography>,
-                                            <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Destacados
-                                            </Typography>,
-                                            <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Audición
-                                            </Typography>,
-                                            <Typography key={7} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Callback
-                                            </Typography>
-                                        ]
-                                        if (![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus.toUpperCase() : '')) {
-                                            cols.push(<Typography key={8} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                                Acciones
-                                            </Typography>)
-                                        }
-                                        return cols;
-                                    })()}
+                                    columnsHeader={[
+                                        <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Nombre
+                                        </Typography>,
+                                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Estado
+                                        </Typography>,
+                                        <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            No Vistos
+                                        </Typography>,
+                                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Vistos
+                                        </Typography>,
+                                        <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Destacados
+                                        </Typography>,
+                                        <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Audición
+                                        </Typography>,
+                                        <Typography key={7} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Callback
+                                        </Typography>,
+                                        <Typography key={8} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                            Acciones
+                                        </Typography>
+                                    ]}
                                     backgroundColorHeader='#069cb1'
                                     styleHeaderTableCell={{ padding: '5px !important' }}
                                     loading={roles.isFetching}
@@ -505,22 +500,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                             </MContainer>,
                                             acciones: <MContainer direction="horizontal" justify='center'>
                                                 <>
+                                                    <IconButton
+                                                        onClick={(e) => {
+                                                            const params = new Map<string, unknown>();
+                                                            params.set('id', r.id);
+                                                            params.set('state', (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'SIN_FINALIZAR' : 'ARCHIVADO');
+                                                            setConfirmationDialog({ action: 'STATE_CHANGE', data: params, opened: true, title: (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Rol' : 'Archivar Rol', content: <Typography variant="body2">{`Seguro que deseas ${(r.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este rol?`}</Typography> });
+                                                            e.stopPropagation();
+                                                        }}
+                                                        color="primary"
+                                                        aria-label="archivar"
+                                                        component="label"
+                                                    >
+                                                        <Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar" />
+                                                    </IconButton>
                                                     {![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus.toUpperCase() : '') &&
                                                         <>
-                                                            <IconButton
-                                                                onClick={(e) => {
-                                                                    const params = new Map<string, unknown>();
-                                                                    params.set('id', r.id);
-                                                                    params.set('state', (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'SIN_FINALIZAR' : 'ARCHIVADO');
-                                                                    setConfirmationDialog({ action: 'STATE_CHANGE', data: params, opened: true, title: (r.estatus.toUpperCase() === 'ARCHIVADO') ? 'Desarchivar Rol' : 'Archivar Rol', content: <Typography variant="body2">{`Seguro que deseas ${(r.estatus.toUpperCase() === 'ARCHIVADO') ? 'desarchivar' : 'archivar'} este rol?`}</Typography> });
-                                                                    e.stopPropagation();
-                                                                }}
-                                                                color="primary"
-                                                                aria-label="archivar"
-                                                                component="label"
-                                                            >
-                                                                <Image src={'/assets/img/iconos/archivar_blue.svg'} width={16} height={16} alt="archivar" />
-                                                            </IconButton>
                                                             <IconButton
                                                                 onClick={(e) => {
                                                                     void router.push(`/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`);
@@ -551,9 +546,6 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 </>
                                             </MContainer>
                                         };
-                                        if ([Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus.toUpperCase() : '')) {
-                                            delete content.acciones;
-                                        }
                                         return content;
                                     }) : []}
                                     accordionContent={(element_index: number, container_width: number) => {
@@ -570,14 +562,19 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                                 {roles.data && roles.data[element_index]?.compensaciones && roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias ?
                                                                     <>
                                                                         {
-                                                                            roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.map((c, i) => (
-                                                                                <Fragment key={c.id_compensacion}>
-                                                                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                                                                        {c.compensacion.es}
-                                                                                    </Typography>
-                                                                                    {i !== (roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.length || 0) - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                </Fragment>
-                                                                            ))
+                                                                            roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.map((c, i) => {
+                                                                                if (roles.data) {
+                                                                                    const el = roles.data[element_index];
+                                                                                    if (el) {
+                                                                                        return <Fragment key={c.id_compensacion}>
+                                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                                                {c.compensacion.es}
+                                                                                            </Typography>
+                                                                                            {i !== (el.compensaciones?.compensaciones_no_monetarias.length || 0) - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                        </Fragment>
+                                                                                    }
+                                                                                }
+                                                                            })
                                                                         }
 
                                                                     </>
@@ -660,12 +657,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                                     roles.data && roles.data[element_index]?.habilidades && roles.data[element_index]?.habilidades?.habilidades_seleccionadas
                                                                         ? <>
                                                                             {
-                                                                                roles.data[element_index]?.habilidades?.habilidades_seleccionadas.map((h, i) => (
-                                                                                    <Fragment key={h.id_habilidad}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
-                                                                                        {i !== ((roles.data[element_index]?.habilidades?.habilidades_seleccionadas.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                    </Fragment>
-                                                                                ))
+                                                                                roles.data[element_index]?.habilidades?.habilidades_seleccionadas.map((h, i) => {
+                                                                                    if (roles.data) {
+                                                                                        const el = roles.data[element_index];
+                                                                                        if (el) {
+                                                                                            return <Fragment key={h.id_habilidad}>
+                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
+                                                                                                {i !== ((el.habilidades?.habilidades_seleccionadas.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                            </Fragment>
+                                                                                        }
+                                                                                    }
+                                                                                })
                                                                             }
                                                                         </>
                                                                         : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
@@ -687,12 +689,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                                     roles.data && roles.data[element_index]?.nsfw && roles.data[element_index]?.nsfw?.nsfw_seleccionados
                                                                         ? <>
                                                                             {
-                                                                                roles.data[element_index]?.nsfw?.nsfw_seleccionados.map((n, i) => (
-                                                                                    <Fragment key={n.id_nsfw}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw?.es}</Typography>
-                                                                                        {i !== ((roles.data[element_index]?.nsfw?.nsfw_seleccionados.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                    </Fragment>
-                                                                                ))
+                                                                                roles.data[element_index]?.nsfw?.nsfw_seleccionados.map((n, i) => {
+                                                                                    if (roles.data) {
+                                                                                        const el = roles.data[element_index];
+                                                                                        if (el) {
+                                                                                            return <Fragment key={n.id_nsfw}>
+                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw?.es}</Typography>
+                                                                                                {i !== ((el.nsfw?.nsfw_seleccionados.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                            </Fragment>
+                                                                                        }
+                                                                                    }
+                                                                                })
                                                                             }
                                                                         </>
                                                                         : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
@@ -791,12 +798,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                                         && (roles.data[element_index]?.requisitos?.medios_multimedia.length || 0) > 0
                                                                         ? <>
                                                                             {
-                                                                                roles.data[element_index]?.requisitos?.medios_multimedia.map((m, i) => (
-                                                                                    <Fragment key={m.id_medio_multimedia}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
-                                                                                        {i !== ((roles.data[element_index]?.requisitos?.medios_multimedia.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                    </Fragment>
-                                                                                ))
+                                                                                roles.data[element_index]?.requisitos?.medios_multimedia.map((m, i) => {
+                                                                                    if (roles.data) {
+                                                                                        const el = roles.data[element_index];
+                                                                                        if (el) {
+                                                                                            return <Fragment key={m.id_medio_multimedia}>
+                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
+                                                                                                {i !== ((el.requisitos?.medios_multimedia.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                            </Fragment>
+                                                                                        }
+                                                                                    }
+                                                                                })
                                                                             }
                                                                         </>
                                                                         : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>

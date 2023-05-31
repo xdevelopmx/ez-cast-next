@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from '@mui/material'
+import { Box, Divider, Grid, Typography } from '@mui/material'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { FormGroup, MSelect } from '~/components/shared'
@@ -64,7 +64,7 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                             labelStyle={{ fontWeight: 600 }}
                             labelClassName={'form-input-label'}
                             label='Rol'
-                            options={(roles.data) ? roles.data.map(r => { return { label: r.nombre, value: r.id.toString()}}) : []}
+                            options={(roles.data) ? roles.data.filter(r => r.estatus.toUpperCase() !== Constants.ESTADOS_ROLES.ARCHIVADO).map(r => { return { label: r.nombre, value: r.id.toString()}}) : []}
                             value={selected_rol.toString()}
                             className={'form-input-md'}
                             disable_default_option
@@ -93,7 +93,12 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                         </Box>
                     </Grid>
                 </Grid>
-                <Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '5px 30px' }}>
+                <Grid item xs={12}>
+                    <Divider style={{width: '75%', marginLeft: 'auto', marginRight: 'auto', marginTop: 16}}/>
+                </Grid>
+                {
+                    /*
+                        <Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '5px 30px' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Typography>
                             Filtrar por:
@@ -105,16 +110,14 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                             value={''}
                             className={'form-input-md'}
                             onChange={(e) => {
-                                /* setBanner(prev => {
-                                    return {
-                                        ...prev,
-                                        position: e.target.value
-                                    }
-                                }) */
+                                
                             }}
-                        />
-                    </Box>
-                </Grid>
+                            />
+                        </Box>
+                    </Grid>
+
+                    */
+                }
 
                 <Grid container xs={12} gap={2} maxHeight={700} overflow={'auto'} sx={{
                     justifyContent: 'center',
@@ -126,7 +129,7 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                     {roles.data &&
                         roles.data.map((rol, i) => {
                             if (rol.id === selected_rol) {
-                                return rol.aplicaciones_por_talento.map((aplicacion, j) => {
+                                return rol.aplicaciones_por_talento.filter(ap => ap.id_estado_aplicacion === parseInt(estado_aplicacion_rol)).map((aplicacion, j) => {
                                     const profile = aplicacion.talento.media.filter(m => m.media.identificador.match('foto-perfil-talento'))[0];
                                     return (
                                         <Grid key={i} xs={5}>

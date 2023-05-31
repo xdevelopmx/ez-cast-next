@@ -337,7 +337,7 @@ export const RolesRouter = createTRPCRouter({
 		if (input <= 0) return null;
 		return await ctx.prisma.roles.findMany({
 			where: {
-				id_proyecto: input
+				id_proyecto: input,
 			},
 			include: {
 				aplicaciones_por_talento: {

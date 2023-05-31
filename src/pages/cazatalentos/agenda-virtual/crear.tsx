@@ -441,11 +441,10 @@ const NuevoHorarioAgendaVirtual = () => {
 															locaciones.map((loc, i) => (
 																<Grid key={i} container xs={12} sx={{ alignItems: 'center' }}>
 																	<Grid xs={1}>
-																		<Radio 
+																		<Checkbox 
 																			onClick={() => {
 																				setLocaciones(prev => {
 																					return prev.map(l => {
-																						l.checked = false;
 																						if (l.id === loc.id) {
 																							l.checked = !l.checked;
 																						}
@@ -577,12 +576,7 @@ const NuevoHorarioAgendaVirtual = () => {
 													}
 
 													save_horario.mutate({
-														locaciones: locaciones.map(l => {
-															return {
-																...l,
-																es_principal: l.checked
-															}
-														}),
+														locaciones: locaciones.filter(l => l.checked),
 														fechas: dates,
 														tipo_agenda: tipoAudicion,
 														tipo_localizacion: tipoLocacion,

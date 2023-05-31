@@ -22,8 +22,6 @@ const AudicionPorId = () => {
 
     const ordered_dates = Array.from(expandDates((horario.data) ? horario.data.fechas : [])).sort();
 
-    const locacion = horario.data ? horario.data.localizaciones.filter(l => l.es_principal)[0] : undefined;
-
     return (
         <>
             <Head>
@@ -63,7 +61,6 @@ const AudicionPorId = () => {
                                         </Grid>
 
                                         <DatosAudicion 
-                                            locacion_principal={`${locacion?.direccion}, ${locacion?.estado_republica.es}`}
                                             uso_horario={`${horario.data?.uso_horario.es}`}
                                         />
 
@@ -78,6 +75,8 @@ const AudicionPorId = () => {
                                             </Grid>
                                             <Grid xs={6}>
                                                 <HorariosTable
+                                                    locaciones={(horario.data) ? horario.data.localizaciones : []}
+                                                    roles={(horario.data) ? horario.data.proyecto.rol : []}
 													dates={ordered_dates} 
 												/>
                                             </Grid>

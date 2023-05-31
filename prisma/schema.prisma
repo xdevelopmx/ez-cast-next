@@ -46,7 +46,6 @@ model LocalizacionesPorHorarioAgenda {
   direccion2          String?
   codigo_postal       Int
   id_horario_agenda   Int
-  es_principal Boolean
   estado_republica CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }

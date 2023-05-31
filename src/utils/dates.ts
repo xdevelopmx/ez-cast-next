@@ -32,3 +32,13 @@ export function expandDates(fechas: {fecha_inicio: Date, fecha_fin: Date | null}
     console.log(dates);
     return dates;
 }
+
+export function formatDate(date: Date) {
+    const formatter = new Intl.DateTimeFormat('es', {
+        timeZone: 'UTC',
+        timeZoneName: 'short',
+        month: 'short',
+        day: '2-digit',
+    })
+    return formatter.format(date);
+}

@@ -2,12 +2,20 @@ import { Box, Button, ButtonGroup, Grid, Tooltip, Typography, tooltipClasses } f
 import Image from 'next/image'
 import React, { useState } from 'react'
 import { ModalBloquesTiempos } from '../modal-bloques-tiempos'
+import useNotify from '~/hooks/useNotify'
+import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client'
 
-export const HorariosTable = (props: {dates: string[]}) => {
+export const HorariosTable = (props: {
+    dates: string[],
+    roles: Roles[],
+    locaciones: LocalizacionesPorHorarioAgenda[]
+}) => {
 
-    const [opcionSelected, setOpcionSelected] = useState<string>('03/09/21')
+    const [opcionSelected, setOpcionSelected] = useState<string>('');
 
-    const [isOpendModal, setIsOpendModal] = useState(false)
+    const [isOpendModal, setIsOpendModal] = useState(false);
+
+    const {notify} = useNotify();
 
     return (
         <Grid xs={12}>
@@ -96,7 +104,13 @@ export const HorariosTable = (props: {dates: string[]}) => {
                                 padding: '5px 20px',
                                 color: '#000'
                             }}
-                                onClick={() => setIsOpendModal(true)}
+                                onClick={() => {
+                                    if (opcionSelected !== '') {
+                                        setIsOpendModal(true);
+                                    } else {
+                                        notify('warning', 'No haz seleccionado ninguna fecha aun');
+                                    }
+                                }}
                             >
                                 <Image src="/assets/img/iconos/cruz_blue.svg" width={15} height={15} alt="" />
                                 <Typography fontWeight={600} sx={{ paddingLeft: '10px' }}>
@@ -109,6 +123,9 @@ export const HorariosTable = (props: {dates: string[]}) => {
             </Grid>
 
             <ModalBloquesTiempos
+                locaciones={props.locaciones}
+                roles={props.roles}
+                date={opcionSelected}
                 isOpen={isOpendModal}
                 setIsOpen={setIsOpendModal}
             />

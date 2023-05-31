@@ -122,7 +122,11 @@ export const StateNDates: FC<Props> = ({
                                 switch (valueRadio) {
                                     case 'Rango de fechas': {
                                         if (date2 != null && date2 !== '') {
-                                            onAgregarFecha({inicio: new Date(date1), fin: new Date(date2)})
+                                            const inicio = new Date(date1);
+                                            inicio.setDate(inicio.getDate() + 1);
+                                            const fin = new Date(date2);
+                                            fin.setDate(fin.getDate() + 1);
+                                            onAgregarFecha({inicio: inicio, fin: fin})
                                         }  else {
                                             notify('warning', 'Por favor agregar la segunda fecha antes de continuar');
                                         }
@@ -130,7 +134,9 @@ export const StateNDates: FC<Props> = ({
                                     }
                                     case 'Individuales': {
                                         if (date1 !== '') {
-                                            onAgregarFecha({inicio: new Date(date1), fin: undefined})
+                                            const inicio = new Date(date1);
+                                            inicio.setDate(inicio.getDate() + 1);
+                                            onAgregarFecha({inicio: inicio, fin: undefined})
                                         }  else {
                                             notify('warning', 'Por favor agrega una fecha valida');
                                         }
