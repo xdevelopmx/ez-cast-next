@@ -3,12 +3,14 @@ import Head from 'next/head'
 import Image from 'next/image';
 import React, { Fragment, useEffect, useMemo, useReducer, useState } from 'react'
 import { Flotantes, MainLayout, MenuLateral, InformacionGeneral, Alertas } from '~/components'
-import { motion } from 'framer-motion'
+import { AnimatePresence, Variants, motion } from 'framer-motion'
 import { ContactoCasting } from '~/components/cazatalento/proyecto/crear/ContactoCasting'
 import { EquipoCreativo } from '~/components/cazatalento/proyecto/crear/EquipoCreativo'
 import { DetallesAdicionales } from '~/components/cazatalento/proyecto/crear/DetallesAdicionales'
 import { LocacionProyecto } from '~/components/cazatalento/proyecto/crear/LocacionProyecto'
 import { PublicarProyecto } from '~/components/cazatalento/proyecto/crear/PublicarProyecto'
+import UpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { api, parseErrorBody } from '~/utils/api'
 import useNotify from '~/hooks/useNotify'
 import CircleIcon from '@mui/icons-material/Circle';
@@ -24,6 +26,18 @@ import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
 import { TipoUsuario } from '~/enums';
 import useDelay from '~/hooks/useDelay';
+
+const variants: Variants = {
+    initial: {
+        opacity: 0
+    },
+    animate: {
+        opacity: 1
+    },
+    exit: {
+        opacity: 0
+    }
+}
 
 type RolesIndexPageProps = {
     user: User,
@@ -44,6 +58,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
     const [proyecto_details_expanded, setProyectoDetailsExpanded] = useState(false);
     const { notify } = useNotify();
     const router = useRouter();
+    const [expanded_rows, setExpandedRows] = useState<string[]>([]);
 
     const id_proyecto = useMemo(() => {
         const { id_proyecto } = router.query;
@@ -63,10 +78,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
 
     const delayed_proyecto_fetching = useDelay(proyecto.isFetched, 1500);
 
-    console.log('proyecto isfetching', proyecto.isFetching);
-    
+    console.log(roles.data);
+
     const talentos_applications_stats = useMemo(() => {
-        const map = new Map<string, number>(); 
+        const map = new Map<string, number>();
         if (roles.data) {
             roles.data.forEach((r) => {
                 r.aplicaciones_por_talento.forEach(apt => {
@@ -87,7 +102,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                             handleRolApplication(map, `${apt.id_rol}-audicion`);
                             break;
                         }
-                        case Constants.ESTADOS_APLICACION_ROL.CALLBACK: {  
+                        case Constants.ESTADOS_APLICACION_ROL.CALLBACK: {
                             handleRolApplication(map, `${apt.id_rol}-callback`);
                             break;
                         }
@@ -182,7 +197,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                             <br />
                             <MContainer direction='horizontal' justify='space-between'>
                                 <MContainer direction='horizontal'>
-                                    <p className="h5 font-weight-bold"><b>Proyecto Talent Corner</b></p>
+                                    <p className="h5 font-weight-bold"><b>{proyecto.data?.nombre}</b></p>
                                     <motion.div layout>
                                         <div className="ctrl_box_top" style={{
                                             height: 24,
@@ -207,10 +222,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                 <Box>
                                     {!proyecto.isFetched &&
                                         <MContainer direction='horizontal' styles={{ gap: 16, alignItems: 'start' }}>
-                                            <Skeleton style={{borderRadius: 16}} width={200} height={64}></Skeleton>
-                                            <Skeleton style={{borderRadius: 16}} width={200} height={64}></Skeleton>
+                                            <Skeleton style={{ borderRadius: 16 }} width={200} height={64}></Skeleton>
+                                            <Skeleton style={{ borderRadius: 16 }} width={200} height={64}></Skeleton>
                                         </MContainer>
-                                    } 
+                                    }
                                     <MotionDiv show={proyecto.isFetched} animation='fade'>
 
                                         <MContainer direction='horizontal' styles={{ alignItems: 'start' }}>
@@ -240,7 +255,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 <>
                                                     {![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus : '') &&
                                                         <Button
-                                                            onClick={() => { 
+                                                            onClick={() => {
                                                                 setConfirmationDialog({ action: 'PROYECTO_ENVIADO_A_APROBACION', data: new Map<string, unknown>(), opened: true, title: 'Enviar Proyecto A Aprobación', content: <Typography variant="body2">{`Seguro que deseas mandar este proyecto a aprobación?`}</Typography> });
                                                             }}
                                                             className="btn btn-sm btn-intro btn-price mb-2"
@@ -256,15 +271,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         </Button>
                                                     }
 
-                                                    <Alert icon={false} sx={{justifyContent: 'center'}}  severity='info' style={{ color: 'white', backgroundColor: (() => {
-                                                        let color = 'grey';
-                                                        switch (proyecto.data?.estatus.toUpperCase()) {
-                                                            case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
-                                                            case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
-                                                            case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
-                                                        }
-                                                        return color;
-                                                    })()}}>
+                                                    <Alert icon={false} sx={{ justifyContent: 'center' }} severity='info' style={{
+                                                        color: 'white', backgroundColor: (() => {
+                                                            let color = 'grey';
+                                                            switch (proyecto.data?.estatus.toUpperCase()) {
+                                                                case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
+                                                                case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
+                                                                case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
+                                                            }
+                                                            return color;
+                                                        })()
+                                                    }}>
                                                         PROYECTO {proyecto.data?.estatus.replaceAll('_', ' ')}
                                                     </Alert>
                                                 </>
@@ -278,15 +295,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                             <MContainer direction='vertical'>
                                 <MContainer direction='horizontal'>
                                     <MContainer direction="horizontal">
-                                        <CircleIcon style={{ color: (() => {
-                                            let color = 'grey';
-                                            switch (proyecto.data?.estatus.toUpperCase()) {
-                                                case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
-                                                case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
-                                                case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
-                                            }
-                                            return color;
-                                        })(), width: 12, height: 12, marginTop: 6, marginRight: 4 }} />
+                                        <CircleIcon style={{
+                                            color: (() => {
+                                                let color = 'grey';
+                                                switch (proyecto.data?.estatus.toUpperCase()) {
+                                                    case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
+                                                    case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
+                                                    case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
+                                                }
+                                                return color;
+                                            })(), width: 12, height: 12, marginTop: 6, marginRight: 4
+                                        }} />
                                         <Typography variant="subtitle2">
                                             {(proyecto.data) ? proyecto.data.nombre : 'ND'}
                                         </Typography>
@@ -429,11 +448,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     <ul className="nav nav-tabs col ml-3" id="myTab" role="tablist">
                                         <li className="nav-item">
                                             <a onClick={() => { setTabSelected('ACTIVOS') }} className={`nav-link ${tabSelected === 'ACTIVOS' ? 'active' : ''}`} id="activos-tab" data-toggle="tab" href="#activos" role="tab"
-                                                aria-controls="activos" aria-selected="true">Activos</a>
+                                                aria-controls="activos" aria-selected="true">Roles actuales</a>
                                         </li>
                                         <li className="nav-item">
                                             <a onClick={() => { setTabSelected('ARCHIVADOS') }} className={`nav-link ${tabSelected === 'ARCHIVADOS' ? 'active' : ''}`} id="archivados-tab" data-toggle="tab" href="#archivados" role="tab"
-                                                aria-controls="archivados" aria-selected="false">Archivados</a>
+                                                aria-controls="archivados" aria-selected="false">Roles archivados</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -441,28 +460,28 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     styleTableRow={{ cursor: 'pointer' }}
                                     alternate_colors={false}
                                     columnsHeader={[
-                                        <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={1} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Nombre
                                         </Typography>,
-                                        <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={2} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Estado
                                         </Typography>,
-                                        <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={3} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             No Vistos
                                         </Typography>,
-                                        <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={4} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Vistos
                                         </Typography>,
-                                        <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={5} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Destacados
                                         </Typography>,
-                                        <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={6} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Audición
                                         </Typography>,
-                                        <Typography key={7} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={7} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Callback
                                         </Typography>,
-                                        <Typography key={8} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                        <Typography key={8} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                                             Acciones
                                         </Typography>
                                     ]}
@@ -470,7 +489,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     styleHeaderTableCell={{ padding: '5px !important' }}
                                     loading={roles.isFetching}
                                     data={(filtered_roles) ? filtered_roles.map(r => {
-                                        const content: {nombre: JSX.Element, estado: string, no_vistos: JSX.Element, vistos: JSX.Element, destacados: JSX.Element, audicion: JSX.Element, callback: JSX.Element, acciones?: JSX.Element } = {
+                                        const content: { nombre: JSX.Element, estado: string, no_vistos: JSX.Element, vistos: JSX.Element, destacados: JSX.Element, audicion: JSX.Element, callback: JSX.Element, acciones?: JSX.Element } = {
                                             nombre: <MContainer direction="horizontal">
                                                 <CircleIcon style={{ color: (r.estatus.toUpperCase() === 'ACTIVO') ? 'green' : 'grey', width: 12, height: 12, marginTop: 6, marginRight: 4 }} />
                                                 <Typography variant="subtitle2">
@@ -480,23 +499,23 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                             estado: r.estatus === 'SIN_FINALIZAR' ? 'SIN_FINALIZAR' : 'ARCHIVADO',
                                             no_vistos: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icon_no_vistos.svg'} width={16} height={16} alt="no vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-no-vistos`)) ? talentos_applications_stats.get(`${r.id}-no-vistos`) : 0 }</Typography>
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-no-vistos`)) ? talentos_applications_stats.get(`${r.id}-no-vistos`) : 0}</Typography>
                                             </MContainer>,
                                             vistos: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icon_vistos.svg'} width={16} height={16} alt="vistos" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-vistos`)) ? talentos_applications_stats.get(`${r.id}-vistos`) : 0 }</Typography>
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-vistos`)) ? talentos_applications_stats.get(`${r.id}-vistos`) : 0}</Typography>
                                             </MContainer>,
                                             destacados: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icono_claqueta_blue.svg'} width={16} height={16} alt="destacados" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-destacados`)) ? talentos_applications_stats.get(`${r.id}-destacados`) : 0 }</Typography>
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-destacados`)) ? talentos_applications_stats.get(`${r.id}-destacados`) : 0}</Typography>
                                             </MContainer>,
                                             audicion: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icono_lampara_blue.svg'} width={16} height={16} alt="audicion" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-audicion`)) ? talentos_applications_stats.get(`${r.id}-audicion`) : 0 }</Typography>
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-audicion`)) ? talentos_applications_stats.get(`${r.id}-audicion`) : 0}</Typography>
                                             </MContainer>,
                                             callback: <MContainer direction='horizontal' justify='center'>
                                                 <Image src={'/assets/img/iconos/icono_claqueta_blue.svg'} width={16} height={16} alt="callback" />
-                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-callback`)) ? talentos_applications_stats.get(`${r.id}-callback`) : 0 }</Typography>
+                                                <Typography style={{ marginLeft: 8 }} variant={'body2'}>{(talentos_applications_stats.has(`${r.id}-callback`)) ? talentos_applications_stats.get(`${r.id}-callback`) : 0}</Typography>
                                             </MContainer>,
                                             acciones: <MContainer direction="horizontal" justify='center'>
                                                 <>
@@ -526,7 +545,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                                 component="label"
                                                             >
                                                                 <Image src={'/assets/img/iconos/edit_icon_blue.png'} width={16} height={16} alt="archivar" />
-                                                            </IconButton>   
+                                                            </IconButton>
                                                             <IconButton
                                                                 onClick={(e) => {
                                                                     const params = new Map<string, unknown>();
@@ -552,285 +571,316 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                         const element = filtered_roles[element_index];
                                         if (element) {
                                             return (
-                                                <Grid container p={2} style={{ width: container_width }}>
-                                                    <Grid item container xs={12}>
-                                                        <Grid item xs={7}>
-                                                            <MContainer direction='horizontal' styles={{ gap: 10 }}>
-                                                                {roles.data ? <Typography component={'span'} sx={{ color: '#928F8F', textTransform: 'capitalize' }}>{roles.data[element_index]?.tipo_rol.tipo}</Typography> : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
-                                                                {roles.data && roles.data[element_index]?.tipo_rol.tipo ? <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /> : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
-
-                                                                {roles.data && roles.data[element_index]?.compensaciones && roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias ?
-                                                                    <>
-                                                                        {
-                                                                            roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.map((c, i) => {
-                                                                                if (roles.data) {
-                                                                                    const el = roles.data[element_index];
-                                                                                    if (el) {
-                                                                                        return <Fragment key={c.id_compensacion}>
-                                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                                                                                {c.compensacion.es}
-                                                                                            </Typography>
-                                                                                            {i !== (el.compensaciones?.compensaciones_no_monetarias.length || 0) - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                        </Fragment>
-                                                                                    }
-                                                                                }
-                                                                            })
-                                                                        }
-
-                                                                    </>
-                                                                    : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
+                                                <div style={{ position: 'relative', width: 100 }}>
+                                                    <div style={{ position: 'absolute', width: container_width - 8 }}>
+                                                        <IconButton onClick={() => {
+                                                            setExpandedRows(prev => {
+                                                                if (prev.includes(`panel${element_index}`)) {
+                                                                    return prev.filter(p => p !== `panel${element_index}`);
                                                                 }
+                                                                return prev.concat([`panel${element_index}`]);
+                                                            })
+                                                        }} style={{ position: 'absolute', width: 20, top: -8, right: 8 }} color="primary" aria-label="expandir" component="label">
+                                                            {(expanded_rows.includes(`panel${element_index}`)) ? <DownIcon sx={{ color: '#928F8F' }} /> : <UpIcon sx={{ color: '#928F8F' }} />}
+                                                        </IconButton>
+                                                    </div>
+                                                    <Grid container p={2} style={{ width: container_width }}>
+                                                        <Grid item container xs={12}>
+                                                            <Grid item xs={7}>
+                                                                <MContainer direction='horizontal' styles={{ gap: 10 }}>
+                                                                    {roles.data ? <Typography component={'span'} sx={{ color: '#928F8F', textTransform: 'capitalize' }}>{roles.data[element_index]?.tipo_rol.tipo}</Typography> : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
+                                                                    {roles.data && roles.data[element_index]?.tipo_rol.tipo ? <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /> : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
 
-
-                                                                {/* {<Typography component={'span'} sx={{ color: '#928F8F' }}>Sin unión</Typography>} */}
-                                                            </MContainer>
-
-                                                            <MContainer direction='horizontal' styles={{ gap: 10 }}>
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.generos ?
+                                                                    {roles.data && roles.data[element_index]?.compensaciones && roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias ?
                                                                         <>
                                                                             {
-                                                                                roles.data[element_index]?.filtros_demograficos?.generos.map(g => (
-                                                                                    <Fragment key={g.id_genero}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{g.genero.es}</Typography>
-                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                                    </Fragment>
-                                                                                ))
-
+                                                                                roles.data[element_index]?.compensaciones?.compensaciones_no_monetarias.map((c, i) => {
+                                                                                    if (roles.data) {
+                                                                                        const el = roles.data[element_index];
+                                                                                        if (el) {
+                                                                                            return <Fragment key={c.id_compensacion}>
+                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                                                    {c.compensacion.es}
+                                                                                                </Typography>
+                                                                                                {i !== (el.compensaciones?.compensaciones_no_monetarias.length || 0) - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                            </Fragment>
+                                                                                        }
+                                                                                    }
+                                                                                })
                                                                             }
-                                                                        </>
-                                                                        :
-                                                                        <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
-                                                                }
 
-
-
-
-                                                                {roles.data && roles.data[element_index]?.filtros_demograficos && typeof roles.data[element_index]?.filtros_demograficos?.rango_edad_fin === 'number' && typeof roles.data[element_index]?.filtros_demograficos?.rango_edad_inicio === 'number'
-                                                                    ? <>
-                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{roles.data[element_index]?.filtros_demograficos?.rango_edad_inicio}-{roles.data[element_index]?.filtros_demograficos?.rango_edad_fin}</Typography>
-                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                    </>
-                                                                    : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
-
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas
-                                                                        ? <>
-                                                                            {
-                                                                                roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas.map(ae => (
-                                                                                    <Fragment key={ae.id_aparencia_etnica}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{ae.aparencia_etnica.nombre}</Typography>
-                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                                    </Fragment>
-                                                                                ))
-                                                                            }
                                                                         </>
                                                                         : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
-
-                                                                }
-
+                                                                    }
 
 
-                                                                {roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.pais
-                                                                    ? <Typography component={'span'} sx={{ color: '#928F8F' }}>{roles.data[element_index]?.filtros_demograficos?.pais.es}</Typography>
-                                                                    : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography></>
-                                                                }
-                                                            </MContainer>
+                                                                    {/* {<Typography component={'span'} sx={{ color: '#928F8F' }}>Sin unión</Typography>} */}
+                                                                </MContainer>
 
+                                                                <MContainer direction='horizontal' styles={{ gap: 10 }}>
+                                                                    {
+                                                                        roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.generos ?
+                                                                            <>
+                                                                                {
+                                                                                    roles.data[element_index]?.filtros_demograficos?.generos.map(g => (
+                                                                                        <Fragment key={g.id_genero}>
+                                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>{g.genero.es}</Typography>
+                                                                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                        </Fragment>
+                                                                                    ))
+
+                                                                                }
+                                                                            </>
+                                                                            :
+                                                                            <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
+                                                                    }
+
+
+
+
+                                                                    {roles.data && roles.data[element_index]?.filtros_demograficos && typeof roles.data[element_index]?.filtros_demograficos?.rango_edad_fin === 'number' && typeof roles.data[element_index]?.filtros_demograficos?.rango_edad_inicio === 'number'
+                                                                        ? <>
+                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>{roles.data[element_index]?.filtros_demograficos?.rango_edad_inicio}-{roles.data[element_index]?.filtros_demograficos?.rango_edad_fin}</Typography>
+                                                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                        </>
+                                                                        : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>}
+
+                                                                    {
+                                                                        roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas
+                                                                            ? <>
+                                                                                {
+                                                                                    roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas.map(ae => (
+                                                                                        <Fragment key={ae.id_aparencia_etnica}>
+                                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>{ae.aparencia_etnica.nombre}</Typography>
+                                                                                            <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                        </Fragment>
+                                                                                    ))
+                                                                                }
+                                                                            </>
+                                                                            : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography><Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' /></>
+
+                                                                    }
+
+
+
+                                                                    {roles.data && roles.data[element_index]?.filtros_demograficos && roles.data[element_index]?.filtros_demograficos?.pais
+                                                                        ? <Typography component={'span'} sx={{ color: '#928F8F' }}>{roles.data[element_index]?.filtros_demograficos?.pais.es}</Typography>
+                                                                        : <><Typography sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                    }
+                                                                </MContainer>
+
+                                                            </Grid>
+                                                            <Grid item xs={5}>
+                                                                <Typography component={'p'} sx={{ color: '#928F8F' }}>
+                                                                    <Typography component={'span'} fontWeight={600} sx={{ paddingRight: 1 }}>Descripción:</Typography>
+                                                                    {roles.data ? roles.data[element_index]?.descripcion || 'No especificado' : 'No especificado'}
+                                                                </Typography>
+                                                            </Grid>
                                                         </Grid>
-                                                        <Grid item xs={5}>
-                                                            <Typography component={'p'} sx={{ color: '#928F8F' }}>
-                                                                <Typography component={'span'} fontWeight={600} sx={{ paddingRight: 1 }}>Descripción:</Typography>
-                                                                {roles.data ? roles.data[element_index]?.descripcion || 'No especificado' : 'No especificado'}
-                                                            </Typography>
+                                                        <Grid item xs={12} mt={1}>
+                                                            <Divider />
+                                                        </Grid>
+                                                        <Grid container>
+                                                            <AnimatePresence>
+                                                                {expanded_rows.includes(`panel${element_index}`) && <motion.div style={{ width: '100%' }} variants={variants} initial="initial" animate="animate" exit="exit">
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Habilidades:</Typography>
+                                                                            <MContainer direction='horizontal'>
+
+                                                                                {
+                                                                                    roles.data && roles.data[element_index]?.habilidades && roles.data[element_index]?.habilidades?.habilidades_seleccionadas
+                                                                                        ? <>
+                                                                                            {
+                                                                                                roles.data[element_index]?.habilidades?.habilidades_seleccionadas.map((h, i) => {
+                                                                                                    if (roles.data) {
+                                                                                                        const el = roles.data[element_index];
+                                                                                                        if (el) {
+                                                                                                            return <Fragment key={h.id_habilidad}>
+                                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
+                                                                                                                {i !== ((el.habilidades?.habilidades_seleccionadas.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                                            </Fragment>
+                                                                                                        }
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                        </>
+                                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                                }
+
+
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} mt={1}>
+                                                                        <Divider />
+                                                                    </Grid>
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Desnudos situaciones sexuales:</Typography>
+                                                                            <MContainer direction='horizontal'>
+
+                                                                                {
+                                                                                    roles.data && roles.data[element_index]?.nsfw && roles.data[element_index]?.nsfw?.nsfw_seleccionados
+                                                                                        ? <>
+                                                                                            {
+                                                                                                roles.data[element_index]?.nsfw?.nsfw_seleccionados.map((n, i) => {
+                                                                                                    if (roles.data) {
+                                                                                                        const el = roles.data[element_index];
+                                                                                                        if (el) {
+                                                                                                            return <Fragment key={n.id_nsfw}>
+                                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw?.es}</Typography>
+                                                                                                                {i !== ((el.nsfw?.nsfw_seleccionados.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                                            </Fragment>
+                                                                                                        }
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                        </>
+                                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                                }
+
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} mt={1}>
+                                                                        <Divider />
+                                                                    </Grid>
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de casting y fechas:</Typography>
+                                                                            <MContainer direction='horizontal'>
+
+                                                                                {
+                                                                                    roles.data && roles.data[element_index]?.casting && (roles.data[element_index]?.casting.length || 0) > 0
+                                                                                        ? <>
+                                                                                            {
+                                                                                                roles.data[element_index]?.casting.map(c => (
+                                                                                                    <Fragment key={c.id}>
+                                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
+                                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.fecha_inicio.toString()}{c.fecha_fin ? `a ${c.fecha_fin.toString()}` : ''}</Typography>
+                                                                                                    </Fragment>
+                                                                                                ))
+
+                                                                                            }
+                                                                                        </>
+                                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                                }
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} mt={1}>
+                                                                        <Divider />
+                                                                    </Grid>
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de filmación y fechas:</Typography>
+                                                                            <MContainer direction='horizontal'>
+                                                                                {
+                                                                                    roles.data && roles.data[element_index]?.filmaciones && (roles.data[element_index]?.filmaciones.length || 0) > 0
+                                                                                        ? <>
+                                                                                            {
+                                                                                                roles.data[element_index]?.filmaciones.map(c => (
+                                                                                                    <Fragment key={c.id}>
+                                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
+                                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.fecha_inicio.toString()}{c.fecha_fin ? `a ${c.fecha_fin.toString()}` : ''}</Typography>
+                                                                                                    </Fragment>
+                                                                                                ))
+
+                                                                                            }
+                                                                                        </>
+                                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                                }
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} mt={1}>
+                                                                        <Divider />
+                                                                    </Grid>
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Presentación de solicitud:</Typography>
+                                                                            <MContainer direction='horizontal'>
+                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.estado_republica
+                                                                                        ? roles.data[element_index]?.requisitos?.estado_republica.es : 'No especificado'}
+                                                                                </Typography>
+                                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.presentacion_solicitud
+                                                                                        ? roles.data[element_index]?.requisitos?.presentacion_solicitud.toString() : 'No especificado'}
+                                                                                </Typography>
+                                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.uso_horario
+                                                                                        ? roles.data[element_index]?.requisitos?.uso_horario.es : 'No especificado'}
+                                                                                </Typography>
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} mt={1}>
+                                                                        <Divider />
+                                                                    </Grid>
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Requisitos:</Typography>
+                                                                            <MContainer direction='horizontal'>
+
+                                                                                {
+                                                                                    roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.medios_multimedia
+                                                                                        && (roles.data[element_index]?.requisitos?.medios_multimedia.length || 0) > 0
+                                                                                        ? <>
+                                                                                            {
+                                                                                                roles.data[element_index]?.requisitos?.medios_multimedia.map((m, i) => {
+                                                                                                    if (roles.data) {
+                                                                                                        const el = roles.data[element_index];
+                                                                                                        if (el) {
+                                                                                                            return <Fragment key={m.id_medio_multimedia}>
+                                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
+                                                                                                                {i !== ((el.requisitos?.medios_multimedia.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
+                                                                                                            </Fragment>
+                                                                                                        }
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                        </>
+                                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
+                                                                                }
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} mt={1}>
+                                                                        <Divider />
+                                                                    </Grid>
+                                                                    <Grid item container xs={12}>
+                                                                        <MContainer direction='horizontal'>
+                                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Archivos adicionales:</Typography>
+                                                                            <MContainer direction='horizontal' styles={{ gap: 10 }}>
+                                                                                {element.lineas && <Typography
+                                                                                    component={'span'}
+                                                                                    sx={{ color: '#069cb1', textDecoration: 'underline' }}>
+                                                                                    {element.lineas.nombre}
+                                                                                </Typography>}
+                                                                                {element.selftape && element.selftape.lineas && <Typography
+                                                                                    component={'span'}
+                                                                                    sx={{ color: '#069cb1', textDecoration: 'underline' }}>
+                                                                                    {element.selftape.lineas.nombre}
+                                                                                </Typography>}
+                                                                                {element.foto_referencia && <Typography
+                                                                                    component={'span'}
+                                                                                    sx={{ color: '#069cb1', textDecoration: 'underline' }}>
+                                                                                    {element.foto_referencia.nombre}
+                                                                                </Typography>}
+                                                                            </MContainer>
+                                                                        </MContainer>
+                                                                    </Grid>
+                                                                </motion.div>}
+                                                            </AnimatePresence>
                                                         </Grid>
                                                     </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Habilidades:</Typography>
-                                                            <MContainer direction='horizontal'>
-
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.habilidades && roles.data[element_index]?.habilidades?.habilidades_seleccionadas
-                                                                        ? <>
-                                                                            {
-                                                                                roles.data[element_index]?.habilidades?.habilidades_seleccionadas.map((h, i) => {
-                                                                                    if (roles.data) {
-                                                                                        const el = roles.data[element_index];
-                                                                                        if (el) {
-                                                                                            return <Fragment key={h.id_habilidad}>
-                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
-                                                                                                {i !== ((el.habilidades?.habilidades_seleccionadas.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                            </Fragment>
-                                                                                        }
-                                                                                    }
-                                                                                })
-                                                                            }
-                                                                        </>
-                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
-                                                                }
-
-
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Desnudos situaciones sexuales:</Typography>
-                                                            <MContainer direction='horizontal'>
-
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.nsfw && roles.data[element_index]?.nsfw?.nsfw_seleccionados
-                                                                        ? <>
-                                                                            {
-                                                                                roles.data[element_index]?.nsfw?.nsfw_seleccionados.map((n, i) => {
-                                                                                    if (roles.data) {
-                                                                                        const el = roles.data[element_index];
-                                                                                        if (el) {
-                                                                                            return <Fragment key={n.id_nsfw}>
-                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw?.es}</Typography>
-                                                                                                {i !== ((el.nsfw?.nsfw_seleccionados.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                            </Fragment>
-                                                                                        }
-                                                                                    }
-                                                                                })
-                                                                            }
-                                                                        </>
-                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
-                                                                }
-
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de casting y fechas:</Typography>
-                                                            <MContainer direction='horizontal'>
-
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.casting && (roles.data[element_index]?.casting.length || 0) > 0
-                                                                        ? <>
-                                                                            {
-                                                                                roles.data[element_index]?.casting.map(c => (
-                                                                                    <Fragment key={c.id}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
-                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.fecha_inicio.toString()}{c.fecha_fin ? `a ${c.fecha_fin.toString()}` : ''}</Typography>
-                                                                                    </Fragment>
-                                                                                ))
-
-                                                                            }
-                                                                        </>
-                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
-                                                                }
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Locación de filmación y fechas:</Typography>
-                                                            <MContainer direction='horizontal'>
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.filmaciones && (roles.data[element_index]?.filmaciones.length || 0) > 0
-                                                                        ? <>
-                                                                            {
-                                                                                roles.data[element_index]?.filmaciones.map(c => (
-                                                                                    <Fragment key={c.id}>
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.estado_republica.es}</Typography>
-                                                                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                                        <Typography component={'span'} sx={{ color: '#928F8F' }}>{c.fecha_inicio.toString()}{c.fecha_fin ? `a ${c.fecha_fin.toString()}` : ''}</Typography>
-                                                                                    </Fragment>
-                                                                                ))
-
-                                                                            }
-                                                                        </>
-                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
-                                                                }
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Presentación de solicitud:</Typography>
-                                                            <MContainer direction='horizontal'>
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.estado_republica
-                                                                        ? roles.data[element_index]?.requisitos?.estado_republica.es : 'No especificado'}
-                                                                </Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.presentacion_solicitud
-                                                                        ? roles.data[element_index]?.requisitos?.presentacion_solicitud.toString() : 'No especificado'}
-                                                                </Typography>
-                                                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                                                    {roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.uso_horario
-                                                                        ? roles.data[element_index]?.requisitos?.uso_horario.es : 'No especificado'}
-                                                                </Typography>
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Requisitos:</Typography>
-                                                            <MContainer direction='horizontal'>
-
-                                                                {
-                                                                    roles.data && roles.data[element_index]?.requisitos && roles.data[element_index]?.requisitos?.medios_multimedia
-                                                                        && (roles.data[element_index]?.requisitos?.medios_multimedia.length || 0) > 0
-                                                                        ? <>
-                                                                            {
-                                                                                roles.data[element_index]?.requisitos?.medios_multimedia.map((m, i) => {
-                                                                                    if (roles.data) {
-                                                                                        const el = roles.data[element_index];
-                                                                                        if (el) {
-                                                                                            return <Fragment key={m.id_medio_multimedia}>
-                                                                                                <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
-                                                                                                {i !== ((el.requisitos?.medios_multimedia.length || 0) - 1) && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
-                                                                                            </Fragment>
-                                                                                        }
-                                                                                    }
-                                                                                })
-                                                                            }
-                                                                        </>
-                                                                        : <><Typography component={'span'} sx={{ color: '#928F8F' }}>No especificado</Typography></>
-                                                                }
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                    <Grid item xs={12} mt={1}>
-                                                        <Divider />
-                                                    </Grid>
-                                                    <Grid item container xs={12}>
-                                                        <MContainer direction='horizontal'>
-                                                            <Typography fontWeight={600} sx={{ color: '#928F8F', paddingRight: 1 }}>Archivos adicionales:</Typography>
-                                                            <MContainer direction='horizontal' styles={{ gap: 10 }}>
-                                                                <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>lineas.pdf</Typography>
-                                                                <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>headshot.jpg</Typography>
-                                                                <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia1.jpg</Typography>
-                                                                <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia2.jpg</Typography>
-                                                            </MContainer>
-                                                        </MContainer>
-                                                    </Grid>
-                                                </Grid>
+                                                </div>
                                             )
                                         }
                                         return null;
@@ -863,7 +913,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                             case 'PROYECTO_ENVIADO_A_APROBACION': {
                                 updateEstadoProyecto.mutate({
                                     id: id_proyecto,
-			                        estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION,
+                                    estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION,
                                 })
                                 break;
                             }
@@ -896,7 +946,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     user: session.user,
                 }
             }
-        } 
+        }
         return {
             redirect: {
                 destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
@@ -910,7 +960,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: true,
         },
     }
-  }
+}
 
 
 export default RolesIndexPage

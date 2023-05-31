@@ -340,6 +340,8 @@ export const RolesRouter = createTRPCRouter({
 				id_proyecto: input,
 			},
 			include: {
+				lineas: true,
+				foto_referencia: true,
 				aplicaciones_por_talento: {
 					include: {
 						talento: {
@@ -423,7 +425,11 @@ export const RolesRouter = createTRPCRouter({
 						estado_republica: true
 					}
 				},
-				selftape: true,
+				selftape: {
+					include: {
+						lineas: true
+					}
+				},
 				tipo_rol: true,
 			}
 		});

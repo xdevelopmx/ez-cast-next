@@ -1,11 +1,11 @@
-import { type ReactNode, type FC, Children, CSSProperties, useState, useEffect, useRef  } from 'react';
+import { type ReactNode, type FC, Children, CSSProperties, useState, useEffect, useRef } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import { Navigation, Pagination } from 'swiper';
 
 
-/* Cosas  Flechas */ 
+/* Cosas  Flechas */
 import SwiperCore from "swiper";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -24,7 +24,7 @@ interface Props {
     navigation?: boolean;
     className?: string;
     arrowsColor?: string;
-    navigationNew? : boolean;
+    navigationNew?: boolean;
 }
 
 export const Carroucel: FC<Props> = ({ arrowsColor, className, children, slidesPerView = 5, spaceBetween = 0, navigation = true, navigationNew = false }) => {
@@ -37,8 +37,9 @@ export const Carroucel: FC<Props> = ({ arrowsColor, className, children, slidesP
 
     return (
         <div className='d-flex carrusel-personalizado'>
-            {navigationNew && 
-                <IconButton sx={{margin: '0 0 0 -55px', color: arrowsColor}}  onClick={() => swiperRef.current?.slidePrev()} aria-label="delete" size="large">
+            {navigationNew &&
+                <IconButton sx={{ margin: '0 0 0 -55px', color: arrowsColor }}
+                    onClick={() => swiperRef.current?.slidePrev()} aria-label="delete" size="large">
                     <ArrowBackIosNewIcon fontSize="inherit" />
                 </IconButton>
             }
@@ -64,8 +65,8 @@ export const Carroucel: FC<Props> = ({ arrowsColor, className, children, slidesP
             >
                 {slides}
             </Swiper>
-            {navigationNew && 
-                <IconButton sx={{margin: '0 -55px 0 -25px', color: arrowsColor }} onClick={() => swiperRef.current?.slideNext()} aria-label="delete" size="large">
+            {navigationNew &&
+                <IconButton sx={{ margin: '0 -55px 0 -25px', color: arrowsColor }} onClick={() => swiperRef.current?.slideNext()} aria-label="delete" size="large">
                     <ArrowForwardIosIcon fontSize="inherit" />
                 </IconButton>
             }

@@ -3,7 +3,7 @@ import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import Image from 'next/image';
 import { motion } from 'framer-motion'
-import { MainLayout } from "~/components";
+import { LoaderSlide, MainLayout } from "~/components";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { type User } from "next-auth";
@@ -21,20 +21,20 @@ type InicioPageProps = {
   user: User,
 }
 
-const InicioPage: NextPage<InicioPageProps> = ({user}) => {
+const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
 
-  const [dialog, setDialog] = useState<{open: boolean, id_proyecto: number}>({open: false, id_proyecto: 0});
+  const [dialog, setDialog] = useState<{ open: boolean, id_proyecto: number }>({ open: false, id_proyecto: 0 });
 
   const proyectos = api.proyectos.getProyectosRandom.useQuery(20, {
-		refetchOnWindowFocus: false
-	});
+    refetchOnWindowFocus: false
+  });
 
   const destacados = api.proyectos.getProyectosDestacados.useQuery(10, {
     refetchOnWindowFocus: false
   });
 
   //const router = useRouter();
-  
+
   const redirect = (user.tipo_usuario) ? (user.tipo_usuario === TipoUsuario.TALENTO) ? '/talento/dashboard' : (user.tipo_usuario === TipoUsuario.CAZATALENTOS) ? '/cazatalentos/dashboard' : '/representante/dashboard' : '';
 
   const container_ref = useRef<HTMLDivElement>(null);
@@ -52,7 +52,7 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
           <div>
             <div className="d-flex justify-content-between align-items-start">
               <div>
-                <p className="color_a mb-0" 
+                <p className="color_a mb-0"
                   style={{
                     fontSize: '30px',
                     fontWeight: '800'
@@ -74,7 +74,7 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
             </div>
             <div className="d-flex">
               <motion.img src="/assets/img/iconos/icon_estrella_dorada.svg" alt="icono" />
-              <p className="mb-0 ml-2 h5" 
+              <p className="mb-0 ml-2 h5"
                 style={{
                   fontWeight: '800',
                   fontSize: '25px'
@@ -84,37 +84,69 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
               </p>
             </div>
           </div>
-          <hr className="hr_gold" style={{margin: '20px 0 30px 0'}} />
+          <hr className="hr_gold" style={{ margin: '20px 0 30px 0' }} />
+
+          {
+            destacados.isLoading &&
+            <Carroucel
+              navigationNew
+              navigation={false}
+              arrowsColor="#F9B233"
+              slidesPerView={6}
+              spaceBetween={5}
+            >
+              {Array.from({ length: 10 }).map((_, i) => (
+                <LoaderSlide key={i} />
+              ))}
+            </Carroucel>
+          }
+
           {destacados.data && destacados.data.length > 0 &&
-             <Carroucel 
+            <Carroucel
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
               slidesPerView={6}>
-               {destacados.data.map((proyecto, i) => {
-                return <MContainer key={i} direction='vertical'>
-                  <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer', border: '1px solid #bababa'}} width={250} height={330} src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'} alt="" /> 
-                  <Typography 
-                    sx={{
-                      padding: '20px 0 0 0',
-                      fontWeight: '800',
-                      lineHeight: '1.2',
-                      fontSize: '23px'
-                    }}
-                    onClick={() => { 
-                      setDialog({
-                        open: true, 
-                        id_proyecto: proyecto.id
-                      }) 
-                    }} 
-                    style={{cursor: 'pointer'}} align="center" variant="subtitle1">
-                          {proyecto.nombre}
-                  </Typography>
-                </MContainer>
-               })}
-             </Carroucel>
+
+              {
+                destacados.data.map((proyecto) => (
+                  <MContainer key={proyecto.id} direction='vertical'>
+                    <div style={{
+                      position: 'relative',
+                      width: '100%',
+                      aspectRatio: '9/16'
+                    }}>
+                      <Image
+                        onClick={() => { setDialog({ open: true, id_proyecto: proyecto.id }) }}
+                        style={{ cursor: 'pointer', border: '1px solid #bababa' }}
+                        fill
+                        src={(proyecto.foto_portada) ? proyecto.foto_portada.url : '/assets/img/no-image.png'}
+                        alt="" />
+                    </div>
+                    <Typography
+                      sx={{
+                        padding: '20px 0 0 0',
+                        fontWeight: '800',
+                        lineHeight: '1.2',
+                        fontSize: '23px'
+                      }}
+                      onClick={() => {
+                        setDialog({
+                          open: true,
+                          id_proyecto: proyecto.id
+                        })
+                      }}
+                      style={{ cursor: 'pointer' }} align="center" variant="subtitle1">
+                      {proyecto.nombre}
+                    </Typography>
+                  </MContainer>
+                ))
+
+              }
+
+            </Carroucel>
           }
-          <hr className="hr_gold" style={{margin: '30px 0 40px 0'}} />
+          <hr className="hr_gold" style={{ margin: '30px 0 40px 0' }} />
           {destacados.data && destacados.data.length === 0 &&
             <>
               <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes proyectos destacados</Typography>
@@ -122,7 +154,7 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
             </>
           }
           {container_ref.current &&
-            <MBanner show_only_media width={container_ref.current.getBoundingClientRect().width} height={422} identificador="banner-cartelera-proyectos-1"/>
+            <MBanner show_only_media width={container_ref.current.getBoundingClientRect().width} height={422} identificador="banner-cartelera-proyectos-1" />
           }
           <p className="mt-5 h5"
             style={{
@@ -133,32 +165,58 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
             Ahora casteando en EZ-Cast
           </p>
           <hr className="hr_blue"
-              style={{margin: '30px 0 40px 0'}}
+            style={{ margin: '30px 0 40px 0' }}
           />
-          <Carroucel 
+
+          {
+            destacados.isLoading &&
+            <Carroucel
+              navigationNew
+              navigation={false}
+              arrowsColor="#F9B233"
+              slidesPerView={6}
+              spaceBetween={5}
+            >
+              {Array.from({ length: 10 }).map((_, i) => (
+                <LoaderSlide key={i} />
+              ))}
+            </Carroucel>
+          }
+          {proyectos.data && <Carroucel
             navigationNew
             navigation={false}
             arrowsColor="#069cb1"
             slidesPerView={6}>
-              {proyectos.data && proyectos.data.map((proyecto, i) => {
-                  return <MContainer key={i} direction='vertical'>
-                      <Image onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} style={{cursor: 'pointer', border: '1px solid #bababa'}} width={250} height={330} src={(proyecto.url) ? proyecto.url : '/assets/img/no-image.png'} alt="" /> 
-                      <Typography 
-                        onClick={() => { setDialog({open: true, id_proyecto: proyecto.id}) }} 
-                        style={{cursor: 'pointer'}} align="center" variant="subtitle1"
-                        sx={{
-                          padding: '20px 0 0 0',
-                          fontWeight: '800',
-                          lineHeight: '1.2',
-                          fontSize: '23px'
-                        }}
-                      >
-                        {proyecto.nombre}
-                      </Typography>
-                    </MContainer>
-              })}
-          </Carroucel>
-          <hr className="hr_blue" style={{margin: '20px 0 20px 0'}} />
+            {proyectos.data.map((proyecto, i) => (
+              <MContainer key={i} direction='vertical'>
+                <div style={{
+                  position: 'relative',
+                  width: '100%',
+                  aspectRatio: '9/16'
+                }}>
+                  <Image
+                    onClick={() => { setDialog({ open: true, id_proyecto: proyecto.id }) }}
+                    style={{ cursor: 'pointer', border: '1px solid #bababa' }}
+                    src={(proyecto.url) ? proyecto.url : '/assets/img/no-image.png'}
+                    fill
+                    alt="" />
+                </div>
+                <Typography
+                  onClick={() => { setDialog({ open: true, id_proyecto: proyecto.id }) }}
+                  style={{ cursor: 'pointer' }} align="center" variant="subtitle1"
+                  sx={{
+                    padding: '20px 0 0 0',
+                    fontWeight: '800',
+                    lineHeight: '1.2',
+                    fontSize: '23px'
+                  }}
+                >
+                  {proyecto.nombre}
+                </Typography>
+              </MContainer>
+            ))}
+          </Carroucel>}
+          <hr className="hr_blue" style={{ margin: '20px 0 20px 0' }} />
           <div className="d-flex justify-content-end align-items-center">
             <Link href={redirect} style={{ textDecoration: 'none' }}>
               <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
@@ -167,20 +225,20 @@ const InicioPage: NextPage<InicioPageProps> = ({user}) => {
           </div>
         </div>
         <Dialog
-            style={{
-              marginTop: 56
-            }}
-            fullWidth={true}
-            maxWidth={'md'}
-            open={dialog.open}
-            onClose={() => { setDialog({...dialog, open: false}) }}
+          style={{
+            marginTop: 56
+          }}
+          fullWidth={true}
+          maxWidth={'md'}
+          open={dialog.open}
+          onClose={() => { setDialog({ ...dialog, open: false }) }}
         >
-            <DialogContent>
-                <DetallesProyecto id_proyecto={dialog.id_proyecto}/>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={() => { setDialog({...dialog, open: false}) }}>Cerrar</Button>
-            </DialogActions>
+          <DialogContent>
+            <DetallesProyecto id_proyecto={dialog.id_proyecto} />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => { setDialog({ ...dialog, open: false }) }}>Cerrar</Button>
+          </DialogActions>
         </Dialog>
       </MainLayout>
     </>
@@ -191,16 +249,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
   if (session && session.user) {
     return {
-        props: {
-            user: session.user
-        }
+      props: {
+        user: session.user
+      }
     }
   }
   return {
-      redirect: {
-          destination: '/',
-          permanent: true,
-      },
+    redirect: {
+      destination: '/',
+      permanent: true,
+    },
   }
 }
 
