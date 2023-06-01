@@ -69,6 +69,19 @@ export const AuthRouter = createTRPCRouter({
 					});
 					break;
 				}
+				case TipoUsuario.REPRESENTANTE: {
+					return await ctx.prisma.representante.create({
+						data: { 
+							...input.user, 
+							contrasenia: hashed_password, 
+							posicion: (input.user.posicion_o_puesto) ? input.user.posicion_o_puesto : '',
+							id_openpay: (input.user.id_openpay) ? input.user.id_openpay : '',
+							compania: (input.user.compania) ? input.user.compania : '',
+							biografia: (input.user.biografia) ? input.user.biografia : '',
+						}
+					});
+					break;
+				}
 			}
 			
 			throw new TRPCError({

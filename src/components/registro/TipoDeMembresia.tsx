@@ -21,7 +21,7 @@ export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {
                 <select value={state.tipo_usuario} onChange={(e) => {onFormChange({tipo_usuario: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
                     <option value={TipoUsuario.TALENTO}>Talento</option>
                     <option value={TipoUsuario.CAZATALENTOS}>Cazatalento</option>
-                    <option value={TipoUsuario.NO_DEFINIDO}>Representante</option>
+                    <option value={TipoUsuario.REPRESENTANTE}>Representante</option>
                 </select>
             </div>
             <div className="mr-2 ml-2 mt-2">

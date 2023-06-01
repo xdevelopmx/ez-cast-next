@@ -1140,12 +1140,8 @@ export const RolesRouter = createTRPCRouter({
 					//cause: theError,
 				});
 			}
-
-			if (rol_updated.habilidades && rol_updated.habilidades.habilidades_seleccionadas.length > 0) {
-				try {
-					await ctx.prisma.habilidadesPorRoles.delete({ where: { id_rol: rol.id } });
-				} catch (e) { }
-			}
+			
+			await ctx.prisma.habilidadesPorRoles.delete({ where: { id_rol: rol.id } });
 
 			const habilidades_por_rol = await ctx.prisma.habilidadesPorRoles.create({
 				data: {
@@ -2175,7 +2171,8 @@ export const RolesRouter = createTRPCRouter({
 						info_basica: true,
 						preferencias: {
 							include: {
-								tipos_de_trabajo: true
+								tipos_de_trabajo: true,
+								locaciones: true
 							}
 						},
 						habilidades: true
@@ -2292,17 +2289,31 @@ export const RolesRouter = createTRPCRouter({
 					if (roles) {
 						const result = roles.map(r => {
 							let porcentaje_filter = 0;
+							/*
+							-Genero 20% [x]
+							-Edad 15% [x]
+							-Ethía 10% [x]
+							-Nacionalidad 10% [x]
+							-Tipo de Trabajo 5% [x]
+							-Tipo de Proyecto 5% [x]
+							-Ubicación Casting 15% [x]
+							-Color Cabello 5% [x]
+							-Color Ojos 5% [x]
+							-Tipo de Rol 5% [x]
+							-Pref. Pago 5% [x]
+							-Habilidades 10% [x]
+							*/
 							if (r.filtros_demograficos) {
 								let genero_found = false;
 								r.filtros_demograficos.generos.map(g => g.id_genero).forEach(id_genero => {
 									if (!genero_found && input.id_generos_rol.includes(id_genero)) {
-										porcentaje_filter += 15;
+										porcentaje_filter += 20;
 										genero_found = true;
 									}
 								});
 								if (!r.filtros_demograficos.rango_edad_en_meses) {
 									if (r.filtros_demograficos.rango_edad_inicio >= input.edad_inicio && r.filtros_demograficos.rango_edad_fin <= input.edad_fin) {
-										porcentaje_filter += 15;
+										porcentaje_filter += 13;
 									}
 								}
 								let apariencias_etnias_found = false;
@@ -2326,8 +2337,9 @@ export const RolesRouter = createTRPCRouter({
 									porcentaje_filter += 5;
 								}
 							}
-							if (r.casting.length > 0 && r.casting[0]?.id_estado_republica === talento.info_basica?.id_estado_republica) {
-								porcentaje_filter += 10;
+							const locacion_casting = r.casting[0]?.id_estado_republica;
+							if (locacion_casting && talento.preferencias?.locaciones.map(l => l.id_estado_republica).includes(locacion_casting)) {
+								porcentaje_filter += 12;
 							}
 							if (r.color_cabello.id === talento.filtros_aparencias?.id_color_cabello) {
 								porcentaje_filter += 5;

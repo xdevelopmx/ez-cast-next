@@ -1,6 +1,7 @@
 export enum TipoUsuario {
 	TALENTO = "talento",
 	CAZATALENTOS = "cazatalentos",
+	REPRESENTANTE = 'representante',
 	NO_DEFINIDO = 'no_definido',
 	ADMIN = 'admin'
 }

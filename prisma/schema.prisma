@@ -27,6 +27,21 @@ model HorarioAgenda {
   fechas            FechasPorHorarioAgenda[]
   localizaciones    LocalizacionesPorHorarioAgenda[]
   uso_horario CatalogoTipoUsosHorario @relation(fields: [id_uso_horario], references: [id])
+  bloque_horario BloqueHorariosAgenda[]
+}
+
+model BloqueHorariosAgenda {
+  id Int                              @id @default(autoincrement())
+  id_horario_agenda   Int
+  fecha DateTime
+  hora_inicio String
+  hora_fin String
+  minutos_por_talento Int
+  hora_descanso_inicio String?
+  hora_descanso_fin String?
+  id_locacion Int
+  locacion LocalizacionesPorHorarioAgenda @relation(fields: [id_locacion], references: [id])
+  horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
 model LocalizacionesGuardadas {
@@ -47,6 +62,7 @@ model LocalizacionesPorHorarioAgenda {
   codigo_postal       Int
   id_horario_agenda   Int
   estado_republica CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  bloque_horario_agenda BloqueHorariosAgenda[]
   horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
@@ -78,6 +94,24 @@ model Cazatalentos {
   reportes_talentos    ReporteTalentos[]
   talentos_destacados  TalentosDestacados[]
   notas_talentos       NotasTalentos[]
+}
+
+model Representante {
+  id                   Int                            @id @default(autoincrement())
+  usuario              String
+  email                String
+  contrasenia          String
+  nombre               String
+  apellido             String
+  tipo_membresia       String
+  cobro_membresia      String
+  id_openpay           String
+  id_foto_perfil_media Int?
+  posicion             String
+  compania             String
+  biografia            String
+  foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
+  redes_sociales       RedesSocialesPorRepresentante[]
 }
 
 model Talentos {
@@ -226,6 +260,14 @@ model RedesSocialesPorCazatalentos {
   url             String
   id_cazatalentos Int
   cazatalentos    Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+}
+
+model RedesSocialesPorRepresentante {
+  id              Int          @id @default(autoincrement())
+  nombre          String
+  url             String
+  id_representante Int
+  representante    Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
 }
 
 model Administradores {
@@ -602,6 +644,7 @@ model Media {
   InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
   CreditoTalento            CreditoTalento[]
   cazatalentos              Cazatalentos[]
+  representante Representante[]
   RepresentantesPorTalentos RepresentantesPorTalentos[]
   archivo_proyecto          Proyecto[]                  @relation("media_archivo", map: "media_archivo")
   foto_portada_proyecto     Proyecto[]                  @relation("media_foto_portada", map: "media_foto_portada")

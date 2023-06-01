@@ -169,6 +169,22 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
+
+				const deleted_bloques = await ctx.prisma.bloqueHorariosAgenda.deleteMany({
+					where: {
+						id_horario_agenda: input
+					}
+				})
+
+				if (!deleted_bloques) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un problema al tratar de eliminar los bloques del horario',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+
 				return horario;
 			}
 			throw new TRPCError({
@@ -267,6 +283,60 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				// optional: pass the original error to retain stack trace
 				//cause: theError,
 			});
+		}
+	),
+	updateBloqueHorario: protectedProcedure
+		.input(z.object({
+			id_bloque: z.number(),
+			id_horario_agenda: z.number(),
+			fecha: z.date(),
+			hora_inicio: z.string(),
+			hora_fin: z.string(),
+			minutos_por_talento: z.number(),
+			hora_descanso_inicio: z.string().nullish(),
+			hora_descanso_fin: z.string().nullish(),
+			id_locacion: z.number()		
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const bloque = await ctx.prisma.bloqueHorariosAgenda.upsert({
+				where: {
+					id: input.id_bloque
+				},
+				update: {
+					hora_inicio: input.hora_inicio,
+					hora_fin: input.hora_fin,
+					minutos_por_talento: input.minutos_por_talento,
+					hora_descanso_inicio: input.hora_descanso_inicio,
+					hora_descanso_fin: input.hora_descanso_fin,
+					id_locacion: input.id_locacion	
+				},
+				create: {
+					id_horario_agenda: input.id_horario_agenda,
+					fecha: input.fecha,
+					hora_inicio: input.hora_inicio,
+					hora_fin: input.hora_fin,
+					minutos_por_talento: input.minutos_por_talento,
+					hora_descanso_inicio: input.hora_descanso_inicio,
+					hora_descanso_fin: input.hora_descanso_fin,
+					id_locacion: input.id_locacion	
+				}
+			})
+			return bloque;
+		}
+	),
+	getBloqueHorarioByDateAndIdHorario: protectedProcedure
+		.input(z.object({
+			id_horario_agenda: z.number(),
+			fecha: z.date()
+		}))
+		.query(async ({ input, ctx }) => {
+			const bloque = await ctx.prisma.bloqueHorariosAgenda.findFirst({
+				where: {
+					id_horario_agenda: input.id_horario_agenda,
+					fecha: input.fecha
+				}
+			})
+			return bloque;
 		}
 	),
 	getLocalizacionesGuardadas: protectedProcedure

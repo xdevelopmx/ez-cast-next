@@ -121,6 +121,7 @@ export const authOptions: NextAuthOptions = {
 					switch (credentials.tipo_usuario) {
 						case TipoUsuario.TALENTO: tipo_usuario = TipoUsuario.TALENTO; break;
 						case TipoUsuario.CAZATALENTOS: tipo_usuario = TipoUsuario.CAZATALENTOS; break;
+						case TipoUsuario.REPRESENTANTE: tipo_usuario = TipoUsuario.REPRESENTANTE; break;
 						case TipoUsuario.ADMIN: tipo_usuario = TipoUsuario.ADMIN; break;
 					}
 					const login_intent = await login( (credentials.user) ? credentials.user : '', (credentials.correo_usuario) ? credentials.correo_usuario : '', (credentials.password) ? credentials.password : '', tipo_usuario);

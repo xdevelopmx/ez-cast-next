@@ -157,8 +157,8 @@ const LoginPage: NextPage = () => {
 								</div>
 								<div>
 									<span
-										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.NO_DEFINIDO ? 'active' : ''}`}
-										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.NO_DEFINIDO } }) }}
+										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.REPRESENTANTE ? 'active' : ''}`}
+										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.REPRESENTANTE } }) }}
 										style={{padding: '2px 10px'}}
 									>
 										Representante

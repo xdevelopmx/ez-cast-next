@@ -75,6 +75,7 @@ const AudicionPorId = () => {
                                             </Grid>
                                             <Grid xs={6}>
                                                 <HorariosTable
+                                                    id_horario_agenda={(horario.data) ? horario.data.id : 0}
                                                     locaciones={(horario.data) ? horario.data.localizaciones : []}
                                                     roles={(horario.data) ? horario.data.proyecto.rol : []}
 													dates={ordered_dates} 

@@ -1,27 +1,44 @@
 import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, Grid, Typography } from '@mui/material'
-import React, { type Dispatch, type SetStateAction, type FC, useState, useMemo } from 'react'
+import React, { type Dispatch, type SetStateAction, type FC, useState, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import { FormGroup, MRadioGroup, MSelect } from '~/components/shared';
 import { DesktopTimePicker, MobileTimePicker, StaticTimePicker, TimeField, TimePicker } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import useNotify from '~/hooks/useNotify';
-import { formatDate } from '~/utils/dates';
+import { calculateIntervalos, formatDate } from '~/utils/dates';
 import { MContainer } from '~/components/layout/MContainer';
 import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client';
 import { Add, AddCircle } from '@mui/icons-material';
-import { api } from '~/utils/api';
+import { api, parseErrorBody } from '~/utils/api';
 
 interface Props {
     locaciones: LocalizacionesPorHorarioAgenda[];
     roles: Roles[];
     isOpen: boolean;
     date: string;
+    id_horario_agenda: number;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles, locaciones }) => {
+export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles, locaciones, id_horario_agenda }) => {
 
     const {notify} = useNotify();
+
+    const bloque = api.agenda_virtual.getBloqueHorarioByDateAndIdHorario.useQuery({
+        id_horario_agenda: id_horario_agenda, fecha: new Date(date)
+    }, {
+        refetchOnWindowFocus: false
+    })
+
+    const updateBloqueHorario = api.agenda_virtual.updateBloqueHorario.useMutation({
+        onSuccess: (data) => {
+            notify('success', 'Se actualizo el bloque de horario con exito');
+            setIsOpen(false);
+        },
+        onError: (err) => {
+            notify('error', parseErrorBody(err.message));
+        }
+    })
 
     const [minutos_por_talento, setMinutosPorTalento] = useState(0);
 
@@ -48,45 +65,23 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
         refetchOnMount: false
     })
 
-    const intervalos = useMemo(() => {
-        let intervalos = 0;
-        if (minutos_por_talento > 0) {
-            const inicio = inicio_casting.split(':');
-            const fin = fin_casting.split(':');
-            const i_descanso = inicio_descanso.split(':');
-            const f_descanso = fin_descanso.split(':');
-            const hora_inicio = inicio[0];
-            const minutos_inicio = inicio[1];
-            const hora_fin = fin[0];
-            const minutos_fin = fin[1];
-            const hora_descanso_inicio = i_descanso[0];
-            const minutos_descanso_inicio = i_descanso[1];
-            const hora_descanso_fin = f_descanso[0];
-            const minutos_descanso_fin = f_descanso[1];
-            let diff = 0;
-            if (hora_fin && minutos_fin && hora_inicio && minutos_inicio && hora_descanso_inicio && minutos_descanso_inicio && hora_descanso_fin && minutos_descanso_fin) {
-                const hora_inicio_con_minutos = (parseInt(hora_inicio) * 60) + parseFloat(minutos_inicio);
-                const hora_fin_con_minutos = (parseInt(hora_fin) * 60) + parseFloat(minutos_fin);
-                if (usar_descanso === 'Si') {
-                    const hora_incio_descanso_con_minutos = (parseInt(hora_descanso_inicio) * 60) + parseFloat(minutos_descanso_inicio);
-                    const hora_fin_descanso_con_minutos = (parseInt(hora_descanso_fin) * 60) + parseFloat(minutos_descanso_fin); 
-                    if (hora_fin_descanso_con_minutos < hora_incio_descanso_con_minutos) {
-                        notify('warning', 'El fin del descanso no puede ser menor a la hora de inicio');
-                        return 0;
-                    }
-                    const diff_primera_mitad = hora_incio_descanso_con_minutos - hora_inicio_con_minutos;
-                    const diff_segunda_mitad = hora_fin_con_minutos - hora_fin_descanso_con_minutos;
-                    diff = diff_primera_mitad + diff_segunda_mitad;
-                    
-                } else {
-                    diff = hora_fin_con_minutos - hora_inicio_con_minutos;
-                }
-                if (diff >= minutos_por_talento) {
-                    return Math.floor(diff / minutos_por_talento);
-                }
+    useEffect(() => {
+        if (bloque.data && estados_republica.data) {
+            setMinutosPorTalento(bloque.data.minutos_por_talento);
+            setInicioCasting(bloque.data.hora_inicio);
+            setFinCasting(bloque.data.hora_fin);
+            setInicioDescanso((bloque.data.hora_descanso_inicio) ? bloque.data.hora_descanso_inicio : '00:00');
+            setFinDescanso((bloque.data.hora_descanso_fin) ? bloque.data.hora_descanso_fin : '00:00');
+            setUsarDescanso(bloque.data.hora_descanso_inicio != null ? 'Si' : 'No');
+            const locacion = locaciones.map(l => `${l.direccion}, ${estados_republica.data.filter(er => er.id === l.id_estado_republica)[0]?.es}`)[0];
+            if (locacion) {
+                setSelectedLocacion(locacion)
             }
         }
-        return intervalos;
+    }, [bloque.data, estados_republica.data]);
+
+    const intervalos = useMemo(() => {
+        return calculateIntervalos(minutos_por_talento, inicio_casting, fin_casting, (usar_descanso) ? {inicio_tiempo: inicio_descanso, fin_tiempo: fin_descanso} : undefined);
     }, [minutos_por_talento, inicio_descanso, fin_descanso, inicio_casting, fin_casting]);
 
     return (
@@ -115,6 +110,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                             <Typography fontWeight={600} sx={{ fontSize: '1.4rem' }}>
                                 Crear Bloques de Tiempo
                             </Typography>
+                            {JSON.stringify(bloque.data)}
                             <Typography>
                                 {new Date(date).toLocaleString('es-mx', {
                                 weekday: "long",
@@ -249,6 +245,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                         <Divider />
                     </Grid>
                     <Grid xs={12}>
+                        {
+                            /*
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
                                 Administrar Bloques de Tiempo
@@ -268,6 +266,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                 }}
                             />
                         </Grid>
+                        
+
                         <Grid xs={12} p={3} sx={{backgroundColor: 'lightgrey'}}>
                             <Grid container>
                                 <Grid xs={10} >
@@ -326,6 +326,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                 </Grid>
                             </Grid>
                         </Grid>
+                            */
+                        }
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
                                 Locación
@@ -346,47 +348,75 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                             />
                             <Divider/>
                         </Grid>
+                        {
+                            /*
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
                                 Resumen casting
                             </Typography>
                         </Grid>
-                        <Grid xs={10}>
-                            <MContainer direction='horizontal' justify='space-between'>
-                                <MContainer direction='vertical'>
-                                    <Typography>
-                                        {intervalos}
-                                    </Typography>
-                                    <Typography>
-                                        Intervalos
-                                    </Typography>
-                                </MContainer>
-                                <MContainer direction='vertical'>
-                                    <Typography>
-                                        {administrar_intervalos === 'Automaticamente' ? '0' : ''}
-                                    </Typography>
-                                    <Typography>
-                                        Intervalos vacios
-                                    </Typography>
-                                </MContainer>
-                                <MContainer direction='vertical'>
-                                    <Typography>
-                                        {intervalos}
-                                    </Typography>
-                                    <Typography>
-                                        Talentos agendados
-                                    </Typography>
-                                </MContainer>
-                            </MContainer>
-                        </Grid>
+                        
+                                <Grid xs={10}>
+                                    <MContainer direction='horizontal' justify='space-between'>
+                                        <MContainer direction='vertical'>
+                                            <Typography>
+                                                {intervalos}
+                                            </Typography>
+                                            <Typography>
+                                                Intervalos
+                                            </Typography>
+                                        </MContainer>
+                                        <MContainer direction='vertical'>
+                                            <Typography>
+                                                {administrar_intervalos === 'Automaticamente' ? '0' : ''}
+                                            </Typography>
+                                            <Typography>
+                                                Intervalos vacios
+                                            </Typography>
+                                        </MContainer>
+                                        <MContainer direction='vertical'>
+                                            <Typography>
+                                                {intervalos}
+                                            </Typography>
+                                            <Typography>
+                                                Talentos agendados
+                                            </Typography>
+                                        </MContainer>
+                                    </MContainer>
+                                </Grid>
+                            */
+                        }
                         <Grid xs={12}>
                             <MContainer direction='vertical' justify='center' styles={{textAlign: 'center', alignContent: 'center', marginTop: 16}}>
 
                                 <Button
                                     onClick={() => {
-                                        
-
-                                        
+                                        if (intervalos === 0) {
+                                            notify('warning', 'No se han definido los intervalos');
+                                            return;
+                                        }
+                                        let loc = 0;
+                                        if (estados_republica.data) {
+                                            const locacion = locaciones.filter(l => `${l.direccion}, ${estados_republica.data.filter(er => er.id === l.id_estado_republica)[0]?.es}` === selected_locacion)[0];
+                                            if (locacion) {
+                                                loc = locacion.id;
+                                            }
+                                        }
+                                        if (loc === 0) {
+                                            notify('warning', 'No se han seleccionado una locacion');
+                                            return;
+                                        }
+                                        updateBloqueHorario.mutate({
+                                            id_bloque: (bloque.data) ? bloque.data.id : 0,
+                                            id_horario_agenda: id_horario_agenda,
+                                            fecha: new Date(date),
+                                            hora_inicio: inicio_casting,
+                                            hora_fin: fin_casting,
+                                            minutos_por_talento: minutos_por_talento,
+                                            hora_descanso_inicio: (usar_descanso) ? inicio_descanso : null,
+                                            hora_descanso_fin: (usar_descanso) ? fin_descanso : null,
+                                            id_locacion: loc		
+                                        });
                                     }}
                                     sx={{
                                         width: 200,
@@ -403,6 +433,9 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     </Typography>
                                 </Button>
                                 <Button
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                    }}
                                     sx={{
                                         textTransform: 'none',
                                     }}>

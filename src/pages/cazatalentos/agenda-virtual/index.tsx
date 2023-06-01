@@ -124,7 +124,7 @@ const AgendaVirtual = () => {
                                             <Grid item md={1} textAlign={'center'}>
 
                                             </Grid>
-                                            <Grid item md={4} textAlign={'center'}>
+                                            <Grid item md={3} textAlign={'center'}>
 
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
@@ -154,7 +154,7 @@ const AgendaVirtual = () => {
                                                     Roles
                                                 </Typography>
                                             </Grid>
-                                            <Grid item md={4} textAlign={'center'}>
+                                            <Grid item md={3} textAlign={'center'}>
                                                 <Typography variant="subtitle1" fontWeight={800}>
                                                     Fecha de creación
                                                 </Typography>
@@ -171,7 +171,7 @@ const AgendaVirtual = () => {
                                             <Grid item md={2} textAlign={'center'}>
                                                 <Image src="/assets/img/iconos/reloj.svg" width={20} height={20} style={{ filter: 'invert(1)' }} alt="" />
                                             </Grid>
-                                            <Grid item md={1} textAlign={'right'}>
+                                            <Grid item md={2} textAlign={'right'}>
 
                                             </Grid>
                                         </Grid>
@@ -196,7 +196,7 @@ const AgendaVirtual = () => {
                                                             <Grid item md={1} textAlign={'center'}>
                                                                 {h.proyecto.rol.length}
                                                             </Grid>
-                                                            <Grid item md={4} textAlign={'center'}>
+                                                            <Grid item md={3} textAlign={'center'}>
                                                                 {h.fecha_creacion.toLocaleDateString('es-mx')}
                                                             </Grid>
                                                             <Grid item md={2} textAlign={'center'}>
@@ -211,7 +211,7 @@ const AgendaVirtual = () => {
                                                             <Grid item md={2} textAlign={'center'}>
                                                                 2
                                                             </Grid>
-                                                            <Grid item md={1} textAlign={'right'}>
+                                                            <Grid item md={2} textAlign={'right'}>
                                                                 <IconButton
                                                                     onClick={(e) => {
                                                                         void router.push(`/cazatalentos/agenda-virtual/crear?id_horario=${h.id}`);
@@ -235,6 +235,17 @@ const AgendaVirtual = () => {
                                                                     component="label"
                                                                 >
                                                                     <Image src={'/assets/img/iconos/trash_blue.png'} width={16} height={16} alt="archivar" />
+                                                                </IconButton>
+                                                                <IconButton
+                                                                    onClick={(e) => {
+                                                                        void router.push(`/cazatalentos/agenda-virtual/horario/${h.id}`);
+                                                                        e.stopPropagation();
+                                                                    }}
+                                                                    color="primary"
+                                                                    aria-label="consultar"
+                                                                    component="label"
+                                                                >
+                                                                    <Image src={'/assets/img/iconos/search_blue.png'} width={16} height={16} alt="editar" />
                                                                 </IconButton>
                                                             </Grid>
                                                         </Grid>

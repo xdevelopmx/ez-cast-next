@@ -93,7 +93,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                 return{
                     ...prev,
                     id_union: (id_union) ? [id_union] : [],
-                    edad_inicio: (edad) ? edad : 0,
+                    edad_inicio: 1,
                     edad_fin: (edad) ? edad : 0,
                     id_genero_rol: (genero) ? [genero] : [],
                     id_apariencia_etnica: (apariencia_etnica) ? [apariencia_etnica] : [],
