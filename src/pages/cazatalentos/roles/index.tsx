@@ -271,7 +271,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         </Button>
                                                     }
 
-                                                    <Alert icon={false} sx={{ justifyContent: 'center' }} severity='info' style={{
+                                                    {/* <Alert icon={false} sx={{ justifyContent: 'center' }} severity='info' style={{
                                                         color: 'white', backgroundColor: (() => {
                                                             let color = 'grey';
                                                             switch (proyecto.data?.estatus.toUpperCase()) {
@@ -283,7 +283,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                         })()
                                                     }}>
                                                         PROYECTO {proyecto.data?.estatus.replaceAll('_', ' ')}
-                                                    </Alert>
+                                                    </Alert> */}
                                                 </>
                                             </MContainer>
                                         </MContainer>
@@ -307,7 +307,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                             })(), width: 12, height: 12, marginTop: 6, marginRight: 4
                                         }} />
                                         <Typography variant="subtitle2">
-                                            {(proyecto.data) ? proyecto.data.nombre : 'ND'}
+                                            {(proyecto.data) ? proyecto.data?.estatus.replaceAll('_', ' ') : 'ND'}
                                         </Typography>
                                     </MContainer>
                                     <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
