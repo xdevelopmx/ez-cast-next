@@ -7,6 +7,7 @@ import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client'
 import { api } from '~/utils/api'
 import { generateIntervalos } from '~/utils/dates'
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer'
+import { DraggableHorarioContainer } from './DraggableHorarioContainer'
 
 export const HorariosTable = (props: {
     id_horario_agenda: number,
@@ -105,21 +106,16 @@ export const HorariosTable = (props: {
                         justifyContent: 'center'
                     }}>
                         {bloque.data && bloque.isFetched &&
-                            <DraggableContainer
-                                width={600}
-                                direction={'vertical'}
-                                onElementsUpdate={(elements_order: number[]) => {
-                                    
-                                }}
-                                elements={intervalos.map((i, j) => {
-                                    return {
-                                        id: j,
-                                        content: <div style={{ backgroundColor: (i.tipo === 'intervalo') ? '#a8e2ea' : '#94f0d1', width: '90%', height: 64, margin: 8, position: 'relative'}}>
+                            <>
+                                {intervalos.map(i => {
+                                    return (
+                                        <div style={{ backgroundColor: (i.tipo === 'intervalo') ? '#a8e2ea' : '#94f0d1', width: '90%', height: 88, margin: 8, position: 'relative'}}>
                                             <p style={{position: 'absolute', top: 8, left: 8}}>{`${(i.inicio.length < 5) ? `${i.inicio}0` : i.inicio} - ${(i.fin. length < 5) ? `${i.fin}0` : i.fin }`}</p>
+                                            <DraggableHorarioContainer onDrop={(id_talento) => {}} allowedDropEffect="any" />
                                         </div>
-                                    }
+                                    )
                                 })}
-                            />
+                            </>
                         }
                         {!bloque.data && bloque.isFetched &&
                             <>

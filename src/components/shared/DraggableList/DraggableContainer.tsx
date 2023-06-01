@@ -17,6 +17,7 @@ interface Props {
 	elements: Item[],
 	width?: number | string,
 	direction?: 'horizontal' | 'vertical',
+	hideDeleteButton?: boolean, 
 	onElementsUpdate?: (ordered_elements_id: number[]) => void
 }
 
@@ -97,7 +98,7 @@ export const DraggableContainer: FC<Props> = (props: Props) => {
 					id={element.id}
 					content={element.content}
 					moveItem={moveImage}
-					onItemRemove={(id_to_be_deleted: number) => {
+					onItemRemove={(props.hideDeleteButton) ? undefined : (id_to_be_deleted: number) => {
 						const new_ordered_elements_id = ordered_elements_id.filter(id => id !== id_to_be_deleted);
 						if (props.onElementsUpdate) {
 							props.onElementsUpdate(new_ordered_elements_id);

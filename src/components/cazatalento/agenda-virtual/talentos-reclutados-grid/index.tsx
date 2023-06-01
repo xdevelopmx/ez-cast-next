@@ -1,16 +1,19 @@
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useMemo, useState } from 'react'
 import { FormGroup, MSelect } from '~/components/shared'
-import { TalentoReclutadoCard } from '../talento-reclutado-card'
 import Constants from '~/constants'
 import { api } from '~/utils/api'
+import { TalentoReclutadoCard } from '../talento-reclutado-card'
+import { Media, MediaPorTalentos, Talentos } from '@prisma/client'
 
 export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
 
     const roles = api.roles.getAllCompleteByProyecto.useQuery(props.id_proyecto, {
 		refetchOnWindowFocus: false
 	})
+
+    const [talentos, setTalentos] = useState<(Talentos & { media: (MediaPorTalentos & { media: Media; })[] })[]>([]);
 
     const [estado_aplicacion_rol, setEstadoAplicacionRol] = useState(Constants.ESTADOS_APLICACION_ROL.AUDICION.toString());
 
@@ -22,10 +25,15 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
             if (rol) {
                 setSelectedRol(rol.id);
             }
+            roles.data.map((rol, i) => {
+                if (rol.id === selected_rol) {
+                    setTalentos(rol.aplicaciones_por_talento.filter(ap => ap.id_estado_aplicacion === parseInt(estado_aplicacion_rol)).map((aplicacion, j) => {
+                        return aplicacion.talento;
+                    }))
+                }
+            })
         }
-    }, [roles.data]);
-
-    console.log(roles.data);
+    }, [roles.data, selected_rol, estado_aplicacion_rol]);
 
     return (
         <Grid xs={12}>
@@ -96,29 +104,6 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                 <Grid item xs={12}>
                     <Divider style={{width: '75%', marginLeft: 'auto', marginRight: 'auto', marginTop: 16}}/>
                 </Grid>
-                {
-                    /*
-                        <Grid xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '5px 30px' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography>
-                            Filtrar por:
-                        </Typography>
-                        <MSelect
-                            id="posicion-contenido-select"
-                            labelStyle={{ fontWeight: 600 }}
-                            options={[{ value: 'top', label: 'Arriba' }, { value: 'bottom', label: 'Abajo' }, { value: 'left', label: 'Izquierda' }, { value: 'Right', label: 'Derecha' }]}
-                            value={''}
-                            className={'form-input-md'}
-                            onChange={(e) => {
-                                
-                            }}
-                            />
-                        </Box>
-                    </Grid>
-
-                    */
-                }
-
                 <Grid container xs={12} gap={2} maxHeight={700} overflow={'auto'} sx={{
                     justifyContent: 'center',
                     borderLeft: '3px solid #EBEBEB',
@@ -126,24 +111,20 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                     borderBottom: '3px solid #EBEBEB',
                     padding: '30px 0'
                 }}>
-                    {roles.data &&
-                        roles.data.map((rol, i) => {
-                            if (rol.id === selected_rol) {
-                                return rol.aplicaciones_por_talento.filter(ap => ap.id_estado_aplicacion === parseInt(estado_aplicacion_rol)).map((aplicacion, j) => {
-                                    const profile = aplicacion.talento.media.filter(m => m.media.identificador.match('foto-perfil-talento'))[0];
-                                    return (
-                                        <Grid key={i} xs={5}>
-                                            <TalentoReclutadoCard 
-                                                profile_url={(profile) ? profile.media.url : '/assets/img/no-image.png'}
-                                                nombre={`${aplicacion.talento.nombre} ${aplicacion.talento.apellido}`}
-                                                union={'ND'}
-                                            />
-                                        </Grid>
-                                    )
-                                })
-                            }
-                        })
-                    }
+                    {talentos.map((t, i) => {
+                        const profile = t.media.filter(m => m.media.identificador.match('foto-perfil-talento'))[0];
+                        return <Grid key={i} xs={5}>
+                            <TalentoReclutadoCard 
+                                profile_url={(profile) ? profile.media.url : '/assets/img/no-image.png'}
+                                nombre={`${t.nombre} ${t.apellido}`}
+                                union={'ND'}
+                                id_talento={t.id}
+                                onDrop={(index) => {
+                                    alert('SE DROPEO ESTE WEON' + index);
+                                }}
+                            />
+                        </Grid>
+                    })}
                 </Grid>
 
                 
