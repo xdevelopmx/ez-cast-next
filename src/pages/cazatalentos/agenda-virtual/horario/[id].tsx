@@ -213,7 +213,7 @@ const AudicionPorId = () => {
                                                                         union={'ND'}
                                                                         id_talento={t.id}
                                                                         onDrop={(id_talento) => {
-                                                                            alert('SE DROPEO ESTE WEON' + id_talento);
+                                                                            //alert('SE DROPEO ESTE WEON' + id_talento);
                                                                         }}
                                                                     />
                                                                 </Grid>
@@ -305,18 +305,19 @@ const AudicionPorId = () => {
                                                                                 <div style={{ backgroundColor: (i.tipo === 'intervalo') ? '#a8e2ea' : '#94f0d1', width: '90%', height: 88, margin: 8, position: 'relative'}}>
                                                                                     <p style={{position: 'absolute', top: 8, left: 8}}>{intervalo}</p>
                                                                                     <DraggableHorarioContainer
-                                                                                        onDrop={(id_talento) => {
-                                                                                            console.log(id_talento);
+                                                                                        onDrop={(item) => {
+                                                                                            const {id_talento} = item as {id_talento: number};
+                                                                                            alert(id_talento);
+
                                                                                             const talento = talentos.filter(t => t.id === id_talento)[0];
-                                                                                            console.log(talento);
                                                                                             if (talento) {
-                                                                                                alert('xd')
                                                                                                 talentos_asignados_a_horario.push({...talento, intervalo: intervalo});
                                                                                             }
                                                                                             setTalentosAsignadosAHorario(talentos_asignados_a_horario.map(t => t));
                                                                                             setTalentos(prev => {
                                                                                                 return prev.filter(t => t.id !== id_talento);
-                                                                                            })                                
+                                                                                            })       
+                                                                                                                     
                                                                                         }}
                                                                                         allowedDropEffect="any" 
                                                                                     />

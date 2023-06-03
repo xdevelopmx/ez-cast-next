@@ -117,7 +117,11 @@ export function generateIntervalos(duracion_minutos: number, inicio_tiempo: stri
             const inicio_for = (parseInt(hora_descanso_fin) * 60) + parseInt(minutos_descanso_fin);
             const fin_for = (parseInt(hora_fin) * 60) + parseInt(minutos_fin);
             for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
-                intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
+                if (x + duracion_minutos >= fin_for) {
+                    intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
+                } else {
+                    intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
+                }
             }
         }
     }

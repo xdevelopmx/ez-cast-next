@@ -2,10 +2,10 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import Head from 'next/head'
 import { FormGroup, MRadioGroup, MainLayout } from '~/components'
 import { MTooltip } from '~/components/shared/MTooltip'
-import { useInvitarTalentoReducer } from './useInvitarTalentoReducer'
 import useNotify from '~/hooks/useNotify'
 import { InvalidEmailError, InvalidFieldError } from '~/utils/errores'
 import { type FormEvent } from 'react'
+import useInvitarTalentoReducer from '../../../hooks/useInvitarTalentoReducer'
 
 
 const InvitarTalentoPage = () => {

@@ -72,7 +72,7 @@ const formReducer = (state: Form, action: Action): Form => {
 }
 
 
-export const useInvitarTalentoReducer = () => {
+const useInvitarTalentoReducer = () => {
 
     const [state, dispatch] = useReducer(formReducer, initial);
 
@@ -101,3 +101,5 @@ export const useInvitarTalentoReducer = () => {
         validarFormulario
     }
 }
+
+export default useInvitarTalentoReducer;
