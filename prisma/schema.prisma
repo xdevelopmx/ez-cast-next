@@ -26,22 +26,22 @@ model HorarioAgenda {
   proyecto          Proyecto                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   fechas            FechasPorHorarioAgenda[]
   localizaciones    LocalizacionesPorHorarioAgenda[]
-  uso_horario CatalogoTipoUsosHorario @relation(fields: [id_uso_horario], references: [id])
-  bloque_horario BloqueHorariosAgenda[]
+  uso_horario       CatalogoTipoUsosHorario          @relation(fields: [id_uso_horario], references: [id])
+  bloque_horario    BloqueHorariosAgenda[]
 }
 
 model BloqueHorariosAgenda {
-  id Int                              @id @default(autoincrement())
-  id_horario_agenda   Int
-  fecha DateTime
-  hora_inicio String
-  hora_fin String
-  minutos_por_talento Int
+  id                   Int                            @id @default(autoincrement())
+  id_horario_agenda    Int
+  fecha                DateTime
+  hora_inicio          String
+  hora_fin             String
+  minutos_por_talento  Int
   hora_descanso_inicio String?
-  hora_descanso_fin String?
-  id_locacion Int
-  locacion LocalizacionesPorHorarioAgenda @relation(fields: [id_locacion], references: [id])
-  horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+  hora_descanso_fin    String?
+  id_locacion          Int
+  locacion             LocalizacionesPorHorarioAgenda @relation(fields: [id_locacion], references: [id])
+  horario_agenda       HorarioAgenda                  @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
 model LocalizacionesGuardadas {
@@ -55,15 +55,15 @@ model LocalizacionesGuardadas {
 }
 
 model LocalizacionesPorHorarioAgenda {
-  id                  Int           @id @default(autoincrement())
-  id_estado_republica Int
-  direccion           String
-  direccion2          String?
-  codigo_postal       Int
-  id_horario_agenda   Int
-  estado_republica CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  id                    Int                      @id @default(autoincrement())
+  id_estado_republica   Int
+  direccion             String
+  direccion2            String?
+  codigo_postal         Int
+  id_horario_agenda     Int
+  estado_republica      CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   bloque_horario_agenda BloqueHorariosAgenda[]
-  horario_agenda      HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+  horario_agenda        HorarioAgenda            @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
 model FechasPorHorarioAgenda {
@@ -97,7 +97,7 @@ model Cazatalentos {
 }
 
 model Representante {
-  id                   Int                            @id @default(autoincrement())
+  id                   Int                             @id @default(autoincrement())
   usuario              String
   email                String
   contrasenia          String
@@ -108,32 +108,68 @@ model Representante {
   id_openpay           String
   id_foto_perfil_media Int?
   posicion             String
-  compania             String           
-  biografia            String                         @db.VarChar(512)
-  foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
+  compania             String
+  biografia            String                          @db.VarChar(512)
+  foto_perfil          Media?                          @relation(fields: [id_foto_perfil_media], references: [id])
   redes_sociales       RedesSocialesPorRepresentante[]
-  info_basica        InfoBasicaRepresentante?
+  info_basica          InfoBasicaRepresentante?
+  permisos             PermisosRepresentante?
+  cuentas              CuentasPorRepresentante[]
+  validacion           ValidacionRepresentante?
 }
+
 model InfoBasicaRepresentante {
-  id                  Int                        @id @default(autoincrement())
-  id_representante          Int                        @unique
+  id                  Int                              @id @default(autoincrement())
+  id_representante    Int                              @unique
   id_estado_republica Int
-  direccion String
-  cp Int
+  direccion           String
+  cp                  Int
   id_media_cv         Int?
-  media               Media?                     @relation(fields: [id_media_cv], references: [id])
+  media               Media?                           @relation(fields: [id_media_cv], references: [id])
   union               UnionPorInfoBasicaRepresentante?
-  representante             Representante                   @relation(fields: [id_representante], references: [id], onDelete: Cascade)
-  estado_republica    CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
+  representante       Representante                    @relation(fields: [id_representante], references: [id], onDelete: Cascade)
+  estado_republica    CatalogoEstadosRepublica         @relation(fields: [id_estado_republica], references: [id])
 }
 
 model UnionPorInfoBasicaRepresentante {
-  id                          Int                   @id @default(autoincrement())
-  id_union                    Int
-  descripcion                 String?
-  id_info_basica_representante Int                   @unique
-  union                       CatalogoUniones       @relation(fields: [id_union], references: [id])
-  info_basica_represntante    InfoBasicaRepresentante @relation(fields: [id_info_basica_representante], references: [id], onDelete: Cascade)
+  id                           Int                     @id @default(autoincrement())
+  id_union                     Int
+  descripcion                  String?
+  id_info_basica_representante Int                     @unique
+  union                        CatalogoUniones         @relation(fields: [id_union], references: [id])
+  info_basica_represntante     InfoBasicaRepresentante @relation(fields: [id_info_basica_representante], references: [id], onDelete: Cascade)
+}
+
+model PermisosRepresentante {
+  id                                      Int           @id @default(autoincrement())
+  puede_aceptar_solitucides_talento       Boolean
+  puede_aceptar_solitucides_representante Boolean
+  puede_editar_perfil_talento             Boolean
+  puede_editar_perfil_representante       Boolean
+  id_representante                        Int           @unique
+  representante                           Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
+}
+
+model CuentasPorRepresentante {
+  id                 Int           @id @default(autoincrement())
+  nombre             String
+  apellido           String
+  correo_electronico String
+  lada               String
+  telefono           String
+  id_representante   Int           @unique
+  tipo_cuenta        String
+  representante      Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
+}
+
+model ValidacionRepresentante {
+  id                      Int           @id @default(autoincrement())
+  id_media_copia_licencia Int?
+  media                   Media?        @relation(fields: [id_media_copia_licencia], references: [id])
+  numero_clientes         Int
+  imdb_pro_link           String
+  id_representante        Int           @unique
+  representante           Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
 }
 
 model Talentos {
@@ -261,12 +297,12 @@ model UnionPorInfoBasicaTalento {
 }
 
 model CatalogoUniones {
-  id                            Int                         @id
+  id                            Int                               @id
   es                            String
   en                            String
   union_por_info_basica_talento UnionPorInfoBasicaTalento[]
   sindicato_por_proyecto        SindicatoPorProyecto[]
-  union_por_representante UnionPorInfoBasicaRepresentante[]
+  union_por_representante       UnionPorInfoBasicaRepresentante[]
 }
 
 model RedesSocialesPorTalentos {
@@ -286,9 +322,9 @@ model RedesSocialesPorCazatalentos {
 }
 
 model RedesSocialesPorRepresentante {
-  id              Int          @id @default(autoincrement())
-  nombre          String
-  url             String
+  id               Int           @id @default(autoincrement())
+  nombre           String
+  url              String
   id_representante Int
   representante    Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
 }
@@ -667,7 +703,7 @@ model Media {
   InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
   CreditoTalento            CreditoTalento[]
   cazatalentos              Cazatalentos[]
-  representante Representante[]
+  representante             Representante[]
   RepresentantesPorTalentos RepresentantesPorTalentos[]
   archivo_proyecto          Proyecto[]                  @relation("media_archivo", map: "media_archivo")
   foto_portada_proyecto     Proyecto[]                  @relation("media_foto_portada", map: "media_foto_portada")
@@ -675,8 +711,8 @@ model Media {
   foto_referencia_roles     Roles[]                     @relation("media_foto_referencia", map: "media_foto_referencia")
   lineas_selftape           SelftapePorRoles[]
   banners                   Banners[]
-  InfoBasicaRepresentante InfoBasicaRepresentante[]
-
+  InfoBasicaRepresentante   InfoBasicaRepresentante[]
+  ValidacionRepresentante   ValidacionRepresentante[]
 }
 
 model MediaPorTalentos {
@@ -709,17 +745,17 @@ model CatalogoIdiomas {
 }
 
 model CatalogoEstadosRepublica {
-  id                      Int                               @id @default(autoincrement())
-  es                      String
-  en                      String
-  info_basica_por_talento InfoBasicaPorTalentos[]
-  requisitos_por_roles    RequisitosPorRoles[]
-  casting_por_roles       CastingPorRoles[]
-  filmacion_por_roles     FilmacionPorRoles[]
-  locaciones_preferencias LocacionesPrerenciasPorTalentos[]
-  proyecto                Proyecto[]
+  id                                Int                               @id @default(autoincrement())
+  es                                String
+  en                                String
+  info_basica_por_talento           InfoBasicaPorTalentos[]
+  requisitos_por_roles              RequisitosPorRoles[]
+  casting_por_roles                 CastingPorRoles[]
+  filmacion_por_roles               FilmacionPorRoles[]
+  locaciones_preferencias           LocacionesPrerenciasPorTalentos[]
+  proyecto                          Proyecto[]
   localizaciones_por_horario_agenda LocalizacionesPorHorarioAgenda[]
-  InfoBasicaRepresentante InfoBasicaRepresentante[]
+  InfoBasicaRepresentante           InfoBasicaRepresentante[]
 }
 
 model MediosMultimediaPorRoles {
