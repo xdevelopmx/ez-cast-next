@@ -108,10 +108,32 @@ model Representante {
   id_openpay           String
   id_foto_perfil_media Int?
   posicion             String
-  compania             String
-  biografia            String
+  compania             String           
+  biografia            String                         @db.VarChar(512)
   foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
   redes_sociales       RedesSocialesPorRepresentante[]
+  info_basica        InfoBasicaRepresentante?
+}
+model InfoBasicaRepresentante {
+  id                  Int                        @id @default(autoincrement())
+  id_representante          Int                        @unique
+  id_estado_republica Int
+  direccion String
+  cp Int
+  id_media_cv         Int?
+  media               Media?                     @relation(fields: [id_media_cv], references: [id])
+  union               UnionPorInfoBasicaRepresentante?
+  representante             Representante                   @relation(fields: [id_representante], references: [id], onDelete: Cascade)
+  estado_republica    CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
+}
+
+model UnionPorInfoBasicaRepresentante {
+  id                          Int                   @id @default(autoincrement())
+  id_union                    Int
+  descripcion                 String?
+  id_info_basica_representante Int                   @unique
+  union                       CatalogoUniones       @relation(fields: [id_union], references: [id])
+  info_basica_represntante    InfoBasicaRepresentante @relation(fields: [id_info_basica_representante], references: [id], onDelete: Cascade)
 }
 
 model Talentos {
@@ -244,6 +266,7 @@ model CatalogoUniones {
   en                            String
   union_por_info_basica_talento UnionPorInfoBasicaTalento[]
   sindicato_por_proyecto        SindicatoPorProyecto[]
+  union_por_representante UnionPorInfoBasicaRepresentante[]
 }
 
 model RedesSocialesPorTalentos {
@@ -652,6 +675,8 @@ model Media {
   foto_referencia_roles     Roles[]                     @relation("media_foto_referencia", map: "media_foto_referencia")
   lineas_selftape           SelftapePorRoles[]
   banners                   Banners[]
+  InfoBasicaRepresentante InfoBasicaRepresentante[]
+
 }
 
 model MediaPorTalentos {
@@ -694,6 +719,7 @@ model CatalogoEstadosRepublica {
   locaciones_preferencias LocacionesPrerenciasPorTalentos[]
   proyecto                Proyecto[]
   localizaciones_por_horario_agenda LocalizacionesPorHorarioAgenda[]
+  InfoBasicaRepresentante InfoBasicaRepresentante[]
 }
 
 model MediosMultimediaPorRoles {
