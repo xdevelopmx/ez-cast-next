@@ -333,6 +333,39 @@ export const RolesRouter = createTRPCRouter({
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.roles.findMany();
 	}),
+	getAllAplicacionesTalentoByProyecto: publicProcedure.input(z.object({
+		id_proyecto: z.number(),
+		estados_aplicaciones: z.array(z.number()).nullish()
+	})).query(async ({ input, ctx }) => {
+		if (input.id_proyecto <= 0) return null;
+		return await ctx.prisma.roles.findMany({
+			where: {
+				id_proyecto: input.id_proyecto,
+			},
+			include: {
+				aplicaciones_por_talento: {
+					where: (input.estados_aplicaciones && input.estados_aplicaciones.length > 0) ? {
+						id_estado_aplicacion: {
+							in: input.estados_aplicaciones
+						}
+					} : undefined,
+					include: {
+						talento: {
+							include: {
+								destacados: true,
+								notas: true,
+								media: {
+									include: {
+										media: true
+									}
+								}
+							}
+						}
+					}
+				},
+			}
+		});
+	}),
 	getAllCompleteByProyecto: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
 		if (input <= 0) return null;
 		return await ctx.prisma.roles.findMany({

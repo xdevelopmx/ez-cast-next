@@ -1,11 +1,12 @@
+import dayjs from "dayjs";
 
 export function expandDates(fechas: {fecha_inicio: Date, fecha_fin: Date | null}[]) {
     const dates = new Set<string>();
     fechas.forEach(date => {
         console.log('date', date);
-        const start_day = date.fecha_inicio.getDate() + 1;
+        const start_day = date.fecha_inicio.getDate();
         console.log('start', start_day);
-        const end_day = ((date.fecha_fin) ? date.fecha_fin.getDate() : date.fecha_inicio.getDate()) + 1;
+        const end_day = ((date.fecha_fin) ? date.fecha_fin.getDate() : date.fecha_inicio.getDate());
         const start_month = date.fecha_inicio.getMonth();
         const end_month = (date.fecha_fin) ? date.fecha_fin.getMonth() : date.fecha_inicio.getMonth();
         const start_year = date.fecha_inicio.getFullYear();
@@ -23,13 +24,14 @@ export function expandDates(fechas: {fecha_inicio: Date, fecha_fin: Date | null}
                 const final_day = (m !== end_month) ? 31 : end_day;
                 const initial_day = (m !== start_month) ? 1 : start_day;
                 for (let d = initial_day; d <= final_day; d++) {
-                    console.log(`${d < 10 ? `0${d}` : d}/${m < 9 ? `0${m + 1}` : m + 1}/${y}`)
-                    dates.add(`${d < 10 ? `0${d}` : d}/${m < 9 ? `0${m + 1}` : m + 1}/${y}`)
+                    const n_date = `${d < 10 ? `0${d}` : d}/${m < 9 ? `0${m + 1}` : m + 1}/${y}`;
+                    if (dayjs(n_date, 'DD/MM/YYYY', true).isValid()) {
+                        dates.add(n_date)
+                    }
                 }
             }
         }
     })
-    console.log(dates);
     return dates;
 }
 
@@ -117,9 +119,7 @@ export function generateIntervalos(duracion_minutos: number, inicio_tiempo: stri
             const inicio_for = (parseInt(hora_descanso_fin) * 60) + parseInt(minutos_descanso_fin);
             const fin_for = (parseInt(hora_fin) * 60) + parseInt(minutos_fin);
             for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
-                if (x + duracion_minutos >= fin_for) {
-                    intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
-                } else {
+                if (x + duracion_minutos < fin_for) {
                     intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
                 }
             }

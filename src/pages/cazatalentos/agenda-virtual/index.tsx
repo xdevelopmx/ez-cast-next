@@ -14,6 +14,9 @@ import MotionDiv from "~/components/layout/MotionDiv";
 import { useRouter } from "next/router";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import useNotify from "~/hooks/useNotify";
+import { MTooltip } from "~/components/shared/MTooltip";
+import { expandDates } from "~/utils/dates";
+import dayjs from "dayjs";
 
 const estilos_calendario: SxProps<Theme> = {
     '& .MuiPickersCalendarHeader-label': {
@@ -50,6 +53,8 @@ const estilos_calendario: SxProps<Theme> = {
 
 const AgendaVirtual = () => {
 
+    const router = useRouter();
+
     const horarios = api.agenda_virtual.getAllHorarioAgendaByCazatalento.useQuery(undefined, {
         refetchOnWindowFocus: false,
     });
@@ -66,8 +71,18 @@ const AgendaVirtual = () => {
         }
     })
 
+    const updateHorario = api.agenda_virtual.create.useMutation({
+        onSuccess: (data) => {
+            notify('success', 'Se actualizo el horario con exito');
+            void router.push(`/cazatalentos/agenda-virtual/crear?id_horario=${data.id}`);
+        }, 
+        onError: (err) => {
+            notify('error', parseErrorBody(err.message));
+        }
+    })
+
     const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
-    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'DELETE', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'DELETE', data: new Map });
+    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'DELETE' | 'CALLBACK', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'DELETE', data: new Map });
 
     const paginated_data = useMemo(() => {
 		const start = (pagination.page * pagination.page_size);
@@ -80,7 +95,26 @@ const AgendaVirtual = () => {
 		return sliced_data;
 	}, [pagination, horarios.data]);
 
-    const router = useRouter();
+    const fechas_asignadas = api.agenda_virtual.getAllFechasAsignadas.useQuery(undefined, {
+        refetchOnWindowFocus: false
+    })
+
+    const fechas_arr = useMemo(() => {
+        const res: {day: number, month: number, year: number, description: string}[] = [];
+        if (fechas_asignadas.data) {
+            fechas_asignadas.data.forEach((h) => {
+                h.bloque_horario.forEach((b) => {
+                    res.push({
+                        day: b.fecha.getDate(), 
+                        month: b.fecha.getMonth() + 1, 
+                        year: b.fecha.getFullYear(), 
+                        description: new Intl.DateTimeFormat("es-MX").format(b.fecha)
+                    });
+                })
+            })
+        }
+        return res;
+    }, [fechas_asignadas.data]);
 
     return (
         <>
@@ -100,6 +134,7 @@ const AgendaVirtual = () => {
                                 <div className="d-flex justify-content-end align-items-start py-2">
                                     <Alertas />
                                 </div>
+                                {JSON.stringify(fechas_arr)}
                                 <Grid container>
                                     <Grid item xs={12}>
                                         <Grid container item columns={12}>
@@ -137,7 +172,6 @@ const AgendaVirtual = () => {
                                                 No confirmados
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
-                                                Reagendados
                                             </Grid>
                                             <Grid item md={1} textAlign={'center'}>
 
@@ -169,7 +203,6 @@ const AgendaVirtual = () => {
                                                 <Image src="/assets/img/iconos/tache.svg" width={20} height={20} style={{ filter: 'invert(1)' }} alt="" />
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
-                                                <Image src="/assets/img/iconos/reloj.svg" width={20} height={20} style={{ filter: 'invert(1)' }} alt="" />
                                             </Grid>
                                             <Grid item md={2} textAlign={'right'}>
 
@@ -188,6 +221,26 @@ const AgendaVirtual = () => {
                                         {!horarios.isFetching && paginated_data.length > 0 &&
                                             <>
                                                 {paginated_data.map((h, i) => {
+                                                    const ordered_dates = Array.from(expandDates(h.fechas)).sort((a, b) => {
+                                                        const d_1 = dayjs(a, 'DD/MM/YYYY');
+                                                        const d_2 = dayjs(b, 'DD/MM/YYYY');
+                                                        return d_1.toDate().getTime() - d_2.toDate().getTime();
+                                                    });
+                                                    const last_date = ordered_dates[ordered_dates.length - 1];
+                                                    let disable_actions = false;
+                                                    let disable_callback_btn = true;
+                                                    if (last_date) {
+                                                        const date = dayjs(last_date, 'DD/MM/YYYY').locale('es-mx');
+                                                        const today = dayjs(new Date()).locale('es-mx');
+                                                        if (today.isAfter(date, 'dates')) {
+                                                            disable_callback_btn = false;
+                                                        }
+                                                        const last_day_plus_7_days = date.clone();
+                                                        last_day_plus_7_days.add(7, 'D');
+                                                        if (today.isAfter(last_day_plus_7_days)) {
+                                                            disable_actions = true;
+                                                        }
+                                                    }
                                                     return (
                                                         <Grid key={i} container item xs={20} sx={{ backgroundColor: (h.tipo_agenda === 'AUDICION') ? '#069cb185' : '#ea9d2185', padding: '5px 10px', margin: '4px 0' }} columns={18}>
                                                             <Grid item md={4} textAlign={'center'}>
@@ -195,6 +248,7 @@ const AgendaVirtual = () => {
                                                             </Grid>
                                                             <Grid item md={1} textAlign={'center'}>
                                                                 {h.proyecto.rol.length}
+                                                                
                                                             </Grid>
                                                             <Grid item md={3} textAlign={'center'}>
                                                                 {h.fecha_creacion.toLocaleDateString('es-mx')}
@@ -209,7 +263,40 @@ const AgendaVirtual = () => {
                                                                 1
                                                             </Grid>
                                                             <Grid item md={2} textAlign={'center'}>
-                                                                2
+                                                                { h.tipo_agenda.toLowerCase() === 'callback' || !disable_callback_btn &&
+                                                                    <Box display={'flex'} flexDirection={'column'} justifyContent={'right'} position={'relative'}>
+                                                                        <Button
+                                                                            disabled={disable_callback_btn}
+                                                                            variant='contained'
+                                                                            size='small'
+                                                                            sx={{
+                                                                                backgroundColor: '#fcd081',
+                                                                                fontSize: '14px'
+                                                                            }}
+                                                                            onClick={(e) => {
+                                                                                const params = new Map<string, unknown>();
+                                                                                params.set('tipo_localizacion', h.tipo_localizacion);
+                                                                                params.set('notas', h.notas);
+                                                                                params.set('id_uso_horario', h.id_uso_horario);
+                                                                                params.set('id_proyecto', h.id_proyecto);
+                                                                                setConfirmationDialog({ action: 'CALLBACK', data: params, opened: true, title: 'Iniciar Callback', content: <Typography variant="body2">Seguro que deseas iniciar con el proceso de callback con este horario?</Typography> });
+                                                                                e.stopPropagation();
+                                                                            }}
+                                                                        > 
+                                                                            Iniciar Callback
+                                                                        </Button>
+                                                                        <MTooltip
+                                                                            text='Podras cambiar el horario a callback una vez hayan finalizado las fechas de audiciones'
+                                                                            color='orange'
+                                                                            placement='top'
+                                                                            sx={{
+                                                                                marginTop: 0.75,
+                                                                                position: 'absolute',
+                                                                                right: -32
+                                                                            }}
+                                                                        />
+                                                                    </Box>
+                                                                }
                                                             </Grid>
                                                             <Grid item md={2} textAlign={'right'}>
                                                                 <IconButton
@@ -281,7 +368,11 @@ const AgendaVirtual = () => {
                                         </MotionDiv>
                                         <Grid container xs={12} columns={12} sx={{ border: '3px solid #069cb1', padding: '30px' }} mt={4}>
                                             <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
-                                                <DualDatePicker direction="horizontal" sx={estilos_calendario}/>
+                                                <DualDatePicker 
+                                                    selected_dates={fechas_arr}
+                                                    direction="horizontal" 
+                                                    sx={estilos_calendario}
+                                                />
                                             </Grid>
                                         </Grid>
                                     </Grid>
@@ -301,6 +392,23 @@ const AgendaVirtual = () => {
                                         //deleteProyecto.mutate({ id: id as number });
                                         deleteHorario.mutate(id as number);
                                     }
+                                    break;
+                                }
+                                case 'CALLBACK': {
+                                    const tipo_localizacion = confirmation_dialog.data.get('tipo_localizacion');
+                                    const notas = confirmation_dialog.data.get('notas');
+                                    const id_uso_horario = confirmation_dialog.data.get('id_uso_horario');
+                                    const id_proyecto = confirmation_dialog.data.get('id_proyecto');
+                                    updateHorario.mutate({
+                                        locaciones: [],
+                                        fechas: [],
+                                        tipo_fechas: 'NUEVAS',
+                                        tipo_localizacion: tipo_localizacion as string,
+                                        notas: notas as string,
+                                        id_uso_horario: id_uso_horario as number,
+                                        id_proyecto: id_proyecto as number,
+                                        tipo_agenda: 'CALLBACK'
+                                    })
                                     break;
                                 }
                             }

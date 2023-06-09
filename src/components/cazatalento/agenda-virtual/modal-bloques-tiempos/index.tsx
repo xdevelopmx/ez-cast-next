@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, Grid, Typogra
 import React, { type Dispatch, type SetStateAction, type FC, useState, useMemo, useEffect } from 'react'
 import Image from 'next/image'
 import { FormGroup, MRadioGroup, MSelect } from '~/components/shared';
-import { DesktopTimePicker, MobileTimePicker, StaticTimePicker, TimeField, TimePicker } from '@mui/x-date-pickers';
+import { DesktopTimePicker, MobileTimePicker, StaticTimePicker, TimeField, TimePicker, esES } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import useNotify from '~/hooks/useNotify';
 import { calculateIntervalos, formatDate } from '~/utils/dates';
@@ -18,25 +18,30 @@ interface Props {
     date: string;
     id_horario_agenda: number;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
+    onChange: () => void;
 }
 
-export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles, locaciones, id_horario_agenda }) => {
+export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles, locaciones, id_horario_agenda, onChange }) => {
 
     const {notify} = useNotify();
 
     const bloque = api.agenda_virtual.getBloqueHorarioByDateAndIdHorario.useQuery({
-        id_horario_agenda: id_horario_agenda, fecha: new Date(date)
+        id_horario_agenda: id_horario_agenda, fecha: dayjs(date, "DD/MM/YYYY").toDate()
     }, {
         refetchOnWindowFocus: false
     })
 
     const updateBloqueHorario = api.agenda_virtual.updateBloqueHorario.useMutation({
         onSuccess: (data) => {
+            bloque.refetch();
             notify('success', 'Se actualizo el bloque de horario con exito');
             setIsOpen(false);
         },
         onError: (err) => {
             notify('error', parseErrorBody(err.message));
+        },
+        onSettled: () => {
+            onChange();
         }
     })
 
@@ -72,7 +77,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
             setFinCasting(bloque.data.hora_fin);
             setInicioDescanso((bloque.data.hora_descanso_inicio) ? bloque.data.hora_descanso_inicio : '00:00');
             setFinDescanso((bloque.data.hora_descanso_fin) ? bloque.data.hora_descanso_fin : '00:00');
-            setUsarDescanso(bloque.data.hora_descanso_inicio != null ? 'Si' : 'No');
+            setUsarDescanso(bloque.data.hora_descanso_inicio != null && bloque.data.hora_descanso_inicio !== '00:00' ? 'Si' : 'No');
+            setAdministrarIntervalos(bloque.data.tipo_administracion_intervalo.toLowerCase() === 'automaticamente' ? 'Automaticamente' : 'Manualmente');
             const locacion = locaciones.map(l => `${l.direccion}, ${estados_republica.data.filter(er => er.id === l.id_estado_republica)[0]?.es}`)[0];
             if (locacion) {
                 setSelectedLocacion(locacion)
@@ -110,9 +116,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                             <Typography fontWeight={600} sx={{ fontSize: '1.4rem' }}>
                                 Crear Bloques de Tiempo
                             </Typography>
-                            {JSON.stringify(bloque.data)}
                             <Typography>
-                                {new Date(date).toLocaleString('es-mx', {
+                                {dayjs(date, 'DD/MM/YYYY').toDate().toLocaleString('es-mx', {
                                 weekday: "long",
                                 year: "numeric",
                                 month: "long",
@@ -245,8 +250,6 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                         <Divider />
                     </Grid>
                     <Grid xs={12}>
-                        {
-                            /*
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
                                 Administrar Bloques de Tiempo
@@ -266,68 +269,6 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                 }}
                             />
                         </Grid>
-                        
-
-                        <Grid xs={12} p={3} sx={{backgroundColor: 'lightgrey'}}>
-                            <Grid container>
-                                <Grid xs={10} >
-                                    <MContainer direction='horizontal' justify='space-between'>
-                                        <MContainer direction='vertical'>
-                                            <Typography fontWeight={600}>
-                                                Rol
-                                            </Typography>
-                                            {administrar_intervalos === 'Manualmente' && roles_selects.map(rs => rs)}
-                                            {administrar_intervalos === 'Automaticamente' && roles.map(rs => <Typography>{rs.nombre}</Typography>)}
-                                        </MContainer>
-                                        <MContainer direction='vertical'>
-                                            <Typography fontWeight={600}>
-                                            # de talentos por intervalo
-                                            </Typography>
-                                            {administrar_intervalos === 'Automaticamente' && roles.map(rs => <Typography>{Math.floor(intervalos/roles.length)}</Typography>)}
-                                        </MContainer>
-                                    </MContainer>
-                                    <Box width={250}>
-                                        {administrar_intervalos === 'Manualmente' && roles_selects.length !== roles.length &&
-                                        
-                                            <Button 
-                                                variant='text' 
-                                                startIcon={<AddCircle color='primary'/>} 
-                                                style={{textTransform: 'capitalize', color: 'black'}}
-                                                onClick={() => {
-                                                    setRolesSelects(prev => {
-                                                        return prev.concat(
-                                                            <MSelect
-                                                                id={`rol-select-${prev.length}`}
-                                                                options={roles.map(r => { return {label: `${r.nombre}-${prev.length}`, value: r.id.toString()}})}
-                                                                value={asignaciones_intervalos_por_rol[prev.length]?.toString()}
-                                                                className={'form-input-md'}
-                                                                onChange={(e) => {
-                                                                    const v = parseInt(e.target.value);
-                                                                    if (asignaciones_intervalos_por_rol.includes(v)) {
-                                                                        notify('warning', 'Ese rol ya esta asignado en otro select');
-                                                                    } else {
-                                                                        const index = asignaciones_intervalos_por_rol.indexOf(v);
-                                                                        setAsignacionesIntervalosPorRol(prev => {
-                                                                            prev.splice(index, 0, v);
-                                                                            return prev;
-                                                                        })
-                                                                    }
-                                                                    
-                                                                }}
-                                                            />
-                                                        )
-                                                    })
-                                                }}
-                                            >
-                                                Agregar otro rol
-                                            </Button>
-                                        }
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                            */
-                        }
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
                                 Locación
@@ -388,7 +329,6 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                         }
                         <Grid xs={12}>
                             <MContainer direction='vertical' justify='center' styles={{textAlign: 'center', alignContent: 'center', marginTop: 16}}>
-
                                 <Button
                                     onClick={() => {
                                         if (intervalos === 0) {
@@ -409,7 +349,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         updateBloqueHorario.mutate({
                                             id_bloque: (bloque.data) ? bloque.data.id : 0,
                                             id_horario_agenda: id_horario_agenda,
-                                            fecha: new Date(date),
+                                            tipo_administracion_intervalo: administrar_intervalos,
+                                            fecha: dayjs(date, "DD/MM/YYYY").toDate(),
                                             hora_inicio: inicio_casting,
                                             hora_fin: fin_casting,
                                             minutos_por_talento: minutos_por_talento,

@@ -1,7 +1,9 @@
 import { Button, Divider, Grid, Typography } from '@mui/material'
+import { useRouter } from 'next/router';
 import React from 'react'
 
-export const DatosAudicion = (props: {uso_horario: string}) => {
+export const DatosAudicion = (props: {uso_horario: string, id_horario: number, nota: string}) => {
+    const router = useRouter();
     return (
         <Grid container xs={12} mt={2}>
 
@@ -10,25 +12,20 @@ export const DatosAudicion = (props: {uso_horario: string}) => {
                     Nota adicional
                 </Typography>
                 <Typography fontWeight={500}>
-                    Notas de locación sobre
-                    Como llegar tal vez o así
+                    {props.nota}
                 </Typography>
             </Grid>
-            <Grid xs={2}>
+            <Grid xs={7}>
                 <Typography fontWeight={600} sx={{ color: '#069cb1', }}>
                     Uso horario
                 </Typography>
                 <Typography fontWeight={500}>
                     {props.uso_horario}
                 </Typography>
-                <Button sx={{ textTransform: 'none', textDecoration: 'underline', color: '#069cb1' }}>
-                    <Typography>
-                        Ver más
-                    </Typography>
-                </Button>
+                
             </Grid>
             <Grid xs={1}>
-                <Button sx={{ textTransform: 'none', textDecoration: 'underline', color: '#069cb1' }}>
+                <Button onClick={() => { void router.push(`/cazatalentos/agenda-virtual/crear?id_horario=${props.id_horario}`); }} sx={{ textTransform: 'none', textDecoration: 'underline', color: '#069cb1' }}>
                     <Typography>
                         Editar
                     </Typography>

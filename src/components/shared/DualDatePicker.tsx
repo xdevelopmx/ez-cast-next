@@ -1,15 +1,16 @@
-import { Box, Divider, IconButton, SxProps, Typography } from "@mui/material";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
+import { Badge, Box, Divider, IconButton, SxProps, Typography } from "@mui/material";
+import { DateCalendar, LocalizationProvider, PickersDay, PickersDayProps } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { esES } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MContainer } from "../layout/MContainer";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import { MTooltip } from "./MTooltip";
 
 function getInitialDates() {
     const date = new Date();
@@ -18,11 +19,41 @@ function getInitialDates() {
     return [dayjs(date), dayjs(secondDate)];
 }
 
+function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
+    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
+  
+    const isSelected =
+      !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) > 0;
+  
+    return (
+        <>
+            {isSelected &&
+                <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} sx={{backgroundColor: '#fcd081!important'}} selected day={day} />
+            }
+
+            {!isSelected && <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />}
+            
+
+        </>
+      
+    );
+}
+
 export default function DualDatePicker(props: {
     sx: SxProps,
-    direction: 'vertical' | 'horizontal'
+    direction: 'vertical' | 'horizontal',
+    selected_dates: {day: number, month: number, year: number, description: string}[]
 }) {
     const [dates, setDates] = useState<(Dayjs | null | undefined)[]>(getInitialDates());
+    const [highlightedDaysDateOne, setHighlightedDaysDateOne] = useState(props.selected_dates.filter(d => d.month === dates[0]?.month()).map(d => d.day));
+    const [highlightedDaysDateTwo, setHighlightedDaysDateTwo] = useState(props.selected_dates.filter(d => d.month === dates[1]?.month()).map(d => d.day));
+
+    useEffect(() => {
+        setHighlightedDaysDateOne(props.selected_dates.filter(d => d.month === dates[0]?.month()).map(d => d.day));
+        setHighlightedDaysDateTwo(props.selected_dates.filter(d => d.month === dates[1]?.month()).map(d => d.day));
+    }, [props.selected_dates]);
+
+    console.log(props.selected_dates);
 
 	return (
 		<motion.div
@@ -62,6 +93,14 @@ export default function DualDatePicker(props: {
                     }}>
                         <DateCalendar
                             views={['day']}
+                            slots={{
+                                day: ServerDay,
+                            }}
+                            slotProps={{
+                                day: {
+                                    highlightedDaysDateOne,
+                                } as any,
+                            }}
                             sx={{
                                 ...props.sx,
                             }}
