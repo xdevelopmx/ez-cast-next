@@ -1,5 +1,5 @@
 import { Close, ThumbDownAlt, ThumbUpAlt } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Divider, Grid, IconButton, Tooltip, Typography, tooltipClasses } from '@mui/material'
+import { Box, Button, ButtonGroup, Divider, FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography, tooltipClasses } from '@mui/material'
 import { Media, MediaPorTalentos, NotasTalentos, Talentos, TalentosDestacados } from '@prisma/client'
 import dayjs from 'dayjs'
 import { GetServerSideProps } from 'next'
@@ -8,10 +8,11 @@ import { getSession } from 'next-auth/react'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { Alertas, DatosAudicion, Flotantes, HorariosTable, MSelect, MainLayout, MenuLateral, ModalBloquesTiempos, TalentoReclutadoCard, TalentosReclutadosGrid } from '~/components'
 import { DraggableHorarioContainer } from '~/components/cazatalento/agenda-virtual/horarios-tabla/DraggableHorarioContainer'
 import { TalentoReclutadoListCard } from '~/components/cazatalento/agenda-virtual/talento-reclutado-card/list-card'
+import ConfirmationDialog from '~/components/shared/ConfirmationDialog'
 import Constants from '~/constants'
 import { TipoUsuario } from '~/enums'
 import useNotify from '~/hooks/useNotify'
@@ -19,13 +20,15 @@ import { prisma } from '~/server/db'
 import { api, parseErrorBody } from '~/utils/api'
 import { expandDates, generateIntervalos } from '~/utils/dates'
 
-const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
+const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_callback: boolean}) => {
 
     const {notify} = useNotify();
 
     const router = useRouter();
 
-    const {id} = router.query;
+    const {id, ask_for_callback} = router.query;
+
+    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'CALLBACK', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'CALLBACK', data: new Map });
 
     const horario = api.agenda_virtual.getHorarioAgendaById.useQuery(parseInt(id as string), {
 		refetchOnWindowFocus: false
@@ -56,7 +59,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
 
     // para la lista de intervalos
 
-    const [opcionSelected, setOpcionSelected] = useState<string>(new Date().toString());
+    const [opcionSelected, setOpcionSelected] = useState<string>('');
 
     const [isOpendModal, setIsOpendModal] = useState(false);
 
@@ -70,6 +73,19 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
         refetchOnWindowFocus: false
     });
 
+    const ids_talentos_asignados = useMemo(() => {
+        const ids_talentos_not_null: number[] = [];
+        if (talentos_asignados_por_horario.data) {
+            const ids_talentos = talentos_asignados_por_horario.data.filter(t => t.estado.toLowerCase() === 'aprobado' && t.id_talento != null);
+            ids_talentos.forEach(i => {
+                if (i.id_talento) {
+                    ids_talentos_not_null.push(i.id_talento);
+                }
+            })
+        }
+        return ids_talentos_not_null;
+    }, [talentos_asignados_por_horario.data]);
+
     const updateIntervaloHorario = api.agenda_virtual.updateIntervaloHorario.useMutation({
         onSuccess: (data) => {
             talentos_asignados_por_horario.refetch();
@@ -79,6 +95,31 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
 		}
+    })
+
+    const updateAplicacionesTalentoByIdRolAndIdTalento = api.roles.updateAplicacionesTalentoByIdRolAndIdTalento.useMutation({
+        onSuccess: (data) => {
+            notify('success', 'Se actualizo el horario con exito');
+            void router.push(`/cazatalentos/agenda-virtual/crear?id_horario=${horario.data?.id}`);
+        }, 
+        onError: (err) => {
+            notify('error', parseErrorBody(err.message));
+        }
+    })
+
+    const updateHorario = api.agenda_virtual.create.useMutation({
+        onSuccess: (data) => {
+            if (data.tipo_agenda.toLowerCase() === 'callback') {
+                updateAplicacionesTalentoByIdRolAndIdTalento.mutate({
+                    id_rol: selected_rol,
+                    ids_talentos: ids_talentos_asignados,
+                    estado_aplicacion: Constants.ESTADOS_APLICACION_ROL.CALLBACK
+                })
+            }
+        }, 
+        onError: (err) => {
+            notify('error', parseErrorBody(err.message));
+        }
     })
 
     useEffect(() => {
@@ -357,7 +398,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
                                             <Grid xs={1}>
 
                                             </Grid>
-                                            <Grid xs={(props.disable_actions) ? 12 : 6} maxHeight={550} overflow={'auto'}>
+                                            <Grid xs={(props.disable_actions) ? 12 : 6} overflow={'auto'}>
                                                 <Grid xs={12}>
                                                     <Grid xs={12} sx={{
                                                         backgroundColor: input_background_color,
@@ -428,14 +469,16 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
                                                                 
                                                             </ButtonGroup>
                                                         </Grid>
-                                                        <Grid xs={12}>
-                                                            <Box sx={{
-                                                                display: 'flex',
-                                                                alignItems: 'center',
-                                                                flexDirection: 'column',
-                                                                minHeight: '400px',
-                                                                justifyContent: 'center'
-                                                            }}>
+                                                        <Grid xs={12} maxHeight={350} overflow={'auto'}>
+                                                            <Box 
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    flexDirection: 'column',
+                                                                    minHeight: '400px',
+                                                                    justifyContent: 'center'
+                                                                }}
+                                                            >
                                                                 {proyecto.data && proyecto.isFetched && bloque.data && bloque.isFetched &&
                                                                     <>
                                                                         {info_horario}
@@ -445,34 +488,31 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
                                                                                 const foto_perfil_talento = i.talento.media.filter(m => m.media.identificador.toUpperCase().includes('FOTO-PERFIL'))[0]?.media.url;
                                                                                 const calificacion_talento = (i.talento.destacados) ? i.talento.destacados.filter( d => d.id_cazatalentos === proyecto.data?.id_cazatalentos)[0] : undefined;
                                                                                 return (
-                                                                                    <div style={{ backgroundColor: (i.tipo === 'intervalo') ? input_background_hover_color : '#94f0d1', width: '90%', height: 156, margin: 8, paddingLeft: 16, position: 'relative'}}>
+                                                                                    <div style={{ backgroundColor: (i.tipo === 'intervalo') ? input_background_hover_color : '#94f0d1', width: '90%', height: 164, margin: 8, paddingLeft: 16, position: 'relative'}}>
                                                                                         <p style={{margin: 4}}>{i.hora}</p>
                                                                                         <p style={{margin: 4}}>Rol - {i.rol?.nombre}</p>
-                                                                                        {['pendiente', 'aprobado', 'rechazado'].includes(i.estado.toLowerCase()) &&
-                                                                                            <Button
-                                                                                                variant='contained'
-                                                                                                size='small'
+                                                                                        {['pendiente', 'aprobado', 'rechazado'].includes(i.estado.toLowerCase()) && horario.data?.tipo_agenda.toLowerCase() !== 'callback' &&
+                                                                                            <Switch 
                                                                                                 sx={{
                                                                                                     margin: 1,
                                                                                                     position: 'absolute',
                                                                                                     top: 0,
                                                                                                     right: 0,
-                                                                                                    backgroundColor: (['rechazado', 'pendiente'].includes(i.estado.toLowerCase())) ? 'forestgreen' : 'tomato',
+                                                                                                    color: 'white',
                                                                                                     fontSize: '12px'
                                                                                                 }}
-                                                                                                startIcon={['rechazado', 'pendiente'].includes(i.estado.toLowerCase()) ? <ThumbUpAlt/> : <ThumbDownAlt/>}
-                                                                                                onClick={(e) => {
+                                                                                                color={i.estado.toLowerCase() === 'aprobado' ? 'default' : 'secondary'}
+                                                                                                checked={i.estado.toLowerCase() === 'aprobado'}
+                                                                                                onChange={() => {
                                                                                                     updateIntervaloHorario.mutate({
                                                                                                         id_intervalo: i.id,
                                                                                                         id_rol: i.id_rol,
                                                                                                         id_talento: i.id_talento,
                                                                                                         estado: ['rechazado', 'pendiente'].includes(i.estado.toLowerCase()) ? 'Aprobado' : 'Rechazado'
                                                                                                     })
-                                                                                                    e.stopPropagation();
                                                                                                 }}
-                                                                                            > 
-                                                                                                {['rechazado', 'pendiente'].includes(i.estado.toLowerCase()) ? 'Aprobar' : 'Rechazar'}
-                                                                                            </Button>
+                                                                                            />
+                                                                                            
                                                                                         }
                                                                                         <div style={{paddingRight: 24}}>
 
@@ -599,10 +639,80 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
                                                     />
                                                 </Grid>
                                             </Grid>
-                                            <Grid item xs={12} my={4} alignItems={'center'} justifyContent={'center'} textAlign={'center'}>
+                                            <Grid item xs={(props.can_start_callback) ? 6 : 12} my={4} alignItems={'center'} justifyContent={'center'} textAlign={'center'}>
                                                 <Divider/>
-                                                <Button variant='contained' sx={{m: 2, borderRadius: 8, backgroundColor: '#F9B233'}}>Mandar Horarios</Button>
+                                                
+                                                <Button variant='contained' sx={{m: 2, borderRadius: 8, backgroundColor: '#F9B233'}}>Mandar Horarios </Button>
                                             </Grid>
+                                            {props.can_start_callback &&
+                                            
+                                                <Grid item xs={6} my={4} alignItems={'center'} justifyContent={'center'} textAlign={'center'}>
+                                                    <Divider/>
+                                                    
+                                                    <Button 
+                                                        id="btn-callback"
+                                                        onClick={() => {
+                                                            const params = new Map<string, unknown>();
+                                                            params.set('tipo_localizacion', horario.data?.tipo_localizacion);
+                                                            params.set('notas', horario.data?.notas);
+                                                            params.set('id_uso_horario', horario.data?.id_uso_horario);
+                                                            params.set('id_proyecto', horario.data?.id_proyecto);
+
+                                                            let talentos_elements: JSX.Element[] = [];
+                                                            if (roles.data) {
+                                                                roles.data.map((rol, i) => {
+                                                                    if (rol.id === selected_rol) {
+                                                                        talentos_elements = rol.aplicaciones_por_talento.filter(aplicacion => {
+                                                                            return ids_talentos_asignados.filter((ta) => ta === aplicacion.id_talento).length > 0;
+                                                                        }).map((aplicacion) => {
+                                                                            const foto_perfil_talento = aplicacion.talento.media.filter(m => m.media.identificador.toUpperCase().includes('FOTO-PERFIL'))[0]?.media.url;
+                                                                            const calificacion_talento = (aplicacion.talento.destacados) ? aplicacion.talento.destacados.filter( d => d.id_cazatalentos === proyecto.data?.id_cazatalentos)[0] : undefined;
+                                                                                
+                                                                            return <TalentoReclutadoListCard 
+                                                                                tipo_agenda={(horario.data) ? horario.data.tipo_agenda.toLowerCase() : undefined}
+                                                                                profile_url={(foto_perfil_talento) ? foto_perfil_talento : '/assets/img/no-image.png'}
+                                                                                nombre={`${aplicacion.talento.nombre} ${aplicacion.talento.apellido}`}
+                                                                                union={'ND'}
+                                                                                estado={'Aprobado'}
+                                                                                calificacion={calificacion_talento ? calificacion_talento.calificacion : 0}
+                                                                                id_talento={aplicacion.talento.id}
+                                                                                ubicacion={''}
+                                                                                onDrop={(id_talento) => {
+                                                                                    //alert('SE DROPEO ESTE WEON' + id_talento);
+                                                                                } } 
+                                                                                action={<></>}   
+                                                                            />          
+                                                                        })
+                                                                    }
+                                                                })
+                                                            }
+
+                                                            setConfirmationDialog({ 
+                                                                action: 'CALLBACK', 
+                                                                data: params,
+                                                                opened: true, 
+                                                                title: 'Iniciar Callback', 
+                                                                content: 
+                                                                    <Box>
+                                                                        {talentos_elements.length === 0 &&
+                                                                            <Typography variant="body2">No haz aprobado ningun talento para callback, seguro que deseas iniciar con el proceso de callback con este horario?</Typography> 
+                                                                        }
+                                                                        {talentos_elements.length > 0 &&
+                                                                            <Typography variant="body2">Los siguientes talentos han sido aprobados para continuar al callback, seguro que deseas iniciar con el proceso de callback con este horario?</Typography> 
+                                                                        }
+                                                                        {talentos_elements.map(t => {
+                                                                            return t;
+                                                                        })}
+                                                                    </Box>
+                                                            });
+                                                        }}
+                                                        variant='contained' 
+                                                        sx={{m: 2, borderRadius: 8, backgroundColor: '#F9B233'}}
+                                                    >
+                                                        Iniciar Callback 
+                                                    </Button>
+                                                </Grid>
+                                            }
                                         </Grid>
                                     </Grid>
                                 </Grid>
@@ -611,6 +721,35 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean}) => {
                     </div>
                 </div>
             </MainLayout>
+            <ConfirmationDialog
+                opened={confirmation_dialog.opened}
+                onOptionSelected={(confirmed: boolean) => {
+                    if (confirmed) {
+                        switch (confirmation_dialog.action) {
+                            case 'CALLBACK': {
+                                const tipo_localizacion = confirmation_dialog.data.get('tipo_localizacion');
+                                const notas = confirmation_dialog.data.get('notas');
+                                const id_uso_horario = confirmation_dialog.data.get('id_uso_horario');
+                                const id_proyecto = confirmation_dialog.data.get('id_proyecto');
+                                updateHorario.mutate({
+                                    locaciones: [],
+                                    fechas: [],
+                                    tipo_fechas: 'NUEVAS',
+                                    tipo_localizacion: tipo_localizacion as string,
+                                    notas: notas as string,
+                                    id_uso_horario: id_uso_horario as number,
+                                    id_proyecto: id_proyecto as number,
+                                    tipo_agenda: 'CALLBACK'
+                                })
+                                break;
+                            }
+                        }
+                    }
+                    setConfirmationDialog({ ...confirmation_dialog, opened: false });
+                }}
+                title={confirmation_dialog.title}
+                content={confirmation_dialog.content}
+            />
             <Flotantes />
         </>
     )
@@ -625,6 +764,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 id_horario = parseInt(context.params.id as string);
             }
             let disable_actions = false;
+            let can_start_callback = false;
             const horario = await prisma.horarioAgenda.findFirst({
                 where: {
                     id: id_horario
@@ -643,8 +783,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 if (last_date) {
                     const date = dayjs(last_date, 'DD/MM/YYYY').locale('es-mx');
                     const today = dayjs(new Date()).locale('es-mx');
-                    const last_day_plus_7_days = date.clone();
-                    last_day_plus_7_days.add(7, 'D');
+                    if (horario.tipo_agenda.toLowerCase() === 'audicion' && today.isAfter(date)) {
+                        can_start_callback = true;
+                    }
+                    let last_day_plus_7_days = date.clone();
+                    last_day_plus_7_days = last_day_plus_7_days.add(7, 'days');
                     if (today.isAfter(last_day_plus_7_days)) {
                         disable_actions = true;
                     }
@@ -653,7 +796,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			return {
 				props: {
 					user: session.user,
-                    disable_actions: disable_actions
+                    disable_actions: disable_actions,
+                    can_start_callback: can_start_callback
 				}
 			}
 		}

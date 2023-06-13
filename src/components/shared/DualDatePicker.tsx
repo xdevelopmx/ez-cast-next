@@ -3,7 +3,7 @@ import { DateCalendar, LocalizationProvider, PickersDay, PickersDayProps } from 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { esES } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
-import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
+import { AnimatePresence, AnimateSharedLayout, color, motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { MContainer } from "../layout/MContainer";
@@ -13,47 +13,102 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { MTooltip } from "./MTooltip";
 
 function getInitialDates() {
-    const date = new Date();
-    const secondDate = new Date();
-    secondDate.setMonth(secondDate.getMonth() + 1);
-    return [dayjs(date), dayjs(secondDate)];
-}
+    const d = new Date().toLocaleDateString('es-mx').split('/');
+    let date = dayjs();
+    let secondDate = dayjs();
+    if (d[0] && d[1] && d[2]) {
+        date = dayjs(`${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`, 'DD/MM/YYYY');
+    }
+    const d2 = new Date();
+    d2.setMonth(d2.getMonth() + 1);
+    const date2 = d2.toLocaleDateString('es-mx').split('/');
+    if (date2[0] && date2[1] && date2[2]) {
+        secondDate = dayjs(`${parseInt(date2[0]) > 10 ? date2[0] : `0${date2[0]}`}/${parseInt(date2[1]) > 10 ? date2[1] : `0${date2[1]}`}/${date2[2]}`, 'DD/MM/YYYY');
+    }
 
-function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] }) {
-    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-  
-    const isSelected =
-      !props.outsideCurrentMonth && highlightedDays.indexOf(props.day.date()) > 0;
-  
-    return (
-        <>
-            {isSelected &&
-                <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} sx={{backgroundColor: '#fcd081!important'}} selected day={day} />
-            }
-
-            {!isSelected && <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />}
-            
-
-        </>
-      
-    );
+    return [date, secondDate];
 }
 
 export default function DualDatePicker(props: {
     sx: SxProps,
     direction: 'vertical' | 'horizontal',
-    selected_dates: {day: number, month: number, year: number, description: string}[]
+    selected_dates: {day: number, month: number, year: number, tipo_agenda: string}[]
 }) {
     const [dates, setDates] = useState<(Dayjs | null | undefined)[]>(getInitialDates());
-    const [highlightedDaysDateOne, setHighlightedDaysDateOne] = useState(props.selected_dates.filter(d => d.month === dates[0]?.month()).map(d => d.day));
-    const [highlightedDaysDateTwo, setHighlightedDaysDateTwo] = useState(props.selected_dates.filter(d => d.month === dates[1]?.month()).map(d => d.day));
+    
+    const [highlightedDaysDateOne, setHighlightedDaysDateOne] = useState<{fecha: number[], tipo_agenda: string}[]>(props.selected_dates.filter(d => {
+        if (dates[0]) {
+            return d.month === dates[0].month() + 1;
+        }
+        return false;
+    }).map(d => { return { fecha: [d.day, d.month, d.year], tipo_agenda: d.tipo_agenda}}));
+
+    const [highlightedDaysDateTwo, setHighlightedDaysDateTwo] = useState<{fecha: number[], tipo_agenda: string}[]>(props.selected_dates.filter(d => {
+        if (dates[1]) {
+            return d.month === dates[1].month() + 1;
+        }
+        return false;
+    }).map(d => { return { fecha: [d.day, d.month, d.year], tipo_agenda: d.tipo_agenda}}));
 
     useEffect(() => {
-        setHighlightedDaysDateOne(props.selected_dates.filter(d => d.month === dates[0]?.month()).map(d => d.day));
-        setHighlightedDaysDateTwo(props.selected_dates.filter(d => d.month === dates[1]?.month()).map(d => d.day));
-    }, [props.selected_dates]);
+        setHighlightedDaysDateOne(props.selected_dates.filter(d => {
+            if (dates[0]) {
+                return d.month === dates[0].month() + 1;
+            }
+            return false;
+        }).map(d => { return { fecha: [d.day, d.month, d.year], tipo_agenda: d.tipo_agenda}}));
+        setHighlightedDaysDateTwo(props.selected_dates.filter(d => {
+            if (dates[1]) {
+                return d.month === dates[1].month() + 1;
+            }
+            return false;
+        }).map(d => { return { fecha: [d.day, d.month, d.year], tipo_agenda: d.tipo_agenda}}));
+    }, [props.selected_dates, dates[1], dates[0]]);
 
-    console.log(props.selected_dates);
+
+    const ServerDay = (props: PickersDayProps<Dayjs> & { highlightedDaysDateOne?: {fecha: number[], tipo_agenda: string}[], highlightedDaysDateTwo?: {fecha: number[], tipo_agenda: string}[] }) => {
+        const { highlightedDaysDateOne = [], highlightedDaysDateTwo = [], day, outsideCurrentMonth, ...other } = props;
+
+
+        const selected_one = highlightedDaysDateOne.filter(d => {
+            return d.fecha[0] === day.date() && d.fecha[1] === day.month() + 1 && d.fecha[2] === day.year()
+        });
+
+        const selected_two = highlightedDaysDateTwo.filter(d => {
+            return d.fecha[0] === day.date() && d.fecha[1] === day.month() + 1 && d.fecha[2] === day.year()
+        });
+
+
+        const isSelected = !props.outsideCurrentMonth && (selected_one.length > 0 || selected_two.length > 0);
+      
+        let color_background = '';
+        if (selected_one.length > 0) {
+            switch(selected_one[0]?.tipo_agenda.toLowerCase()) {
+                case 'audicion': color_background = '#069cb1!important'; break;
+                case 'callback': color_background = '#F9B233!important'; break;
+                case 'ambas': color_background = 'linear-gradient(to right,#069cb1 0%,#069cb1 50%,#F9B233 50%,#F9B233 100%)!important'; break;
+            }
+        }
+
+        if (selected_two.length > 0) {
+            switch(selected_two[0]?.tipo_agenda.toLowerCase()) {
+                case 'audicion': color_background = '#069cb1!important'; break;
+                case 'callback': color_background = '#F9B233!important'; break;
+                case 'ambas': color_background = 'linear-gradient(to right,#069cb1 0%,#069cb1 50%,#F9B233 50%,#F9B233 100%)!important'; break;
+            }
+        }
+
+        return (
+            <>
+                {isSelected &&
+                    <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} sx={{background: color_background}} selected day={day} />
+                }
+    
+                {!isSelected && <PickersDay {...other} selected={true} sx={{backgroundColor: 'transparent!important', color: 'black!important'}} outsideCurrentMonth={outsideCurrentMonth} day={day} />}
+            </>
+          
+        );
+    }
 
 	return (
 		<motion.div
@@ -93,6 +148,7 @@ export default function DualDatePicker(props: {
                     }}>
                         <DateCalendar
                             views={['day']}
+                            autoFocus={false}
                             slots={{
                                 day: ServerDay,
                             }}
@@ -127,6 +183,16 @@ export default function DualDatePicker(props: {
                     }}>
                         <DateCalendar
                             views={['day']}
+                            autoFocus={false}
+                            
+                            slots={{
+                                day: ServerDay,
+                            }}
+                            slotProps={{
+                                day: {
+                                    highlightedDaysDateTwo,
+                                } as any,
+                            }}
                             sx={props.sx}
                             value={dates[1]}
                         />

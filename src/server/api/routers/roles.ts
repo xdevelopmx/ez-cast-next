@@ -333,6 +333,24 @@ export const RolesRouter = createTRPCRouter({
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.roles.findMany();
 	}),
+	updateAplicacionesTalentoByIdRolAndIdTalento: publicProcedure.input(z.object({
+		id_rol: z.number(),
+		estado_aplicacion: z.number(),
+		ids_talentos: z.array(z.number())
+	})).mutation(async ({ input, ctx }) => {
+		if (input.id_rol <= 0 || input.estado_aplicacion <= 0 || input.ids_talentos.length === 0) return null;
+		return await ctx.prisma.aplicacionRolPorTalento.updateMany({
+			where: {
+				id_rol: input.id_rol,
+				id_talento: {
+					in: input.ids_talentos
+				}
+			},
+			data: {
+				id_estado_aplicacion: input.estado_aplicacion
+			}
+		})
+	}),
 	getAllAplicacionesTalentoByProyecto: publicProcedure.input(z.object({
 		id_proyecto: z.number(),
 		estados_aplicaciones: z.array(z.number()).nullish()
@@ -1180,7 +1198,7 @@ export const RolesRouter = createTRPCRouter({
 				});
 			}
 			
-			await ctx.prisma.habilidadesPorRoles.delete({ where: { id_rol: rol.id } });
+			await ctx.prisma.habilidadesPorRoles.deleteMany({ where: { id_rol: rol.id } });
 
 			const habilidades_por_rol = await ctx.prisma.habilidadesPorRoles.create({
 				data: {

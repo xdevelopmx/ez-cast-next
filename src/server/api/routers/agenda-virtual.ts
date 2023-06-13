@@ -32,7 +32,27 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						}
 					}
 				});
-				return horarios;
+
+				let fechas_map = new Map<string, string>();
+				horarios.forEach(h => {
+					h.bloque_horario.forEach( b => {
+						if (fechas_map.has(b.fecha.toLocaleDateString('es-mx'))) {
+							const reg_fecha = fechas_map.get(b.fecha.toLocaleDateString('es-mx'));
+							if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== h.tipo_agenda) {
+								fechas_map.set(b.fecha.toLocaleDateString('es-mx'), 'AMBAS');
+							}
+						} else {
+							fechas_map.set(b.fecha.toLocaleDateString('es-mx'), h.tipo_agenda);
+						}
+					})
+				})
+				return Array.from(fechas_map).map(f => { 
+					const d = f[0].split('/');
+					if (d[0] && d[1] && d[2]) {
+						return { fecha: dayjs(`${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`, 'DD/MM/YYYY').toDate(), tipo_agenda: f[1] }
+					}
+					return { fecha: new Date(f[0]), tipo_agenda: f[1] }
+				});
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
@@ -467,6 +487,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					}
 				});
 
+
 				const bloques = await ctx.prisma.bloqueHorariosAgenda.findMany({
 					where: {
 						id_horario_agenda: input.id_horario_agenda,
@@ -477,7 +498,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				})
 				
 				const asignaciones_otros_bloques = (bloques) ? bloques.map(r => r.intervalos).flat() : [];
-				aplicaciones_roles.every((asig) => {
+				aplicaciones_roles.forEach((asig) => {
 					asig.aplicaciones_por_talento.forEach(a => {
 						if (asignaciones_otros_bloques.filter(aob => aob.id_rol === a.id_rol && aob.id_talento === a.id_talento).length === 0) {
 							asignaciones_roles_por_talentos.push({id_rol: a.id_rol, id_talento: a.id_talento});

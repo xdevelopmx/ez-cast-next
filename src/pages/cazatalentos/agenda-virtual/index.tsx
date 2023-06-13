@@ -100,17 +100,15 @@ const AgendaVirtual = () => {
     })
 
     const fechas_arr = useMemo(() => {
-        const res: {day: number, month: number, year: number, description: string}[] = [];
+        const res: {day: number, month: number, year: number, tipo_agenda: string}[] = [];
         if (fechas_asignadas.data) {
-            fechas_asignadas.data.forEach((h) => {
-                h.bloque_horario.forEach((b) => {
-                    res.push({
-                        day: b.fecha.getDate(), 
-                        month: b.fecha.getMonth() + 1, 
-                        year: b.fecha.getFullYear(), 
-                        description: new Intl.DateTimeFormat("es-MX").format(b.fecha)
-                    });
-                })
+            fechas_asignadas.data.forEach((b) => {
+                res.push({
+                    day: b.fecha.getDate(), 
+                    month: b.fecha.getMonth() + 1, 
+                    year: b.fecha.getFullYear(), 
+                    tipo_agenda: b.tipo_agenda
+                });
             })
         }
         return res;
@@ -134,7 +132,6 @@ const AgendaVirtual = () => {
                                 <div className="d-flex justify-content-end align-items-start py-2">
                                     <Alertas />
                                 </div>
-                                {JSON.stringify(fechas_arr)}
                                 <Grid container>
                                     <Grid item xs={12}>
                                         <Grid container item columns={12}>
@@ -274,12 +271,15 @@ const AgendaVirtual = () => {
                                                                                 fontSize: '14px'
                                                                             }}
                                                                             onClick={(e) => {
-                                                                                const params = new Map<string, unknown>();
-                                                                                params.set('tipo_localizacion', h.tipo_localizacion);
-                                                                                params.set('notas', h.notas);
-                                                                                params.set('id_uso_horario', h.id_uso_horario);
-                                                                                params.set('id_proyecto', h.id_proyecto);
-                                                                                setConfirmationDialog({ action: 'CALLBACK', data: params, opened: true, title: 'Iniciar Callback', content: <Typography variant="body2">Seguro que deseas iniciar con el proceso de callback con este horario?</Typography> });
+                                                                                void router.push(`/cazatalentos/agenda-virtual/horario/${h.id}?ask_for_callback=true`);
+                                                                        
+                                                                                
+                                                                                //const params = new Map<string, unknown>();
+                                                                                //params.set('tipo_localizacion', h.tipo_localizacion);
+                                                                                //params.set('notas', h.notas);
+                                                                                //params.set('id_uso_horario', h.id_uso_horario);
+                                                                                //params.set('id_proyecto', h.id_proyecto);
+                                                                                //setConfirmationDialog({ action: 'CALLBACK', data: params, opened: true, title: 'Iniciar Callback', content: <Typography variant="body2">Seguro que deseas iniciar con el proceso de callback con este horario?</Typography> });
                                                                                 e.stopPropagation();
                                                                             }}
                                                                         > 
