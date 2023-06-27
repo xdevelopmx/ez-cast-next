@@ -1048,7 +1048,7 @@ footer {
 .menu_container {
   width: 25%;
   max-width: 400px;
-  padding: 70px 15px 100px;
+  padding: 8px 15px 100px;
   position: relative;
 }
 
@@ -1249,7 +1249,10 @@ footer {
 }
 
 .container_alerts_header {
-  width: 66%;
+  width: 100%;
+  position: absolute;
+  right: 0;
+  top: 48px;
   max-width: 600px;
 }
 
@@ -3453,31 +3456,29 @@ p.edo_pendiente {
 }
 
 /* Estilo para que el calendario se expanda completo */
-.MuiPickersArrowSwitcher-root {
-  display: none !important;
+#dualpicker {
+  .MuiPickersArrowSwitcher-root {
+      display: none !important;
+  }
+  .MuiPickersCalendarHeader-labelContainer {
+      margin-left: auto!important;
+  }
+  .MuiDateCalendar-root .MuiDayCalendar-weekDayLabel {
+      border-bottom: unset!important;
+  }
+  .MuiDayCalendar-header {
+      justify-content: space-between!important;
+      border-bottom: solid 4px var(--ezcast) !important;
+  }
+  .MuiDateCalendar-root {
+      width: 100% !important;
+  }
+  .MuiDayCalendar-weekContainer {
+      justify-content: space-between !important;
+  }
+
 }
 
-.MuiPickersCalendarHeader-labelContainer {
-  margin-left: auto!important;
-}
-
-.MuiDateCalendar-root .MuiDayCalendar-weekDayLabel {
-  border-bottom: unset!important;
-}
-
-.MuiDayCalendar-header {
-  justify-content: space-between!important;
-  border-bottom: solid 4px var(--ezcast) !important;
-
-}
-
-.MuiDateCalendar-root {
-  width: 100% !important;
-}
-
-.MuiDayCalendar-weekContainer {
-  justify-content: space-between !important;
-}
 
 @media screen and (min-width: 300px) {
   [class*="wd-carousel-spacing-"] .owl-nav>div[class*="next"] {

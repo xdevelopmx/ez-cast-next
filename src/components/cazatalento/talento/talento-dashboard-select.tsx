@@ -12,8 +12,8 @@ import useNotify from '~/hooks/useNotify';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import { conversorFecha } from '~/utils/conversor-fecha';
-import { DatePicker, esES, jaJP } from '@mui/x-date-pickers';
-import { Dayjs } from 'dayjs';
+import {DatePicker, DesktopDatePicker, esES, jaJP } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface Props {
     id_talento: number,
@@ -267,7 +267,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 							localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
 							slotProps={{ textField: { size: 'small' } }}
 							shouldDisableDate={(date: Dayjs) => {
-								const day = date.date();
+								const day = date.date() + 1; //por alguna razon se tiene que poner + 1 :o
 								const month = date.month();
 								const year = date.year();
 								return (!fechas_casting_rol.data || !fechas_casting_rol.data.has(`${day < 10 ? `0${day}` : day}/${month < 9 ? `0${month + 1}` : month + 1}/${year}`));
@@ -278,7 +278,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 							}} 
 							onAccept={(e) => {
 								if (e) {
-									setFormSelectTalento(prev => { return { ...prev, fecha_audicion: new Date(e.date()) }})
+									setFormSelectTalento(prev => { return { ...prev, fecha_audicion: e.toDate() }})
 								}
 							}}
 						/>
@@ -307,10 +307,15 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>Cancelar</Button>
 					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Image src={'/assets/img/iconos/check_blue.svg'} height={16} width={16} alt=""/>} onClick={() => {
 						if (form_select_talento.fecha_audicion) {
+							const d = form_select_talento.fecha_audicion.toLocaleDateString('es-mx').split('/');
+							let parsed_date = '';
+							if (d[0] && d[1] && d[2]) {
+								parsed_date = `${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`;
+							}
 							updateSeleccionTalento.mutate({
 								id_rol: id_rol,
 								id_talento: id_talento,
-								fecha_audicion: form_select_talento.fecha_audicion.toDateString(),
+								fecha_audicion: parsed_date,
 								tipo_audicion: form_select_talento.tipo_audicion,
 								mensaje: form_select_talento.mensaje,
 							})

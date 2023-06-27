@@ -45,7 +45,10 @@ const IndividualData: FC<PropsIndividualData> = ({ title, children, stylesContai
 }
 
 interface PropsRol {
-    rol: RolCompletoPreview;
+    rol: RolCompletoPreview,
+    action?: JSX.Element,
+    no_border?: boolean,
+    no_poster?: boolean
 }
 
 const GridMotion = motion(Grid)
@@ -64,26 +67,28 @@ const containerVariants = {
     }
 };
 
-export const RolPreview: FC<PropsRol> = ({ rol }) => {
+export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) => {
     const [dialogImage, setDialogImage] = useState<{open: boolean, image: string}>({open: false, image: ''});
     const [dialogInfoProductor, setDialogInfoProductor] = useState<{open: boolean}>({open: false});
     
     const [showPreview, setShowPreview] = useState(false)
     return (
-        <Grid item container xs={12} sx={{ border: '2px solid #928F8F' }}>
+        <Grid item container xs={12} sx={{ border: (!no_border) ? '2px solid #928F8F' : '' }}>
             <GridMotion container item xs={12} sx={{ alignItems: 'flex-start' }}>
-                <Grid item xs={4}>
-                    <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/12' }}>
-                        <Image onClick={() => { setDialogImage({open: true, image: (rol.proyecto.foto_portada) ? rol.proyecto.foto_portada.url : '/assets/img/no-image.png' }) }}  src={(rol.proyecto.foto_portada) ? rol.proyecto.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover', cursor: 'pointer' }} fill alt="" />
-                    </Box>
-                </Grid>
+                {!no_poster &&
+                    <Grid item xs={4}>
+                        <Box sx={{ position: 'relative', width: '100%', aspectRatio: '16/12' }}>
+                            <Image onClick={() => { setDialogImage({open: true, image: (rol.proyecto.foto_portada) ? rol.proyecto.foto_portada.url : '/assets/img/no-image.png' }) }}  src={(rol.proyecto.foto_portada) ? rol.proyecto.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover', cursor: 'pointer' }} fill alt="" />
+                        </Box>
+                    </Grid>
+                }
                 <Grid
-                    container item xs={8} sx={{ padding: '20px' }}
+                    container item xs={(no_poster) ? 12 : 8} sx={{ padding: '20px' }}
                 >
                     <Grid container item xs={12}>
                         <Grid item xs={9}>
                             <MContainer direction='horizontal'>
-                                <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                <Typography fontWeight={900} sx={{ fontSize: '1.4rem', marginRight: 1 }}>
                                     {rol.proyecto.nombre}
                                 </Typography>
                                 <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
@@ -99,20 +104,7 @@ export const RolPreview: FC<PropsRol> = ({ rol }) => {
                             }
                         </Grid>
                         <Grid item xs={3}>
-                            <Button
-                                sx={{
-                                    backgroundColor: '#069cb1',
-                                    borderRadius: '2rem',
-                                    color: '#fff',
-                                    textTransform: 'none',
-                                    padding: '0px 35px',
-
-                                    '&:hover': {
-                                        backgroundColor: '#069cb1'
-                                    }
-                                }}>
-                                Aplicar
-                            </Button>
+                            {action}
                         </Grid>
                         <Grid item xs={12}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

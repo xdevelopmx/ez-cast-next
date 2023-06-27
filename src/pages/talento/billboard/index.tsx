@@ -16,6 +16,7 @@ import useNotify from '~/hooks/useNotify'
 import { Close } from '@mui/icons-material'
 import { RolPreview } from '~/components/shared/RolPreview'
 import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader'
+import { AplicacionRolDialog } from '~/components/talento/dialogs/AplicacionRolDialog'
 const filtros_initial_state = {
     tipo_busqueda: 'todos',
     id_estado_republica: [],
@@ -39,7 +40,8 @@ type BillboardTalentosPageProps = {
 
 const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto }) => {
     const { notify } = useNotify();
-    const [dialog, setDialog] = useState({id: '', open: false, title: ''});
+    const [dialog, setDialog] = useState<{ id: string, title: string, opened: boolean, data: Map<string, unknown> }>({ id: '', title: '', opened: false, data: new Map() })
+
     const [pagination, setPagination] = useState({page: 0, page_size: 5});
     const [form_filtros, setFormFiltros] = useState<{
         tipo_busqueda: string,
@@ -59,6 +61,10 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
     const talento = api.talentos.getCompleteById.useQuery({id: parseInt(user.id)}, {
         refetchOnWindowFocus: false
     });
+
+    const aplicaciones_por_talento = api.roles.getAplicacionesRolesPorTalento.useQuery({id_talento: parseInt(user.id)}, {
+        refetchOnWindowFocus: false
+    })
     
     const roles_billboard = api.roles.getRolesBillboardTalentos.useQuery({
         tipo_busqueda: form_filtros.tipo_busqueda,
@@ -86,15 +92,16 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         if (talento.data && form_filtros.autorellenar) {
             setFormFiltros(prev => { 
                 const id_union = talento.data?.info_basica?.union?.id_union;
-                const edad = talento.data?.info_basica?.edad;
+                const edad_inicio = talento.data?.filtros_aparencias?.rango_inicial_edad;
+                const edad_fin = talento.data?.filtros_aparencias?.rango_final_edad;
                 const genero = talento.data?.filtros_aparencias?.genero.id;
                 const apariencia_etnica = talento.data?.filtros_aparencias?.apariencia_etnica.id;
                 const preferencia_de_pago = talento.data?.preferencias?.interes_en_proyectos.map( i => i.id_interes_en_proyecto);
                 return{
                     ...prev,
                     id_union: (id_union) ? [id_union] : [],
-                    edad_inicio: 1,
-                    edad_fin: (edad) ? edad : 0,
+                    edad_inicio: (edad_inicio) ? edad_inicio : 1,
+                    edad_fin: (edad_fin) ? edad_fin : 99,
                     id_genero_rol: (genero) ? [genero] : [],
                     id_apariencia_etnica: (apariencia_etnica) ? [apariencia_etnica] : [],
                     id_preferencias_de_pago: (preferencia_de_pago) ? preferencia_de_pago : []
@@ -145,14 +152,49 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
 			})
 		} else {
             if (roles_billboard.data) {
-                return roles_billboard.data.map((rol, i) => (
-                    <RolPreview key={rol.id} rol={rol as unknown as RolCompletoPreview} />
-                ))
+                return roles_billboard.data.map((rol, i) => {
+                    let aplicacion_id: number = 0;
+                    if (aplicaciones_por_talento.data) {
+                        const aplicacion = aplicaciones_por_talento.data.filter(apt => apt.id_rol === rol.id && apt.id_talento === parseInt(user.id))[0];
+                        if (aplicacion) {
+                            aplicacion_id = aplicacion.id;
+                        }
+                    }
+                    return (
+                        <RolPreview 
+                            key={rol.id} 
+                            rol={rol as unknown as RolCompletoPreview} 
+                            action={
+                                <Button
+                                    onClick={() => { 
+                                        const params = new Map();
+                                        params.set('id_aplicacion', aplicacion_id);
+                                        params.set('id_rol', rol.id);
+                                        params.set('id_talento', parseInt(user.id));
+                                        setDialog(prev => { return { ...prev, id: 'aplicar_dialog', title: '', opened: true, data: params } })
+                                    }}
+                                    sx={{
+                                        backgroundColor: '#069cb1',
+                                        borderRadius: '2rem',
+                                        color: '#fff',
+                                        textTransform: 'none',
+                                        padding: '0px 35px',
+
+                                        '&:hover': {
+                                            backgroundColor: '#069cb1'
+                                        }
+                                    }}>
+                                        {(aplicacion_id > 0) ? 'Aplicado' : 'Aplicar'}
+                                </Button>
+                            }
+                        />
+                    )
+                })
             }
 		}
         return [];
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [roles_billboard.isFetching, roles_billboard.data]);
+	}, [roles_billboard.isFetching, roles_billboard.data, aplicaciones_por_talento.data]);
 
 	const paginated_data = useMemo(() => {
 		const start = (pagination.page * pagination.page_size);
@@ -178,7 +220,9 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                         <br /><br />
                         <div className="container_box_header">
                             <div className="d-flex justify-content-end align-items-start py-2">
-                                <Alertas />
+                                <Alertas 
+                                    user={user}
+                                />
                             </div>
 
                             <Grid container>
@@ -262,7 +306,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                             Eliminar filtros
                                                         </Button>
                                                         <Button
-                                                            onClick={() => { setDialog({ id: 'filtros', title: 'Filtros Aplicados', open: true }) }}
+                                                            onClick={() => { setDialog(prev => { return { ...prev, id: 'filtros', title: 'Filtros Aplicados', opened: true } })}}
                                                             sx={{
                                                                 backgroundColor: '#069cb1',
                                                                 borderRadius: '2rem',
@@ -575,7 +619,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                         </div>
                     </div>
                 </div>
-                <Dialog  maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} open={dialog.id === 'filtros'  && dialog.open} onClose={() => setDialog({ ...dialog, open: false })}>
+                <Dialog  maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} open={dialog.id === 'filtros'  && dialog.opened} onClose={() => setDialog({ ...dialog, opened: false })}>
                     <DialogTitle align='left' style={{color: '#069cb1'}}>{dialog.title}</DialogTitle>
                     <DialogContent style={{padding: 0, width: 650, overflow: 'hidden'}}>
                         <Box px={4} width={700}>
@@ -770,9 +814,23 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                         </Box>
                     </DialogContent>
                     <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                        <Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>Cerrar</Button>
+                        <Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, opened: false })}>Cerrar</Button>
                     </Box>
                 </Dialog>
+                <AplicacionRolDialog
+                    id_aplicacion={dialog.data.get('id_aplicacion') as number}
+                    id_rol={dialog.data.get('id_rol') as number}
+                    id_talento={dialog.data.get('id_talento') as number}
+                    readonly={(dialog.data.get('id_aplicacion') as number > 0)}
+                    onClose={(changed: boolean) => {
+                        if (changed) {
+                            aplicaciones_por_talento.refetch();
+                            //void medidas.refetch();
+                        }
+                        setDialog(prev => { return { ...prev, opened: false } })
+                    }}
+                    opened={dialog.opened && dialog.id === 'aplicar_dialog'}
+                />
             </MainLayout>
         </>
     )

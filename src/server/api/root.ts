@@ -8,6 +8,8 @@ import { CazatalentosRouter } from "./routers/cazatalentos";
 import { BannersRouter } from "./routers/banners";
 import { AgendaVirtualRouter } from "./routers/agenda-virtual";
 import { RepresentantesRouter } from "./routers/representantes";
+import { MensajesRouter } from "./routers/mensajes";
+import { AlertasRouter } from "./routers/alertas";
 
 export type Archivo = {
   id?: number,
@@ -42,7 +44,9 @@ export const appRouter = createTRPCRouter({
   cazatalentos: CazatalentosRouter,
   banners: BannersRouter,
   agenda_virtual: AgendaVirtualRouter,
-  representantes: RepresentantesRouter
+  representantes: RepresentantesRouter,
+  mensajes: MensajesRouter,
+  alertas: AlertasRouter,
 });
 
 // export type definition of API

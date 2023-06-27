@@ -260,7 +260,7 @@ export const TalentosRouter = createTRPCRouter({
 			return talento;
 			//return exclude(talento, ['contrasenia'])
 		}
-		),
+	),
 	getCompleteById: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {

@@ -3,9 +3,7 @@ import dayjs from "dayjs";
 export function expandDates(fechas: {fecha_inicio: Date, fecha_fin: Date | null}[]) {
     const dates = new Set<string>();
     fechas.forEach(date => {
-        console.log('date', date);
         const start_day = date.fecha_inicio.getDate();
-        console.log('start', start_day);
         const end_day = ((date.fecha_fin) ? date.fecha_fin.getDate() : date.fecha_inicio.getDate());
         const start_month = date.fecha_inicio.getMonth();
         const end_month = (date.fecha_fin) ? date.fecha_fin.getMonth() : date.fecha_inicio.getMonth();

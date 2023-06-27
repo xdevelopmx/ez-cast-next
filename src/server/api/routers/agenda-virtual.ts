@@ -8,12 +8,104 @@ import {
 } from "~/server/api/trpc";
 import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
-import { TipoUsuario } from "~/enums";
+import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { generateIntervalos } from "~/utils/dates";
 import dayjs from "dayjs";
 
 export const AgendaVirtualRouter = createTRPCRouter({
+	sendHorarios: protectedProcedure
+		.input(z.object({
+			id_horario: z.number()
+		}))
+		.mutation(async ({ input, ctx }) => {
+
+			const horario = await ctx.prisma.horarioAgenda.findFirst({
+				where: {
+					id: input.id_horario
+				},
+				include: {
+					proyecto: true,
+					bloque_horario: {
+						include: {
+							intervalos: {
+								include: {
+									rol: true,
+									talento: true
+								}
+							}
+						}
+					}
+				}
+			})
+
+			if (horario) {
+				const intervalos = horario.bloque_horario.map(b => b.intervalos).flat();
+				await Promise.all(await horario.bloque_horario.map(async (b) => {
+					b.intervalos.forEach( async (i) => {
+
+						if (i.rol && i.talento) {
+							let conversacion = await ctx.prisma.conversaciones.findFirst({
+								where: {
+									id_emisor: horario.proyecto.id_cazatalentos,
+									tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+									id_receptor: i.talento.id,
+									tipo_usuario_receptor: TipoUsuario.TALENTO,
+									id_proyecto: i.rol.id_proyecto,
+								}
+							});
+							if (!conversacion) {
+								conversacion = await ctx.prisma.conversaciones.findFirst({
+									where: {
+										id_emisor: i.talento.id,
+										tipo_usuario_emisor: TipoUsuario.TALENTO,
+										id_receptor: horario.proyecto.id_cazatalentos,
+										tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+										id_proyecto: i.rol.id_proyecto,
+									}
+								});
+							}
+							if (!conversacion) {
+								conversacion = await ctx.prisma.conversaciones.create({
+									data: {
+										emisor_perfil_url: `/cazatalentos/dashboard?id_cazatalentos=${horario.proyecto.id_cazatalentos}`,
+										receptor_perfil_url: `/talento/dashboard?id_talento=${i.talento.id}&id_rol=${i.rol.id}`,
+										id_proyecto: i.rol.id_proyecto,
+										id_emisor: horario.proyecto.id_cazatalentos,
+										tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+										id_receptor: i.talento.id,
+										tipo_usuario_receptor: TipoUsuario.TALENTO,
+									}
+								})
+							}
+							if (conversacion) {
+								await ctx.prisma.mensaje.create({
+									data: {
+										id_conversacion: conversacion.id,
+										id_emisor: horario.proyecto.id_cazatalentos,
+										tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+										id_receptor: i.talento.id,
+										tipo_usuario_receptor: TipoUsuario.TALENTO,
+										visto: false,
+										hora_envio: dayjs().toDate(),
+										mensaje: JSON.stringify({
+											message: `Has sido seleccionado para ${horario?.tipo_agenda.toLowerCase() === 'callback' ? 'el callback' : 'la audicion'} del proyecto ${horario.proyecto?.nombre} el ${b.fecha} en el horario de ${i?.hora}.`,
+											id_intervalo: i.id,
+											id_rol: i.rol.id,
+											id_talento: i.talento.id
+										}),
+										type: TipoMensajes.NOTIFICACION_HORARIO_AGENDA_VIRTUAL
+									}
+								})
+							}
+						} 
+					})
+				}))
+				return true;
+			}
+			return false;
+		}
+	),
 	getAllFechasAsignadas: protectedProcedure
 		.query(async ({ ctx }) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
@@ -555,12 +647,25 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			return [];
 		}
 	),
+	getIntervaloById: protectedProcedure
+		.input(z.object({
+			id_intervalo: z.number()
+		}))
+		.query(async ({ input, ctx }) => {
+			return await ctx.prisma.intervaloBloqueHorario.findFirst({
+				where: {
+					id: input.id_intervalo
+				}
+			})
+		}
+	),	
 	getBloqueHorarioByDateAndIdHorario: protectedProcedure
 		.input(z.object({
 			id_horario_agenda: z.number(),
-			fecha: z.date()
+			fecha: z.date().nullish()
 		}))
 		.query(async ({ input, ctx }) => {
+			if (!input.fecha) return null;
 			const bloque = await ctx.prisma.bloqueHorariosAgenda.findFirst({
 				where: {
 					id_horario_agenda: input.id_horario_agenda,

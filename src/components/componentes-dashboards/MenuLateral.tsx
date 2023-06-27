@@ -778,9 +778,9 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 							<div className="sub_menu">
 								<Link href="/talento/dashboard" className={(router.pathname === '/talento/dashboard') ? 'active' : ''}>Perfil</Link>
 								<Link href="/talento/billboard" className={(router.pathname === '/talento/billboard') ? 'active' : ''}>Casting Billboard</Link>
-								<a href="#">Tus Aplicaciones</a>
+								<a href="/talento/aplicaciones">Tus Aplicaciones</a>
 								<a href="#">Media Bank</a>
-								<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
+								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								<a href="#">Ayuda</a>
 							</div>
 						}
@@ -788,8 +788,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 							<div className="sub_menu">
 								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
 								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
-								<Link href="/cazatalentos/agenda-virtual" className={(router.pathname === '/cazatalentos/agenda-virtual' || '/cazatalentos/agenda-virtual/crear') ? 'active' : ''}>Agenda Virtual</Link>
-								<a className="msn_container" href="#"><span className="count_msn active">3</span>Mensajes</a>
+								<Link href="/cazatalentos/agenda-virtual" className={router.pathname.includes('agenda-virtual') ? 'active' : ''}>Agenda Virtual</Link>
+								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								<a href="#">Ayuda</a>
 							</div>
 						}

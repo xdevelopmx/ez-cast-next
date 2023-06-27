@@ -8,8 +8,9 @@ import {
 } from "~/server/api/trpc";
 import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
-import { TipoUsuario } from "~/enums";
+import { TipoConversaciones, TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
+import dayjs from "dayjs";
 
 export const CazatalentosRouter = createTRPCRouter({
     getAll: publicProcedure
@@ -450,7 +451,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			mensaje: z.string(),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const fecha_audicion = new Date(input.fecha_audicion);
+			const fecha_audicion = dayjs(input.fecha_audicion, 'DD/MM/YYYY').toDate();
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const rol = await ctx.prisma.roles.findFirst({
@@ -458,7 +459,11 @@ export const CazatalentosRouter = createTRPCRouter({
 						id: input.id_rol
 					},
 					include: {
-						proyecto: true
+						proyecto: {
+							include: {
+								cazatalentos: true
+							}
+						}
 					}
 				})
 				if (rol) {
@@ -511,6 +516,84 @@ export const CazatalentosRouter = createTRPCRouter({
 								id_estado_aplicacion: (input.tipo_audicion === 'audicion') ? Constants.ESTADOS_APLICACION_ROL.AUDICION : Constants.ESTADOS_APLICACION_ROL.CALLBACK
 							}
 						})
+					}
+
+					// mandar mensaje al talento acerca del cambio
+					// obtenemos el proyecto en base al rol para obtener el cazatalentos al que se le enviara un mensaje
+					const talento = await ctx.prisma.talentos.findFirst({
+						where: {
+							id: input.id_talento
+						}
+					})
+					
+					if (talento && rol) {
+						let conversacion = await ctx.prisma.conversaciones.findFirst({
+							where: {
+								id_emisor: rol.proyecto.id_cazatalentos,
+								tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+								id_receptor: input.id_talento,
+								tipo_usuario_receptor: TipoUsuario.TALENTO,
+								id_proyecto: rol.id_proyecto,
+							}
+						});
+						if (!conversacion) {
+							conversacion = await ctx.prisma.conversaciones.findFirst({
+								where: {
+									id_emisor: input.id_talento,
+									tipo_usuario_emisor: TipoUsuario.TALENTO,
+									id_receptor: rol.proyecto.id_cazatalentos,
+									tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+									id_proyecto: rol.id_proyecto,
+								}
+							});
+						}
+						if (!conversacion) {
+							conversacion = await ctx.prisma.conversaciones.create({
+								data: {
+									emisor_perfil_url: `/cazatalentos/dashboard?id_cazatalentos=${rol.proyecto.id_cazatalentos}`,
+									receptor_perfil_url: `/talento/dashboard?id_talento=${talento.id}&id_rol=${rol.id}`,
+									id_proyecto: rol.id_proyecto,
+									id_emisor: rol.proyecto.id_cazatalentos,
+									tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+									id_receptor: input.id_talento,
+									tipo_usuario_receptor: TipoUsuario.TALENTO,
+								}
+							})
+						}
+						if (conversacion) {
+							await ctx.prisma.mensaje.create({
+								data: {
+									id_conversacion: conversacion.id,
+									id_emisor: rol.proyecto.id_cazatalentos,
+									tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+									id_receptor: input.id_talento,
+									tipo_usuario_receptor: TipoUsuario.TALENTO,
+									visto: false,
+									hora_envio: dayjs().toDate(),
+									mensaje: JSON.stringify({
+										message: `El cazatalentos ${rol.proyecto.cazatalentos.nombre} ${rol.proyecto.cazatalentos.apellido}, te ha programado para ${input.tipo_audicion} para el rol de rol de ${rol.nombre} del proyecto ${rol.proyecto.nombre} en la fecha de ${input.fecha_audicion}, puedes ver los detalles en el casting billboard.`
+									}),
+									type: TipoMensajes.TEXT
+								}
+							})
+							if (input.mensaje.length > 0) {
+								await ctx.prisma.mensaje.create({
+									data: {
+										id_conversacion: conversacion.id,
+										id_emisor: rol.proyecto.id_cazatalentos,
+										tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+										id_receptor: input.id_talento,
+										tipo_usuario_receptor: TipoUsuario.TALENTO,
+										visto: false,
+										hora_envio: dayjs().toDate(),
+										mensaje: JSON.stringify({
+											message: input.mensaje
+										}),
+										type: TipoMensajes.TEXT
+									}
+								})
+							}
+						}
 					}
 					return audicion;
 				}

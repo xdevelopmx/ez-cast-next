@@ -90,7 +90,7 @@ export const TalentoTableItem = (props: {
             </Box>
             <Carroucel slidesPerView={1} navigation>
                 {images.map((img, i) => {
-                    return <Box key={i} sx={{ position: 'relative', width: '100%', aspectRatio: '9/13' }}>
+                    return <Box key={i} sx={{ position: 'relative', width: '100%', height: '350px', aspectRatio: '9/13' }}>
                             {img}
                         </Box>
                     })

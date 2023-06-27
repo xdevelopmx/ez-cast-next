@@ -7,8 +7,11 @@ import {
 	publicProcedure,
 	protectedProcedure,
 } from "~/server/api/trpc";
-import { TipoUsuario } from "~/enums";
+import { TipoConversaciones, TipoMensajes, TipoUsuario } from "~/enums";
 import { Troubleshoot } from "@mui/icons-material";
+import Constants from "~/constants";
+import { Mensaje } from "@prisma/client";
+import dayjs from "dayjs";
 
 export type NewRol = {
 	id_rol: number,
@@ -329,27 +332,249 @@ export const RolesRouter = createTRPCRouter({
 			});
 			return rol;
 		}
-		),
+	),
+	getRolWithProyectoById: publicProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			const rol = await ctx.prisma.roles.findUnique({
+				where: { id: input },
+				include: {
+					compensaciones: {
+						include: {
+							sueldo: true,
+							compensaciones_no_monetarias: {
+								include: {
+									compensacion: true
+								}
+							}
+						}
+					},
+					tipo_trabajos: true,
+					filtros_demograficos: {
+						include: {
+							pais: true,
+							generos: {
+								include: {
+									genero: true
+								}
+							},
+							aparencias_etnicas: {
+								include: {
+									aparencia_etnica: true
+								}
+							},
+							animal: {
+								include: {
+									animal: true
+								}
+							}
+						}
+					},
+					habilidades: {
+						include: {
+							habilidades_seleccionadas: {
+								include: {
+									habilidad: true
+								}
+							}
+						}
+					},
+					requisitos: {
+						include: {
+							estado_republica: true,
+							idioma: true,
+							uso_horario: true,
+							medios_multimedia: {
+								include: {
+									medio_multimedia: true
+								}
+							}
+						}
+					},
+					color_cabello: true,
+					color_ojos: true,
+					nsfw: {
+						include: {
+							nsfw_seleccionados: {
+								include: {
+									nsfw: true
+								}
+							}
+						}
+					},
+					casting: {
+						include: {
+							estado_republica: true
+						}
+					},
+					filmaciones: {
+						include: {
+							estado_republica: true
+						}
+					},
+					selftape: true,
+					tipo_rol: true,
+			
+					proyecto: {
+						include: {
+							tipo: {
+								include: {
+									tipo_proyecto: true
+								}
+							},
+							sindicato: {
+								include: {
+									sindicato: true
+								}
+							},
+							foto_portada: true,
+							cazatalentos: {
+								include: {
+									foto_perfil: true,
+									redes_sociales: true
+								}
+							}
+						}
+					}
+				}
+			});
+			return rol;
+		}
+	),
 	getAll: publicProcedure.query(async ({ ctx }) => {
 		return await ctx.prisma.roles.findMany();
 	}),
-	updateAplicacionesTalentoByIdRolAndIdTalento: publicProcedure.input(z.object({
+	createAplicacionTalento: publicProcedure.input(z.object({
 		id_rol: z.number(),
-		estado_aplicacion: z.number(),
-		ids_talentos: z.array(z.number())
+		id_talento: z.number(),
+		id_ubicacion: z.number(),
+		nota: z.string()
 	})).mutation(async ({ input, ctx }) => {
-		if (input.id_rol <= 0 || input.estado_aplicacion <= 0 || input.ids_talentos.length === 0) return null;
-		return await ctx.prisma.aplicacionRolPorTalento.updateMany({
-			where: {
-				id_rol: input.id_rol,
-				id_talento: {
-					in: input.ids_talentos
-				}
-			},
+		if (input.id_rol <= 0 || input.id_talento <= 0 || input.id_ubicacion <= 0) return null;
+		const result = await ctx.prisma.aplicacionRolPorTalento.create({
 			data: {
-				id_estado_aplicacion: input.estado_aplicacion
+				id_rol: input.id_rol,
+				id_talento: input.id_talento,
+				id_ubicacion: input.id_ubicacion,
+				id_estado_aplicacion: Constants.ESTADOS_APLICACION_ROL.NO_VISTO,
+				nota: input.nota
 			}
 		})
+
+		if (result) {
+			// obtenemos el proyecto en base al rol para obtener el cazatalentos al que se le enviara un mensaje
+			const talento = await ctx.prisma.talentos.findFirst({
+				where: {
+					id: input.id_talento
+				}
+			})
+			const rol = await ctx.prisma.roles.findFirst({
+				where: {
+					id: input.id_rol
+				},
+				include: {
+					proyecto: {
+						include: {
+							cazatalentos: true
+						}
+					}
+				}
+			})
+			if (talento && rol) {
+				let conversacion = await ctx.prisma.conversaciones.findFirst({
+					where: {
+						id_emisor: input.id_talento,
+						tipo_usuario_emisor: TipoUsuario.TALENTO,
+						id_receptor: rol.proyecto.id_cazatalentos,
+						tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+						id_proyecto: rol.id_proyecto
+					}
+				});
+				if (!conversacion) {
+					conversacion = await ctx.prisma.conversaciones.findFirst({
+						where: {
+							id_emisor: rol.proyecto.id_cazatalentos,
+							tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+							id_receptor: input.id_talento,
+							tipo_usuario_receptor: TipoUsuario.TALENTO,
+							id_proyecto: rol.id_proyecto
+						}
+					});
+				}
+				if (!conversacion) {
+					conversacion = await ctx.prisma.conversaciones.create({
+						data: {
+							receptor_perfil_url: `/cazatalentos/dashboard?id_cazatalentos=${rol.proyecto.id_cazatalentos}`,
+							emisor_perfil_url: `/talento/dashboard?id_talento=${talento.id}&id_rol=${rol.id}`,
+							id_proyecto: rol.id_proyecto,
+							id_emisor: input.id_talento,
+							tipo_usuario_emisor: TipoUsuario.TALENTO,
+							id_receptor: rol.proyecto.id_cazatalentos,
+							tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+						}
+					})
+				}
+				if (conversacion) {
+					await ctx.prisma.mensaje.create({
+						data: {
+							id_conversacion: conversacion.id,
+							id_emisor: input.id_talento,
+							tipo_usuario_emisor: TipoUsuario.TALENTO,
+							id_receptor: rol.proyecto.id_cazatalentos,
+							tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+							visto: false,
+							hora_envio: dayjs().toDate(),
+							mensaje: JSON.stringify({
+								message: `El talento ${talento.nombre} ${talento.apellido}, se ha postulado al rol de ${rol.nombre} del proyecto ${rol.proyecto.nombre}, puedes ver los detalles en el casting billboard.`
+							}),
+							type: TipoMensajes.TEXT
+						}
+					})
+				}
+				const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
+					where: {
+						id: rol.proyecto.id_cazatalentos
+					}
+				})
+				if (cazatalentos) {
+					await ctx.prisma.alertas.create({
+						data: {
+							id_usuario: rol.proyecto.id_cazatalentos,
+							tipo_usuario: TipoUsuario.CAZATALENTOS,
+							visto: false,
+							mensaje: `<p>¡Hola <b>${cazatalentos.nombre} ${cazatalentos.apellido}</b>! Has recibido
+							<span style="color: white;">nuevas aplicaciones</span> para tu proyecto <b>${rol.proyecto.nombre}</b>, accede a tu billboard personalizado y selecciona
+							a tus favoritos utilizando la herramienta <span style="color: white">destacado</span>.</p>`
+						}
+					})
+
+				}
+			}
+		}
+
+		return result;
+	}),
+	updateAplicacionesTalentoByIdRolAndIdTalento: publicProcedure.input(z.object({
+		talentos: z.array(z.object({
+			id_rol: z.number(),
+			id_talento: z.number()
+		})),
+		estado_aplicacion: z.number(),
+	})).mutation(async ({ input, ctx }) => {
+		console.log('el input', input);
+		if (input.estado_aplicacion <= 0 || input.talentos.length === 0) return null;
+		return Promise.all(await input.talentos.map(async (talento) => {
+			return await ctx.prisma.aplicacionRolPorTalento.updateMany({
+				where: {
+					id_rol: talento.id_rol,
+					id_talento: talento.id_talento
+				},
+				data: {
+					id_estado_aplicacion: input.estado_aplicacion
+				}
+			})
+        }))
 	}),
 	getAllAplicacionesTalentoByProyecto: publicProcedure.input(z.object({
 		id_proyecto: z.number(),
@@ -2232,7 +2457,8 @@ export const RolesRouter = createTRPCRouter({
 								locaciones: true
 							}
 						},
-						habilidades: true
+						habilidades: true,
+						
 					}
 				})
 				if (talento) {
@@ -2463,7 +2689,260 @@ export const RolesRouter = createTRPCRouter({
 			}
 			return [];
 		}
-		),
+	),
+	getAplicacionesRolesByIdAplicacion: protectedProcedure
+		.input(z.object({
+			id: z.number()
+		}))
+		.query(async ({ input, ctx }) => {
+			if (input.id <= 0) return null;
+			if (ctx.session) {
+				const user = ctx.session.user;
+
+				return await ctx.prisma.aplicacionRolPorTalento.findFirst({
+					where: {
+						id: input.id
+					},
+					include: {
+						estado_republica: true,
+						rol: {
+							include: {
+								compensaciones: {
+									include: {
+										sueldo: true,
+										compensaciones_no_monetarias: {
+											include: {
+												compensacion: true
+											}
+										}
+									}
+								},
+								tipo_trabajos: true,
+								filtros_demograficos: {
+									include: {
+										pais: true,
+										generos: {
+											include: {
+												genero: true
+											}
+										},
+										aparencias_etnicas: {
+											include: {
+												aparencia_etnica: true
+											}
+										},
+										animal: {
+											include: {
+												animal: true
+											}
+										}
+									}
+								},
+								habilidades: {
+									include: {
+										habilidades_seleccionadas: {
+											include: {
+												habilidad: true
+											}
+										}
+									}
+								},
+								requisitos: {
+									include: {
+										estado_republica: true,
+										idioma: true,
+										uso_horario: true,
+										medios_multimedia: {
+											include: {
+												medio_multimedia: true
+											}
+										}
+									}
+								},
+								color_cabello: true,
+								color_ojos: true,
+								nsfw: {
+									include: {
+										nsfw_seleccionados: {
+											include: {
+												nsfw: true
+											}
+										}
+									}
+								},
+								casting: {
+									include: {
+										estado_republica: true
+									}
+								},
+								filmaciones: {
+									include: {
+										estado_republica: true
+									}
+								},
+								selftape: true,
+								tipo_rol: true,
+		
+								proyecto: {
+									include: {
+										tipo: {
+											include: {
+												tipo_proyecto: true
+											}
+										},
+										sindicato: {
+											include: {
+												sindicato: true
+											}
+										},
+										foto_portada: true,
+										cazatalentos: {
+											include: {
+												foto_perfil: true,
+												redes_sociales: true
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					orderBy: {
+						id: 'asc',
+					}
+				});
+			}
+			return null;
+		}
+	),
+	getAplicacionesRolesPorTalento: protectedProcedure
+		.input(z.object({
+			id_talento: z.number(),
+			pagination: z.object({
+				take: z.number(),
+				skip: z.number()
+			}).nullish()
+		}))
+		.query(async ({ input, ctx }) => {
+			if (ctx.session) {
+				const user = ctx.session.user;
+				return await ctx.prisma.aplicacionRolPorTalento.findMany({
+					where: {
+						id_talento: input.id_talento
+					},
+					skip: (input.pagination) ? input.pagination.skip : 0,
+					take: (input.pagination) ? input.pagination.take : 999999,
+					include: {
+						rol: {
+							include: {
+								compensaciones: {
+									include: {
+										sueldo: true,
+										compensaciones_no_monetarias: {
+											include: {
+												compensacion: true
+											}
+										}
+									}
+								},
+								tipo_trabajos: true,
+								filtros_demograficos: {
+									include: {
+										pais: true,
+										generos: {
+											include: {
+												genero: true
+											}
+										},
+										aparencias_etnicas: {
+											include: {
+												aparencia_etnica: true
+											}
+										},
+										animal: {
+											include: {
+												animal: true
+											}
+										}
+									}
+								},
+								habilidades: {
+									include: {
+										habilidades_seleccionadas: {
+											include: {
+												habilidad: true
+											}
+										}
+									}
+								},
+								requisitos: {
+									include: {
+										estado_republica: true,
+										idioma: true,
+										uso_horario: true,
+										medios_multimedia: {
+											include: {
+												medio_multimedia: true
+											}
+										}
+									}
+								},
+								color_cabello: true,
+								color_ojos: true,
+								nsfw: {
+									include: {
+										nsfw_seleccionados: {
+											include: {
+												nsfw: true
+											}
+										}
+									}
+								},
+								casting: {
+									include: {
+										estado_republica: true
+									}
+								},
+								filmaciones: {
+									include: {
+										estado_republica: true
+									}
+								},
+								selftape: true,
+								tipo_rol: true,
+		
+								proyecto: {
+									include: {
+										tipo: {
+											include: {
+												tipo_proyecto: true
+											}
+										},
+										sindicato: {
+											include: {
+												sindicato: true
+											}
+										},
+										foto_portada: true,
+										cazatalentos: {
+											include: {
+												foto_perfil: true,
+												redes_sociales: true
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					orderBy: {
+						id: 'asc',
+					}
+				});
+			}
+			return [];
+		}
+	),
 });
 //getSecretMessage: protectedProcedure.query(() => {
 //    return "you can now see this secret message!";

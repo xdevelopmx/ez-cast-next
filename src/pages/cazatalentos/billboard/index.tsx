@@ -449,7 +449,6 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 													</Button>
 
 													<Typography sx={{ color: '#069cb1' }} fontWeight={600}>Página <Typography component={'span'} sx={{ color: '#069cb1', backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page + 1}</Typography> de {(rol_applications.data) ? Math.ceil(rol_applications.data.count_applications / pagination.page_size) : 0}</Typography>
-	
 													<Button 
 														onClick={() => {
 															setPagination(prev => {return {...prev, page: prev.page + 1}});
@@ -458,11 +457,11 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 																top: 0
 															})
 														}} 
-														disabled={(pagination.page * pagination.page_size) > rol_applications.data.count_applications} 
+														disabled={(pagination.page * pagination.page_size) + pagination.page_size >= rol_applications.data.count_applications} 
 														sx={{ textTransform: 'none' }}
 													>
 														<Box sx={{ display: 'flex', alignItems: 'center' }}>
-															<Typography sx={{color: ((pagination.page * pagination.page_size) > rol_applications.data.count_applications) ? 'gray' : '#069cb1'}} fontWeight={600}>Siguiente página</Typography>
+															<Typography sx={{color: ((pagination.page * pagination.page_size) + pagination.page_size >= rol_applications.data.count_applications) ? 'gray' : '#069cb1'}} fontWeight={600}>Siguiente página</Typography>
 															<Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
 														</Box>
 													</Button>

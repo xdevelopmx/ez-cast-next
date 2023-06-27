@@ -14,6 +14,41 @@ datasource db {
   url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
 
+model Conversaciones {
+  id                Int                              @id @default(autoincrement())
+  id_emisor Int
+  tipo_usuario_emisor String
+  id_receptor Int
+  tipo_usuario_receptor String
+  emisor_perfil_url String
+  receptor_perfil_url String
+  id_proyecto Int
+  proyecto          Proyecto                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  mensajes Mensaje[]
+}
+
+model Mensaje {
+  id                Int                              @id @default(autoincrement())
+  id_conversacion Int
+  id_emisor Int
+  tipo_usuario_emisor String
+  id_receptor Int
+  tipo_usuario_receptor String
+  visto Boolean
+  hora_envio DateTime
+  mensaje String @db.VarChar(1024)
+  type String
+  conversacion Conversaciones @relation(fields: [id_conversacion], references: [id], onDelete: Cascade)
+}
+
+model Alertas {
+  id                Int                              @id @default(autoincrement())
+  id_usuario Int
+  tipo_usuario String
+  visto Boolean
+  mensaje String @db.VarChar(1024)
+}
+
 model HorarioAgenda {
   id                Int                              @id @default(autoincrement())
   tipo_agenda       String
@@ -380,6 +415,7 @@ model Proyecto {
   tipo                  TipoProyectoPorProyecto?
   sindicato             SindicatoPorProyecto?
   horario_agenda        HorarioAgenda?
+  conversaciones Conversaciones[]
 }
 
 model AplicacionRolPorTalento {
@@ -389,7 +425,10 @@ model AplicacionRolPorTalento {
   id_talento           Int
   talento              Talentos                         @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   id_estado_aplicacion Int
+  nota String @default("")
+  id_ubicacion Int
   estado_aplicacion    CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
+  estado_republica CatalogoEstadosRepublica @relation(fields: [id_ubicacion], references: [id])
 }
 
 model NotasTalentos {
@@ -773,6 +812,7 @@ model CatalogoEstadosRepublica {
   proyecto                          Proyecto[]
   localizaciones_por_horario_agenda LocalizacionesPorHorarioAgenda[]
   InfoBasicaRepresentante           InfoBasicaRepresentante[]
+  AplicacionRolPorTalento AplicacionRolPorTalento[]
 }
 
 model MediosMultimediaPorRoles {

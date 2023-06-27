@@ -7,7 +7,7 @@ import { Alertas, MainLayout, MenuLateral } from "~/components";
 import { useMemo, useState } from "react";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import DualDatePicker from "~/components/shared/DualDatePicker";
+import DualDatePicker from "~/components/shared/DualDatePicker/DualDatePicker";
 import { api, parseErrorBody } from "~/utils/api";
 import { AnimatePresence } from "framer-motion";
 import MotionDiv from "~/components/layout/MotionDiv";

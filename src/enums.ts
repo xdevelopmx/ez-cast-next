@@ -18,3 +18,13 @@ export enum TipoCobro {
     MENSUAL = "Mensual",
     ANUAL = "Anual"
 }
+
+export enum TipoMensajes {
+	TEXT = 'TEXT',
+	NOTIFICACION_HORARIO_AGENDA_VIRTUAL = 'NOTIFICACION_HORARIO_AGENDA_VIRTUAL'
+}
+
+export enum TipoConversaciones {
+	CON_CAZATALENTOS = 'CON_CAZATALENTOS',
+	CON_TALENTO = 'CON_TALENTO'
+}

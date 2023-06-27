@@ -1,5 +1,5 @@
-import { Close, ThumbDownAlt, ThumbUpAlt } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Divider, FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography, tooltipClasses } from '@mui/material'
+import { Close, MonochromePhotos, ThumbDownAlt, ThumbUpAlt } from '@mui/icons-material'
+import { Box, Button, ButtonGroup, Divider, FormControlLabel, Grid, IconButton, Switch, Tooltip, Typography, styled, tooltipClasses } from '@mui/material'
 import { Media, MediaPorTalentos, NotasTalentos, Talentos, TalentosDestacados } from '@prisma/client'
 import dayjs from 'dayjs'
 import { GetServerSideProps } from 'next'
@@ -20,15 +20,64 @@ import { prisma } from '~/server/db'
 import { api, parseErrorBody } from '~/utils/api'
 import { expandDates, generateIntervalos } from '~/utils/dates'
 
+const MaterialUISwitch = styled(Switch)(({ theme }) => ({
+    width: 72,
+    height: 34,
+    padding: 8,
+    '& .MuiSwitch-switchBase': {
+      margin: 1,
+      padding: 0,
+      transform: 'translateX(6px)',
+      '&.Mui-checked': {
+        color: '#fff',
+        transform: 'translateX(32px)',
+        '& .MuiSwitch-thumb:before': {
+          backgroundImage: `url(/assets/img/iconos/icono_claqueta_white.svg)`,
+        },
+        '& .MuiSwitch-thumb': {
+            backgroundColor: '#F9B233'
+        },
+        '& + .MuiSwitch-track': {
+          opacity: 1,
+          backgroundColor: 'lightgrey',
+        },
+      },
+    },
+    '& .MuiSwitch-thumb': {
+      backgroundColor: 'gray',
+      width: 32,
+      height: 32,
+      '&:before': {
+        content: "''",
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        left: 0,
+        top: 0,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundImage: `url(/assets/img/iconos/icono_claqueta_white.svg)`,
+        backgroundSize: 16,
+      },
+    },
+    '& .MuiSwitch-track': {
+      opacity: 1,
+      backgroundColor: 'lightgrey',
+      borderRadius: 20 / 2,
+    },
+  }));
+
 const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_callback: boolean}) => {
 
     const {notify} = useNotify();
 
     const router = useRouter();
 
+    const btn_callback_ref = useRef<HTMLAnchorElement | null>(null);
+
     const {id, ask_for_callback} = router.query;
 
-    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'CALLBACK', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'CALLBACK', data: new Map });
+    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'CALLBACK' | 'SEND_HORARIOS', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'CALLBACK', data: new Map });
 
     const horario = api.agenda_virtual.getHorarioAgendaById.useQuery(parseInt(id as string), {
 		refetchOnWindowFocus: false
@@ -73,18 +122,24 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
         refetchOnWindowFocus: false
     });
 
-    const ids_talentos_asignados = useMemo(() => {
-        const ids_talentos_not_null: number[] = [];
+    const talentos_aprobados = useMemo(() => {
+        const ids_talentos_not_null: {id_talento: number, id_rol: number}[] = [];
         if (talentos_asignados_por_horario.data) {
             const ids_talentos = talentos_asignados_por_horario.data.filter(t => t.estado.toLowerCase() === 'aprobado' && t.id_talento != null);
             ids_talentos.forEach(i => {
-                if (i.id_talento) {
-                    ids_talentos_not_null.push(i.id_talento);
+                if (i.id_talento && i.id_rol) {
+                    ids_talentos_not_null.push({id_talento: i.id_talento, id_rol: i.id_rol});
                 }
             })
         }
         return ids_talentos_not_null;
     }, [talentos_asignados_por_horario.data]);
+
+    useEffect(() => {
+        if (roles.data && talentos_asignados_por_horario.data && horario.data && btn_callback_ref.current && ask_for_callback && props.can_start_callback) {
+            btn_callback_ref.current.click();
+        }
+    }, [ask_for_callback, roles.data, horario.data, talentos_asignados_por_horario.data, btn_callback_ref.current, props.can_start_callback]);
 
     const updateIntervaloHorario = api.agenda_virtual.updateIntervaloHorario.useMutation({
         onSuccess: (data) => {
@@ -111,10 +166,20 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
         onSuccess: (data) => {
             if (data.tipo_agenda.toLowerCase() === 'callback') {
                 updateAplicacionesTalentoByIdRolAndIdTalento.mutate({
-                    id_rol: selected_rol,
-                    ids_talentos: ids_talentos_asignados,
+                    talentos: talentos_aprobados,
                     estado_aplicacion: Constants.ESTADOS_APLICACION_ROL.CALLBACK
                 })
+            }
+        }, 
+        onError: (err) => {
+            notify('error', parseErrorBody(err.message));
+        }
+    })
+
+    const sendHorarios = api.agenda_virtual.sendHorarios.useMutation({
+        onSuccess: (data) => {
+            if (data) {
+                notify('success', 'Se enviaron los horarios con exito');
             }
         }, 
         onError: (err) => {
@@ -136,7 +201,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
             roles.data.map((rol, i) => {
                 if (rol.id === selected_rol) {
                     setTalentos(rol.aplicaciones_por_talento.filter(aplicacion => {
-                        return talentos_asignados_por_horario.data.filter((ta) => ta.id_rol === rol.id && ta.id_talento === aplicacion.id_talento).length === 0;
+                        return talentos_asignados_por_horario.data.filter((ta) => ta.id_rol === aplicacion.id_rol && ta.id_talento === aplicacion.id_talento).length === 0;
                     }).map((aplicacion, j) => {
                         return {...aplicacion.talento, notas: aplicacion.talento.notas, destacado: aplicacion.talento.destacados};
                     }))
@@ -224,10 +289,10 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                             uso_horario={`${horario.data?.uso_horario.es}`}
                                             nota={horario.data && horario.data.notas.length > 0 ? horario.data.notas : 'No hay nota'}
                                         />
-                                        <Grid container xs={12} mt={4}>
+                                        <Grid container  xs={12} mt={4}>
                                             {!props.disable_actions &&
                                             
-                                                <Grid xs={5}>
+                                                <Grid xs={3} mr={'16px'}>
                                                     <Grid xs={12}>
                                                         <Grid container xs={12} sx={{
                                                             backgroundColor: input_background_color,
@@ -304,13 +369,14 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                 borderLeft: '3px solid #EBEBEB',
                                                                 borderRight: '3px solid #EBEBEB',
                                                                 borderBottom: '3px solid #EBEBEB',
-                                                                padding: 2
+                                                                padding: 2,
+                                                                justifyContent: 'space-between'
                                                             }}>
                                                                 {talentos.map((t, i) => {
                                                                     const profile = t.media.filter(m => m.media.identificador.match('foto-perfil-talento'))[0];
                                                                     const calificacion = t.destacado.filter(d => d.id_cazatalentos === proyecto.data?.id_cazatalentos)[0];
                                                                     return (tipo_vista_selected === 'grid') ? 
-                                                                    <Grid key={i} xs={3.85}>
+                                                                    <Grid key={i} xs={5.8}>
                                                                         <TalentoReclutadoCard 
                                                                             tipo_agenda={(horario.data) ? horario.data.tipo_agenda.toLowerCase() : undefined}
                                                                             profile_url={(profile) ? profile.media.url : '/assets/img/no-image.png'}
@@ -348,7 +414,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                         />
                                                                     </Grid>
                                                                     :
-                                                                    <Grid key={i} xs={12} px={4}>
+                                                                    <Grid key={i} xs={12} >
                                                                         <TalentoReclutadoListCard 
                                                                             tipo_agenda={(horario.data) ? horario.data.tipo_agenda.toLowerCase() : undefined}
                                                                             profile_url={(profile) ? profile.media.url : '/assets/img/no-image.png'}
@@ -395,10 +461,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                     </Grid>
                                                 </Grid>
                                             }
-                                            <Grid xs={1}>
-
-                                            </Grid>
-                                            <Grid xs={(props.disable_actions) ? 12 : 6} overflow={'auto'}>
+                                            <Grid xs={(props.disable_actions) ? 12 : 8.5} overflow={'auto'}>
                                                 <Grid xs={12}>
                                                     <Grid xs={12} sx={{
                                                         backgroundColor: input_background_color,
@@ -491,9 +554,10 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                                     <div style={{ backgroundColor: (i.tipo === 'intervalo') ? input_background_hover_color : '#94f0d1', width: '90%', height: 164, margin: 8, paddingLeft: 16, position: 'relative'}}>
                                                                                         <p style={{margin: 4}}>{i.hora}</p>
                                                                                         <p style={{margin: 4}}>Rol - {i.rol?.nombre}</p>
-                                                                                        {['pendiente', 'aprobado', 'rechazado'].includes(i.estado.toLowerCase()) && horario.data?.tipo_agenda.toLowerCase() !== 'callback' &&
-                                                                                            <Switch 
+                                                                                        {['confirmado', 'aprobado', 'rechazado'].includes(i.estado.toLowerCase()) && horario.data?.tipo_agenda.toLowerCase() !== 'callback' &&
+                                                                                            <FormControlLabel
                                                                                                 sx={{
+                                                                                                    width: '25%',
                                                                                                     margin: 1,
                                                                                                     position: 'absolute',
                                                                                                     top: 0,
@@ -501,17 +565,23 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                                                     color: 'white',
                                                                                                     fontSize: '12px'
                                                                                                 }}
-                                                                                                color={i.estado.toLowerCase() === 'aprobado' ? 'default' : 'secondary'}
-                                                                                                checked={i.estado.toLowerCase() === 'aprobado'}
-                                                                                                onChange={() => {
-                                                                                                    updateIntervaloHorario.mutate({
-                                                                                                        id_intervalo: i.id,
-                                                                                                        id_rol: i.id_rol,
-                                                                                                        id_talento: i.id_talento,
-                                                                                                        estado: ['rechazado', 'pendiente'].includes(i.estado.toLowerCase()) ? 'Aprobado' : 'Rechazado'
-                                                                                                    })
-                                                                                                }}
+                                                                                                control={
+                                                                                                    <MaterialUISwitch 
+                                                                                                    sx={{ m: 1 }} 
+                                                                                                    onChange={() => {
+                                                                                                        updateIntervaloHorario.mutate({
+                                                                                                            id_intervalo: i.id,
+                                                                                                            id_rol: i.id_rol,
+                                                                                                            id_talento: i.id_talento,
+                                                                                                            estado: ['rechazado', 'pendiente'].includes(i.estado.toLowerCase()) ? 'Aprobado' : 'Rechazado'
+                                                                                                        })
+                                                                                                    }}
+                                                                                                    checked={i.estado.toLowerCase() === 'aprobado'}
+                                                                                                />}
+                                                                                                label="Callback"
                                                                                             />
+                                                                                            
+                                                                                            
                                                                                             
                                                                                         }
                                                                                         <div style={{paddingRight: 24}}>
@@ -564,6 +634,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                                                     estado: i.estado
                                                                                                 })
                                                                                             }}
+                                                                                            id_rol={selected_rol}
                                                                                             fecha={opcionSelected}
                                                                                             allowedDropEffect="any" 
                                                                                         />
@@ -642,7 +713,22 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                             <Grid item xs={(props.can_start_callback) ? 6 : 12} my={4} alignItems={'center'} justifyContent={'center'} textAlign={'center'}>
                                                 <Divider/>
                                                 
-                                                <Button variant='contained' sx={{m: 2, borderRadius: 8, backgroundColor: '#F9B233'}}>Mandar Horarios </Button>
+                                                <Button 
+                                                    variant='contained' 
+                                                    onClick={() => {
+                                                        setConfirmationDialog({ 
+                                                            action: 'SEND_HORARIOS', 
+                                                            data: new Map(),
+                                                            opened: true, 
+                                                            title: 'Mandar Horarios', 
+                                                            content: 
+                                                                <Typography>Seguro que quieres mandar la confirmacion de horarios a los talentos asignados en los intervalos?</Typography>
+                                                        });
+                                                    }}
+                                                    sx={{m: 2, borderRadius: 8, backgroundColor: '#F9B233'}}
+                                                >
+                                                    Mandar Horarios 
+                                                </Button>
                                             </Grid>
                                             {props.can_start_callback &&
                                             
@@ -650,43 +736,40 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                     <Divider/>
                                                     
                                                     <Button 
-                                                        id="btn-callback"
+                                                        ref={btn_callback_ref}
+                                                        href=''
                                                         onClick={() => {
                                                             const params = new Map<string, unknown>();
                                                             params.set('tipo_localizacion', horario.data?.tipo_localizacion);
                                                             params.set('notas', horario.data?.notas);
                                                             params.set('id_uso_horario', horario.data?.id_uso_horario);
                                                             params.set('id_proyecto', horario.data?.id_proyecto);
-
-                                                            let talentos_elements: JSX.Element[] = [];
-                                                            if (roles.data) {
-                                                                roles.data.map((rol, i) => {
-                                                                    if (rol.id === selected_rol) {
-                                                                        talentos_elements = rol.aplicaciones_por_talento.filter(aplicacion => {
-                                                                            return ids_talentos_asignados.filter((ta) => ta === aplicacion.id_talento).length > 0;
-                                                                        }).map((aplicacion) => {
-                                                                            const foto_perfil_talento = aplicacion.talento.media.filter(m => m.media.identificador.toUpperCase().includes('FOTO-PERFIL'))[0]?.media.url;
-                                                                            const calificacion_talento = (aplicacion.talento.destacados) ? aplicacion.talento.destacados.filter( d => d.id_cazatalentos === proyecto.data?.id_cazatalentos)[0] : undefined;
-                                                                                
-                                                                            return <TalentoReclutadoListCard 
-                                                                                tipo_agenda={(horario.data) ? horario.data.tipo_agenda.toLowerCase() : undefined}
-                                                                                profile_url={(foto_perfil_talento) ? foto_perfil_talento : '/assets/img/no-image.png'}
-                                                                                nombre={`${aplicacion.talento.nombre} ${aplicacion.talento.apellido}`}
-                                                                                union={'ND'}
-                                                                                estado={'Aprobado'}
-                                                                                calificacion={calificacion_talento ? calificacion_talento.calificacion : 0}
-                                                                                id_talento={aplicacion.talento.id}
-                                                                                ubicacion={''}
-                                                                                onDrop={(id_talento) => {
-                                                                                    //alert('SE DROPEO ESTE WEON' + id_talento);
-                                                                                } } 
-                                                                                action={<></>}   
-                                                                            />          
-                                                                        })
-                                                                    }
+                                                            const talentos_elements: JSX.Element[] = (!roles.data) ? [] : roles.data.map((rol, i) => {
+                                                                return rol.aplicaciones_por_talento.filter(aplicacion => {
+                                                                    return talentos_aprobados.filter((ta) => ta.id_talento === aplicacion.id_talento && aplicacion.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.AUDICION).length > 0;
+                                                                }).map((aplicacion, i) => {
+                                                                    console.log(aplicacion, i)
+                                                                    const foto_perfil_talento = aplicacion.talento.media.filter(m => m.media.identificador.toUpperCase().includes('FOTO-PERFIL'))[0]?.media.url;
+                                                                    const calificacion_talento = (aplicacion.talento.destacados) ? aplicacion.talento.destacados.filter( d => d.id_cazatalentos === proyecto.data?.id_cazatalentos)[0] : undefined;
+                                                                        
+                                                                    return <TalentoReclutadoListCard 
+                                                                        key={i}
+                                                                        tipo_agenda={(horario.data) ? horario.data.tipo_agenda.toLowerCase() : undefined}
+                                                                        profile_url={(foto_perfil_talento) ? foto_perfil_talento : '/assets/img/no-image.png'}
+                                                                        nombre={`${aplicacion.talento.nombre} ${aplicacion.talento.apellido}`}
+                                                                        union={'ND'}
+                                                                        estado={'Aprobado'}
+                                                                        calificacion={calificacion_talento ? calificacion_talento.calificacion : 0}
+                                                                        id_talento={aplicacion.talento.id}
+                                                                        ubicacion={''}
+                                                                        onDrop={(id_talento) => {
+                                                                            //alert('SE DROPEO ESTE WEON' + id_talento);
+                                                                        } } 
+                                                                        action={<></>}   
+                                                                    />          
                                                                 })
-                                                            }
-
+                                                            }).flat();
+                                                            
                                                             setConfirmationDialog({ 
                                                                 action: 'CALLBACK', 
                                                                 data: params,
@@ -726,6 +809,12 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                 onOptionSelected={(confirmed: boolean) => {
                     if (confirmed) {
                         switch (confirmation_dialog.action) {
+                            case 'SEND_HORARIOS': {
+                                sendHorarios.mutate({
+                                    id_horario: parseInt(id as string)
+                                })
+                                break;
+                            }
                             case 'CALLBACK': {
                                 const tipo_localizacion = confirmation_dialog.data.get('tipo_localizacion');
                                 const notas = confirmation_dialog.data.get('notas');
@@ -744,8 +833,13 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                 break;
                             }
                         }
+                    } else {
+                        if (ask_for_callback) {
+                            router.replace(`/cazatalentos/agenda-virtual/horario/${id}`);
+                        }
                     }
                     setConfirmationDialog({ ...confirmation_dialog, opened: false });
+                    
                 }}
                 title={confirmation_dialog.title}
                 content={confirmation_dialog.content}

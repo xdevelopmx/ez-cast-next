@@ -1,4 +1,5 @@
-import { Box, Grid, Typography } from '@mui/material'
+import { Circle } from '@mui/icons-material'
+import { Box, Grid, Skeleton, Typography } from '@mui/material'
 import Image from 'next/image'
 import React, { type CSSProperties } from 'react'
 
@@ -8,25 +9,44 @@ const estilos_ellipsis: CSSProperties = {
     whiteSpace: 'nowrap',
 }
 
-export const PreviewConversation = () => {
+export const PreviewConversation = (props: {
+    loading: boolean,
+    nombre?: string,
+    profile_url?: string,
+    hora?: string,
+    visto?: boolean,
+    mensaje?: string,
+    nombre_proyecto?: string
+}) => {
     return (
-        <Grid item container xs={12} sx={{
+        <Grid container xs={12} sx={{
             padding: '10px 20px',
             borderBottom: '2px solid #B4B5B6',
             height: '100px'
         }}>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
                 <Box sx={{
                     position: 'relative',
                     width: '60px',
                     aspectRatio: '1/1'
                 }}>
-                    <Image style={{
-                        borderRadius: '100%'
-                    }} src={'/assets/img/slider_modelo_02.png'} fill alt="" />
+                    {props.loading &&
+                        <Skeleton width={64} height={64} variant='circular'/>
+                    }
+                    {!props.loading && 
+                        <Box position={'relative'}>
+
+                            {!props.visto && <Circle style={{ position: 'absolute', color: '#069cb1', width: 16, height: 16, top: '50%', right: '100%' }} />}
+                            <Image style={{
+                                borderRadius: '100%'
+                            }} src={`${props.profile_url}`} width={64} height={64} alt="" />
+                        
+                        </Box>
+                    
+                    }
                 </Box>
             </Grid>
-            <Grid item container xs={8}>
+            <Grid item container xs={9}>
                 <Grid item xs={12}>
                     <Box sx={{
                         display: 'flex',
@@ -36,26 +56,54 @@ export const PreviewConversation = () => {
                             width: '60%',
 
                         }}>
-                            <Typography fontWeight={600} sx={estilos_ellipsis}>
-                                Nombre
-                            </Typography>
+                            {props.loading &&
+                                <Skeleton width={150}/>
+                            }
+                            {!props.loading &&
+                                <Typography fontWeight={600} sx={estilos_ellipsis}>
+                                    {props.nombre}
+                                </Typography>
+                            }
                         </Box>
                         <Box sx={{
                             width: '40%',
                             ...estilos_ellipsis
                         }}>
-                            <Typography sx={{ color: '#888585', ...estilos_ellipsis }}>
-                                10/12/21 3:01 pm
-                            </Typography>
+                            {props.loading &&
+                                <Skeleton width={150}/>
+                            }
+                            {!props.loading &&
+                                <Typography sx={{ color: '#888585', ...estilos_ellipsis }}>
+                                    {props.hora}
+                                </Typography>
+                            }
                         </Box>
 
                     </Box>
                 </Grid>
                 <Grid item xs={12}>
                     <Box>
-                        <Typography sx={estilos_ellipsis}>
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque dicta fugit ducimus at incidunt accusamus, magni eligendi dolor mollitia reiciendis nulla esse assumenda nam voluptatum? Dicta illum quidem architecto sequi.
-                        </Typography>
+                        {props.loading &&
+                            <Skeleton width={200}/>
+                        }
+                        {!props.loading && props.nombre_proyecto &&
+                            <Typography sx={estilos_ellipsis}>
+                                {props.nombre_proyecto}
+                            </Typography>
+                        }
+                    </Box>
+                </Grid>
+                
+                <Grid item xs={12}>
+                    <Box>
+                        {props.loading &&
+                            <Skeleton/>
+                        }
+                        {!props.loading &&
+                            <Typography sx={estilos_ellipsis}>
+                                {props.mensaje}
+                            </Typography>
+                        }
                     </Box>
                 </Grid>
             </Grid>

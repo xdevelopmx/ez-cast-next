@@ -11,6 +11,12 @@ const Constants = {
         AUDICION: 4,
         CALLBACK: 5, 
     },
+    ESTADOS_ASIGNACION_HORARIO: {
+        PENDIENTE: 'Pendiente', 
+        CONFIRMADO: 'Confirmado', 
+        RECHAZADO: 'Rechazado', 
+        APROBADO: 'Aprobado'
+    },
     ESTADOS_ROLES: {
         ARCHIVADO: 'ARCHIVADO',
         SIN_FINALIZAR: 'SIN_FINALIZAR'

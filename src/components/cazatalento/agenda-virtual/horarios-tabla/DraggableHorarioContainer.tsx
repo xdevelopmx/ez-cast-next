@@ -18,7 +18,8 @@ const style: CSSProperties = {
 export interface DraggableHorarioContainerProps {
   allowedDropEffect: string,
   onDrop: (item: unknown) => void,
-  fecha: string
+  fecha: string,
+  id_rol: number
 }
 
 function selectBackgroundColor(isActive: boolean, canDrop: boolean) {
@@ -32,7 +33,7 @@ function selectBackgroundColor(isActive: boolean, canDrop: boolean) {
 }
   
 
-export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ allowedDropEffect, onDrop, fecha }) => {
+export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ allowedDropEffect, onDrop, fecha, id_rol }) => {
   const [{ canDrop, isOver }, drop] = useDrop(
     () => ({
       accept: 'ELEMENT',
@@ -48,7 +49,7 @@ export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ 
         canDrop: monitor.canDrop(),
       }),
     }),
-    [allowedDropEffect, fecha],
+    [allowedDropEffect, fecha, id_rol],
   )
 
   const isActive = canDrop && isOver
