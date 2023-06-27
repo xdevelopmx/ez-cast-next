@@ -220,9 +220,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                         <br /><br />
                         <div className="container_box_header">
                             <div className="d-flex justify-content-end align-items-start py-2">
-                                <Alertas 
-                                    user={user}
-                                />
+                                <Alertas />
                             </div>
 
                             <Grid container>

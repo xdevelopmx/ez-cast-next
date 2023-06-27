@@ -133,9 +133,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                         <br /><br />
                         <div className="container_box_header">
                             <div className="d-flex justify-content-end align-items-start py-2">
-                                <Alertas
-                                    user={user} 
-                                />
+                                <Alertas />
                             </div>
                             <div className="row d-lg-flex">
                                 <div className="mt-2 col-md-6" style={{ padding: 0 }}>

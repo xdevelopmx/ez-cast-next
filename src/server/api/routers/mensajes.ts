@@ -26,7 +26,7 @@ export const MensajesRouter = createTRPCRouter({
                     take: 1,
                     orderBy: { hora_envio: 'desc' }
                 }
-            }
+            },
         })
         console.log(conversacion);
         if (conversacion) {
@@ -210,7 +210,14 @@ export const MensajesRouter = createTRPCRouter({
             }
         });
 
-        return Promise.all(await conversaciones.map(async (c) => {
+        return Promise.all(await conversaciones.sort((a, b) => { 
+            const m1 = a.mensajes[0]?.hora_envio;
+            const m2 = b.mensajes[0]?.hora_envio;
+            if (m1 && m2) {
+                return m2.getTime() - m1.getTime();
+            }
+            return 0;
+         }).map(async (c) => {
             let latest_message = '';
             let emisor: {nombre: string, profile_url: string} | null = null;
             let receptor: {nombre: string, profile_url: string} | null = null;

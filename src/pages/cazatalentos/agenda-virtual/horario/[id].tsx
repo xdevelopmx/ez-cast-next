@@ -532,7 +532,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                 
                                                             </ButtonGroup>
                                                         </Grid>
-                                                        <Grid xs={12} maxHeight={350} overflow={'auto'}>
+                                                        <Grid xs={12} maxHeight={420} overflow={'auto'}>
                                                             <Box 
                                                                 sx={{
                                                                     display: 'flex',
@@ -573,7 +573,7 @@ const AudicionPorId = (props: {user: User, disable_actions: boolean, can_start_c
                                                                                                             id_intervalo: i.id,
                                                                                                             id_rol: i.id_rol,
                                                                                                             id_talento: i.id_talento,
-                                                                                                            estado: ['rechazado', 'pendiente'].includes(i.estado.toLowerCase()) ? 'Aprobado' : 'Rechazado'
+                                                                                                            estado: ['rechazado', 'confirmado'].includes(i.estado.toLowerCase()) ? 'Aprobado' : 'Rechazado'
                                                                                                         })
                                                                                                     }}
                                                                                                     checked={i.estado.toLowerCase() === 'aprobado'}

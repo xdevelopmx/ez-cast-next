@@ -594,6 +594,20 @@ export const CazatalentosRouter = createTRPCRouter({
 								})
 							}
 						}
+						const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
+							where: {
+								id: rol.proyecto.id_cazatalentos
+							}
+						})
+						await ctx.prisma.alertas.create({
+							data: {
+								id_usuario: talento.id,
+								tipo_usuario: TipoUsuario.TALENTO,
+								visto: false,
+								mensaje: `¡Has sido <span style="color: white;">seleccionad@</span>! Tendrás una <span style="color: white;">${input.tipo_audicion}</span> para
+								<b>${rol.proyecto.nombre}</b>. Estarás recibiendo información del casting muy pronto. ¡Felicidades por pasar a la ${input.tipo_audicion.toLowerCase() === 'callback' ? 'segunda' : 'primera'} etapa!`
+							}
+						})
 					}
 					return audicion;
 				}

@@ -4,13 +4,14 @@ import { motion } from 'framer-motion'
 import { Box, Button, Grid, IconButton, Typography } from '@mui/material'
 import { Circle, Close } from '@mui/icons-material'
 import { api } from '~/utils/api'
-import { getSession } from 'next-auth/react'
+import { getSession, useSession } from 'next-auth/react'
 import { User } from 'next-auth'
 
-export const Alertas = (props: {user: User | undefined}) => {
+export const Alertas = () => {
+  const session = useSession();
   const [show_alertas, setShowAlertas] = useState(false);
 
-  const alertas = api.alertas.getByUser.useQuery({id_user: (props.user && props.user.id) ? parseInt(props.user.id) : 0, tipo_user: (props.user && props.user.tipo_usuario) ? props.user.tipo_usuario: ''});
+  const alertas = api.alertas.getByUser.useQuery({id_user: (session.data && session.data.user) ? parseInt(session.data.user.id) : 0, tipo_user: (session.data && session.data.user && session.data.user.tipo_usuario) ? session.data.user.tipo_usuario: ''});
   
   const alert_elements = useMemo(() => {
     if (alertas.data) {
@@ -28,7 +29,7 @@ export const Alertas = (props: {user: User | undefined}) => {
             padding: 32,
             position: 'absolute',
 						width: '50%',
-            right: 0,
+            right: -32,
             maxHeight: '75vh',
 						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
 						top: -64,
@@ -62,7 +63,7 @@ export const Alertas = (props: {user: User | undefined}) => {
 					</IconButton>
 					<div className="d-flex justify-content-end btn_alerts_header">
             <div className="box_alert_header mr-4">
-              <motion.img onClick={() => {setShowAlertas(show => !show)}} src="/assets/img/iconos/bell_blue.svg" alt="" />
+              <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
               <span className="count_msn active">2</span>
             </div>
             <p className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
@@ -99,7 +100,7 @@ export const Alertas = (props: {user: User | undefined}) => {
                 <motion.img onClick={() => {setShowAlertas(show => !show)}} src="/assets/img/iconos/bell_blue.svg" alt="" />
                 <span className="count_msn active">2</span>
               </div>
-              <p className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
+              <p onClick={() => {setShowAlertas(show => !show)}} className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
             </div>
         </div>
     </>
