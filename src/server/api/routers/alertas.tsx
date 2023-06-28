@@ -12,41 +12,44 @@ import { Proyecto } from "@prisma/client";
 import dayjs from "dayjs";
 
 export const AlertasRouter = createTRPCRouter({
-    markAsSeen: publicProcedure.input(z.object({
-        id_user_interaction: z.number(),
-        id_conversacion: z.number()
+    markAllAsSeen: publicProcedure.input(z.object({
+        id_user: z.number(),
+        tipo_user: z.string()
     })).mutation(async ({ input, ctx }) => {
-        if (input.id_user_interaction <= 0 || input.id_conversacion <= 0) return false;
-        const conversacion = await ctx.prisma.conversaciones.findFirst({
+        if (input.id_user <= 0 || input.tipo_user.length <= 0) return false;
+        return await ctx.prisma.alertas.updateMany({
             where: {
-                id: input.id_conversacion,
+                id_usuario: input.id_user,
+                tipo_usuario: input.tipo_user
             },
-            include: {
-                mensajes: {
-                    take: 1,
-                    orderBy: { hora_envio: 'desc' }
-                }
+            data: {
+                visto: true
             }
         })
-        console.log(conversacion);
-        if (conversacion) {
-            const mensaje = conversacion.mensajes[0];
-            if (mensaje && !mensaje.visto && mensaje.id_receptor === input.id_user_interaction) {
-                // si es el usuario el que entra entonces marcamos como visto
-                const saved_mensaje = await ctx.prisma.mensaje.update({
-                    where: {
-                        id: mensaje.id
-                    },
-                    data: {
-                        visto: true
-                    }
-                })
-                if (saved_mensaje) {
-                    return true;
-                }
+    }),
+    deleteOne: publicProcedure.input(z.object({
+        id_alerta: z.number()
+    })).mutation(async ({ input, ctx }) => {
+        if (input.id_alerta <= 0) return false;
+        return await ctx.prisma.alertas.delete({
+            where: {
+                id: input.id_alerta
             }
-        }
-        return false;
+        })
+    }),
+    updateOneSeen: publicProcedure.input(z.object({
+        id_alerta: z.number(),
+        new_state: z.boolean()
+    })).mutation(async ({ input, ctx }) => {
+        if (input.id_alerta <= 0) return false;
+        return await ctx.prisma.alertas.update({
+            where: {
+                id: input.id_alerta
+            },
+            data: {
+                visto: input.new_state
+            }
+        })
     }),
     save: publicProcedure.input(z.object({
         id_conversacion: z.number(),

@@ -1,24 +1,95 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { motion } from 'framer-motion'
-import { Box, Button, Grid, IconButton, Typography } from '@mui/material'
+import { Box, Button, Grid, IconButton, Menu, MenuItem, Typography } from '@mui/material'
 import { Circle, Close } from '@mui/icons-material'
-import { api } from '~/utils/api'
+import { api, parseErrorBody } from '~/utils/api'
 import { getSession, useSession } from 'next-auth/react'
 import { User } from 'next-auth'
+import Image from 'next/image';
+import useNotify from '~/hooks/useNotify'
 
 export const Alertas = () => {
+  const { notify } = useNotify();
   const session = useSession();
   const [show_alertas, setShowAlertas] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<{el: null | HTMLElement, id_alerta: number} | null>(null);
 
   const alertas = api.alertas.getByUser.useQuery({id_user: (session.data && session.data.user) ? parseInt(session.data.user.id) : 0, tipo_user: (session.data && session.data.user && session.data.user.tipo_usuario) ? session.data.user.tipo_usuario: ''});
   
+  useEffect(() => {
+    setAnchorEl(null);
+  }, [alertas.data]);
+
+  const updateOneSeen = api.alertas.updateOneSeen.useMutation({
+    onSuccess(data, input) {
+      notify('success', 'Se actualizo la alerta con exito');
+      alertas.refetch();
+    },
+    onError: (error) => {
+      notify('error', parseErrorBody(error.message));
+    }
+  });
+
+  const markAllAsSeen = api.alertas.markAllAsSeen.useMutation({
+    onSuccess(data, input) {
+      notify('success', 'Se actualizaron las alertas con exito');
+      alertas.refetch();
+    },
+    onError: (error) => {
+      notify('error', parseErrorBody(error.message));
+    }
+  });
+
+  const deleteOne = api.alertas.deleteOne.useMutation({
+    onSuccess(data, input) {
+      notify('success', 'Se elimino la alerta con exito');
+      alertas.refetch();
+    },
+    onError: (error) => {
+      notify('error', parseErrorBody(error.message));
+    }
+  })
+
   const alert_elements = useMemo(() => {
     if (alertas.data) {
-      return alertas.data.map(a => <div dangerouslySetInnerHTML={{ __html: a.mensaje }} />)
+      return alertas.data.map(a => {
+        return (
+          <div style={{backgroundColor: (a.visto) ? 'lightgray' : '#4ab7c6'}}>
+            {!a.visto && <Circle style={{ position: 'absolute', color: 'tomato', width: 16, height: 16, marginRight: 4, top: 'calc(50% - 8px)', left: 8 }} />}
+            <div style={{padding: 8, marginLeft: 32, width: '85%'}}>
+              <div dangerouslySetInnerHTML={{ __html: a.mensaje }} />
+            </div>
+            <IconButton 
+              onClick={(e) => { setAnchorEl({el: e.currentTarget, id_alerta: a.id}); }}
+              sx={{
+                position: 'absolute',
+                top: 8,
+                right: 0,
+                width: '50px'
+              }}
+            >
+              <Image src={`/assets/img/iconos/control_rol_edit.svg`} width={16} height={16} alt=""/>
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl?.el}
+              open={Boolean(anchorEl && anchorEl.id_alerta === a.id)}
+              onClose={() => { setAnchorEl(null) }}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={() => { updateOneSeen.mutate({ id_alerta: a.id, new_state: !a.visto }) }}>Marcar como {`${(a.visto) ? 'no leido' : 'leido'}`}</MenuItem>
+              <MenuItem onClick={() => { deleteOne.mutate({ id_alerta: a.id }) }}>Eliminar</MenuItem>
+            </Menu>
+          </div>
+          
+        )
+      })
     }
     return [];
-  }, [alertas.data]);
+  }, [alertas.data, anchorEl]);
 
   return (
     <>
@@ -64,7 +135,7 @@ export const Alertas = () => {
 					<div className="d-flex justify-content-end btn_alerts_header">
             <div className="box_alert_header mr-4">
               <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
-              <span className="count_msn active">2</span>
+              {alertas.data && alertas.data.filter(a => !a.visto).length > 0 ? <span className="count_msn active">{alertas.data.filter(a => !a.visto).length}</span> : null}
             </div>
             <p className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
           </div>
@@ -72,7 +143,9 @@ export const Alertas = () => {
             <Button>
               Ver todas
             </Button>
-            <Button>
+            <Button
+              onClick={() => { markAllAsSeen.mutate({id_user: (session.data && session.data.user) ? parseInt(session.data.user.id) : 0, tipo_user: (session.data && session.data.user && session.data.user.tipo_usuario) ? session.data.user.tipo_usuario: ''})}}
+            >
               Marcar todas como leidas
             </Button>
           </Box>
@@ -81,12 +154,10 @@ export const Alertas = () => {
               return <Grid key={i} item xs={12}>
                 <Box sx={{
                   position: 'relative',
-                  backgroundColor: '#4ab7c6'
+                  display: 'flex',
+                  flexDirection: 'row'
                 }}>
-                  <Circle style={{ position: 'absolute', color: 'tomato', width: 16, height: 16, marginRight: 4, top: 'calc(50% - 8px)', left: 8 }} />
-                  <div style={{marginLeft: 32}}>
-                    {r}
-                  </div>
+                  {r}
                 </Box>
               </Grid>
 
@@ -98,7 +169,7 @@ export const Alertas = () => {
             <div className="d-flex justify-content-end btn_alerts_header">
               <div className="box_alert_header mr-4">
                 <motion.img onClick={() => {setShowAlertas(show => !show)}} src="/assets/img/iconos/bell_blue.svg" alt="" />
-                <span className="count_msn active">2</span>
+                {alertas.data && alertas.data.filter(a => !a.visto).length > 0 ? <span className="count_msn active">{alertas.data.filter(a => !a.visto).length}</span> : null}
               </div>
               <p onClick={() => {setShowAlertas(show => !show)}} className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
             </div>
