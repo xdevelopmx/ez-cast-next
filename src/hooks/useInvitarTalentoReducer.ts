@@ -1,6 +1,6 @@
 import { useReducer } from 'react'
+import Constants from '~/constants';
 import { InvalidEmailError, InvalidFieldError } from '~/utils/errores';
-import { email_regex } from '~/utils/expresiones-regulares';
 
 enum TiposAcciones {
     UPDATE_NOMBRE,
@@ -83,13 +83,13 @@ const useInvitarTalentoReducer = () => {
         if (state.apellido.length < 3) {
             throw new InvalidFieldError("El apellido debe tener al menos 3 dígitos");
         }
-        if (!email_regex.test(state.correo_electronico)) {
+        if (!Constants.PATTERNS.EMAIL.test(state.correo_electronico)) {
             throw new InvalidEmailError();
         }
         if (!state.tipo_correo) {
             throw new InvalidFieldError("Elige una opción de invitación");
         }
-        if (!email_regex.test(state.correo_invitacion)) {
+        if (!Constants.PATTERNS.EMAIL.test(state.correo_invitacion)) {
             throw new InvalidEmailError();
         }
     }

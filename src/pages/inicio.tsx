@@ -39,6 +39,14 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
 
   const container_ref = useRef<HTMLDivElement>(null);
 
+
+  const u = api.auth.createUser.useMutation({
+    onSettled: () => {
+      console.log('xd');
+    }
+  });
+
+
   return (
     <>
       <Head>
@@ -64,6 +72,27 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                     fontWeight: '400'
                   }}
                 >Ahora siendo casteado…</p>
+                <Button onClick={( ) => {
+                  u.mutate({
+                    tipo_usuario: TipoUsuario.CAZATALENTOS,
+                    user: {
+                      nombre: 'TEST', 
+                      apellido: 'TEST', 
+                      contrasenia: 'asdasdasd', 
+                      usuario: 'TEST', 
+                      email: 'test@gmail.com', 
+                      profile_img_url: null, 
+                      tipo_membresia: 'Gratis',
+                      cobro_membresia: 'Anual',
+                      id_openpay: null,
+                      posicion_o_puesto: null,
+                      compania: null,
+                      biografia: 'asd'
+                    }
+                  })
+                }}>
+                  click
+                </Button>
               </div>
               <div className="d-flex align-items-center">
                 <Link href={redirect} style={{ textDecoration: 'none' }}>

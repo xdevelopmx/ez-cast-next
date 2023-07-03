@@ -23,11 +23,11 @@ function exclude<Talentos, Key extends keyof Talentos>(
 // /uploads/talentos/5/fotos-perfil/FOTO_PERFIL/002.png
 
 export const TalentosRouter = createTRPCRouter({
-	getAll: publicProcedure
+	getAll: protectedProcedure
 		.query(async ({ ctx }) => {
 			return await ctx.prisma.talentos.findMany();
 		}
-		),
+	),
 	getInfoBasicaByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
@@ -232,7 +232,6 @@ export const TalentosRouter = createTRPCRouter({
 	getMedidasByIdTalento: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
-			console.log(input, 'getMedidasByIdTalento input')
 			if (input <= 0) return null;
 			const medidas = await ctx.prisma.medidasPorTalentos.findFirst({
 				where: {
@@ -378,6 +377,7 @@ export const TalentosRouter = createTRPCRouter({
 		),
 	saveMedidas: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			general_cadera: z.number().min(1).nullish(),
 			general_entrepiernas: z.number().min(1).nullish(),
 			general_guantes: z.number().min(1).nullish(),
@@ -402,27 +402,18 @@ export const TalentosRouter = createTRPCRouter({
 			calzado_ninos: z.string().min(1).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				const saved_medidas = await ctx.prisma.medidasPorTalentos.upsert({
-					where: {
-						id_talento: parseInt(user.id)
-					},
-					update: input,
-					create: {
-						...input,
-						id_talento: parseInt(user.id)
-					}
-				})
-
-				return saved_medidas;
-			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
-			});
+			if (input.id_talento <= 0) return null;
+			const saved_medidas = await ctx.prisma.medidasPorTalentos.upsert({
+				where: {
+					id_talento: input.id_talento
+				},
+				update: input,
+				create: {
+					...input,
+					id_talento: input.id_talento
+				}
+			})
+			return saved_medidas;
 		}
 		),
 	getInfoGralById: publicProcedure
@@ -441,6 +432,7 @@ export const TalentosRouter = createTRPCRouter({
 		),
 	saveInfoGralMedia: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			cv_url: z.string().nullish(),
 			cv: z.object({
 				nombre: z.string(),
@@ -461,19 +453,50 @@ export const TalentosRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('INPUT saveInfoGralMedia', input)
-			const user = ctx.session.user;
+			if (input.id_talento <= 0) return null;
 			const saved_files: { id_cv: number | null, id_carta_responsiva: number | null } = { id_cv: null, id_carta_responsiva: null };
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
+			
+			const info_gral = await ctx.prisma.infoBasicaPorTalentos.findFirst({
+				where: {
+					id_talento: input.id_talento
+				}
+			});
 
-				const info_gral = await ctx.prisma.infoBasicaPorTalentos.findFirst({
-					where: {
-						id_talento: parseInt(user.id)
+			if (info_gral) {
+				if (input.cv) {
+					if (info_gral.id_media_cv) {
+						const cv = await ctx.prisma.media.findFirst({
+							where: {
+								id: info_gral.id_media_cv
+							}
+						});
+						if (cv) {
+							await FileManager.deleteFiles([cv.clave])
+						}
+						await ctx.prisma.media.delete({
+							where: {
+								id: info_gral.id_media_cv
+							}
+						})
 					}
-				});
+					const media_cv_saved = await ctx.prisma.media.create({
+						data: {
+							nombre: input.cv.nombre,
+							type: input.cv.type,
+							url: input.cv.url,
+							clave: input.cv.clave,
+							referencia: input.cv.referencia,
+							identificador: input.cv.identificador
+						}
+					});
 
-				if (info_gral) {
-					if (input.cv) {
+					if (media_cv_saved) {
+						saved_files.id_cv = media_cv_saved.id;
+					}
+				} else {
+					if (input.cv_url) {
+						saved_files.id_cv = info_gral.id_media_cv;
+					} else {
 						if (info_gral.id_media_cv) {
 							const cv = await ctx.prisma.media.findFirst({
 								where: {
@@ -489,46 +512,12 @@ export const TalentosRouter = createTRPCRouter({
 								}
 							})
 						}
-						const media_cv_saved = await ctx.prisma.media.create({
-							data: {
-								nombre: input.cv.nombre,
-								type: input.cv.type,
-								url: input.cv.url,
-								clave: input.cv.clave,
-								referencia: input.cv.referencia,
-								identificador: input.cv.identificador
-							}
-						});
-
-						if (media_cv_saved) {
-							saved_files.id_cv = media_cv_saved.id;
-						}
-					} else {
-						if (input.cv_url) {
-							saved_files.id_cv = info_gral.id_media_cv;
-						} else {
-							if (info_gral.id_media_cv) {
-								const cv = await ctx.prisma.media.findFirst({
-									where: {
-										id: info_gral.id_media_cv
-									}
-								});
-								if (cv) {
-									await FileManager.deleteFiles([cv.clave])
-								}
-								await ctx.prisma.media.delete({
-									where: {
-										id: info_gral.id_media_cv
-									}
-								})
-							}
-						}
 					}
 				}
 
 				const representante = await ctx.prisma.representantesPorTalentos.findFirst({
 					where: {
-						id_talento: parseInt(user.id)
+						id_talento: input.id_talento
 					}
 				})
 
@@ -591,16 +580,11 @@ export const TalentosRouter = createTRPCRouter({
 				console.log(saved_files);
 				return saved_files;
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
-			});
 		}
-		),
+	),
 	updatePerfil: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			foto_perfil: z.object({
 				nombre: z.string(),
 				type: z.string(),
@@ -626,141 +610,133 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				if (input.foto_perfil) {
-					const foto_perfil = await ctx.prisma.media.findFirst({
-						where: {
-							identificador: `foto-perfil-talento-${user.id}`
-						}
-					})
-					if (foto_perfil) {
-						const result_delete = await FileManager.deleteFiles([foto_perfil.clave]);
-						if (!result_delete.status) {
-							throw new TRPCError({
-								code: 'INTERNAL_SERVER_ERROR',
-								message: `Ocurrio un error al tratar de actualizar la foto de perfil del talento [${result_delete.error}]`,
-								// optional: pass the original error to retain stack trace
-								//cause: theError,
-							});
-						}
+			if (input.id_talento <= 0) return null;
+			if (input.foto_perfil) {
+				const foto_perfil = await ctx.prisma.media.findFirst({
+					where: {
+						identificador: `foto-perfil-talento-${input.id_talento}`
 					}
-					const saved_foto_perfil = await ctx.prisma.media.upsert({
-						where: {
-							id: (foto_perfil) ? foto_perfil.id : 0,
-						},
-						update: input.foto_perfil,
-						create: input.foto_perfil
-					})
-
-					const foto_perfil_en_media = await ctx.prisma.mediaPorTalentos.findFirst({
-						where: {
-							id_media: saved_foto_perfil.id
-						}
-					})
-
-					await ctx.prisma.mediaPorTalentos.upsert({
-						where: {
-							id: (foto_perfil_en_media) ? foto_perfil_en_media.id : 0
-						},
-						update: {
-							id_media: saved_foto_perfil.id
-						},
-						create: {
-							id_media: saved_foto_perfil.id,
-							id_talento: parseInt(user.id)
-						}
-					})
+				})
+				if (foto_perfil) {
+					const result_delete = await FileManager.deleteFiles([foto_perfil.clave]);
+					if (!result_delete.status) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: `Ocurrio un error al tratar de actualizar la foto de perfil del talento [${result_delete.error}]`,
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
 				}
+				const saved_foto_perfil = await ctx.prisma.media.upsert({
+					where: {
+						id: (foto_perfil) ? foto_perfil.id : 0,
+					},
+					update: input.foto_perfil,
+					create: input.foto_perfil
+				})
 
-				const talento = await ctx.prisma.talentos.update({
-					where: { id: parseInt(user.id) },
-					data: {
-						nombre: input.nombre
+				const foto_perfil_en_media = await ctx.prisma.mediaPorTalentos.findFirst({
+					where: {
+						id_media: saved_foto_perfil.id
 					}
 				})
 
-				if (!talento) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-
-				const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
+				await ctx.prisma.mediaPorTalentos.upsert({
 					where: {
-						id_talento: parseInt(user.id)
+						id: (foto_perfil_en_media) ? foto_perfil_en_media.id : 0
 					},
 					update: {
-						biografia: input.biografia,
+						id_media: saved_foto_perfil.id
 					},
 					create: {
-						edad: 18,
-						peso: 75,
-						altura: 176,
-						biografia: input.biografia,
-						id_estado_republica: 1,
-						id_media_cv: null,
-						id_talento: parseInt(user.id)
-					},
-				});
-
-				if (!info_gral) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar la info general del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
-					where: {
-						id_talento: parseInt(user.id)
+						id_media: saved_foto_perfil.id,
+						id_talento: input.id_talento
 					}
-				});
-
-				if (!deleted_redes_sociales) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.redes_sociales) {
-					if (Object.keys(input.redes_sociales).length > 0) {
-						const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
-							data: input.redes_sociales.map(red => {
-								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id) }
-							})
-						})
-						if (!saved_redes_sociales) {
-							throw new TRPCError({
-								code: 'INTERNAL_SERVER_ERROR',
-								message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
-								// optional: pass the original error to retain stack trace
-								//cause: theError,
-							});
-						}
-					}
-				}
-				return info_gral;
+				})
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+
+			const talento = await ctx.prisma.talentos.update({
+				where: { id: input.id_talento },
+				data: {
+					nombre: input.nombre
+				}
+			})
+
+			if (!talento) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+
+			const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
+				where: {
+					id_talento: input.id_talento
+				},
+				update: {
+					biografia: input.biografia,
+				},
+				create: {
+					edad: 18,
+					peso: 75,
+					altura: 176,
+					biografia: input.biografia,
+					id_estado_republica: 1,
+					id_media_cv: null,
+					id_talento: input.id_talento
+				},
 			});
-		}
-		),
+
+			if (!info_gral) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de guardar la info general del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
+				where: {
+					id_talento: input.id_talento
+				}
+			});
+
+			if (!deleted_redes_sociales) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.redes_sociales) {
+				if (Object.keys(input.redes_sociales).length > 0) {
+					const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
+						data: input.redes_sociales.map(red => {
+							return { nombre: red.nombre, url: red.url, id_talento: input.id_talento }
+						})
+					})
+					if (!saved_redes_sociales) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+			}
+			return info_gral;
+	}),
 	saveInfoGral: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			nombre: z.string(),
 			union: z.object({
 				id: z.number(),
@@ -796,196 +772,187 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('INPUT saveInfoGral', input)
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-
-				if (input.edad < 18 && !input.representante) {
-					throw new TRPCError({
-						code: 'PRECONDITION_FAILED',
-						message: 'Si se es menor de edad el representante es obligatorio',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.edad < 18 && !input.media.id_carta_responsiva) {
-					throw new TRPCError({
-						code: 'PRECONDITION_FAILED',
-						message: 'Si se es menor de edad la carta responsiva y el representante son obligatorios',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				const talento = await ctx.prisma.talentos.update({
-					where: { id: parseInt(user.id) },
-					data: {
-						nombre: input.nombre
-					}
-				})
-
-				if (!talento) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
-					where: {
-						id_talento: parseInt(user.id)
-					},
-					update: {
-						edad: input.edad,
-						peso: input.peso,
-						altura: input.altura,
-						biografia: input.biografia,
-						id_estado_republica: input.id_estado_republica,
-						id_media_cv: input.media.id_cv
-					},
-					create: {
-						edad: input.edad,
-						peso: input.peso,
-						altura: input.altura,
-						biografia: input.biografia,
-						id_estado_republica: input.id_estado_republica,
-						id_media_cv: input.media.id_cv,
-						id_talento: parseInt(user.id)
-					},
+			if (input.id_talento <= 0) return null;
+			if (input.edad < 18 && !input.representante) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: 'Si se es menor de edad el representante es obligatorio',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
 				});
-
-				if (!info_gral) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar la info general del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				const union_por_talento = await ctx.prisma.unionPorInfoBasicaTalento.upsert({
-					where: {
-						id_info_basica_por_talentos: info_gral.id
-					},
-					update: {
-						id_union: input.union.id,
-						descripcion: (input.union.id === 99) ? input.union.descripcion : null
-					},
-					create: {
-						id_union: input.union.id,
-						descripcion: (input.union.id === 99) ? input.union.descripcion : null,
-						id_info_basica_por_talentos: info_gral.id
-					},
-				});
-
-				if (!union_por_talento) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar la union del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
-					where: {
-						id_talento: parseInt(user.id)
-					}
-				});
-
-				if (!deleted_redes_sociales) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.redes_sociales) {
-					if (Object.keys(input.redes_sociales).length > 0) {
-						const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
-							data: input.redes_sociales.map(red => {
-								return { nombre: red.nombre, url: red.url, id_talento: parseInt(user.id) }
-							})
-						})
-						if (!saved_redes_sociales) {
-							throw new TRPCError({
-								code: 'INTERNAL_SERVER_ERROR',
-								message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
-								// optional: pass the original error to retain stack trace
-								//cause: theError,
-							});
-						}
-					}
-				}
-
-				if (input.edad < 18) {
-					if (input.representante) {
-						const saved_representante = await ctx.prisma.representantesPorTalentos.upsert({
-							where: {
-								id_talento: parseInt(user.id)
-							},
-							update: {
-								id_media_carta_responsiva: input.media.id_carta_responsiva,
-								nombre: input.representante.nombre,
-								agencia: input.representante.agencia,
-								email: input.representante.email,
-								telefono: input.representante.telefono
-							},
-							create: {
-								nombre: input.representante.nombre,
-								agencia: input.representante.agencia,
-								email: input.representante.email,
-								telefono: input.representante.telefono,
-								id_media_carta_responsiva: input.media.id_carta_responsiva,
-								id_talento: parseInt(user.id)
-							},
-						});
-
-						if (!saved_representante) {
-							throw new TRPCError({
-								code: 'INTERNAL_SERVER_ERROR',
-								message: 'Ocurrio un error al tratar de guardar el representante del talento',
-								// optional: pass the original error to retain stack trace
-								//cause: theError,
-							});
-						}
-					}
-				} else {
-					const representante_exist = await ctx.prisma.representantesPorTalentos.findFirst({
-						where: { id_talento: parseInt(user.id) }
-					});
-					if (representante_exist) {
-						// si es mayor de edad eliminamos al representante
-						const deleted_representante = await ctx.prisma.representantesPorTalentos.delete({
-							where: { id_talento: parseInt(user.id) }
-						})
-						if (!deleted_representante) {
-							throw new TRPCError({
-								code: 'INTERNAL_SERVER_ERROR',
-								message: 'Ocurrio un problema al tratar de eliminar el representante',
-								// optional: pass the original error to retain stack trace
-								//cause: theError,
-							});
-						}
-					}
-				}
-				return info_gral;
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+
+			if (input.edad < 18 && !input.media.id_carta_responsiva) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: 'Si se es menor de edad la carta responsiva y el representante son obligatorios',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			const talento = await ctx.prisma.talentos.update({
+				where: { id: input.id_talento },
+				data: {
+					nombre: input.nombre
+				}
+			})
+
+			if (!talento) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
+				where: {
+					id_talento: input.id_talento
+				},
+				update: {
+					edad: input.edad,
+					peso: input.peso,
+					altura: input.altura,
+					biografia: input.biografia,
+					id_estado_republica: input.id_estado_republica,
+					id_media_cv: input.media.id_cv
+				},
+				create: {
+					edad: input.edad,
+					peso: input.peso,
+					altura: input.altura,
+					biografia: input.biografia,
+					id_estado_republica: input.id_estado_republica,
+					id_media_cv: input.media.id_cv,
+					id_talento: input.id_talento
+				},
 			});
+
+			if (!info_gral) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de guardar la info general del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			const union_por_talento = await ctx.prisma.unionPorInfoBasicaTalento.upsert({
+				where: {
+					id_info_basica_por_talentos: info_gral.id
+				},
+				update: {
+					id_union: input.union.id,
+					descripcion: (input.union.id === 99) ? input.union.descripcion : null
+				},
+				create: {
+					id_union: input.union.id,
+					descripcion: (input.union.id === 99) ? input.union.descripcion : null,
+					id_info_basica_por_talentos: info_gral.id
+				},
+			});
+
+			if (!union_por_talento) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de guardar la union del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			const deleted_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.deleteMany({
+				where: {
+					id_talento: input.id_talento
+				}
+			});
+
+			if (!deleted_redes_sociales) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.redes_sociales) {
+				if (Object.keys(input.redes_sociales).length > 0) {
+					const saved_redes_sociales = await ctx.prisma.redesSocialesPorTalentos.createMany({
+						data: input.redes_sociales.map(red => {
+							return { nombre: red.nombre, url: red.url, id_talento: input.id_talento }
+						})
+					})
+					if (!saved_redes_sociales) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+			}
+
+			if (input.edad < 18) {
+				if (input.representante) {
+					const saved_representante = await ctx.prisma.representantesPorTalentos.upsert({
+						where: {
+							id_talento: input.id_talento
+						},
+						update: {
+							id_media_carta_responsiva: input.media.id_carta_responsiva,
+							nombre: input.representante.nombre,
+							agencia: input.representante.agencia,
+							email: input.representante.email,
+							telefono: input.representante.telefono
+						},
+						create: {
+							nombre: input.representante.nombre,
+							agencia: input.representante.agencia,
+							email: input.representante.email,
+							telefono: input.representante.telefono,
+							id_media_carta_responsiva: input.media.id_carta_responsiva,
+							id_talento: input.id_talento
+						},
+					});
+
+					if (!saved_representante) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un error al tratar de guardar el representante del talento',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+			} else {
+				const representante_exist = await ctx.prisma.representantesPorTalentos.findFirst({
+					where: { id_talento: input.id_talento }
+				});
+				if (representante_exist) {
+					// si es mayor de edad eliminamos al representante
+					const deleted_representante = await ctx.prisma.representantesPorTalentos.delete({
+						where: { id_talento: input.id_talento }
+					})
+					if (!deleted_representante) {
+						throw new TRPCError({
+							code: 'INTERNAL_SERVER_ERROR',
+							message: 'Ocurrio un problema al tratar de eliminar el representante',
+							// optional: pass the original error to retain stack trace
+							//cause: theError,
+						});
+					}
+				}
+			}
+			return info_gral;
 		}
-		),
+	),
 	saveMedios: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			fotos: z.array(z.object({
 				id: z.number(),
 				nombre: z.string(),
@@ -1015,229 +982,213 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish(),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('INPUT saveMedios', input)
-			const user = ctx.session.user;
+			if (input.id_talento <= 0) return null;
 			const saved_files: { ids_fotos: number[], ids_videos: number[], ids_audios: number[] } = { ids_fotos: [], ids_videos: [], ids_audios: [] };
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-
-				if (!input.fotos || input.fotos.length > 0) {
-					try {
-						const fotos_perfil = await ctx.prisma.media.findMany({
-							where: {
-								referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
-							},
-						})
-						if (fotos_perfil.length > 0) {
-							await FileManager.deleteFiles(fotos_perfil.map(f => f.clave));
-						}
-						await ctx.prisma.media.deleteMany({
-							where: {
-								referencia: `FOTOS-PERFIL-TALENTO-${user.id}`
-							},
-						})
-					} catch (e) { }
-				}
-
-				if (input.fotos) {
-					const media_fotos_saved = await Promise.all(input.fotos.map(async (f) => {
-						const saved = await ctx.prisma.media.upsert({
-							where: {
-								id: f.id
-							},
-							update: {
-								nombre: f.nombre,
-								type: f.type,
-								url: f.url,
-								clave: f.clave,
-								referencia: f.referencia,
-								identificador: f.identificador
-							},
-							create: {
-								nombre: f.nombre,
-								type: f.type,
-								url: f.url,
-								clave: f.clave,
-								referencia: f.referencia,
-								identificador: f.identificador
-							}
-						});
-						return saved.id;
-					}));
-
-					if (media_fotos_saved.length > 0) {
-						saved_files.ids_fotos.push(...media_fotos_saved);
-					}
-				}
-
-				if (!input.videos || input.videos.length > 0) {
-					const videos_perfil = await ctx.prisma.media.findMany({
+			
+			if (!input.fotos || input.fotos.length > 0) {
+				try {
+					const fotos_perfil = await ctx.prisma.media.findMany({
 						where: {
-							referencia: `VIDEOS-TALENTO-${user.id}`
+							referencia: `FOTOS-PERFIL-TALENTO-${input.id_talento}`
 						},
 					})
-					if (videos_perfil.length > 0) {
-						await FileManager.deleteFiles(videos_perfil.map(f => f.clave));
+					if (fotos_perfil.length > 0) {
+						await FileManager.deleteFiles(fotos_perfil.map(f => f.clave));
 					}
 					await ctx.prisma.media.deleteMany({
 						where: {
-							referencia: `VIDEOS-TALENTO-${user.id}`
+							referencia: `FOTOS-PERFIL-TALENTO-${input.id_talento}`
 						},
 					})
-				}
-
-				if (input.videos) {
-
-					const media_videos_saved = await Promise.all(input.videos.map(async (f) => {
-						const saved = await ctx.prisma.media.upsert({
-							where: {
-								id: f.id
-							},
-							update: {
-								nombre: f.nombre,
-								type: f.type,
-								url: f.url,
-								clave: f.clave,
-								referencia: f.referencia,
-								identificador: f.identificador
-							},
-							create: {
-								nombre: f.nombre,
-								type: f.type,
-								url: f.url,
-								clave: f.clave,
-								referencia: f.referencia,
-								identificador: f.identificador
-							}
-						});
-						return saved.id;
-					}));
-
-					if (media_videos_saved.length > 0) {
-						saved_files.ids_videos.push(...media_videos_saved);
-					}
-				}
-
-
-				if (!input.audios || input.audios.length > 0) {
-					const audios_perfil = await ctx.prisma.media.findMany({
-						where: {
-							referencia: `AUDIOS-TALENTO-${user.id}`
-						},
-					})
-					if (audios_perfil.length > 0) {
-						await FileManager.deleteFiles(audios_perfil.map(f => f.clave));
-					}
-					await ctx.prisma.media.deleteMany({
-						where: {
-							referencia: `AUDIOS-TALENTO-${user.id}`
-						},
-					})
-				}
-
-				if (input.audios) {
-
-					const media_audios_saved = await Promise.all(input.audios.map(async (f) => {
-						const saved = await ctx.prisma.media.upsert({
-							where: {
-								id: f.id
-							},
-							update: {
-								nombre: f.nombre,
-								type: f.type,
-								url: f.url,
-								clave: f.clave,
-								referencia: f.referencia,
-								identificador: f.identificador
-							},
-							create: {
-								nombre: f.nombre,
-								type: f.type,
-								url: f.url,
-								clave: f.clave,
-								referencia: f.referencia,
-								identificador: f.identificador
-							}
-						});
-						return saved.id;
-					}));
-
-					if (media_audios_saved.length > 0) {
-						saved_files.ids_audios.push(...media_audios_saved);
-					}
-				}
-
-
-
-
-				if (saved_files.ids_fotos.length > 0) {
-					const fotos_saved = await ctx.prisma.mediaPorTalentos.createMany({
-						data: saved_files.ids_fotos.map(id => { return { id_media: id, id_talento: parseInt(user.id) } })
-					})
-					console.log(fotos_saved);
-				}
-
-				if (saved_files.ids_videos.length > 0) {
-					const videos_saved = await ctx.prisma.mediaPorTalentos.createMany({
-						data: saved_files.ids_videos.map(id => { return { id_media: id, id_talento: parseInt(user.id) } })
-					})
-					console.log(videos_saved);
-				}
-
-				if (saved_files.ids_audios.length > 0) {
-					const audios_saved = await ctx.prisma.mediaPorTalentos.createMany({
-						data: saved_files.ids_audios.map(id => { return { id_media: id, id_talento: parseInt(user.id) } })
-					})
-					console.log(audios_saved);
-				}
-
-				return saved_files;
+				} catch (e) { }
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
-			});
+
+			if (input.fotos) {
+				const media_fotos_saved = await Promise.all(input.fotos.map(async (f) => {
+					const saved = await ctx.prisma.media.upsert({
+						where: {
+							id: f.id
+						},
+						update: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						},
+						create: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						}
+					});
+					return saved.id;
+				}));
+
+				if (media_fotos_saved.length > 0) {
+					saved_files.ids_fotos.push(...media_fotos_saved);
+				}
+			}
+
+			if (!input.videos || input.videos.length > 0) {
+				const videos_perfil = await ctx.prisma.media.findMany({
+					where: {
+						referencia: `VIDEOS-TALENTO-${input.id_talento}`
+					},
+				})
+				if (videos_perfil.length > 0) {
+					await FileManager.deleteFiles(videos_perfil.map(f => f.clave));
+				}
+				await ctx.prisma.media.deleteMany({
+					where: {
+						referencia: `VIDEOS-TALENTO-${input.id_talento}`
+					},
+				})
+			}
+
+			if (input.videos) {
+
+				const media_videos_saved = await Promise.all(input.videos.map(async (f) => {
+					const saved = await ctx.prisma.media.upsert({
+						where: {
+							id: f.id
+						},
+						update: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						},
+						create: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						}
+					});
+					return saved.id;
+				}));
+
+				if (media_videos_saved.length > 0) {
+					saved_files.ids_videos.push(...media_videos_saved);
+				}
+			}
+
+
+			if (!input.audios || input.audios.length > 0) {
+				const audios_perfil = await ctx.prisma.media.findMany({
+					where: {
+						referencia: `AUDIOS-TALENTO-${input.id_talento}`
+					},
+				})
+				if (audios_perfil.length > 0) {
+					await FileManager.deleteFiles(audios_perfil.map(f => f.clave));
+				}
+				await ctx.prisma.media.deleteMany({
+					where: {
+						referencia: `AUDIOS-TALENTO-${input.id_talento}`
+					},
+				})
+			}
+
+			if (input.audios) {
+
+				const media_audios_saved = await Promise.all(input.audios.map(async (f) => {
+					const saved = await ctx.prisma.media.upsert({
+						where: {
+							id: f.id
+						},
+						update: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						},
+						create: {
+							nombre: f.nombre,
+							type: f.type,
+							url: f.url,
+							clave: f.clave,
+							referencia: f.referencia,
+							identificador: f.identificador
+						}
+					});
+					return saved.id;
+				}));
+
+				if (media_audios_saved.length > 0) {
+					saved_files.ids_audios.push(...media_audios_saved);
+				}
+			}
+
+
+
+
+			if (saved_files.ids_fotos.length > 0) {
+				const fotos_saved = await ctx.prisma.mediaPorTalentos.createMany({
+					data: saved_files.ids_fotos.map(id => { return { id_media: id, id_talento: input.id_talento } })
+				})
+				console.log(fotos_saved);
+			}
+
+			if (saved_files.ids_videos.length > 0) {
+				const videos_saved = await ctx.prisma.mediaPorTalentos.createMany({
+					data: saved_files.ids_videos.map(id => { return { id_media: id, id_talento: input.id_talento } })
+				})
+				console.log(videos_saved);
+			}
+
+			if (saved_files.ids_audios.length > 0) {
+				const audios_saved = await ctx.prisma.mediaPorTalentos.createMany({
+					data: saved_files.ids_audios.map(id => { return { id_media: id, id_talento: input.id_talento } })
+				})
+				console.log(audios_saved);
+			}
+
+			return saved_files;
 		}
-		),
+	),
 	updateCreditoDestacado: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			id_credito: z.number(),
 			destacado: z.boolean()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				const credito_saved = await ctx.prisma.creditoTalento.update({
-					where: {
-						id: input.id_credito
-					},
-					data: {
-						destacado: input.destacado
-					}
-				});
-
-				if (!credito_saved) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de actualizar el credito',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
+			const credito_saved = await ctx.prisma.creditoTalento.update({
+				where: {
+					id: input.id_credito
+				},
+				data: {
+					destacado: input.destacado
 				}
-
-				return credito_saved;
-			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar los creditos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
 			});
+
+			if (!credito_saved) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de actualizar el credito',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			return credito_saved;
 		}
-		),
+	),
 	saveCreditos: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			mostrar_anio_en_perfil: z.boolean(),
 			creditos: z.array(z.object({
 				id_catalogo_proyecto: z.number(),
@@ -1259,177 +1210,162 @@ export const TalentosRouter = createTRPCRouter({
 		}))
 		.mutation(async ({ input, ctx }) => {
 			console.log('INPUT saveCreditos', input)
+			if (input.id_talento <= 0) return null;
 			input.creditos.forEach(c => {
 				console.log(c.media)
 			})
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				const creditos_por_talentos = await ctx.prisma.creditosPorTalentos.upsert({
-					where: {
-						id_talento: parseInt(user.id)
-					},
-					update: {
-						mostrar_anio_perfil: input.mostrar_anio_en_perfil,
-					},
-					create: {
-						mostrar_anio_perfil: input.mostrar_anio_en_perfil,
-						id_talento: parseInt(user.id)
-					},
+			const creditos_por_talentos = await ctx.prisma.creditosPorTalentos.upsert({
+				where: {
+					id_talento: input.id_talento
+				},
+				update: {
+					mostrar_anio_perfil: input.mostrar_anio_en_perfil,
+				},
+				create: {
+					mostrar_anio_perfil: input.mostrar_anio_en_perfil,
+					id_talento: input.id_talento
+				},
+			});
+
+			if (!creditos_por_talentos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de actualizar los creditos por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
 				});
+			}
 
-				if (!creditos_por_talentos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de actualizar los creditos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
+			const creditos = await ctx.prisma.creditoTalento.findMany({
+				where: {
+					id_creditos_por_talento: creditos_por_talentos.id
+				},
+				include: {
+					media: true
 				}
+			});
 
-				const creditos = await ctx.prisma.creditoTalento.findMany({
-					where: {
-						id_creditos_por_talento: creditos_por_talentos.id
-					},
-					include: {
-						media: true
-					}
+			if (creditos.length > 0) {
+				await FileManager.deleteFiles(creditos.map(c => (c.media) ? c.media.clave : '').filter(c => c !== ''))
+			}
+
+			const deleted_creditos = await ctx.prisma.creditoTalento.deleteMany({
+				where: {
+					id_creditos_por_talento: creditos_por_talentos.id
+				}
+			});
+			if (!deleted_creditos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los creditos por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
 				});
+			}
 
-				if (creditos.length > 0) {
-					await FileManager.deleteFiles(creditos.map(c => (c.media) ? c.media.clave : '').filter(c => c !== ''))
+			await ctx.prisma.media.deleteMany({
+				where: {
+					referencia: `CREDITOS-TALENTO-${input.id_talento}`
 				}
+			})
 
-				const deleted_creditos = await ctx.prisma.creditoTalento.deleteMany({
-					where: {
-						id_creditos_por_talento: creditos_por_talentos.id
-					}
-				});
-				if (!deleted_creditos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los creditos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
+			if (input.creditos.length > 0) {
 
-				await ctx.prisma.media.deleteMany({
-					where: {
-						referencia: `CREDITOS-TALENTO-${user.id}`
-					}
-				})
-
-				if (input.creditos.length > 0) {
-
-					const created_creditos = await Promise.all(input.creditos.map(async (credito) => {
-						if (credito.media) {
-							const clip_media = await ctx.prisma.media.create({
-								data: {
-									nombre: credito.media.nombre,
-									type: credito.media.type,
-									url: credito.media.url,
-									clave: credito.media.clave,
-									referencia: credito.media.referencia,
-									identificador: credito.media.identificador
-								}
-							});
-							return await ctx.prisma.creditoTalento.create({
-								data: {
-									id_creditos_por_talento: creditos_por_talentos.id,
-									id_catalogo_proyecto: credito.id_catalogo_proyecto,
-									titulo: credito.titulo,
-									rol: credito.rol,
-									director: credito.director,
-									anio: credito.anio,
-									destacado: credito.destacado,
-									id_media_clip: clip_media.id
-								}
-							});
-						} else {
-							return await ctx.prisma.creditoTalento.create({
-								data: {
-									id_creditos_por_talento: creditos_por_talentos.id,
-									id_catalogo_proyecto: credito.id_catalogo_proyecto,
-									titulo: credito.titulo,
-									rol: credito.rol,
-									director: credito.director,
-									anio: credito.anio,
-									destacado: credito.destacado
-								}
-							});
-						}
-					}));
-
-					if (!created_creditos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los creditos por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+				const created_creditos = await Promise.all(input.creditos.map(async (credito) => {
+					if (credito.media) {
+						const clip_media = await ctx.prisma.media.create({
+							data: {
+								nombre: credito.media.nombre,
+								type: credito.media.type,
+								url: credito.media.url,
+								clave: credito.media.clave,
+								referencia: credito.media.referencia,
+								identificador: credito.media.identificador
+							}
+						});
+						return await ctx.prisma.creditoTalento.create({
+							data: {
+								id_creditos_por_talento: creditos_por_talentos.id,
+								id_catalogo_proyecto: credito.id_catalogo_proyecto,
+								titulo: credito.titulo,
+								rol: credito.rol,
+								director: credito.director,
+								anio: credito.anio,
+								destacado: credito.destacado,
+								id_media_clip: clip_media.id
+							}
+						});
+					} else {
+						return await ctx.prisma.creditoTalento.create({
+							data: {
+								id_creditos_por_talento: creditos_por_talentos.id,
+								id_catalogo_proyecto: credito.id_catalogo_proyecto,
+								titulo: credito.titulo,
+								rol: credito.rol,
+								director: credito.director,
+								anio: credito.anio,
+								destacado: credito.destacado
+							}
 						});
 					}
-				}
+				}));
 
-				return creditos_por_talentos;
+				if (!created_creditos) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los creditos por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar los creditos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
-			});
+
+			return creditos_por_talentos;
 		}
-		),
+	),
 	saveHabilidades: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			ids_habilidades: z.array(z.object({
 				id_habilidad: z.number(),
 				id_habilidad_especifica: z.number()
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-
-				const deleted_habilidades = await ctx.prisma.habilidadesPorTalentos.deleteMany({
-					where: {
-						id_talento: parseInt(user.id)
-					}
+			if (input.id_talento <= 0) return null;
+			const deleted_habilidades = await ctx.prisma.habilidadesPorTalentos.deleteMany({
+				where: {
+					id_talento: input.id_talento
+				}
+			});
+			if (!deleted_habilidades) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las habilidades por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
 				});
-				if (!deleted_habilidades) {
+			}
+
+			if (input.ids_habilidades.length > 0) {
+				const saved_habilidades = await ctx.prisma.habilidadesPorTalentos.createMany({
+					data: input.ids_habilidades.map(entry => { return { ...entry, id_talento: input.id_talento } })
+				});
+				if (!saved_habilidades) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las habilidades por talentos',
+						message: 'Ocurrio un error al tratar de guardar las habilidades por talentos',
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
 				}
-
-				if (input.ids_habilidades.length > 0) {
-					const saved_habilidades = await ctx.prisma.habilidadesPorTalentos.createMany({
-						data: input.ids_habilidades.map(entry => { return { ...entry, id_talento: parseInt(user.id) } })
-					});
-					if (!saved_habilidades) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las habilidades por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-				return true;
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar las habilidades',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
-			});
+			return true;
 		}
-		),
+	),
 	saveActivos: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			vehiculos: z.array(z.object({
 				id_tipo_vehiculo: z.number(),
 				marca: z.string(),
@@ -1456,177 +1392,169 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-
-				const activos_por_talento = await ctx.prisma.activosPorTalentos.upsert({
-					where: { id_talento: parseInt(user.id) },
-					update: {},
-					create: {
-						id_talento: parseInt(user.id)
-					}
-				});
-
-				if (!activos_por_talento) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de obtener los activos por talento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
+			if (input.id_talento <= 0) return null;
+			const activos_por_talento = await ctx.prisma.activosPorTalentos.upsert({
+				where: { id_talento: input.id_talento },
+				update: {},
+				create: {
+					id_talento: input.id_talento
 				}
-
-				const deleted_vehiculos = await ctx.prisma.vehiculoTalento.deleteMany({
-					where: {
-						id_activos_talentos: activos_por_talento.id
-					}
-				});
-				if (!deleted_vehiculos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los vehiculos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.vehiculos.length > 0) {
-					const saved_vehiculos = await ctx.prisma.vehiculoTalento.createMany({
-						data: input.vehiculos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
-					});
-					if (!saved_vehiculos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los vehiculos por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_mascotas = await ctx.prisma.mascotaTalento.deleteMany({
-					where: {
-						id_activos_talentos: activos_por_talento.id
-					}
-				});
-				if (!deleted_mascotas) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las mascotas por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.mascotas.length > 0) {
-					const saved_mascotas = await ctx.prisma.mascotaTalento.createMany({
-						data: input.mascotas.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id, id_raza: (entry.id_raza && entry.id_raza > 0) ? entry.id_raza : null } })
-					});
-					if (!saved_mascotas) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las mascotas por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_vestuarios = await ctx.prisma.vestuarioTalento.deleteMany({
-					where: {
-						id_activos_talentos: activos_por_talento.id
-					}
-				});
-				if (!deleted_vestuarios) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los vestuarios por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.vestuarios.length > 0) {
-					const saved_vestuarios = await ctx.prisma.vestuarioTalento.createMany({
-						data: input.vestuarios.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
-					});
-					if (!saved_vestuarios) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los vestuarios por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_props = await ctx.prisma.propsTalento.deleteMany({
-					where: {
-						id_activos_talentos: activos_por_talento.id
-					}
-				});
-				if (!deleted_props) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los props por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.props.length > 0) {
-					const saved_props = await ctx.prisma.propsTalento.createMany({
-						data: input.props.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
-					});
-					if (!saved_props) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los props por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_equipos_deportivos = await ctx.prisma.equipoDeportivoTalento.deleteMany({
-					where: {
-						id_activos_talentos: activos_por_talento.id
-					}
-				});
-				if (!deleted_equipos_deportivos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los equipos deportivos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.equipos_deportivos.length > 0) {
-					const saved_equipos_deportivos = await ctx.prisma.equipoDeportivoTalento.createMany({
-						data: input.equipos_deportivos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
-					});
-					if (!saved_equipos_deportivos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los equipos deportivos por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-				return activos_por_talento;
-			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar las habilidades',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
 			});
+
+			if (!activos_por_talento) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de obtener los activos por talento',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			const deleted_vehiculos = await ctx.prisma.vehiculoTalento.deleteMany({
+				where: {
+					id_activos_talentos: activos_por_talento.id
+				}
+			});
+			if (!deleted_vehiculos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los vehiculos por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.vehiculos.length > 0) {
+				const saved_vehiculos = await ctx.prisma.vehiculoTalento.createMany({
+					data: input.vehiculos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
+				});
+				if (!saved_vehiculos) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los vehiculos por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_mascotas = await ctx.prisma.mascotaTalento.deleteMany({
+				where: {
+					id_activos_talentos: activos_por_talento.id
+				}
+			});
+			if (!deleted_mascotas) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las mascotas por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.mascotas.length > 0) {
+				const saved_mascotas = await ctx.prisma.mascotaTalento.createMany({
+					data: input.mascotas.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id, id_raza: (entry.id_raza && entry.id_raza > 0) ? entry.id_raza : null } })
+				});
+				if (!saved_mascotas) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar las mascotas por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_vestuarios = await ctx.prisma.vestuarioTalento.deleteMany({
+				where: {
+					id_activos_talentos: activos_por_talento.id
+				}
+			});
+			if (!deleted_vestuarios) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los vestuarios por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.vestuarios.length > 0) {
+				const saved_vestuarios = await ctx.prisma.vestuarioTalento.createMany({
+					data: input.vestuarios.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
+				});
+				if (!saved_vestuarios) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los vestuarios por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_props = await ctx.prisma.propsTalento.deleteMany({
+				where: {
+					id_activos_talentos: activos_por_talento.id
+				}
+			});
+			if (!deleted_props) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los props por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.props.length > 0) {
+				const saved_props = await ctx.prisma.propsTalento.createMany({
+					data: input.props.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
+				});
+				if (!saved_props) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los props por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_equipos_deportivos = await ctx.prisma.equipoDeportivoTalento.deleteMany({
+				where: {
+					id_activos_talentos: activos_por_talento.id
+				}
+			});
+			if (!deleted_equipos_deportivos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los equipos deportivos por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.equipos_deportivos.length > 0) {
+				const saved_equipos_deportivos = await ctx.prisma.equipoDeportivoTalento.createMany({
+					data: input.equipos_deportivos.map(entry => { return { ...entry, id_activos_talentos: activos_por_talento.id } })
+				});
+				if (!saved_equipos_deportivos) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los equipos deportivos por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+			return activos_por_talento;	
 		}
-		),
+	),
 	savePreferencias: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			preferencias: z.object({
 				interesado_en_trabajos_de_extra: z.boolean(),
 				nombre_agente: z.string().nullish(),
@@ -1656,227 +1584,220 @@ export const TalentosRouter = createTRPCRouter({
 			otras_profesiones: z.array(z.string().min(3)),
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-
-				if (input.locaciones.length === 0 || !input.locaciones.some(l => l.es_principal)) {
-					throw new TRPCError({
-						code: 'PRECONDITION_FAILED',
-						message: 'Se debe enviar al menos una locacion principal',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-
-				const preferencias = await ctx.prisma.preferenciasPorTalentos.upsert({
-					where: { id_talento: parseInt(user.id) },
-					update: {
-						interesado_en_trabajos_de_extra: input.preferencias.interesado_en_trabajos_de_extra,
-						nombre_agente: input.preferencias.nombre_agente,
-						contacto_agente: input.preferencias.contacto_agente,
-						meses_embarazo: input.preferencias.meses_embarazo,
-					},
-					create: {
-						interesado_en_trabajos_de_extra: input.preferencias.interesado_en_trabajos_de_extra,
-						nombre_agente: input.preferencias.nombre_agente,
-						contacto_agente: input.preferencias.contacto_agente,
-						meses_embarazo: input.preferencias.meses_embarazo,
-						id_talento: parseInt(user.id)
-					}
-				})
-
-				const deleted_tipos_de_trabajos = await ctx.prisma.tiposDeTrabajoPorTalentos.deleteMany({
-					where: {
-						id_preferencias_por_talentos: preferencias.id
-					}
+			if (input.id_talento <= 0) return null;
+			
+			if (input.locaciones.length === 0 || !input.locaciones.some(l => l.es_principal)) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: 'Se debe enviar al menos una locacion principal',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
 				});
-
-				if (!deleted_tipos_de_trabajos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los tipos de trabajos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.tipos_trabajo.length > 0) {
-					const saved_tipos_de_trabajo = await ctx.prisma.tiposDeTrabajoPorTalentos.createMany({
-						data: input.tipos_trabajo.map(tdt => { return { id_tipo_de_trabajo: tdt, id_preferencias_por_talentos: preferencias.id } })
-					})
-
-					if (!saved_tipos_de_trabajo) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los tipos de trabajos por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_intereses_en_proyectos = await ctx.prisma.interesEnProyectosPorTalentos.deleteMany({
-					where: {
-						id_preferencias_por_talentos: preferencias.id
-					}
-				})
-
-				if (!deleted_intereses_en_proyectos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los intereses por proyecto por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.interes_en_proyectos.length > 0) {
-					const saved_intereses_en_proyectos = await ctx.prisma.interesEnProyectosPorTalentos.createMany({
-						data: input.interes_en_proyectos.map(e => { return { id_interes_en_proyecto: e, id_preferencias_por_talentos: preferencias.id } })
-					})
-
-					if (!saved_intereses_en_proyectos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los intereses en proyectos por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_locaciones = await ctx.prisma.locacionesPrerenciasPorTalentos.deleteMany({
-					where: {
-						id_preferencias_por_talentos: preferencias.id
-					}
-				})
-
-				if (!deleted_locaciones) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las locaciones por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.locaciones.length > 0) {
-					const saved_locaciones = await ctx.prisma.locacionesPrerenciasPorTalentos.createMany({
-						data: input.locaciones.map(e => { return { id_estado_republica: e.id_estado_republica, es_principal: e.es_principal, id_preferencias_por_talentos: preferencias.id } })
-					})
-
-					if (!saved_locaciones) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las locaciones por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_documentos = await ctx.prisma.documentosPorTalentos.deleteMany({
-					where: {
-						id_preferencias_por_talentos: preferencias.id
-					}
-				})
-
-				if (!deleted_documentos) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los documentos solicitados por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.documentos.length > 0) {
-					const saved_documentos = await ctx.prisma.documentosPorTalentos.createMany({
-						data: input.documentos.map(e => { return { id_documento: e.id_documento, descripcion: e.descripcion, id_preferencias_por_talentos: preferencias.id } })
-					})
-
-					if (!saved_documentos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los documentos solicitados por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_disponibilidad = await ctx.prisma.disponibilidadesPorTalentos.deleteMany({
-					where: {
-						id_preferencias_por_talentos: preferencias.id
-					}
-				})
-
-				if (!deleted_disponibilidad) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las disponibilidades por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.disponibilidad.length > 0) {
-					const saved_disponibilidad = await ctx.prisma.disponibilidadesPorTalentos.createMany({
-						data: input.disponibilidad.map(e => { return { id_disponibilidad: e, id_preferencias_por_talentos: preferencias.id } })
-					})
-
-					if (!saved_disponibilidad) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las disponibilidades por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_otras_profesiones = await ctx.prisma.otrasProfesionesPorTalentos.deleteMany({
-					where: {
-						id_preferencias_por_talentos: preferencias.id
-					}
-				})
-
-				if (!deleted_otras_profesiones) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las otras profesiones por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.otras_profesiones.length > 0) {
-					const saved_otras_profesiones = await ctx.prisma.otrasProfesionesPorTalentos.createMany({
-						data: input.otras_profesiones.map(e => { return { descripcion: e, id_preferencias_por_talentos: preferencias.id } })
-					})
-
-					if (!saved_otras_profesiones) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las otras profesiones por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-				return preferencias;
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar las habilidades',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+
+
+			const preferencias = await ctx.prisma.preferenciasPorTalentos.upsert({
+				where: { id_talento: input.id_talento },
+				update: {
+					interesado_en_trabajos_de_extra: input.preferencias.interesado_en_trabajos_de_extra,
+					nombre_agente: input.preferencias.nombre_agente,
+					contacto_agente: input.preferencias.contacto_agente,
+					meses_embarazo: input.preferencias.meses_embarazo,
+				},
+				create: {
+					interesado_en_trabajos_de_extra: input.preferencias.interesado_en_trabajos_de_extra,
+					nombre_agente: input.preferencias.nombre_agente,
+					contacto_agente: input.preferencias.contacto_agente,
+					meses_embarazo: input.preferencias.meses_embarazo,
+					id_talento: input.id_talento
+				}
+			})
+
+			const deleted_tipos_de_trabajos = await ctx.prisma.tiposDeTrabajoPorTalentos.deleteMany({
+				where: {
+					id_preferencias_por_talentos: preferencias.id
+				}
 			});
+
+			if (!deleted_tipos_de_trabajos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los tipos de trabajos por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.tipos_trabajo.length > 0) {
+				const saved_tipos_de_trabajo = await ctx.prisma.tiposDeTrabajoPorTalentos.createMany({
+					data: input.tipos_trabajo.map(tdt => { return { id_tipo_de_trabajo: tdt, id_preferencias_por_talentos: preferencias.id } })
+				})
+
+				if (!saved_tipos_de_trabajo) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los tipos de trabajos por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_intereses_en_proyectos = await ctx.prisma.interesEnProyectosPorTalentos.deleteMany({
+				where: {
+					id_preferencias_por_talentos: preferencias.id
+				}
+			})
+
+			if (!deleted_intereses_en_proyectos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los intereses por proyecto por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.interes_en_proyectos.length > 0) {
+				const saved_intereses_en_proyectos = await ctx.prisma.interesEnProyectosPorTalentos.createMany({
+					data: input.interes_en_proyectos.map(e => { return { id_interes_en_proyecto: e, id_preferencias_por_talentos: preferencias.id } })
+				})
+
+				if (!saved_intereses_en_proyectos) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los intereses en proyectos por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_locaciones = await ctx.prisma.locacionesPrerenciasPorTalentos.deleteMany({
+				where: {
+					id_preferencias_por_talentos: preferencias.id
+				}
+			})
+
+			if (!deleted_locaciones) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las locaciones por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.locaciones.length > 0) {
+				const saved_locaciones = await ctx.prisma.locacionesPrerenciasPorTalentos.createMany({
+					data: input.locaciones.map(e => { return { id_estado_republica: e.id_estado_republica, es_principal: e.es_principal, id_preferencias_por_talentos: preferencias.id } })
+				})
+
+				if (!saved_locaciones) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar las locaciones por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_documentos = await ctx.prisma.documentosPorTalentos.deleteMany({
+				where: {
+					id_preferencias_por_talentos: preferencias.id
+				}
+			})
+
+			if (!deleted_documentos) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los documentos solicitados por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.documentos.length > 0) {
+				const saved_documentos = await ctx.prisma.documentosPorTalentos.createMany({
+					data: input.documentos.map(e => { return { id_documento: e.id_documento, descripcion: e.descripcion, id_preferencias_por_talentos: preferencias.id } })
+				})
+
+				if (!saved_documentos) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los documentos solicitados por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_disponibilidad = await ctx.prisma.disponibilidadesPorTalentos.deleteMany({
+				where: {
+					id_preferencias_por_talentos: preferencias.id
+				}
+			})
+
+			if (!deleted_disponibilidad) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las disponibilidades por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.disponibilidad.length > 0) {
+				const saved_disponibilidad = await ctx.prisma.disponibilidadesPorTalentos.createMany({
+					data: input.disponibilidad.map(e => { return { id_disponibilidad: e, id_preferencias_por_talentos: preferencias.id } })
+				})
+
+				if (!saved_disponibilidad) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar las disponibilidades por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_otras_profesiones = await ctx.prisma.otrasProfesionesPorTalentos.deleteMany({
+				where: {
+					id_preferencias_por_talentos: preferencias.id
+				}
+			})
+
+			if (!deleted_otras_profesiones) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las otras profesiones por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.otras_profesiones.length > 0) {
+				const saved_otras_profesiones = await ctx.prisma.otrasProfesionesPorTalentos.createMany({
+					data: input.otras_profesiones.map(e => { return { descripcion: e, id_preferencias_por_talentos: preferencias.id } })
+				})
+
+				if (!saved_otras_profesiones) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar las otras profesiones por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+			return preferencias;
 		}
-		),
+	),
 	saveFiltrosApariencias: protectedProcedure
 		.input(z.object({
+			id_talento: z.number(),
 			apariencia: z.object({
 				rango_inicial_edad: z.number(),
 				rango_final_edad: z.number(),
@@ -1910,183 +1831,176 @@ export const TalentosRouter = createTRPCRouter({
 			}))
 		}))
 		.mutation(async ({ input, ctx }) => {
-			const user = ctx.session.user;
-			if (user && user.tipo_usuario === TipoUsuario.TALENTO) {
-				const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
-					where: { id_talento: parseInt(user.id) },
-					update: { ...input.apariencia },
-					create: {
-						...input.apariencia,
-						id_talento: parseInt(user.id)
-					}
+			if (input.id_talento <= 0) return null;
+			
+			const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
+				where: { id_talento: input.id_talento },
+				update: { ...input.apariencia },
+				create: {
+					...input.apariencia,
+					id_talento: input.id_talento
+				}
+			})
+
+			const deleted_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.deleteMany({
+				where: {
+					id_filtros_apariencias_por_talentos: filtros.id
+				}
+			});
+
+			if (!deleted_intereses_en_interpretar) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los intereses en generos por interpretar por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.generos_interesado_en_interpretar.length > 0) {
+				const saved_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.createMany({
+					data: input.generos_interesado_en_interpretar.map(g => { return { id_genero: g, id_filtros_apariencias_por_talentos: filtros.id } })
 				})
 
-				const deleted_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.deleteMany({
-					where: {
+				if (!saved_intereses_en_interpretar) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_tatuajes = await ctx.prisma.tatuajesPorTalentos.deleteMany({
+				where: {
+					id_filtros_apariencias_por_talentos: filtros.id
+				}
+			})
+
+			if (!deleted_tatuajes) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los tatuajes por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.tatuajes.length > 0) {
+				const saved_tatuajes = await ctx.prisma.tatuajesPorTalentos.createMany({
+					data: input.tatuajes.map(e => { return { descripcion: e.descripcion, id_tipo_tatuaje: e.id_tipo_tatuaje, id_filtros_apariencias_por_talentos: filtros.id } })
+				})
+
+				if (!saved_tatuajes) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los tatuajes por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			const deleted_piercings = await ctx.prisma.piercingsPorTalentos.deleteMany({
+				where: {
+					id_filtros_apariencias_por_talentos: filtros.id
+				}
+			})
+
+			if (!deleted_piercings) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar los piercings por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.piercings.length > 0) {
+				const saved_piercings = await ctx.prisma.piercingsPorTalentos.createMany({
+					data: input.piercings.map(e => { return { id_tipo_piercing: e.id_tipo_piercing, descripcion: e.descripcion, id_filtros_apariencias_por_talentos: filtros.id } })
+				})
+
+				if (!saved_piercings) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar los piercings por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			if (input.hermanos) {
+				const saved_hermanos = await ctx.prisma.tipoHermanosPorTalento.upsert({
+					where: { id_filtros_apariencias_por_talentos: filtros.id },
+					update: input.hermanos,
+					create: {
+						...input.hermanos,
 						id_filtros_apariencias_por_talentos: filtros.id
 					}
 				});
 
-				if (!deleted_intereses_en_interpretar) {
+				if (!saved_hermanos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los intereses en generos por interpretar por talentos',
+						message: 'Ocurrio un error al tratar de guardar el tipo de hermanos por talentos',
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
 				}
-
-				if (input.generos_interesado_en_interpretar.length > 0) {
-					const saved_intereses_en_interpretar = await ctx.prisma.generosInteresadosEnInterpretarPorTalentos.createMany({
-						data: input.generos_interesado_en_interpretar.map(g => { return { id_genero: g, id_filtros_apariencias_por_talentos: filtros.id } })
-					})
-
-					if (!saved_intereses_en_interpretar) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_tatuajes = await ctx.prisma.tatuajesPorTalentos.deleteMany({
+			} else {
+				const deleted_hermanos = await ctx.prisma.tipoHermanosPorTalento.delete({
 					where: {
 						id_filtros_apariencias_por_talentos: filtros.id
 					}
 				})
 
-				if (!deleted_tatuajes) {
+				if (!deleted_hermanos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los tatuajes por talentos',
+						message: 'Ocurrio un error al tratar de eliminar el tipo de hermano por talentos',
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
 				}
-
-				if (input.tatuajes.length > 0) {
-					const saved_tatuajes = await ctx.prisma.tatuajesPorTalentos.createMany({
-						data: input.tatuajes.map(e => { return { descripcion: e.descripcion, id_tipo_tatuaje: e.id_tipo_tatuaje, id_filtros_apariencias_por_talentos: filtros.id } })
-					})
-
-					if (!saved_tatuajes) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los tatuajes por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				const deleted_piercings = await ctx.prisma.piercingsPorTalentos.deleteMany({
-					where: {
-						id_filtros_apariencias_por_talentos: filtros.id
-					}
-				})
-
-				if (!deleted_piercings) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar los piercings por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.piercings.length > 0) {
-					const saved_piercings = await ctx.prisma.piercingsPorTalentos.createMany({
-						data: input.piercings.map(e => { return { id_tipo_piercing: e.id_tipo_piercing, descripcion: e.descripcion, id_filtros_apariencias_por_talentos: filtros.id } })
-					})
-
-					if (!saved_piercings) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar los piercings por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				if (input.hermanos) {
-					const saved_hermanos = await ctx.prisma.tipoHermanosPorTalento.upsert({
-						where: { id_filtros_apariencias_por_talentos: filtros.id },
-						update: input.hermanos,
-						create: {
-							...input.hermanos,
-							id_filtros_apariencias_por_talentos: filtros.id
-						}
-					});
-
-					if (!saved_hermanos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar el tipo de hermanos por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				} else {
-					const deleted_hermanos = await ctx.prisma.tipoHermanosPorTalento.delete({
-						where: {
-							id_filtros_apariencias_por_talentos: filtros.id
-						}
-					})
-
-					if (!deleted_hermanos) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de eliminar el tipo de hermano por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-
-				const deleted_particularidades = await ctx.prisma.particularidadesPorTalentos.deleteMany({
-					where: {
-						id_filtros_apariencias_por_talentos: filtros.id
-					}
-				})
-
-				if (!deleted_particularidades) {
-					throw new TRPCError({
-						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las particularidades por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
-					});
-				}
-
-				if (input.particularidades.length > 0) {
-					const saved_particularidades = await ctx.prisma.particularidadesPorTalentos.createMany({
-						data: input.particularidades.map(e => { return { descripcion: e.descripcion, id_particularidad: e.id_particularidad, id_filtros_apariencias_por_talentos: filtros.id } })
-					})
-
-					if (!saved_particularidades) {
-						throw new TRPCError({
-							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las particularidades por talentos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
-						});
-					}
-				}
-
-				return filtros;
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de talento puede modificar las habilidades',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
-			});
-		}),
 
+
+			const deleted_particularidades = await ctx.prisma.particularidadesPorTalentos.deleteMany({
+				where: {
+					id_filtros_apariencias_por_talentos: filtros.id
+				}
+			})
+
+			if (!deleted_particularidades) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de eliminar las particularidades por talentos',
+					// optional: pass the original error to retain stack trace
+					//cause: theError,
+				});
+			}
+
+			if (input.particularidades.length > 0) {
+				const saved_particularidades = await ctx.prisma.particularidadesPorTalentos.createMany({
+					data: input.particularidades.map(e => { return { descripcion: e.descripcion, id_particularidad: e.id_particularidad, id_filtros_apariencias_por_talentos: filtros.id } })
+				})
+
+				if (!saved_particularidades) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: 'Ocurrio un error al tratar de guardar las particularidades por talentos',
+						// optional: pass the original error to retain stack trace
+						//cause: theError,
+					});
+				}
+			}
+
+			return filtros;
+		}
+	),
 	getTusTalentos: protectedProcedure
 		.query(async ({ ctx: { prisma } }) => {
 			const talentos = await prisma.talentos.findMany({

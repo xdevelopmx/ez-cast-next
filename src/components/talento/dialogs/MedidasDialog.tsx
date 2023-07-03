@@ -530,6 +530,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 				</Button>
 				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { 
 					save_medidas.mutate({
+						id_talento: props.id_talento,
 						general_cadera: (form && form.general_cadera && form.general_cadera > 0) ? form.general_cadera : null,
 						general_entrepiernas: (form && form.general_entrepiernas && form.general_entrepiernas > 0) ? form.general_entrepiernas : null,
 						general_guantes: (form && form.general_guantes && form.general_guantes > 0) ? form.general_guantes : null,

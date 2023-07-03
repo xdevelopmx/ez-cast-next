@@ -6,7 +6,7 @@ import { AceptarTerminos, CreaTuPerfil, MainLayout, Pago, TipoDeMembresia } from
 import MotionDiv from "~/components/layout/MotionDiv";
 import Link from "next/link";
 import { Box } from "@mui/material";
-import { useMemo, useReducer } from "react";
+import { useEffect, useMemo, useReducer } from "react";
 import { MStepper } from "~/components/shared/MStepper";
 import { TipoCobro, TipoMembresia, TipoUsuario } from "~/enums";
 import { api, parseErrorBody } from "~/utils/api";
@@ -15,8 +15,13 @@ import { useRouter } from 'next/navigation';
 import useNotify from "~/hooks/useNotify";
 import Constants from "~/constants";
 
+type RegistroProps = {
+	is_representante: boolean,
+	onSave?: (id_user: number, tipo_user: TipoUsuario) => void 
+}
 
 export type PerfilForm = {
+	is_representante: boolean,
 	tipo_usuario: TipoUsuario,
 	nombre: string,
 	apellido: string,
@@ -49,6 +54,7 @@ type CreateUserForm = {
 
 const initialState = {
 	perfil: {
+		is_representante: false,
 		tipo_usuario: TipoUsuario.TALENTO,
 		nombre: '',
 		apellido: '',
@@ -75,11 +81,15 @@ function reducer(state: CreateUserForm, action: { type: string, value: { [key: s
 	return { ...state };
 }
 
-const RegistroPage: NextPage = () => {
+const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave}) => {
 
 	const texts = useLang('es');
 
 	const [state, dispatch] = useReducer(reducer, initialState);
+
+	useEffect(() => {
+		dispatch({ type: 'update-perfil', value: {is_representante: is_representante} })
+	}, [is_representante]);
 
 	const { notify } = useNotify();
 
@@ -87,21 +97,26 @@ const RegistroPage: NextPage = () => {
 
 	const create_user = api.auth.createUser.useMutation({
 		onSuccess(input) {
-			signIn('credentials', {
-				user: state.perfil.usuario,
-				password: state.perfil.contrasenia,
-				tipo_usuario: state.perfil.tipo_usuario,
-				correo_usuario: state.perfil.email,
-				redirect: false,
-			}).then(res => {
-				if (res?.ok) {
-					notify('success', 'Autenticacion Exitosa');
-					router.push('/inicio');
-				}
-				console.log(res);
-			}).catch((err: Error) => {
-				notify('error', err.message);
-			});
+			if (!is_representante) {
+				signIn('credentials', {
+					user: state.perfil.usuario,
+					password: state.perfil.contrasenia,
+					tipo_usuario: state.perfil.tipo_usuario,
+					correo_usuario: state.perfil.email,
+					redirect: false,
+				}).then(res => {
+					if (res?.ok) {
+						notify('success', 'Autenticacion Exitosa');
+						router.push('/inicio');
+					}
+					console.log(res);
+				}).catch((err: Error) => {
+					notify('error', err.message);
+				});
+			} 
+			if (onSave) {
+				onSave(input.id, state.perfil.tipo_usuario);
+			}
 			console.log('Se guardo con exito', input);
 		},
 		onError: (error) => {
@@ -180,7 +195,7 @@ const RegistroPage: NextPage = () => {
 								<path className="st0"
 									d="M12.9,3.8H4l1.7-1.7c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0L0.9,4.1c-0.4,0.4-0.4,1,0,1.4l3.4,3.4 c0.4,0.4,1,0.4,1.4,0c0.4-0.4,0.4-1,0-1.4L4,5.8h8.9c1.5,0,3.2,0.4,3.2,3.8c0,3.8-2.6,3.8-3.4,3.8H3c-0.6,0-1,0.4-1,1s0.4,1,1,1h9.7 c3.5,0,5.4-2.1,5.4-5.8C18.1,5.9,16.3,3.8,12.9,3.8z" />
 							</svg>
-							&nbsp;&nbsp;REGRESAR A INFORMACIÓN EZ-CAST
+							&nbsp;&nbsp;{is_representante ? 'REGRESAR' : 'REGRESAR A INFORMACIÓN EZ-CAST'}
 						</Link>
 						<Box sx={{ width: '100%' }}>
 							<br />
@@ -232,7 +247,7 @@ const RegistroPage: NextPage = () => {
 									}}
 									current_step={state.step_active}
 									step_titles={{
-										1: 'Crea tu perfil',
+										1: (is_representante) ? 'Crea el perfil de tu talento' : 'Crea tu perfil',
 										2: 'Tipo de membresía',
 										...(() => {
 											return (steps.length === 4

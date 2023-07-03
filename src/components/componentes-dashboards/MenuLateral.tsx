@@ -591,34 +591,38 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 									if (user_info) {
 										switch (user_info.tipo_usuario) {
 											case TipoUsuario.TALENTO: {
-												if (talento.data && form.foto_selected) {
-													const time = new Date().getTime();
-													void FileManager.saveFiles([{ path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64 }]).then((result) => {
-														result.forEach((res) => {
-															if (talento.data) {
-																const response = res[`foto-perfil-talento-${talento.data.id}-${time}`];
-																if (response) {
-																	update_perfil_talento.mutate({
-																		foto_perfil: {
-																			nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
-																			type: (form.foto_selected) ? form.foto_selected.file.type : '',
-																			url: (response.url) ? response.url : '',
-																			clave: `talentos/${talento.data.id}/fotos-perfil/foto-perfil-talento-${talento.data.id}-${time}`,
-																			referencia: `FOTOS-PERFIL-TALENTO-${talento.data.id}`,
-																			identificador: `foto-perfil-talento-${talento.data.id}`
-																		},
-																		nombre: form.nombre,
-																		biografia: (form.biografia) ? form.biografia : '',
-																	})
+												if (talento.data ) {
+													if (form.foto_selected) {
+														const time = new Date().getTime();
+														void FileManager.saveFiles([{ path: `talentos/${talento.data.id}/fotos-perfil`, name: `foto-perfil-talento-${talento.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64 }]).then((result) => {
+															result.forEach((res) => {
+																if (talento.data) {
+																	const response = res[`foto-perfil-talento-${talento.data.id}-${time}`];
+																	if (response) {
+																		update_perfil_talento.mutate({
+																			id_talento: talento.data.id,
+																			foto_perfil: {
+																				nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
+																				type: (form.foto_selected) ? form.foto_selected.file.type : '',
+																				url: (response.url) ? response.url : '',
+																				clave: `talentos/${talento.data.id}/fotos-perfil/foto-perfil-talento-${talento.data.id}-${time}`,
+																				referencia: `FOTOS-PERFIL-TALENTO-${talento.data.id}`,
+																				identificador: `foto-perfil-talento-${talento.data.id}`
+																			},
+																			nombre: form.nombre,
+																			biografia: (form.biografia) ? form.biografia : '',
+																		})
+																	}
 																}
-															}
+															})
+														});
+													} else {
+														update_perfil_talento.mutate({
+															id_talento: talento.data.id,
+															nombre: form.nombre,
+															biografia: (form.biografia) ? form.biografia : '',
 														})
-													});
-												} else {
-													update_perfil_talento.mutate({
-														nombre: form.nombre,
-														biografia: (form.biografia) ? form.biografia : '',
-													})
+													}
 												}
 												break;
 											}

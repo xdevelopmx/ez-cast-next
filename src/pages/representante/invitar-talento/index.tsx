@@ -6,6 +6,9 @@ import useNotify from '~/hooks/useNotify'
 import { InvalidEmailError, InvalidFieldError } from '~/utils/errores'
 import { type FormEvent } from 'react'
 import useInvitarTalentoReducer from '../../../hooks/useInvitarTalentoReducer'
+import InvitacionTalentoEmail from '~/components/emails/invitacion-talento'
+import { api, parseErrorBody } from '~/utils/api'
+import { useRouter } from 'next/router'
 
 
 const InvitarTalentoPage = () => {
@@ -14,10 +17,32 @@ const InvitarTalentoPage = () => {
 
     const { notify } = useNotify();
 
+    const router = useRouter();
+
+    const sendInvitation = api.representantes.sendInvitation.useMutation({
+        onSuccess: (success) => {
+            notify((success) ? 'success' : 'error', (success) ? 'Se envio la invitacion con exito' : 'Ocurrio un problema al tratar de enviar la invitacion');
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        } 
+    })
+
     const onSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         try {
             validarFormulario(state);
+            sendInvitation.mutate({
+                to: state.correo_electronico,
+                subject: `Invitacion para unirte a EZ-CAST`,
+                from: state.correo_invitacion,
+                data: {
+                    nombre: state.nombre,
+                    apellido: state.apellido,
+                    correo_representante: state.correo_invitacion,
+                    nota: state.nota
+                }
+            })
         } catch (error) {
             if (error instanceof InvalidEmailError || error instanceof InvalidFieldError) {
                 notify('error', error.name);
@@ -177,6 +202,7 @@ const InvitarTalentoPage = () => {
                                                 <button
                                                     className="btn btn-intro btn-price btn_out_line mb-2"
                                                     type="button"
+                                                    onClick={() => { router.back() }}
                                                 >
                                                     <Typography>Cancelar</Typography>
                                                 </button>

@@ -51,7 +51,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                             <Grid container>
                                 <Grid item xs={12} md={5} sx={{ paddingTop: 3 }}>
                                     <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>{user?.name}</Typography>
-                                    <div style={{ position: 'relative', width: 500, aspectRatio: '500/720', maxWidth: '100%' }}>
+                                    <div style={{ position: 'relative', width: 350, aspectRatio: '350/420', maxWidth: '100%' }}>
                                         <Image
                                             fill
                                             src={'/assets/img/no-user-image.png'}
@@ -229,17 +229,20 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                             </Grid>
                             <Grid container item xs={12}>
                                 <Grid xs={6}>
-                                    <Button sx={{
-                                        textTransform: 'none',
-                                        width: '100%',
-                                        backgroundColor: '#069cb1',
-                                        color: '#fff',
-                                        borderRadius: 0,
-                                        '&:hover': {
-                                            backgroundColor: '#05acc2',
-                                        },
-                                        padding: '30px'
-                                    }}>
+                                    <Button 
+                                        sx={{
+                                            textTransform: 'none',
+                                            width: '100%',
+                                            backgroundColor: '#069cb1',
+                                            color: '#fff',
+                                            borderRadius: 0,
+                                            '&:hover': {
+                                                backgroundColor: '#05acc2',
+                                            },
+                                            padding: '30px'
+                                        }}
+                                        onClick={() => router.push('/representante/registrar-talento')}
+                                    >
                                         <Typography>Registrar</Typography>
                                     </Button>
                                 </Grid>

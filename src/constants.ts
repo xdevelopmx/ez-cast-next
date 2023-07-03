@@ -17,6 +17,9 @@ const Constants = {
         RECHAZADO: 'Rechazado', 
         APROBADO: 'Aprobado'
     },
+    TIPOS_EMAILS: {
+        INVITACION_TALENTO: 'INVITACION_TALENTO'
+    },
     ESTADOS_ROLES: {
         ARCHIVADO: 'ARCHIVADO',
         SIN_FINALIZAR: 'SIN_FINALIZAR'

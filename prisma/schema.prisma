@@ -14,6 +14,15 @@ datasource db {
   url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
 
+model TalentosRepresentados {
+  id                Int                              @id @default(autoincrement())
+  id_representante Int
+  id_talento Int
+  hora_asignacion DateTime
+  talento           Talentos            @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  representante           Representante            @relation(fields: [id_representante], references: [id], onDelete: Cascade) 
+}
+
 model Conversaciones {
   id                Int                              @id @default(autoincrement())
   id_emisor Int
@@ -166,6 +175,7 @@ model Representante {
   permisos             PermisosRepresentante?
   cuentas              CuentasPorRepresentante[]
   validacion           ValidacionRepresentante?
+  representados TalentosRepresentados[]
 }
 
 model InfoBasicaRepresentante {
@@ -247,6 +257,7 @@ model Talentos {
   notas                     NotasTalentos[]
   destacados                TalentosDestacados[]
   intervalos_bloque_horario IntervaloBloqueHorario[]
+  representantes TalentosRepresentados[]
 }
 
 model MedidasPorTalentos {

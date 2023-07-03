@@ -108,25 +108,27 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                     />
                 </div>
             </div>
-            <div className="row ml-lg-5 jc-c">
-                <div className="col-md-4 text-center">
-                    <div className="text-center">
-                        <p>O registrate con</p>
-                    </div>
-                    <div className="d-lg-flex">
-                        <div className="flex_one">
-                            <a href="#" className="btn btn-intro btn-social mr-1 ml-1">
-                                <motion.img height="16" className="mr-2" src="assets/img/iconos/google-logo.svg" alt="" />Google
-                            </a>
+            {!state.is_representante &&
+                <div className="row ml-lg-5 jc-c">
+                    <div className="col-md-4 text-center">
+                        <div className="text-center">
+                            <p>O registrate con</p>
                         </div>
-                        <div className="flex_one">
-                            <a href="#" className="btn btn-intro btn-social mr-1 ml-1">
-                                <motion.img height="16" className="mr-2" src="assets/img/iconos/facebook-logo.svg" alt="" />Facebook
-                            </a>
+                        <div className="d-lg-flex">
+                            <div className="flex_one">
+                                <a href="#" className="btn btn-intro btn-social mr-1 ml-1">
+                                    <motion.img height="16" className="mr-2" src="assets/img/iconos/google-logo.svg" alt="" />Google
+                                </a>
+                            </div>
+                            <div className="flex_one">
+                                <a href="#" className="btn btn-intro btn-social mr-1 ml-1">
+                                    <motion.img height="16" className="mr-2" src="assets/img/iconos/facebook-logo.svg" alt="" />Facebook
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
         </>
     )
 }

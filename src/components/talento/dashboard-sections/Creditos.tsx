@@ -101,7 +101,7 @@ export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
                                     style={{ color: (credito.destacado) ? 'gold' : 'gray' }}
                                     aria-label="marcar como destacado"
                                     onClick={() => {
-                                        update_credito.mutate({id_credito: credito.id, destacado: !credito.destacado});
+                                        update_credito.mutate({id_talento: props.id_talento, id_credito: credito.id, destacado: !credito.destacado});
                                     }}
                                 >
                                     <Star />

@@ -397,16 +397,16 @@ function reducer(state: TalentoForm, action: { type: string, value: { [key: stri
 }
 
 type EditarTalentoPageProps = {
-    user: User,
+    id_talento: number,
     step: number
 }
 
-const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => {
+const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step }) => {
     const router = useRouter();
     const [state, dispatch] = useReducer(reducer, { ...initialState, step_active: (router.query['step']) ? parseInt(router.query['step'] as string) : 1 });
     const { notify } = useNotify();
 
-    const talento = api.talentos.getCompleteById.useQuery({ id: parseInt(user.id) }, {
+    const talento = api.talentos.getCompleteById.useQuery({ id: id_talento }, {
         refetchOnMount: false,
         refetchOnWindowFocus: false
     });
@@ -414,9 +414,10 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
     const saveInfoGralMedia = api.talentos.saveInfoGralMedia.useMutation({
         onSuccess(input) {
             saveInfoGral.mutate({
+                id_talento: id_talento,
                 ...state.info_gral,
                 redes_sociales: Array.from(Object.entries(state.info_gral.redes_sociales)).map((e) => { return { nombre: e[0], url: e[1] } }),
-                media: input
+                media: {...input}
             });
         },
         onError: (error) => {
@@ -506,10 +507,10 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         const to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
         const time = new Date().getTime();
         if (state.info_gral.files.cv) {
-            to_be_saved.push({path: `talentos/${user.id}/cv`, name: `cv-${time}`, file: state.info_gral.files.cv.file, base64: state.info_gral.files.cv.base64});
+            to_be_saved.push({path: `talentos/${id_talento}/cv`, name: `cv-${time}`, file: state.info_gral.files.cv.file, base64: state.info_gral.files.cv.base64});
         }
         if (state.info_gral.files.carta_responsiva) {
-            to_be_saved.push({path: `talentos/${user.id}/carta-responsiva`, name: `carta-${time}`, file: state.info_gral.files.carta_responsiva.file, base64: state.info_gral.files.carta_responsiva.base64});
+            to_be_saved.push({path: `talentos/${id_talento}/carta-responsiva`, name: `carta-${time}`, file: state.info_gral.files.carta_responsiva.file, base64: state.info_gral.files.carta_responsiva.base64});
         }
         if (to_be_saved.length > 0) {
             const urls_saved = await FileManager.saveFiles(to_be_saved);
@@ -527,12 +528,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             }
         }
         saveInfoGralMedia.mutate({
+            id_talento: id_talento,
             cv_url: state.info_gral.files.urls.cv,
             cv: (!state.info_gral.files.cv || !urls.cv) ? null : {
                 nombre: 'cv',
                 type: state.info_gral.files.cv.file.type,
                 url: urls.cv,
-                clave: `talentos/${user.id}/cv/cv-${time}`,
+                clave: `talentos/${id_talento}/cv/cv-${time}`,
                 referencia: `talento-info-gral`,
                 identificador: `talento-cv`
             },
@@ -541,7 +543,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                 nombre: 'carta',
                 type: state.info_gral.files.carta_responsiva.file.type,
                 url: urls.carta,
-                clave: `talentos/${user.id}/carta-responsiva/carta-${time}`,
+                clave: `talentos/${id_talento}/carta-responsiva/carta-${time}`,
                 referencia: `talento-info-gral`,
                 identificador: `talento-carta-responsiva`
             },
@@ -625,7 +627,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         const time = new Date().getTime();
         if ((fotos_changed_order || !no_fotos_added) && state.medios.fotos.length > 0) {
             const urls_saved = await FileManager.saveFiles(state.medios.fotos.map((f) => {
-                return {path: `talentos/${user.id}/fotos-perfil`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
+                return {path: `talentos/${id_talento}/fotos-perfil`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -641,9 +643,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                     nombre: (original_name) ? original_name : '',
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
-                                    clave: `talentos/${user.id}/fotos-perfil/${e[0]}`,
-                                    referencia: `FOTOS-PERFIL-TALENTO-${user.id}`,
-                                    identificador: `foto-${(j === 0) ? 'perfil' : j.toString()}-talento-${user.id}`
+                                    clave: `talentos/${id_talento}/fotos-perfil/${e[0]}`,
+                                    referencia: `FOTOS-PERFIL-TALENTO-${id_talento}`,
+                                    identificador: `foto-${(j === 0) ? 'perfil' : j.toString()}-talento-${id_talento}`
                                 })
                             }
                         } else {
@@ -659,7 +661,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         
         if (state.medios.videos.filter(v => v.url != null).length !== state.medios.videos.length && state.medios.videos.length > 0) {
             const urls_saved = await FileManager.saveFiles(state.medios.videos.filter(f => (f.id == null)).map((f, i) => {
-                return {path: `talentos/${user.id}/videos`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
+                return {path: `talentos/${id_talento}/videos`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -675,8 +677,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                     nombre: (original_name) ? original_name : '',
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
-                                    clave: `talentos/${user.id}/videos/${e[0]}`,
-                                    referencia: `VIDEOS-TALENTO-${user.id}`,
+                                    clave: `talentos/${id_talento}/videos/${e[0]}`,
+                                    referencia: `VIDEOS-TALENTO-${id_talento}`,
                                     identificador: `video-${j + 1}`
                                 })  
                             }
@@ -694,7 +696,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
 
         if (state.medios.audios.filter(v => v.url != null).length !== state.medios.audios.length && state.medios.audios.length > 0) {
             const urls_saved = await FileManager.saveFiles(state.medios.audios.filter(f => (f.id == null)).map((f, i) => {
-                return {path: `talentos/${user.id}/audios`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
+                return {path: `talentos/${id_talento}/audios`, name: `${f.name}-${time}`, file: f.file, base64: f.base64}
             }));
             if (urls_saved.length > 0) {
                 urls_saved.forEach((res, j) => {
@@ -710,8 +712,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                     nombre: (original_name) ? original_name : '',
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
-                                    clave: `talentos/${user.id}/audios/${e[0]}`,
-                                    referencia: `AUDIOS-TALENTO-${user.id}`,
+                                    clave: `talentos/${id_talento}/audios/${e[0]}`,
+                                    referencia: `AUDIOS-TALENTO-${id_talento}`,
                                     identificador: `audio-${j + 1}`
                                 })  
                             }
@@ -728,6 +730,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         }
 
         saveMedios.mutate({
+            id_talento: id_talento,
             fotos: media.fotos,
             videos: media.videos,
             audios: media.audios
@@ -739,7 +742,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
         const creditos = await Promise.all(state.creditos.creditos.map(async (credito, i) => {
             if (credito.clip && credito.touched) {
                 const base_64 = await FileManager.convertFileToBase64(credito.clip);
-                const urls_saved = await FileManager.saveFiles([{path: `talentos/${user.id}/creditos`, name: `${(credito.clip.name.includes('clip') ? '' : 'clip-')}${credito.clip.name}-${time}`, file: credito.clip, base64: base_64}]);
+                const urls_saved = await FileManager.saveFiles([{path: `talentos/${id_talento}/creditos`, name: `${(credito.clip.name.includes('clip') ? '' : 'clip-')}${credito.clip.name}-${time}`, file: credito.clip, base64: base_64}]);
                 const type = credito.clip.type;
                 const id = credito.id_clip_media;
                 const original_name = credito.clip.name;
@@ -754,8 +757,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                     nombre: e[0].replace(`-${time}`, ''),
                                     type: (type) ? type : '',
                                     url: (url) ? url : '',
-                                    clave: `talentos/${user.id}/creditos/${e[0]}`,
-                                    referencia: `CREDITOS-TALENTO-${user.id}`,
+                                    clave: `talentos/${id_talento}/creditos/${e[0]}`,
+                                    referencia: `CREDITOS-TALENTO-${id_talento}`,
                                     identificador: `${(original_name.includes('clip') ? '' : 'clip-')}${original_name}`
                                 }
                             } else {
@@ -768,6 +771,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
             return {...credito};
         }))
         saveCreditos.mutate({
+            id_talento: id_talento,
             mostrar_anio_en_perfil: state.creditos.mostrar_anio_en_perfil,
             creditos: creditos
         });
@@ -1046,6 +1050,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                         }}
                         onFinish={() => {
                             saveFiltrosApariencias.mutate({
+                                id_talento: id_talento,
                                 ...state.filtros_apariencia,
                                 hermanos: {
                                     id_tipo_hermanos: (state.filtros_apariencia.hermanos) ? state.filtros_apariencia.hermanos.id_tipo_hermanos : 0,
@@ -1078,12 +1083,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                             ids.push({ id_habilidad_especifica: id, id_habilidad: key });
                                         })
                                     });
-                                    saveHabilidades.mutate({ ids_habilidades: ids });
+                                    saveHabilidades.mutate({ id_talento: id_talento, ids_habilidades: ids });
                                     break;
                                 }
 
                                 case 5: {
                                     saveActivos.mutate({
+                                        id_talento: id_talento,
                                         vehiculos: (state.activos.vehiculos) ? state.activos.vehiculos : [],
                                         mascotas: (state.activos.mascotas) ? state.activos.mascotas : [],
                                         vestuarios: (state.activos.vestuarios) ? state.activos.vestuarios : [],
@@ -1094,6 +1100,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ user, step }) => 
                                 }
                                 case 6: {
                                     savePreferencias.mutate({
+                                        id_talento: id_talento,
                                         preferencias: state.preferencias.preferencias,
                                         tipos_trabajo: state.preferencias.tipo_trabajo,
                                         interes_en_proyectos: state.preferencias.interes_en_proyectos,
@@ -1171,7 +1178,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
             return {
                 props: {
-                    user: session.user,
+                    id_talento: parseInt(session.user.id),
+                    step: (step) ? step : 1
+                }
+            }
+        }
+        if (session.user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
+            let id_talento = 0;
+            if (context.query) {
+                id_talento = parseInt(context.query['id_talento'] as string);
+            }
+            return {
+                props: {
+                    id_talento: id_talento,
                     step: (step) ? step : 1
                 }
             }
