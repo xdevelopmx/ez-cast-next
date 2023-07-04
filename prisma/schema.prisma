@@ -170,6 +170,7 @@ model Representante {
   compania             String
   biografia            String                          @db.VarChar(512)
   foto_perfil          Media?                          @relation(fields: [id_foto_perfil_media], references: [id])
+  verificado Boolean @default(false)
   redes_sociales       RedesSocialesPorRepresentante[]
   info_basica          InfoBasicaRepresentante?
   permisos             PermisosRepresentante?
@@ -202,8 +203,8 @@ model UnionPorInfoBasicaRepresentante {
 
 model PermisosRepresentante {
   id                                      Int           @id @default(autoincrement())
-  puede_aceptar_solitucides_talento       Boolean
-  puede_aceptar_solitucides_representante Boolean
+  puede_aceptar_solicitudes_talento       Boolean
+  puede_aceptar_solicitudes_representante Boolean
   puede_editar_perfil_talento             Boolean
   puede_editar_perfil_representante       Boolean
   id_representante                        Int           @unique

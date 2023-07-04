@@ -3,8 +3,14 @@ import Image from 'next/image';
 import React from 'react'
 import { FormGroup } from '~/components/shared';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
+import { ValidacionRepresentante } from '~/pages/representante/editar-perfil';
+import { FileManager } from '~/utils/file-manager';
 
-export const ValidacionRepresentante = () => {
+export const ValidacionRepresentanteView = (props: {
+    state: ValidacionRepresentante,
+    representante_fetching: boolean,
+    onFormChange: (input: { [id: string]: unknown }) => void;
+}) => {
     return (
         <Grid container>
             <Grid item xs={12}>
@@ -16,32 +22,35 @@ export const ValidacionRepresentante = () => {
                             Copia/Doc Licencia de Agencia de Talento
                         </Typography>
                     }
-                    //download_url={state.files.archivo?.url}
-                    text_label_download='Descargar archivo'
-                    files={/* (state.files.archivo) ? [state.files.archivo] : */[]}
-                    filetypes={['pdf', 'doc', 'docx', 'mp4']}
-                    height={100}
-                    onChange={(files: File[]) => {
-                        /* const files_converted = Promise.all(files.map(async (f) => {
-                            const base64 = await FileManagerFront.convertFileToBase64(f);
-                            return { base64: base64, name: f.name, file: f };
-                        }));
-                        files_converted.then((files_conv) => {
-                            console.log(files_conv)
-                            onFormChange({
+                    download_url={props.state.files.urls.licencia}
+                    onDownloadUrlRemove={(url: string) => {
+                        if (url === props.state.files.urls.licencia) {
+                            props.onFormChange({
                                 files: {
-                                    ...state.files,
-                                    archivo: files_conv[0],
-                                    touched: {
-                                        ...state.files.touched,
-                                        archivo: true
+                                    ...props.state.files,
+                                    urls: {
+                                        ...props.state.files.urls,
+                                        licencia: undefined
                                     }
                                 }
                             })
+                        }
+                    }}
+                    text_label_download='Descargar archivo'
+                    files={(props.state.files && props.state.files.licencia) ? [props.state.files.licencia] : []}
+                    filetypes={['pdf', 'doc', 'docx', 'mp4']}
+                    height={100}
+                    onChange={(files: File[]) => {
+                        const files_converted = Promise.all(files.map(async (f) => {
+                            const base64 = await FileManager.convertFileToBase64(f);
+                            return { base64: base64, name: f.name, file: f };
+                        }));
+                        files_converted.then((files_conv) => {
+                            props.onFormChange({ files: { ...props.state.files, cv: files_conv[0] } })
                         }).catch((err) => {
                             console.log(err);
-                            onFormChange({ files: { ...state.files, archivo: undefined } })
-                        }); */
+                            props.onFormChange({ files: { ...props.state.files, cv: undefined } })
+                        });
                     }}
                 />
             </Grid>
@@ -59,15 +68,15 @@ export const ValidacionRepresentante = () => {
                     className={'form-input-md'}
                     labelStyle={{ fontWeight: 600 }}
                     labelClassName={'form-input-label'}
-                    value={/* (state.director_casting) ? state.director_casting : */ ''}
+                    value={(props.state.numero_clientes) ? props.state.numero_clientes.toString() : ''}
                     style={{
                         marginTop: '10px',
                         width: '100px'
                     }}
                     onChange={(e) => {
-                        /* onFormChange({
-                            director_casting: e.target.value
-                        }) */
+                        props.onFormChange({
+                            numero_clientes: parseInt(e.target.value)
+                        })
                     }}
                 />
             </Grid>
@@ -87,14 +96,14 @@ export const ValidacionRepresentante = () => {
                         className={'form-input-md'}
                         labelStyle={{ fontWeight: 600 }}
                         labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
+                        value={(props.state.IMDB_pro_link) ? props.state.IMDB_pro_link :  ''}
                         rootStyle={{
                             margin: 0
                         }}
                         onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
+                            props.onFormChange({
+                                IMDB_pro_link: e.target.value
+                            })
                         }}
                     />
                 </Box>
@@ -107,172 +116,112 @@ export const ValidacionRepresentante = () => {
                 </Typography>
             </Grid>
 
-            <Grid item xs={12} mt={4}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        style={{width: '100%'}}
-                        label='Nombre'
-                    />
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        style={{width: '100%'}}
-                        label='Apellido'
-                    />
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        type='email'
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        style={{width: '100%'}}
-                        label='Correo Electrónico'
-                    />
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        type='number'
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        style={{width: '100%'}}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        label='Teléfono'
-                    />
-                </Box>
-            </Grid>
-
-            <Grid item xs={12} mt={4}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        style={{width: '100%'}}
-                        label='Nombre'
-                    />
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        style={{width: '100%'}}
-                        label='Apellido'
-                    />
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        type='email'
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        style={{width: '100%'}}
-                        label='Correo Electrónico'
-                    />
-                    <FormGroup
-                        //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
-                        //show_error_message
-                        type='number'
-                        className={'form-input-md'}
-                        labelStyle={{ fontWeight: 600 }}
-                        labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
-                        rootStyle={{
-                            margin: 0,
-                            maxWidth: '22%'
-                        }}
-                        style={{width: '100%'}}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
-                        }}
-                        label='Teléfono'
-                    />
-                </Box>
-            </Grid>
-
+            {props.state.directores_casting.map((d, i) => {
+                return (
+                    <Grid item xs={12} mt={4}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <FormGroup
+                                //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
+                                //show_error_message
+                                className={'form-input-md'}
+                                labelStyle={{ fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                value={d.nombre}
+                                rootStyle={{
+                                    margin: 0,
+                                    maxWidth: '22%'
+                                }}
+                                onChange={(e) => {
+                                    props.onFormChange({
+                                        directores_casting: props.state.directores_casting.map((dir, j) => { 
+                                            if (i === j) {
+                                                return {...dir, nombre: e.target.value};
+                                            }
+                                            return dir;
+                                        })
+                                    })
+                                }}
+                                style={{width: '100%'}}
+                                label='Nombre'
+                            />
+                            <FormGroup
+                                //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
+                                //show_error_message
+                                className={'form-input-md'}
+                                labelStyle={{ fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                value={d.apellido}
+                                rootStyle={{
+                                    margin: 0,
+                                    maxWidth: '22%'
+                                }}
+                                onChange={(e) => {
+                                    props.onFormChange({
+                                        directores_casting: props.state.directores_casting.map((d, j) => { 
+                                            if (i === j) {
+                                                return {...d, apellido: e.target.value};
+                                            }
+                                            return d;
+                                        })
+                                    })
+                                }}
+                                style={{width: '100%'}}
+                                label='Apellido'
+                            />
+                            <FormGroup
+                                //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
+                                //show_error_message
+                                type='email'
+                                className={'form-input-md'}
+                                labelStyle={{ fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                value={d.correo_electronico}
+                                rootStyle={{
+                                    margin: 0,
+                                    maxWidth: '22%'
+                                }}
+                                onChange={(e) => {
+                                    props.onFormChange({
+                                        directores_casting: props.state.directores_casting.map((d, j) => { 
+                                            if (i === j) {
+                                                return {...d, correo_electronico: e.target.value};
+                                            }
+                                            return d;
+                                        })
+                                    })
+                                }}
+                                style={{width: '100%'}}
+                                label='Correo Electrónico'
+                            />
+                            <FormGroup
+                                //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
+                                //show_error_message
+                                type='number'
+                                className={'form-input-md'}
+                                labelStyle={{ fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                value={d.telefono}
+                                rootStyle={{
+                                    margin: 0,
+                                    maxWidth: '22%'
+                                }}
+                                style={{width: '100%'}}
+                                onChange={(e) => {
+                                    props.onFormChange({
+                                        directores_casting: props.state.directores_casting.map((d, j) => { 
+                                            if (i === j) {
+                                                return {...d, telefono: e.target.value};
+                                            }
+                                            return d;
+                                        })
+                                    })
+                                }}
+                                label='Teléfono'
+                            />
+                        </Box>
+                    </Grid>
+                )
+            })}
         </Grid>
     )
 }

@@ -1,8 +1,13 @@
 import { Grid } from '@mui/material'
 import React from 'react'
 import { MCheckboxGroup } from '~/components/shared';
+import { PermisosRepresentante } from '~/pages/representante/editar-perfil';
 
-export const PermisosRepresentante = () => {
+export const PermisosRepresentanteView = (props: {
+    state: PermisosRepresentante,
+    representante_fetching: boolean,
+    onFormChange: (input: { [id: string]: unknown }) => void;
+}) => {
     return (
         <Grid container>
             <Grid xs={12}>
@@ -10,27 +15,14 @@ export const PermisosRepresentante = () => {
                     direction='vertical'
                     title="¿Quién puede aceptar solicitudes?"
                     onChange={(e, i) => {
-                        /* const nsfw = tipos_nsfw.data?.filter((_, index) => index === i)[0];
-                        if (nsfw) {
-                            onFormChange({
-                                nsfw: {
-                                    ...state.nsfw,
-                                    ids: (state.nsfw.ids.includes(nsfw.id)) ?
-                                        state.nsfw.ids.filter(n => n !== nsfw.id) :
-                                        state.nsfw.ids.concat([nsfw.id])
-                                }
-                            })
-                        }
-                        console.log('change'); */
+                        props.onFormChange({
+                            puede_aceptar_solicitudes: (i === 0) ? { ...props.state.puede_aceptar_solicitudes,  talentos: e} : { ...props.state.puede_aceptar_solicitudes,  representante: e}
+                        })
                     }}
                     id="quien-puede-aceptar-solicitudes-select"
                     labelStyle={{ marginBottom: 0, width: '45%' }}
-                    options={/* (tipos_nsfw.data) ? tipos_nsfw.data.map(n => n.es) : */
-                        ['Talentos', 'Representante']
-                    }
-                    values={/* (tipos_nsfw.data) ? tipos_nsfw.data.map(g => {
-                        return state.nsfw.ids.includes(g.id);
-                    }) : */ [false, false]}
+                    options={ ['Talentos', 'Representante']}
+                    values={[props.state.puede_aceptar_solicitudes.talentos, props.state.puede_aceptar_solicitudes.representante]}
                 />
             </Grid>
             <Grid xs={12} mt={4}>
@@ -38,27 +30,14 @@ export const PermisosRepresentante = () => {
                     direction='vertical'
                     title="¿Quién puede editar perfil de talento?"
                     onChange={(e, i) => {
-                        /* const nsfw = tipos_nsfw.data?.filter((_, index) => index === i)[0];
-                        if (nsfw) {
-                            onFormChange({
-                                nsfw: {
-                                    ...state.nsfw,
-                                    ids: (state.nsfw.ids.includes(nsfw.id)) ?
-                                        state.nsfw.ids.filter(n => n !== nsfw.id) :
-                                        state.nsfw.ids.concat([nsfw.id])
-                                }
-                            })
-                        }
-                        console.log('change'); */
+                        props.onFormChange({
+                            puede_editar_perfil: (i === 0) ? { ...props.state.puede_editar_perfil,  talentos: e} : { ...props.state.puede_editar_perfil,  representante: e}
+                        })
                     }}
                     id="quien-puede-aceptar-solicitudes-select"
                     labelStyle={{ marginBottom: 0, width: '45%' }}
-                    options={/* (tipos_nsfw.data) ? tipos_nsfw.data.map(n => n.es) : */
-                        ['Talentos', 'Representante']
-                    }
-                    values={/* (tipos_nsfw.data) ? tipos_nsfw.data.map(g => {
-                        return state.nsfw.ids.includes(g.id);
-                    }) : */ [false, false]}
+                    options={['Talentos', 'Representante']}
+                    values={[props.state.puede_editar_perfil.talentos, props.state.puede_editar_perfil.representante]}
                 />
             </Grid>
         </Grid>

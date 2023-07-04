@@ -5,9 +5,15 @@ import { MContainer } from '~/components/layout/MContainer'
 import { FormGroup, MSelect } from '~/components/shared'
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop'
 import { MTooltip } from '~/components/shared/MTooltip'
+import { InfoBasicaRepresentante } from '~/pages/representante/editar-perfil'
 import { api } from '~/utils/api'
+import { FileManager } from '~/utils/file-manager'
 
-export const InformacionBasicaRepresentante = () => {
+export const InformacionBasicaRepresentante = (props: {
+    state: InfoBasicaRepresentante,
+    representante_fetching: boolean,
+    onFormChange: (input: { [id: string]: unknown }) => void;
+}) => {
 
     const tipos_sindicatos = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnWindowFocus: false
@@ -27,11 +33,11 @@ export const InformacionBasicaRepresentante = () => {
                         className={'form-input-md'}
                         labelStyle={{ fontWeight: 600 }}
                         labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
+                        value={props.state.nombre}
                         onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
+                            props.onFormChange({
+                                nombre: e.target.value
+                            })
                         }}
                         label='Nombre'
                     />
@@ -42,29 +48,50 @@ export const InformacionBasicaRepresentante = () => {
                         className={'form-input-md'}
                         labelStyle={{ fontWeight: 600 }}
                         labelClassName={'form-input-label'}
-                        value={/* (state.director_casting) ? state.director_casting : */ ''}
+                        value={props.state.apellido}
                         onChange={(e) => {
-                            /* onFormChange({
-                                director_casting: e.target.value
-                            }) */
+                            props.onFormChange({
+                                apellido: e.target.value
+                            })
                         }}
                         label='Apellido'
                     />
                 </Grid>
                 <Grid item container xs={12}>
-                    <MSelect
-                        id="sindicato-select"
-                        loading={tipos_sindicatos.isFetching}
-                        options={(tipos_sindicatos.data) ? tipos_sindicatos.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
-                        className={'form-input-md'}
-                        value={/* state.id_sindicato.toString() */'0'}
-                        onChange={(e) => {
-                            /* onFormChange({
-                                id_sindicato: parseInt(e.target.value)
-                            }) */
-                        }}
-                        label='Sindicato/Unión'
-                    />
+                    <Box display={'flex'} flexDirection={'row'}>
+                        <MSelect
+                            id="sindicato-select"
+                            loading={tipos_sindicatos.isFetching}
+                            options={(tipos_sindicatos.data) ? tipos_sindicatos.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
+                            className={'form-input-md'}
+                            value={props.state.sindicato.id.toString()}
+                            onChange={(e) => {
+                                props.onFormChange({
+                                    sindicato: {
+                                        id: parseInt(e.target.value)
+                                    }
+                                })
+                            }}
+                            label='Sindicato/Unión'
+                        />
+                        {props.state.sindicato.id === 99 &&
+                            <FormGroup
+                                //error={(state.errors.director && state.director_casting != null) ? state.errors.director : undefined}
+                                //show_error_message
+                                rootStyle={{marginLeft: 16}}
+                                className={'form-input-md'}
+                                labelStyle={{ fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                value={props.state.sindicato.descripcion}
+                                onChange={(e) => {
+                                    props.onFormChange({
+                                        sindicato: {...props.state.sindicato, descripcion: e.target.value}
+                                    })
+                                }}
+                                label='Otro'
+                            />
+                        }
+                    </Box>
                 </Grid>
                 <Grid xs={12} mt={4}>
                     <Divider />
@@ -91,11 +118,11 @@ export const InformacionBasicaRepresentante = () => {
                                     : []
                             }
                             style={{ width: 200 }}
-                            value={/* state.id_estado_republica.toString() */'0'}
+                            value={props.state.ubicacion.id_estado_republica.toString()}
                             onChange={(e) => {
-                                /* onFormChange({
-                                    id_estado_republica: parseInt(e.target.value)
-                                }) */
+                                props.onFormChange({
+                                    ubicacion: {...props.state.ubicacion, id_estado_republica: parseInt(e.target.value)}
+                                })
                             }}
                             label='Locación de proyecto*'
                         />
@@ -106,11 +133,11 @@ export const InformacionBasicaRepresentante = () => {
                             //show_error_message
                             labelStyle={{ fontWeight: 600 }}
                             labelClassName={'form-input-label'}
-                            value={/* (state.director_casting) ? state.director_casting : */ ''}
+                            value={props.state.ubicacion.direccion}
                             onChange={(e) => {
-                                /* onFormChange({
-                                    director_casting: e.target.value
-                                }) */
+                                props.onFormChange({
+                                    ubicacion: {...props.state.ubicacion, direccion: e.target.value}
+                                })
                             }}
                             label='Dirección'
                         />
@@ -123,11 +150,11 @@ export const InformacionBasicaRepresentante = () => {
                             type='number'
                             labelStyle={{ fontWeight: 600 }}
                             labelClassName={'form-input-label'}
-                            value={/* (state.director_casting) ? state.director_casting : */ ''}
+                            value={props.state.ubicacion.cp.toString()}
                             onChange={(e) => {
-                                /* onFormChange({
-                                    director_casting: e.target.value
-                                }) */
+                                props.onFormChange({
+                                    ubicacion: {...props.state.ubicacion, cp: parseInt(e.target.value)}
+                                })
                             }}
                             style={{
                                 width: '100px'
@@ -161,9 +188,9 @@ export const InformacionBasicaRepresentante = () => {
                         <FormGroup
                             type="text-area"
                             style={{ width: '70%' }}
-                            value={/* (state) ? state.biografia : */ ''}
+                            value={props.state.biografia}
                             onChange={(e) => {
-                                /* onFormChange({ biografia: e.currentTarget.value }) */
+                                props.onFormChange({ biografia: e.currentTarget.value })
                             }}
                         />
                     </MContainer>
@@ -173,35 +200,35 @@ export const InformacionBasicaRepresentante = () => {
                         id='id-drag-n-drop-cv'
                         label='Subir CV'
                         max_file_size={5120}
-                        //download_url={state.files.urls.cv}
+                        download_url={props.state.files.urls.cv}
                         onDownloadUrlRemove={(url: string) => {
-                            /* if (url === state.files.urls.cv) {
-                                onFormChange({
+                            if (url === props.state.files.urls.cv) {
+                                props.onFormChange({
                                     files: {
-                                        ...state.files,
+                                        ...props.state.files,
                                         urls: {
-                                            ...state.files.urls,
+                                            ...props.state.files.urls,
                                             cv: undefined
                                         }
                                     }
                                 })
-                            } */
+                            }
                         }}
                         tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'orange', placement: 'top' }}
                         height={100}
-                        files={/* (state.files && state.files.cv) ? [state.files.cv] : */[]}
+                        files={(props.state.files && props.state.files.cv) ? [props.state.files.cv] : []}
                         filetypes={['PDF', 'DOC', 'DOCX']}
                         onChange={(files: File[]) => {
-                            /* const files_converted = Promise.all(files.map(async (f) => {
-                                const base64 = await FileManagerFront.convertFileToBase64(f);
+                            const files_converted = Promise.all(files.map(async (f) => {
+                                const base64 = await FileManager.convertFileToBase64(f);
                                 return { base64: base64, name: f.name, file: f };
                             }));
                             files_converted.then((files_conv) => {
-                                onFormChange({ files: { ...state.files, cv: files_conv[0] } })
+                                props.onFormChange({ files: { ...props.state.files, cv: files_conv[0] } })
                             }).catch((err) => {
                                 console.log(err);
-                                onFormChange({ files: { ...state.files, cv: undefined } })
-                            }); */
+                                props.onFormChange({ files: { ...props.state.files, cv: undefined } })
+                            });
                         }}
                     />
                 </Grid>
@@ -216,91 +243,89 @@ export const InformacionBasicaRepresentante = () => {
                         </MContainer>
                         <FormGroup
                             className={'form-input-md'}
-                            value={/* (state.redes_sociales) ? state.redes_sociales.pagina_web : */ ''}
+                            value={(props.state.redes_sociales) ? props.state.redes_sociales.pagina_web : ''}
                             onChange={(e) => {
-                                /* onFormChange({ redes_sociales: { ...state.redes_sociales, pagina_web: e.target.value } }) */
+                                props.onFormChange({ redes_sociales: { ...props.state.redes_sociales, pagina_web: e.target.value } })
                             }}
                         />
                     </MContainer>
                 </Grid>
-                <Grid container item xs={12} spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
-                            Link a redes sociales:
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={4} md={2}>
-                        <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                            <span className={'link-input-label'}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
-                            <FormGroup
-                                className={'form-input-sm'}
-                                value={/* (state && state.redes_sociales) ? state.redes_sociales.vimeo : */ ''}
-                                onChange={(e) => {
-                                    /* onFormChange({ redes_sociales: { ...state?.redes_sociales, vimeo: e.target.value } }) */
-                                }}
-                            />
-                        </MContainer>
-                    </Grid>
-                    <Grid item xs={4} md={2}>
-                        <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                            <span className={'link-input-label'}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
-                            <FormGroup
-                                className={'form-input-sm'}
-                                value={/* (state && state.redes_sociales) ? state.redes_sociales.instagram : */ ''}
-                                onChange={(e) => {
-                                    /* onFormChange({ redes_sociales: { ...state?.redes_sociales, instagram: e.target.value } }) */
-                                }}
-                            />
-                        </MContainer>
-                    </Grid>
-                    <Grid item xs={4} md={2}>
-                        <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                            <span className={'link-input-label'}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
-                            <FormGroup
-                                className={'form-input-sm'}
-                                value={/* (state && state.redes_sociales) ? state.redes_sociales.youtube : */ ''}
-                                onChange={(e) => {
-                                    /* onFormChange({ redes_sociales: { ...state?.redes_sociales, youtube: e.target.value } }) */
-                                }}
-                            />
-                        </MContainer>
-                    </Grid>
-                    <Grid item xs={4} md={2}>
-                        <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                            <span className={'link-input-label'}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
-                            <FormGroup
-                                className={'form-input-sm'}
-                                value={/* (state && state.redes_sociales) ? state.redes_sociales.twitter : */ ''}
-                                onChange={(e) => {
-                                    /* onFormChange({ redes_sociales: { ...state?.redes_sociales, twitter: e.target.value } }) */
-                                }}
-                            />
-                        </MContainer>
-                    </Grid>
-                    <Grid item xs={4} md={2}>
-                        <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                            <span className={'link-input-label'}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
-                            <FormGroup
-                                className={'form-input-sm'}
-                                value={/* (state && state.redes_sociales) ? state.redes_sociales.imdb : */ ''}
-                                onChange={(e) => {
-                                    /* onFormChange({ redes_sociales: { ...state?.redes_sociales, imdb: e.target.value } }) */
-                                }}
-                            />
-                        </MContainer>
-                    </Grid>
-                    <Grid item xs={4} md={2}>
-                        <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                            <span className={'link-input-label'}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
-                            <FormGroup
-                                className={'form-input-sm'}
-                                value={/* (state && state.redes_sociales) ? state.redes_sociales.linkedin : */ ''}
-                                onChange={(e) => {
-                                    /* onFormChange({ redes_sociales: { ...state?.redes_sociales, linkedin: e.target.value } }) */
-                                }}
-                            />
-                        </MContainer>
-                    </Grid>
+                <Grid item xs={12}>
+                    <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
+                        Link a redes sociales:
+                    </Typography>
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
+                        <span className={'link-input-label'}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
+                        <FormGroup
+                            className={'form-input-sm'}
+                            value={(props.state && props.state.redes_sociales) ? props.state.redes_sociales.vimeo : ''}
+                            onChange={(e) => {
+                                props.onFormChange({ redes_sociales: { ...props.state?.redes_sociales, vimeo: e.target.value } })
+                            }}
+                        />
+                    </MContainer>
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
+                        <span className={'link-input-label'}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
+                        <FormGroup
+                            className={'form-input-sm'}
+                            value={(props.state && props.state.redes_sociales) ? props.state.redes_sociales.instagram : ''}
+                            onChange={(e) => {
+                                props.onFormChange({ redes_sociales: { ...props.state?.redes_sociales, instagram: e.target.value } })
+                            }}
+                        />
+                    </MContainer>
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
+                        <span className={'link-input-label'}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
+                        <FormGroup
+                            className={'form-input-sm'}
+                            value={(props.state && props.state.redes_sociales) ? props.state.redes_sociales.youtube : ''}
+                            onChange={(e) => {
+                                props.onFormChange({ redes_sociales: { ...props.state?.redes_sociales, youtube: e.target.value } })
+                            }}
+                        />
+                    </MContainer>
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
+                        <span className={'link-input-label'}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
+                        <FormGroup
+                            className={'form-input-sm'}
+                            value={(props.state && props.state.redes_sociales) ? props.state.redes_sociales.twitter : ''}
+                            onChange={(e) => {
+                                props.onFormChange({ redes_sociales: { ...props.state?.redes_sociales, twitter: e.target.value } })
+                            }}
+                        />
+                    </MContainer>
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
+                        <span className={'link-input-label'}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
+                        <FormGroup
+                            className={'form-input-sm'}
+                            value={(props.state && props.state.redes_sociales) ? props.state.redes_sociales.imdb : ''}
+                            onChange={(e) => {
+                                props.onFormChange({ redes_sociales: { ...props.state?.redes_sociales, imdb: e.target.value } })
+                            }}
+                        />
+                    </MContainer>
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
+                        <span className={'link-input-label'}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
+                        <FormGroup
+                            className={'form-input-sm'}
+                            value={(props.state && props.state.redes_sociales) ? props.state.redes_sociales.linkedin : ''}
+                            onChange={(e) => {
+                                props.onFormChange({ redes_sociales: { ...props.state?.redes_sociales, linkedin: e.target.value } })
+                            }}
+                        />
+                    </MContainer>
                 </Grid>
             </Grid>
         </Grid>
