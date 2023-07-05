@@ -113,10 +113,13 @@ export const MensajesRouter = createTRPCRouter({
                     const representante = await ctx.prisma.representante.findFirst({
                         where: {
                             id: m.id_emisor
+                        },
+                        include: {
+                            foto_perfil: true
                         }
                     })
                     if (representante) {
-                        emisor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: '/assets/img/no-image.png'};
+                        emisor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: (representante.foto_perfil) ? representante.foto_perfil.url : '/assets/img/no-image.png'};
                     }
                     break;
                 }
@@ -164,10 +167,13 @@ export const MensajesRouter = createTRPCRouter({
                     const representante = await ctx.prisma.representante.findFirst({
                         where: {
                             id: m.id_receptor
+                        },
+                        include: {
+                            foto_perfil: true
                         }
                     })
                     if (representante) {
-                        receptor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: '/assets/img/no-image.png'};
+                        emisor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: (representante.foto_perfil) ? representante.foto_perfil.url : '/assets/img/no-image.png'};
                     }
                     break;
                 }
@@ -189,144 +195,156 @@ export const MensajesRouter = createTRPCRouter({
             return {...m, emisor: emisor, receptor: receptor}; 
         }))
     }),
-    getConversaciones: publicProcedure.input(z.number()).query(async ({ input, ctx }) => {
-        const conversaciones = await ctx.prisma.conversaciones.findMany({
-            where: {
-                OR: [
-                    {
-                        id_emisor: input,
-                    },
-                    { 
-                        id_receptor: input
-                    },
-                ],
-            },
-            include: {
-                proyecto: true,
-                mensajes: {
-                    take: 1,
-                    orderBy: { hora_envio: 'desc' }
-                }
-            }
-        });
-
-        return Promise.all(await conversaciones.sort((a, b) => { 
-            const m1 = a.mensajes[0]?.hora_envio;
-            const m2 = b.mensajes[0]?.hora_envio;
-            if (m1 && m2) {
-                return m2.getTime() - m1.getTime();
-            }
-            return 0;
-         }).map(async (c) => {
-            let latest_message = '';
-            let emisor: {nombre: string, profile_url: string} | null = null;
-            let receptor: {nombre: string, profile_url: string} | null = null;
-            switch (c.tipo_usuario_emisor) {
-                case TipoUsuario.TALENTO: {
-                    const talento = await ctx.prisma.talentos.findFirst({
-                        where: {
-                            id: c.id_emisor
+    getConversaciones: publicProcedure.query(async ({ ctx }) => {
+        const user = ctx.session?.user; 
+        if (user) {
+            const conversaciones = await ctx.prisma.conversaciones.findMany({
+                where: {
+                    OR: [
+                        {
+                            id_emisor: parseInt(user.id),
+                            tipo_usuario_emisor: user.tipo_usuario
                         },
-                        include: {
-                            media: {
-                                include: {
-                                    media: true
+                        { 
+                            id_receptor: parseInt(user.id),
+                            tipo_usuario_receptor: user.tipo_usuario
+                        },
+                    ],
+                },
+                include: {
+                    proyecto: true,
+                    mensajes: {
+                        take: 1,
+                        orderBy: { hora_envio: 'desc' }
+                    }
+                }
+            });
+
+            return Promise.all(await conversaciones.sort((a, b) => { 
+                const m1 = a.mensajes[0]?.hora_envio;
+                const m2 = b.mensajes[0]?.hora_envio;
+                if (m1 && m2) {
+                    return m2.getTime() - m1.getTime();
+                }
+                return 0;
+            }).map(async (c) => {
+                let latest_message = '';
+                let emisor: {nombre: string, profile_url: string} | null = null;
+                let receptor: {nombre: string, profile_url: string} | null = null;
+                switch (c.tipo_usuario_emisor) {
+                    case TipoUsuario.TALENTO: {
+                        const talento = await ctx.prisma.talentos.findFirst({
+                            where: {
+                                id: c.id_emisor
+                            },
+                            include: {
+                                media: {
+                                    include: {
+                                        media: true
+                                    }
                                 }
                             }
-                        }
-                    })
-                    if (talento) {
-                        const foto_perfil = talento.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
-                        if (foto_perfil) {
-                            emisor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: foto_perfil.media.url};
-                        } else {
-                            emisor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: '/assets/img/no-image.png'};
-                        }
-                    }
-                    break;
-                }
-                case TipoUsuario.REPRESENTANTE: {
-                    const representante = await ctx.prisma.representante.findFirst({
-                        where: {
-                            id: c.id_emisor
-                        }
-                    })
-                    if (representante) {
-                        emisor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: '/assets/img/no-image.png'};
-                    }
-                    break;
-                }
-                case TipoUsuario.CAZATALENTOS: {
-                    const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
-                        where: {
-                            id: c.id_emisor
-                        },
-                        include: {
-                            foto_perfil: true
-                        }
-                    })
-                    if (cazatalentos) {
-                        emisor = {nombre: `${cazatalentos.nombre} ${cazatalentos.apellido}`, profile_url: (cazatalentos.foto_perfil) ? cazatalentos.foto_perfil.url : '/assets/img/no-image.png'};
-                    }
-                }
-            }
-            switch (c.tipo_usuario_receptor) {
-                case TipoUsuario.TALENTO: {
-                    const talento = await ctx.prisma.talentos.findFirst({
-                        where: {
-                            id: c.id_receptor
-                        },
-                        include: {
-                            media: {
-                                include: {
-                                    media: true
-                                }
+                        })
+                        if (talento) {
+                            const foto_perfil = talento.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
+                            if (foto_perfil) {
+                                emisor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: foto_perfil.media.url};
+                            } else {
+                                emisor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: '/assets/img/no-image.png'};
                             }
                         }
-                    })
-                    if (talento) {
-                        const foto_perfil = talento.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
-                        if (foto_perfil) {
-                            receptor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: foto_perfil.media.url};
-                        } else {
-                            receptor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: '/assets/img/no-image.png'};
+                        break;
+                    }
+                    case TipoUsuario.REPRESENTANTE: {
+                        const representante = await ctx.prisma.representante.findFirst({
+                            where: {
+                                id: c.id_emisor
+                            },    
+                            include: {
+                                foto_perfil: true
+                            }
+                        })
+                        if (representante) {
+                            emisor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: (representante.foto_perfil) ? representante.foto_perfil.url : '/assets/img/no-image.png'};
+                        }
+                        break;
+                    }
+                    case TipoUsuario.CAZATALENTOS: {
+                        const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
+                            where: {
+                                id: c.id_emisor
+                            },
+                            include: {
+                                foto_perfil: true
+                            }
+                        })
+                        if (cazatalentos) {
+                            emisor = {nombre: `${cazatalentos.nombre} ${cazatalentos.apellido}`, profile_url: (cazatalentos.foto_perfil) ? cazatalentos.foto_perfil.url : '/assets/img/no-image.png'};
                         }
                     }
-                    break;
                 }
-                case TipoUsuario.REPRESENTANTE: {
-                    const representante = await ctx.prisma.representante.findFirst({
-                        where: {
-                            id: c.id_receptor
+                switch (c.tipo_usuario_receptor) {
+                    case TipoUsuario.TALENTO: {
+                        const talento = await ctx.prisma.talentos.findFirst({
+                            where: {
+                                id: c.id_receptor
+                            },
+                            include: {
+                                media: {
+                                    include: {
+                                        media: true
+                                    }
+                                }
+                            }
+                        })
+                        if (talento) {
+                            const foto_perfil = talento.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
+                            if (foto_perfil) {
+                                receptor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: foto_perfil.media.url};
+                            } else {
+                                receptor = {nombre: `${talento.nombre} ${talento.apellido}`, profile_url: '/assets/img/no-image.png'};
+                            }
                         }
-                    })
-                    if (representante) {
-                        receptor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: '/assets/img/no-image.png'};
+                        break;
                     }
-                    break;
-                }
-                case TipoUsuario.CAZATALENTOS: {
-                    const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
-                        where: {
-                            id: c.id_receptor
-                        },
-                        include: {
-                            foto_perfil: true
+                    case TipoUsuario.REPRESENTANTE: {
+                        const representante = await ctx.prisma.representante.findFirst({
+                            where: {
+                                id: c.id_receptor
+                            },
+                            include: {
+                                foto_perfil: true
+                            }
+                        })
+                        if (representante) {
+                            emisor = {nombre: `${representante.nombre} ${representante.apellido}`, profile_url: (representante.foto_perfil) ? representante.foto_perfil.url : '/assets/img/no-image.png'};
                         }
-                    })
-                    if (cazatalentos) {
-                        receptor = {nombre: `${cazatalentos.nombre} ${cazatalentos.apellido}`, profile_url: (cazatalentos.foto_perfil) ? cazatalentos.foto_perfil.url : '/assets/img/no-image.png'};
+                        break;
+                    }
+                    case TipoUsuario.CAZATALENTOS: {
+                        const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
+                            where: {
+                                id: c.id_receptor
+                            },
+                            include: {
+                                foto_perfil: true
+                            }
+                        })
+                        if (cazatalentos) {
+                            receptor = {nombre: `${cazatalentos.nombre} ${cazatalentos.apellido}`, profile_url: (cazatalentos.foto_perfil) ? cazatalentos.foto_perfil.url : '/assets/img/no-image.png'};
+                        }
                     }
                 }
-            }
-            const msg = c.mensajes[0];
+                const msg = c.mensajes[0];
 
-            if (msg) {
-                const params = JSON.parse(msg.mensaje) as {message: string};
-                latest_message = params.message;
-            }
-            return {...c, latest_message: latest_message, emisor: emisor, receptor: receptor}; 
-        }))
+                if (msg) {
+                    const params = JSON.parse(msg.mensaje) as {message: string};
+                    latest_message = params.message;
+                }
+                return {...c, latest_message: latest_message, emisor: emisor, receptor: receptor}; 
+            }))
+        }
+        return [];
     }
 ),
 });

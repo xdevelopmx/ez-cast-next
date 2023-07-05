@@ -48,7 +48,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
             <Grid item xs={12}>
                 <SectionTitle title='Media' onClickButton={(!props.read_only) ? () => {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    router.push('/talento/editar-perfil?step=2');
+                    router.push(`/talento/editar-perfil?step=2&id_talento=${props.id_talento}`);
                 } : undefined} />
             </Grid>
             <Grid item xs={12}>
@@ -68,11 +68,9 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                         />
                     }
                 </MContainer>
-                <Carroucel>
-                    {media && media.fotos.map((image, i) => {
-                        return <Image key={i} width={191} height={217} src={image.url} alt="" /> 
-                    })}
-                </Carroucel>
+                {media && media.fotos.map((image, i) => {
+                    return <Image key={i} width={191} height={217} src={image.url} alt="" /> 
+                })}
                 <Divider sx={{ mt: 3 }} />
             </Grid>
 

@@ -4,17 +4,30 @@ import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import { Alertas, MainLayout, MenuLateral, ModalTalento } from '~/components'
 import { TalentoPreviewLong } from '~/components/representante/talento-preview-long'
 import { useState } from 'react'
-import { api } from '~/utils/api'
+import { api, parseErrorBody } from '~/utils/api'
+import useNotify from '~/hooks/useNotify'
 
 const RepresentanteTusTalentosPage = () => {
 
     const [showModal, setShowModal] = useState(false)
 
+    const {notify} = useNotify();
+
     const [option_selected, setOptionSelected] = useState<'APLICACIONES' | 'AUDICIONES' | 'CALLBACK'>('APLICACIONES');
 
     const [requisitoSelected, setRequisitoSelected] = useState<'PROYECTO' | 'ROL' | 'SELF-TAPE'>('PROYECTO');
 
-    const talentos = api.talentos.getTusTalentos.useQuery()
+    const talentos_asignados = api.representantes.getTalentosAsignados.useQuery();
+
+    const removeTalento = api.representantes.removeTalento.useMutation({
+        onSuccess(data, input) {
+            notify('success', 'Se removio el talento con exito');
+            void talentos_asignados.refetch();
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
 
     return (
         <>
@@ -45,51 +58,6 @@ const RepresentanteTusTalentosPage = () => {
                                             }}>
                                             Tus talentos
                                         </Typography>
-
-                                        <Box>
-                                            <Button
-                                                className="btn btn-intro btn-price btn_out_line mb-2"
-                                                startIcon={
-                                                    <Image
-                                                        src={`/assets/img/iconos/cruz_ye.svg`}
-                                                        height={16}
-                                                        width={16}
-                                                        alt={'agregar-rol'}
-                                                        className='filtro-blanco '
-                                                    />
-                                                }
-                                                sx={{
-                                                    padding: '8px 40px',
-                                                    marginTop: 0,
-                                                    fontWeight: 900,
-                                                    textTransform: 'none',
-                                                    color: '#000',
-                                                    backgroundColor: '#f9b233 !important',
-                                                    margin: '0px !important',
-                                                    marginRight: '20px !important',
-                                                }}
-                                            >
-                                                Nuevo talento
-                                            </Button>
-
-                                            <Button
-                                                className="btn btn-intro btn-price btn_out_line mb-2"
-                                                sx={{
-                                                    padding: '8px 40px',
-                                                    marginTop: 0,
-                                                    marginRight: 10,
-                                                    fontWeight: '900 !important',
-                                                    textTransform: 'none',
-                                                    color: '#000',
-                                                    border: '2px solid #f9b233',
-                                                    backgroundColor: '#fff',
-                                                    borderRadius: '80px',
-                                                    margin: '0px !important',
-                                                }}
-                                            >
-                                                Administrar talentos
-                                            </Button>
-                                        </Box>
                                     </Box>
                                 </Grid>
 
@@ -100,7 +68,7 @@ const RepresentanteTusTalentosPage = () => {
                                             fontWeight={900}
                                             component={'span'}
                                             sx={{ padding: '0px 5px', color: '#069cb1' }}>
-                                            {talentos.data?.length ?? 0}
+                                            {talentos_asignados.data?.length ?? 0}
                                         </Typography>
                                         talentos
                                     </Typography>
@@ -113,8 +81,17 @@ const RepresentanteTusTalentosPage = () => {
 
                                 <Grid xs={12}>
                                     {
-                                        talentos.isSuccess && talentos.data.map((talento, i) => (
-                                            <TalentoPreviewLong talento={talento} setShowModal={setShowModal} key={i} />
+                                        talentos_asignados.isSuccess && talentos_asignados.data.map((entry, i) => (
+                                            <TalentoPreviewLong 
+                                                onRemoveTalento={(id_talento) => {
+                                                    removeTalento.mutate({
+                                                        id_talento: id_talento
+                                                    })
+                                                }}
+                                                talento={entry.talento} 
+                                                setShowModal={setShowModal} 
+                                                key={i} 
+                                            />
                                         ))
                                     }
                                 </Grid>

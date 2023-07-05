@@ -76,7 +76,7 @@ export const Preferencias = (props: {id_talento: number, read_only: boolean}) =>
             <Grid item xs={12}>
                 <SectionTitle title='Preferencia de roles' onClickButton={(!props.read_only) ? () => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    router.push('/talento/editar-perfil?step=6')  
+                    router.push(`/talento/editar-perfil?step=6&id_talento=${props.id_talento}`)  
                  } : undefined} />
             </Grid>
             <Grid item xs={6} mt={4}>

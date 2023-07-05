@@ -101,20 +101,7 @@ const initialState: RepresentanteForm = {
     validacion: {
         numero_clientes: 0,
         IMDB_pro_link: '',
-        directores_casting: [
-            {
-                nombre: '', 
-                apellido: '',
-                correo_electronico: '',
-                telefono: ''
-            },
-            {
-                nombre: '', 
-                apellido: '',
-                correo_electronico: '',
-                telefono: ''
-            }
-        ],
+        directores_casting: [],
         files: {
             licencia: undefined,
             urls: {
@@ -153,46 +140,87 @@ const EditarPerfilRepresentantePage: NextPage<EditarPerfilRepresentantePageProps
 
     const { notify } = useNotify();
 
-    const info_basica = api.representantes.getInfoBasica.useQuery(undefined, {
+    const info = api.representantes.getInfo.useQuery(undefined, {
         refetchOnWindowFocus: false
     })
 
     useEffect(() => {
-        if (info_basica.data && info_basica.data.info_basica) {
-            const union = info_basica.data.info_basica.union;
-            const redes_sociales: { [nombre: string]: string } = {};
-            if (info_basica.data && info_basica.data.redes_sociales) {
-                info_basica.data.redes_sociales.forEach(red => {
-                    redes_sociales[red.nombre] = red.url;
-                })
+        if (info.data) {
+
+            if (info.data.info_basica) {
+                const union = info.data.info_basica.union;
+                const redes_sociales: { [nombre: string]: string } = {};
+                if (info.data && info.data.redes_sociales) {
+                    info.data.redes_sociales.forEach(red => {
+                        redes_sociales[red.nombre] = red.url;
+                    })
+                }
+                dispatch({ type: 'update-info-basica', value: {
+                    nombre: info.data.nombre,
+                    apellido: info.data.apellido,
+                    sindicato: {
+                        id: (union) ? union.id_union : 0,
+                        descripcion: (union && union.id_union === 99) ? union.descripcion : undefined
+                    },
+                    ubicacion: {
+                        id_estado_republica: info.data.info_basica.id_estado_republica,
+                        direccion: info.data.info_basica.direccion,
+                        cp: info.data.info_basica.cp
+                    },
+                    biografia: info.data.biografia,
+                    redes_sociales: redes_sociales,
+                    files: {
+                        urls: {
+                            cv: info.data.info_basica.media?.url
+                        }
+                    },
+                }});
             }
-            dispatch({ type: 'update-info-basica', value: {
-                nombre: info_basica.data.nombre,
-                apellido: info_basica.data.apellido,
-                sindicato: {
-                    id: (union) ? union.id_union : 0,
-                    descripcion: (union && union.id_union === 99) ? union.descripcion : undefined
-                },
-                ubicacion: {
-                    id_estado_republica: info_basica.data.info_basica.id_estado_republica,
-                    direccion: info_basica.data.info_basica.direccion,
-                    cp: info_basica.data.info_basica.cp
-                },
-                biografia: info_basica.data.biografia,
-                redes_sociales: redes_sociales,
-                files: {
-                    urls: {
-                        cv: info_basica.data.info_basica.media?.url
+            if (info.data.permisos) {
+                dispatch({ type: 'update-permisos', value: {
+                    puede_aceptar_solicitudes: {
+                        talentos: info.data.permisos.puede_aceptar_solicitudes_talento,
+                        representante: info.data.permisos.puede_aceptar_solicitudes_representante
+                    },
+                    puede_editar_perfil: {
+                        talentos: info.data.permisos.puede_editar_perfil_talento,
+                        representante: info.data.permisos.puede_editar_perfil_representante
                     }
-                },
-            } });
+                }});
+            }
+            if (info.data.validacion) {
+                dispatch({ type: 'update-validacion', value: {
+                    numero_clientes: info.data.validacion.numero_clientes,
+                    IMDB_pro_link: info.data.validacion.imdb_pro_link,
+                    directores_casting: (info.data.validacion.directores.length === 0) ? [
+                        {
+                            nombre: '', 
+                            apellido: '',
+                            correo_electronico: '',
+                            telefono: ''
+                        },
+                        {
+                            nombre: '', 
+                            apellido: '',
+                            correo_electronico: '',
+                            telefono: ''
+                        }
+                    ] : info.data.validacion.directores,
+                    files: {
+                        urls: {
+                            licencia: info.data.validacion.media?.url
+                        }
+                    }
+                }});
+                
+            }
         }
-    }, [info_basica.data]);
+    }, [info.data]);
 
     const saveInfoBasica = api.representantes.saveInfoBasica.useMutation({
         onSuccess(input) {
             notify('success', 'Se guardo la información básica con exito.');
-            info_basica.refetch();
+            info.refetch();
         },
         onError: (error) => {
             notify('error', parseErrorBody(error.message));
@@ -209,6 +237,41 @@ const EditarPerfilRepresentantePage: NextPage<EditarPerfilRepresentantePageProps
                 biografia: state.info_basica.biografia,
                 id_media_cv: input,
                 redes_sociales: state.info_basica.redes_sociales ? Array.from(Object.entries(state.info_basica.redes_sociales)).map((e) => { return { nombre: e[0], url: e[1] } }) : null,
+            });
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
+
+    const savePermisos = api.representantes.savePermisos.useMutation({
+        onSuccess(input) {
+            notify('success', 'Se guardaron los permisos con exito.');
+            info.refetch();
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
+
+
+    const saveValidacion = api.representantes.saveValidacion.useMutation({
+        onSuccess(input) {
+            notify('success', 'Se guardo la validacion con exito.');
+            info.refetch();
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
+
+    const saveMediaValidacion = api.representantes.saveMediaValidacion.useMutation({
+        onSuccess(input) {
+            saveValidacion.mutate({
+                id_media_licencia: input,
+                numero_clientes: state.validacion.numero_clientes,
+                IMDB_pro_link: state.validacion.IMDB_pro_link,
+                directores_casting: state.validacion.directores_casting,
             });
         },
         onError: (error) => {
@@ -246,6 +309,45 @@ const EditarPerfilRepresentantePage: NextPage<EditarPerfilRepresentantePageProps
                         clave: `representantes/${user.id}/cv/cv-${time}`,
                         referencia: `representante-info-gral`,
                         identificador: `representante-cv`
+                    },
+                })
+                break;
+            }
+            case 2: {
+                savePermisos.mutate({
+                    puede_aceptar_solicitudes: state.permisos.puede_aceptar_solicitudes,
+                    puede_editar_perfil: state.permisos.puede_editar_perfil
+                })
+                break;
+            }
+            case 3: {
+                let url: null | string = null;
+                const to_be_saved: {path: string, name: string, file: File, base64: string}[] = [];
+                const time = new Date().getTime();
+                if (state.validacion.files.licencia) {
+                    to_be_saved.push({path: `representantes/${user.id}/licencia`, name: `licencia-${time}`, file: state.validacion.files.licencia.file, base64: state.validacion.files.licencia.base64});
+                }
+                if (to_be_saved.length > 0) {
+                    const urls_saved = await FileManager.saveFiles(to_be_saved);
+                    if (urls_saved) {
+                        urls_saved.forEach((u) => {
+                            const licencia = u[`licencia-${time}`];
+                            if (licencia) {
+                                url = licencia.url;
+                            }
+                        })
+                    }
+                }
+
+                saveMediaValidacion.mutate({
+                    licencia_url: state.validacion.files.urls.licencia,
+                    licencia: (!state.validacion.files.licencia || !url) ? null : {
+                        nombre: 'licencia',
+                        type: state.validacion.files.licencia.file.type,
+                        url: url,
+                        clave: `representantes/${user.id}/licencia/licencia-${time}`,
+                        referencia: `representante-validacion`,
+                        identificador: `representante-licencia`
                     },
                 })
                 break;

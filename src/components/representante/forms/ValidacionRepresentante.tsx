@@ -46,10 +46,10 @@ export const ValidacionRepresentanteView = (props: {
                             return { base64: base64, name: f.name, file: f };
                         }));
                         files_converted.then((files_conv) => {
-                            props.onFormChange({ files: { ...props.state.files, cv: files_conv[0] } })
+                            props.onFormChange({ files: { ...props.state.files, licencia: files_conv[0] } })
                         }).catch((err) => {
                             console.log(err);
-                            props.onFormChange({ files: { ...props.state.files, cv: undefined } })
+                            props.onFormChange({ files: { ...props.state.files, licencia: undefined } })
                         });
                     }}
                 />

@@ -59,7 +59,7 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                     <MContainer className="ml-5" direction="vertical">
                         <MContainer styles={{ alignItems: 'baseline' }} className={`m-1`} direction="horizontal">
                             <p style={{ fontSize: 30, fontWeight: 900 }}>Información básica</p>
-                            <Link href="/talento/editar-perfil" variant="button">
+                            <Link href={`/talento/editar-perfil?id_talento=${props.id_talento}`} variant="button">
                                 {!props.read_only &&
                                     <Button onClick={() => {
                                         // eslint-disable-next-line @typescript-eslint/no-floating-promises

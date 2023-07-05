@@ -2681,7 +2681,10 @@ export const RolesRouter = createTRPCRouter({
 							//• Habilidades: + 10 %
 							//(A partir de 2 habilidades compatibles, Extra)
 
-						}).filter(r => r.porcentaje_filter >= 60)
+						}).filter(r => {
+							console.log(`el porcentaje del rol ${r.nombre} es : ${r.porcentaje_filter}`)
+							return r.porcentaje_filter >= 60
+						})
 						return result;
 					}
 				}

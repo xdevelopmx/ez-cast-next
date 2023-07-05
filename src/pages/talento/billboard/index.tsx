@@ -17,6 +17,7 @@ import { Close } from '@mui/icons-material'
 import { RolPreview } from '~/components/shared/RolPreview'
 import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader'
 import { AplicacionRolDialog } from '~/components/talento/dialogs/AplicacionRolDialog'
+import { TalentoAplicacionesRepresentante } from '~/components/representante/talento/TalentoAplicacionesRepresentante'
 const filtros_initial_state = {
     tipo_busqueda: 'todos',
     id_estado_republica: [],
@@ -35,10 +36,11 @@ const filtros_initial_state = {
 
 type BillboardTalentosPageProps = {
     user: User,
-    id_proyecto: number
+    id_proyecto: number,
+    id_talento: number
 }
 
-const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto }) => {
+const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto, id_talento }) => {
     const { notify } = useNotify();
     const [dialog, setDialog] = useState<{ id: string, title: string, opened: boolean, data: Map<string, unknown> }>({ id: '', title: '', opened: false, data: new Map() })
 
@@ -58,15 +60,16 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
         autorellenar: boolean
     }>(filtros_initial_state);
 
-    const talento = api.talentos.getCompleteById.useQuery({id: parseInt(user.id)}, {
+    const talento = api.talentos.getCompleteById.useQuery({id: id_talento}, {
         refetchOnWindowFocus: false
     });
 
-    const aplicaciones_por_talento = api.roles.getAplicacionesRolesPorTalento.useQuery({id_talento: parseInt(user.id)}, {
+    const aplicaciones_por_talento = api.roles.getAplicacionesRolesPorTalento.useQuery({id_talento: id_talento}, {
         refetchOnWindowFocus: false
     })
     
     const roles_billboard = api.roles.getRolesBillboardTalentos.useQuery({
+        id_talento: id_talento,
         tipo_busqueda: form_filtros.tipo_busqueda,
         id_estados_republica: form_filtros.id_estado_republica,
         id_uniones: form_filtros.id_union,
@@ -152,10 +155,18 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
 			})
 		} else {
             if (roles_billboard.data) {
+                if (roles_billboard.data.length === 0) {
+                    return [<Box display="flex" flexDirection={'column'} justifyContent={'center'} alignItems={'center'} className="container_list_proyects" marginLeft={'auto'} marginRight={'auto'}> 
+                        <div className="box_message_blue">
+                            <p className="h3" style={{ fontWeight: 600 }}>No hay proyectos que se ajusten a tu perfil</p>
+                            <p>Asegurate de tener tu perfil al corriente para asi poder brindarte los proyectos de acuerdo a tus carateristicas.<br /></p>
+                        </div>
+                    </Box>]
+                }
                 return roles_billboard.data.map((rol, i) => {
                     let aplicacion_id: number = 0;
                     if (aplicaciones_por_talento.data) {
-                        const aplicacion = aplicaciones_por_talento.data.filter(apt => apt.id_rol === rol.id && apt.id_talento === parseInt(user.id))[0];
+                        const aplicacion = aplicaciones_por_talento.data.filter(apt => apt.id_rol === rol.id && apt.id_talento === id_talento)[0];
                         if (aplicacion) {
                             aplicacion_id = aplicacion.id;
                         }
@@ -170,7 +181,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                         const params = new Map();
                                         params.set('id_aplicacion', aplicacion_id);
                                         params.set('id_rol', rol.id);
-                                        params.set('id_talento', parseInt(user.id));
+                                        params.set('id_talento', id_talento);
                                         setDialog(prev => { return { ...prev, id: 'aplicar_dialog', title: '', opened: true, data: params } })
                                     }}
                                     sx={{
@@ -253,10 +264,13 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                             </Grid>
                                         </Grid>
                                         <Grid item xs={12}>
+                                            {user.tipo_usuario === TipoUsuario.REPRESENTANTE &&
+                                                <TalentoAplicacionesRepresentante id_talento={id_talento} />
+                                            } 
                                             <Divider sx={{ borderColor: '#069cb1', borderWidth: 1 }} />
                                         </Grid>
 
-                                        <Grid item container xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px 20px' }} mt={4}>
+                                        <Grid item container xs={12} sx={{ backgroundColor: '#EBEBEB', padding: '10px 20px' }} mt={1}>
                                             <Grid item container xs={12}>
                                                 <Grid container xs={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -837,15 +851,18 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
     let id_proyecto = 0;
+    let id_talento = 0;
     if (context.query) {
         id_proyecto = parseInt(context.query['id-proyecto'] as string);
+        id_talento = parseInt(context.query['id_talento'] as string);
     }
-    if (session && session.user) {
-        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+    if (session && session.user && session.user.tipo_usuario) {
+        if ([TipoUsuario.TALENTO, TipoUsuario.REPRESENTANTE].includes(session.user.tipo_usuario)) {
             return {
                 props: {
                     user: session.user,
-                    id_proyecto: id_proyecto
+                    id_proyecto: id_proyecto,
+                    id_talento: (session.user.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.user.id) : id_talento
                 }
             }
         } 

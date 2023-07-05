@@ -45,7 +45,7 @@ export const Habilidades = (props: {id_talento: number, read_only: boolean}) => 
             <Grid item xs={12}>
                 <SectionTitle title='Habilidades' onClickButton={(!props.read_only) ? () => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                    router.push('/talento/editar-perfil?step=4')  
+                    router.push(`/talento/editar-perfil?step=4&id_talento=${props.id_talento}`)  
                  } : undefined} />
             </Grid>
 

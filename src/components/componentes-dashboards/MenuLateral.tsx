@@ -49,15 +49,25 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 		foto_perfil: ''
 	});
 	const router = useRouter();
+	const {id_talento} = router.query;
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
 		refetchOnWindowFocus: false
 	});
 
+	const representante = api.representantes.getInfo.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.REPRESENTANTE) ? parseInt(session.data.user.id) : 0, {
+		refetchOnWindowFocus: false
+	});
+
 	const talento = api.talentos.getById.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
+
+	const talento_representado = api.talentos.getById.useQuery({ id: (id_talento) ? parseInt(id_talento as string) : 0 }, {
+		refetchOnWindowFocus: false
+	});
+
 	const info_gral_talento = api.talentos.getInfoBasicaByIdTalento.useQuery({ id: (session && session.data?.user?.tipo_usuario === TipoUsuario.TALENTO) ? parseInt(session.data.user.id) : 0 }, {
 		refetchOnWindowFocus: false
 	});
@@ -66,6 +76,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 	});
 
 	const { notify } = useNotify();
+
+	const profile_img_talento_representado = (talento_representado.data) ? talento_representado.data.media.filter(m => m.media.identificador.includes('foto-perfil'))[0]?.media.url : undefined;
 
 	const update_perfil_talento = api.talentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
@@ -90,7 +102,18 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 		}
 	})
 
-	const is_fetching = talento.isFetching || info_gral_talento.isFetching || cazatalentos.isFetching;
+	const update_perfil_representante = api.representantes.updatePerfil.useMutation({
+		onSuccess: (data, input) => {
+			notify('success', 'Se actualizo el representante con exito');
+			setEditMode(false)
+			void representante.refetch();
+		},
+		onError: (error) => {
+			notify('error', parseErrorBody(error.message));
+		}
+	})
+
+	const is_fetching = talento.isFetching || info_gral_talento.isFetching || cazatalentos.isFetching || representante.isFetching || talento_representado.isFetching;
 
 	const user_info = useMemo(() => {
 		if (session.data && session.data.user) {
@@ -137,10 +160,32 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 						}
 					}
 				}
+				case TipoUsuario.REPRESENTANTE: {
+					if (representante.data) {
+						const redes_sociales: { [red_social: string]: string } = {};
+						representante.data.redes_sociales.forEach(red => {
+							redes_sociales[red.nombre] = red.url;
+						});
+						let foto_perfil = '';
+						if (representante.data.foto_perfil) {
+							foto_perfil = representante.data.foto_perfil.url;
+						}
+						return {
+							tipo_usuario: TipoUsuario.REPRESENTANTE,
+							nombre: representante.data.nombre,
+							apellido: representante.data.apellido,
+							biografia: representante.data.biografia,
+							redes_sociales: redes_sociales,
+							posicion: representante.data.posicion,
+							compania: representante.data.compania,
+							foto_perfil: foto_perfil
+						}
+					}
+				}
 			}
 		}
 		return null;
-	}, [session, cazatalentos.data, talento.data, info_gral_talento.data]);
+	}, [session, cazatalentos.data, talento.data, info_gral_talento.data, representante.data]);
 
 	useEffect(() => {
 		if (user_info) {
@@ -183,10 +228,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 							? '550px'
 							: (user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS)
 								? 'calc(75vh)'
-								: 'calc(70vh)',
-						overflowY: (user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS)
-							? 'scroll'
-							: 'visible'
+								: 'calc(75vh)',
+						overflowY: (user_info && user_info.tipo_usuario === TipoUsuario.TALENTO)
+							? 'visible'
+							: 'scroll'
 						,
 						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
 						top: 32,
@@ -337,7 +382,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
 
 						{
-							user_info && user_info.tipo_usuario === TipoUsuario.CAZATALENTOS &&
+							user_info && [TipoUsuario.CAZATALENTOS, TipoUsuario.REPRESENTANTE].includes(user_info.tipo_usuario) &&
 							<>
 								<Grid item xs={12} textAlign={'start'}>
 									<MContainer direction='vertical' styles={{ alignContent: 'space-around' }}>
@@ -670,6 +715,46 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												}
 												break;
 											}
+											case TipoUsuario.REPRESENTANTE: {
+												if (representante.data && form.foto_selected) {
+													const time = new Date().getTime();
+													void FileManager.saveFiles([{ path: `representante/${representante.data.id}/foto-perfil`, name: `foto-perfil-representante-${representante.data.id}-${time}`, file: form.foto_selected.file, base64: form.foto_selected.base64 }]).then((result) => {
+														result.forEach((res) => {
+															if (representante.data) {
+																const response = res[`foto-perfil-representante-${representante.data.id}-${time}`];
+																if (response) {
+																	update_perfil_representante.mutate({
+																		foto_perfil: {
+																			nombre: (form.foto_selected) ? form.foto_selected.file.name : '',
+																			type: (form.foto_selected) ? form.foto_selected.file.type : '',
+																			url: (response.url) ? response.url : '',
+																			clave: `representantes/${representante.data.id}/foto-perfil/foto-perfil-representante-${representante.data.id}-${time}`,
+																			referencia: `FOTOS-PERFIL-REPRESENTANTE-${representante.data.id}`,
+																			identificador: `foto-perfil-representante-${representante.data.id}`
+																		},
+																		nombre: form.nombre,
+																		biografia: (form.biografia) ? form.biografia : '',
+																		redes_sociales: Object.keys(form.redes_sociales).map(key => ({
+																			nombre: key,
+																			url: form.redes_sociales[key] || ''
+																		}))
+																	})
+																}
+															}
+														})
+													});
+												} else {
+													update_perfil_representante.mutate({
+														nombre: form.nombre,
+														biografia: (form.biografia) ? form.biografia : '',
+														redes_sociales: Object.keys(form.redes_sociales).map(key => ({
+															nombre: key,
+															url: form.redes_sociales[key] || ''
+														}))
+													})
+												}
+												break;
+											}
 										}
 									}
 								}}
@@ -687,9 +772,14 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 						<motion.img src="/assets/img/iconos/EZ_Claqueta.svg" className="mt-5 mb-3 claqueta_black" />
 						<p className="h2 text-uppercase text-white mb-3"><b>EZ-CAST</b></p>
 						{user_info?.tipo_usuario === TipoUsuario.TALENTO && <p className="h2 text-white mb-0">TALENTO</p>}
-						<div className="mt-3 mb-3 avatar">
-							<motion.img width={128} src={foto_perfil} alt="avatar" />
-						</div>
+						<Box position={'relative'}>
+							<div className="mt-3 mb-3 avatar">
+								<motion.img width={128} src={foto_perfil} alt="avatar" />
+							</div>
+							{profile_img_talento_representado &&
+								<motion.img width={40} style={{backgroundColor: 'white', borderRadius: 32, position: 'absolute', top: 'calc(80% - 16px)', left: 'calc(65% - 28px)'}} src={profile_img_talento_representado} alt="avatar" />
+							}
+						</Box>
 						{is_fetching && <Skeleton className="h2 text-white mb-0" />}
 						{!is_fetching && <p className="h2 text-white mb-0">{user_info?.nombre}</p>}
 						{is_fetching && <Skeleton className="h2 text-white mb-3 user_lastName" />}
@@ -793,6 +883,21 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
 								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
 								<Link href="/cazatalentos/agenda-virtual" className={router.pathname.includes('agenda-virtual') ? 'active' : ''}>Agenda Virtual</Link>
+								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
+								<a href="#">Ayuda</a>
+							</div>
+						}
+						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.REPRESENTANTE &&
+							<div className="sub_menu">
+								<Link href="/representante/dashboard" className={(router.pathname === '/representante/dashboard') ? 'active' : ''}>Tu Perfil</Link>
+								<Link href="/representante/tus-talentos" className={(router.pathname === '/representante/tus-talentos') ? 'active' : ''}>Tus Talentos</Link>
+								{id_talento && parseInt(id_talento as string) > 0 &&
+									<>
+										<Link href={`/talento/billboard?id_talento=${id_talento}`} className={(router.pathname.includes('/talento/billbarod')) ? 'active' : ''}>Casting Billboard</Link>
+										<Link href={`/representante/aplicaciones?id_talento=${id_talento}`} className={(router.pathname.includes('/representante/aplicaciones')) ? 'active' : ''}>Aplicaciones</Link>
+										<Link href={`/talento/agenda-virtual?id_talento=${id_talento}`} className={router.pathname.includes('agenda-virtual') ? 'active' : ''}>Agenda Virtual</Link>
+									</>
+								}
 								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								<a href="#">Ayuda</a>
 							</div>

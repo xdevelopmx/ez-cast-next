@@ -27,7 +27,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
 
     const { notify } = useNotify();
 
-    const conversaciones = api.mensajes.getConversaciones.useQuery(parseInt(user.id));
+    const conversaciones = api.mensajes.getConversaciones.useQuery();
 
     const [selected_conversacion, setSelectedConversacion] = useState<(Conversaciones & {proyecto: Proyecto | null, emisor: {nombre: string, profile_url: string} | null, receptor: {nombre: string, profile_url: string} | null}) | null>(null);
 

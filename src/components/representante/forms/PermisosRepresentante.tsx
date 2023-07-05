@@ -7,6 +7,7 @@ export const PermisosRepresentanteView = (props: {
     state: PermisosRepresentante,
     representante_fetching: boolean,
     onFormChange: (input: { [id: string]: unknown }) => void;
+    readonly?: boolean
 }) => {
     return (
         <Grid container>
@@ -15,9 +16,11 @@ export const PermisosRepresentanteView = (props: {
                     direction='vertical'
                     title="¿Quién puede aceptar solicitudes?"
                     onChange={(e, i) => {
-                        props.onFormChange({
-                            puede_aceptar_solicitudes: (i === 0) ? { ...props.state.puede_aceptar_solicitudes,  talentos: e} : { ...props.state.puede_aceptar_solicitudes,  representante: e}
-                        })
+                        if (!props.readonly) {
+                            props.onFormChange({
+                                puede_aceptar_solicitudes: (i === 0) ? { ...props.state.puede_aceptar_solicitudes,  talentos: e} : { ...props.state.puede_aceptar_solicitudes,  representante: e}
+                            })
+                        }
                     }}
                     id="quien-puede-aceptar-solicitudes-select"
                     labelStyle={{ marginBottom: 0, width: '45%' }}
@@ -30,9 +33,11 @@ export const PermisosRepresentanteView = (props: {
                     direction='vertical'
                     title="¿Quién puede editar perfil de talento?"
                     onChange={(e, i) => {
-                        props.onFormChange({
-                            puede_editar_perfil: (i === 0) ? { ...props.state.puede_editar_perfil,  talentos: e} : { ...props.state.puede_editar_perfil,  representante: e}
-                        })
+                        if (!props.readonly) {
+                            props.onFormChange({
+                                puede_editar_perfil: (i === 0) ? { ...props.state.puede_editar_perfil,  talentos: e} : { ...props.state.puede_editar_perfil,  representante: e}
+                            })
+                        }
                     }}
                     id="quien-puede-aceptar-solicitudes-select"
                     labelStyle={{ marginBottom: 0, width: '45%' }}

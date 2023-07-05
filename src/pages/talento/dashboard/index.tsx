@@ -6,7 +6,7 @@ import { motion } from 'framer-motion'
 import { Alertas, Flotantes, FormGroup, MCheckboxGroup, MRadioGroup, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Link, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Link, Skeleton, Typography } from "@mui/material";
 import { MTable } from "~/components/shared/MTable/MTable";
 import { Activos, Creditos, FiltrosApariencias, Habilidades, Media, Preferencias } from "~/components/talento";
 import { InfoGeneral } from "~/components/talento/dashboard-sections/InfoGeneral";
@@ -21,8 +21,9 @@ import { useRouter } from "next/router";
 import useNotify from "~/hooks/useNotify";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TalentoDashBoardSelect } from "~/components/cazatalento/talento/talento-dashboard-select";
+import { TalentoDashBoardRepresentanteSection } from "~/components/representante/talento/TalentoDashBoardRepresentanteSection";
 
-const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: number, scroll_section: string }> = (props) => {
+const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: number, scroll_section: string, can_edit: boolean }> = (props) => {
 	const session = useSession();
 	const { notify } = useNotify();
 	const scrollToSection = (sectionId: string) => {
@@ -65,7 +66,7 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 					<MenuLateral />
 					<div className="seccion_container col">
 						<br /><br />
-						{props.id_talento > 0 &&
+						{props.id_talento > 0 && props.user.tipo_usuario === TipoUsuario.CAZATALENTOS &&
 							<TalentoDashBoardSelect id_talento={props.id_talento} id_rol={props.id_rol}/>
 						}
 						<div className="container_box_header">
@@ -79,6 +80,9 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 								{talento.isFetching && <Skeleton style={{ marginLeft: 16 }} width={200} height={24} />}
 								{!talento.isFetching && talento.data && <p className="h4 font-weight-bold mb-0 ml-2"><b>{talento.data.nombre} {talento.data.apellido}</b></p>}
 							</div>
+							{props.id_talento > 0 && props.user.tipo_usuario === TipoUsuario.REPRESENTANTE &&
+								<TalentoDashBoardRepresentanteSection id_talento={props.id_talento} id_representante={parseInt(props.user.id)}/>
+							}
 							<br />
 							<MContainer direction="vertical">
 								<OptionsGroup
@@ -99,18 +103,18 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 									}}
 									labels={['Informacion basica', 'Media', 'Creditos', 'Habilidades', 'Medidas', 'Activos', 'Preferencia de roles']}
 								/>
-								<InfoGeneral id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+								<InfoGeneral id_talento={id_talento} read_only={!props.can_edit} />
 							</MContainer>
 
-							<Media id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+							<Media id_talento={id_talento} read_only={!props.can_edit} />
 
-							<Creditos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+							<Creditos id_talento={id_talento} read_only={!props.can_edit} />
 
-							<Habilidades id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+							<Habilidades id_talento={id_talento} read_only={!props.can_edit} />
 
-							<Activos id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
-							<FiltrosApariencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
-							<Preferencias id_talento={id_talento} read_only={props.user.tipo_usuario !== TipoUsuario.TALENTO} />
+							<Activos id_talento={id_talento} read_only={!props.can_edit} />
+							<FiltrosApariencias id_talento={id_talento} read_only={!props.can_edit} />
+							<Preferencias id_talento={id_talento} read_only={!props.can_edit} />
 						</div>
 					</div>
 				</div>
@@ -122,17 +126,25 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const session = await getSession(context);
-	if (session && session.user) {
-		if (session.user.tipo_usuario === TipoUsuario.TALENTO || session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+	if (session && session.user && session.user.tipo_usuario) {
+		if ([TipoUsuario.CAZATALENTOS, TipoUsuario.TALENTO, TipoUsuario.REPRESENTANTE].includes(session.user.tipo_usuario)) {
 			const { id_talento } = context.query;
 			const { scroll_section } = context.query;
 			const { id_rol } = context.query;
+			let can_edit = false;
+			if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+				can_edit = true;
+			}
+			if (session.user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
+				can_edit = true;
+			}
 			return {
 				props: {
 					user: session.user,
 					id_talento: (id_talento) ? parseInt(id_talento as string) : 0,
 					id_rol: (id_rol) ? parseInt(id_rol as string) : 0,
-					scroll_section: (scroll_section) ? scroll_section as string : ''
+					scroll_section: (scroll_section) ? scroll_section as string : '',
+					can_edit: can_edit
 				}
 			}
 		}

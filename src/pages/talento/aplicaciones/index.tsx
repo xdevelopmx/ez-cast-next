@@ -26,6 +26,7 @@ import { RolPreviewLoader } from "~/components/shared/RolPreviewLoader";
 import { RolPreview } from "~/components/shared/RolPreview";
 import { MedidasDialog } from "~/components/talento/dialogs/MedidasDialog";
 import { AplicacionRolDialog } from "~/components/talento/dialogs/AplicacionRolDialog";
+import { TalentoAplicacionesRepresentante } from "~/components/representante/talento/TalentoAplicacionesRepresentante";
 
 const estilos_calendario: SxProps<Theme> = {
     '& .MuiPickersCalendarHeader-label': {
@@ -61,10 +62,11 @@ const estilos_calendario: SxProps<Theme> = {
 }
 
 type AplicacionesTalentoPageProps = {
-    user: User
+    user: User,
+    id_talento: number
 }
 
-const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user}) => {
+const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_talento}) => {
 
     const router = useRouter();
 
@@ -76,7 +78,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user}) => 
     const [dialog, setDialog] = useState<{ opened: boolean, data: Map<string, unknown> }>({ opened: false, data: new Map() })
 
     const aplicaciones_roles = api.roles.getAplicacionesRolesPorTalento.useQuery({
-        id_talento: parseInt(user.id), pagination: { skip: pagination.page * pagination.page_size, take: pagination.page_size }
+        id_talento: id_talento, pagination: { skip: pagination.page * pagination.page_size, take: pagination.page_size }
     }, {
         refetchOnWindowFocus: false
     })
@@ -176,7 +178,9 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user}) => 
                                             <Grid item md={11}>
                                                 <Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>Tus Aplicaciones</Typography>
                                             </Grid>
-
+                                            {user.tipo_usuario === TipoUsuario.REPRESENTANTE &&
+                                                <TalentoAplicacionesRepresentante id_talento={id_talento} />
+                                            } 
                                         </Grid>
                                     </Grid>
                                     {paginated_data.length === 0 &&
@@ -271,11 +275,14 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user}) => 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
-    if (session && session.user) {
-        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+    if (session && session.user && session.user.tipo_usuario) {
+        if ([TipoUsuario.TALENTO, TipoUsuario.REPRESENTANTE].includes(session.user.tipo_usuario)) {
+            const { id_talento } = context.query;
+            const talento_id = (session.user.tipo_usuario === TipoUsuario.TALENTO) ? session.user.id : id_talento as string;
             return {
                 props: {
-                    user: session.user
+                    user: session.user,
+                    id_talento: parseInt(talento_id)
                 }
             }
         } 
