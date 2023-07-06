@@ -117,7 +117,6 @@ export const RolesRouter = createTRPCRouter({
 					casting: true
 				}
 			});
-			console.log(rol?.casting);
 			const dates = new Set<string>();
 			if (rol) {
 				rol.casting.forEach((date) => {
@@ -148,7 +147,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 			return dates;
 		}
-		),
+	),
 	getRolWithApplicationsById: publicProcedure
 		.input(z.object({
 			start: z.number(),
@@ -157,7 +156,6 @@ export const RolesRouter = createTRPCRouter({
 			id_estado_aplicacion: z.number(),
 		}))
 		.query(async ({ input, ctx }) => {
-			console.log('\n\n\n\n\n INPUT getRolWithApplicationsById \n\n\n\n', input);
 			if (input.id_rol <= 0) return null;
 			const applications_where: { id_rol: number, id_estado_aplicacion?: number } = {
 				id_rol: input.id_rol
@@ -241,7 +239,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 			return null;
 		}
-		),
+	),
 	getCompleteById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {

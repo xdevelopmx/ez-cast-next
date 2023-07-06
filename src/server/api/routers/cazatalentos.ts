@@ -300,6 +300,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			if (input.id_talento <= 0 || input.id_rol <= 0) return null;
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const rol = await ctx.prisma.roles.findFirst({
@@ -357,6 +358,7 @@ export const CazatalentosRouter = createTRPCRouter({
   			calificacion: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			if (input.id_rol <= 0 || input.id_talento <= 0) return null;
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const rol = await ctx.prisma.roles.findFirst({
@@ -451,6 +453,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			mensaje: z.string(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			if (input.id_rol <= 0 || input.id_talento <= 0) return null;
 			const fecha_audicion = dayjs(input.fecha_audicion, 'DD/MM/YYYY').toDate();
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {

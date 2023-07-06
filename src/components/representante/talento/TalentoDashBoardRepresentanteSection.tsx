@@ -52,7 +52,10 @@ export const TalentoDashBoardRepresentanteSection: FC<Props> = ({ id_talento, id
                             />
                             <Typography>Ver como Cazatalento</Typography>
                         </Box>
-                        <Button>
+                        <Button onClick={() => {
+                            navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${id_talento}`);
+                            notify('success', 'Se copio el link');
+                        }}>
                             Copiar link de perfil para compartir
                         </Button>
                     </Box>	

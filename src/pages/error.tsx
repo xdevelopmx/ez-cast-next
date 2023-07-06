@@ -22,11 +22,19 @@ export default function Error() {
             }
             case Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE: {
                 return <MContainer direction="vertical" justify="center" >
-                    <AppAlert size="xl" title="Problema con los permisos del usuario" message="El usuario no tiene permisos para ver esta pagina" imageSrc={"/assets/img/warning.png"} />
-                <Button endIcon={<Home/>}  onClick={() => { 
-                    void router.replace('/') 
-                } }>Volver al inicio</Button>
-            </MContainer> 
+                        <AppAlert size="xl" title="Problema con los permisos del usuario" message="El usuario no tiene permisos para ver esta pagina" imageSrc={"/assets/img/warning.png"} />
+                    <Button endIcon={<Home/>}  onClick={() => { 
+                        void router.replace('/') 
+                    } }>Volver al inicio</Button>
+                </MContainer> 
+            }
+            case Constants.PAGE_ERRORS.NO_EDIT_PERMISSIONS: {
+                return <MContainer direction="vertical" justify="center" >
+                        <AppAlert size="xl" title="Problema con los permisos del usuario" message="El usuario no tiene permisos para editar esta pagina" imageSrc={"/assets/img/warning.png"} />
+                    <Button endIcon={<Home/>}  onClick={() => { 
+                        void router.replace('/') 
+                    } }>Volver al inicio</Button>
+                </MContainer> 
             }
         }
     }, [router.query]);

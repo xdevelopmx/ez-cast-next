@@ -22,6 +22,7 @@ import useNotify from "~/hooks/useNotify";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TalentoDashBoardSelect } from "~/components/cazatalento/talento/talento-dashboard-select";
 import { TalentoDashBoardRepresentanteSection } from "~/components/representante/talento/TalentoDashBoardRepresentanteSection";
+import { prisma } from "~/server/db";
 
 const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: number, scroll_section: string, can_edit: boolean }> = (props) => {
 	const session = useSession();
@@ -31,18 +32,7 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 		section?.scrollIntoView({ behavior: 'smooth' });
 	};
 
-	const id_talento = useMemo(() => {
-		if (props.id_talento > 0) {
-			return props.id_talento;
-		}
-		if (session.data && session.data.user) {
-			return parseInt(session.data.user.id);
-		}
-		return 0;
-	}, [session.data, props]);
-
-
-	const talento = api.talentos.getById.useQuery({ id: id_talento }, {
+	const talento = api.talentos.getById.useQuery({ id: props.id_talento }, {
 		refetchOnWindowFocus: false
 	});
 
@@ -66,7 +56,7 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 					<MenuLateral />
 					<div className="seccion_container col">
 						<br /><br />
-						{props.id_talento > 0 && props.user.tipo_usuario === TipoUsuario.CAZATALENTOS &&
+						{props.id_talento > 0 && props.id_rol > 0 && props.user.tipo_usuario === TipoUsuario.CAZATALENTOS &&
 							<TalentoDashBoardSelect id_talento={props.id_talento} id_rol={props.id_rol}/>
 						}
 						<div className="container_box_header">
@@ -103,18 +93,18 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 									}}
 									labels={['Informacion basica', 'Media', 'Creditos', 'Habilidades', 'Medidas', 'Activos', 'Preferencia de roles']}
 								/>
-								<InfoGeneral id_talento={id_talento} read_only={!props.can_edit} />
+								<InfoGeneral id_talento={props.id_talento} read_only={!props.can_edit} />
 							</MContainer>
 
-							<Media id_talento={id_talento} read_only={!props.can_edit} />
+							<Media id_talento={props.id_talento} read_only={!props.can_edit} />
 
-							<Creditos id_talento={id_talento} read_only={!props.can_edit} />
+							<Creditos id_talento={props.id_talento} read_only={!props.can_edit} />
 
-							<Habilidades id_talento={id_talento} read_only={!props.can_edit} />
+							<Habilidades id_talento={props.id_talento} read_only={!props.can_edit} />
 
-							<Activos id_talento={id_talento} read_only={!props.can_edit} />
-							<FiltrosApariencias id_talento={id_talento} read_only={!props.can_edit} />
-							<Preferencias id_talento={id_talento} read_only={!props.can_edit} />
+							<Activos id_talento={props.id_talento} read_only={!props.can_edit} />
+							<FiltrosApariencias id_talento={props.id_talento} read_only={!props.can_edit} />
+							<Preferencias id_talento={props.id_talento} read_only={!props.can_edit} />
 						</div>
 					</div>
 				</div>
@@ -131,17 +121,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 			const { id_talento } = context.query;
 			const { scroll_section } = context.query;
 			const { id_rol } = context.query;
-			let can_edit = false;
+			let talento_id = (id_talento) ? parseInt(id_talento as string) : 0;
 			if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
-				can_edit = true;
+				talento_id = parseInt(session.user.id);
 			}
-			if (session.user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
-				can_edit = true;
+			let can_edit = true;
+			const rep = await prisma.talentosRepresentados.findFirst({
+				where: {
+					id_talento: talento_id
+				},
+				include: {
+					representante: {
+						include: {
+							permisos: true
+						}
+					}
+				}
+			})
+			if (rep) {
+				if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+					can_edit = Boolean(rep.representante.permisos?.puede_editar_perfil_talento); 
+				}
+				if (session.user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
+					can_edit = Boolean(rep.representante.permisos?.puede_editar_perfil_representante);
+				}
 			}
+
 			return {
 				props: {
 					user: session.user,
-					id_talento: (id_talento) ? parseInt(id_talento as string) : 0,
+					id_talento: talento_id,
 					id_rol: (id_rol) ? parseInt(id_rol as string) : 0,
 					scroll_section: (scroll_section) ? scroll_section as string : '',
 					can_edit: can_edit

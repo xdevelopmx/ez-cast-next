@@ -20,6 +20,7 @@ import { TalentosRouter } from "~/server/api/routers/talentos";
 import { CreditoTalento, Media } from "@prisma/client";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
+import { prisma } from "~/server/db";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -1173,34 +1174,56 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
-    if (session && session.user) {
-        const { step } = context.query;
-        if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
-            return {
-                props: {
-                    id_talento: parseInt(session.user.id),
-                    step: (step) ? step : 1
+    if (session && session.user && session.user.tipo_usuario) {
+        if ([TipoUsuario.TALENTO, TipoUsuario.REPRESENTANTE].includes(session.user.tipo_usuario)) {
+            const { step } = context.query;
+            const { id_talento } = context.query;
+            let talento_id = (id_talento) ? parseInt(id_talento as string) : 0;
+            if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+                talento_id = parseInt(session.user.id);
+            }
+            let can_edit = true;
+            const rep = await prisma.talentosRepresentados.findFirst({
+                where: {
+                    id_talento: talento_id
+                },
+                include: {
+                    representante: {
+                        include: {
+                            permisos: true
+                        }
+                    }
+                }
+            })
+            if (rep) {
+                if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
+                    can_edit = Boolean(rep.representante.permisos?.puede_editar_perfil_talento); 
+                }
+                if (session.user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
+                    can_edit = Boolean(rep.representante.permisos?.puede_editar_perfil_representante);
                 }
             }
-        }
-        if (session.user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
-            let id_talento = 0;
-            if (context.query) {
-                id_talento = parseInt(context.query['id_talento'] as string);
+            if (can_edit) {
+                return {
+                    props: {
+                        id_talento: talento_id,
+                        step: (step) ? step : 1
+                    }
+                }
             }
             return {
-                props: {
-                    id_talento: id_talento,
-                    step: (step) ? step : 1
+                redirect: {
+                    destination: `/error?cause=${Constants.PAGE_ERRORS.NO_EDIT_PERMISSIONS}`,
+                    permanent: true
                 }
             }
         }
         return {
-            redirect: {
-                destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
-                permanent: true
-            }
-        }
+			redirect: {
+				destination: `/error?cause=${Constants.PAGE_ERRORS.UNAUTHORIZED_USER_ROLE}`,
+				permanent: true
+			}
+		}
     }
     return {
         redirect: {

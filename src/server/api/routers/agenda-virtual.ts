@@ -224,6 +224,28 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			});
 		}
 	),
+	getIntervalosByTalento: protectedProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			const intervalos = await ctx.prisma.intervaloBloqueHorario.findMany({
+				where: { id_talento: input },
+				include: {
+					rol: {
+						include: {
+							proyecto: true
+						}
+					},
+					bloque_horario: {
+						include: {
+							horario_agenda: true
+						}
+					}
+				}
+			})
+			return intervalos;
+		}
+	),
 	getHorarioAgendaById: protectedProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
