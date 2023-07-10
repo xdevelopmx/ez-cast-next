@@ -44,24 +44,42 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
 
     const { notify } = useNotify();
 
+    const video_player = useRef<HTMLVideoElement | null>(null);
+
+    const [recording, setRecording] = useState(true);
+
     useEffect(() => {
-        if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
-            navigator.mediaDevices.getUserMedia({video: {
-                facingMode: {
-                    exact: 'environment'
-                }
-            }})
-            getDevices();
-            alert("Let's get this party started")
-          }
-    }, []);
+        if (recording) {
+
+            if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+                let mediaDevices = navigator.mediaDevices;
+                
+                    // Accessing the user camera and video.
+                    mediaDevices
+                        .getUserMedia({
+                            video: true,
+                            audio: true,
+                        })
+                        .then((stream) => {
+                            if (video_player.current) {
+                                video_player.current.srcObject = stream;
+                                video_player.current.addEventListener("loadedmetadata", () => {
+                                    if (video_player.current) {
+                                        video_player.current.play();
+                                    }
+                                });
+    
+                            }
+                        })
+                        .catch(alert);
+              }
+        }
+    }, [recording, video_player.current]);
 
     const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'DELETE' | 'CALLBACK', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'DELETE', data: new Map });
     
     const [lineas, setLineas] = useState("");
 
-    const [recording, setRecording] = useState(true);
-    
     const [delay, setDelay] = useState(-1);
 
     const textBoxRef = useRef<HTMLDivElement>(null);
@@ -141,36 +159,42 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                             </Box>
                                         }
                                         {recording &&
-                                            <Box position={'relative'}>
-                                                <Image style={{position: 'absolute', top: 0}} src='/assets/img/logo_color.svg' width={128} height={32} alt=""/>
-                                                <Box style={{position: 'absolute', top: 0, right: 0}}>
-                                                    <p>Grabando</p>
-                                                </Box>
-                                                <Box sx={{position: 'relative', top: 32, width: '90%'}} ref={textBoxRef} maxHeight={150} overflow={'hidden'} p={4}>
-                                                    {formated_lineas.map((l, i) => {
-                                                        return <p  className={`selected-text-${i}`} style={{fontSize: '1.3rem', padding: 0, margin: 0, backgroundColor: (highlighted_text === i) ? 'rgba(6, 156, 177, 0.5)' : '', color: (highlighted_text === i) ? 'white' : 'black' }}>{l} [{i}]</p>
-                                                    })}
-                                                </Box>
-                                                <Box display={'flex'} flexDirection={'column'} sx={{position: 'absolute', top: 32, right: 0}} p={4}>
-                                                    <IconButton 
-                                                        onClick={(e) => { 
-                                                            if ((highlighted_text - 1) >= 0) {
-                                                                sethighlightedText(prev => prev - 1 );
-                                                            }
-                                                            
-                                                        }}
-                                                    >
-                                                        <Image src={`/assets/img/iconos/arrow_u_blue.svg`} width={16} height={16} alt=""/>
-                                                    </IconButton>
-                                                    <IconButton 
-                                                        onClick={(e) => { 
-                                                            if (formated_lineas.length > (highlighted_text + 1)) {
-                                                                sethighlightedText(prev => prev + 1 );
-                                                            }
-                                                        }}
-                                                    >
-                                                        <Image src={`/assets/img/iconos/arrow_d_blue.svg`} width={16} height={16} alt=""/>
-                                                    </IconButton>
+                                            <Box position={'absolute'}>
+                                                <video ref={video_player} controls style={{ width: '100%' }}>
+                                                    Lo sentimos tu navegador no soporta videos.
+                                                </video>
+
+                                                <Box position={'relative'}>
+                                                    <Image style={{position: 'absolute', top: 0}} src='/assets/img/logo_color.svg' width={128} height={32} alt=""/>
+                                                    <Box style={{position: 'absolute', top: 0, right: 0}}>
+                                                        <p>Grabando</p>
+                                                    </Box>
+                                                    <Box sx={{position: 'relative', top: 32, width: '90%'}} ref={textBoxRef} maxHeight={150} overflow={'hidden'} p={4}>
+                                                        {formated_lineas.map((l, i) => {
+                                                            return <p  className={`selected-text-${i}`} style={{fontSize: '1.3rem', padding: 0, margin: 0, backgroundColor: (highlighted_text === i) ? 'rgba(6, 156, 177, 0.5)' : '', color: (highlighted_text === i) ? 'white' : 'black' }}>{l} [{i}]</p>
+                                                        })}
+                                                    </Box>
+                                                    <Box display={'flex'} flexDirection={'column'} sx={{position: 'absolute', top: 32, right: 0}} p={4}>
+                                                        <IconButton 
+                                                            onClick={(e) => { 
+                                                                if ((highlighted_text - 1) >= 0) {
+                                                                    sethighlightedText(prev => prev - 1 );
+                                                                }
+                                                                
+                                                            }}
+                                                        >
+                                                            <Image src={`/assets/img/iconos/arrow_u_blue.svg`} width={16} height={16} alt=""/>
+                                                        </IconButton>
+                                                        <IconButton 
+                                                            onClick={(e) => { 
+                                                                if (formated_lineas.length > (highlighted_text + 1)) {
+                                                                    sethighlightedText(prev => prev + 1 );
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Image src={`/assets/img/iconos/arrow_d_blue.svg`} width={16} height={16} alt=""/>
+                                                        </IconButton>
+                                                    </Box>
                                                 </Box>
                                             </Box>
                                         }
