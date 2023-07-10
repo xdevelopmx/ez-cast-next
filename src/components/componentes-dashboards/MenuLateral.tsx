@@ -872,7 +872,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 							<div className="sub_menu">
 								<Link href="/talento/dashboard" className={(router.pathname === '/talento/dashboard') ? 'active' : ''}>Perfil</Link>
 								<Link href="/talento/billboard" className={(router.pathname === '/talento/billboard') ? 'active' : ''}>Casting Billboard</Link>
-								<a href="/talento/aplicaciones">Tus Aplicaciones</a>
+								<Link href="/talento/aplicaciones" className={(router.pathname === '/talento/aplicaciones') ? 'active' : ''}>Tus Aplicaciones</Link>
+								<Link href="/talento/self-tape" className={(router.pathname === '/talento/self-tape') ? 'active' : ''}>Grabar Self-Tape</Link>
 								<a href="#">Media Bank</a>
 								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								<a href="#">Ayuda</a>
