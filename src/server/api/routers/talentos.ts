@@ -67,7 +67,7 @@ export const TalentosRouter = createTRPCRouter({
 
 			return media;
 		}
-		),
+	),
 	getCreditosByIdTalento: publicProcedure
 		.input(z.object({ id: z.number() }))
 		.query(async ({ input, ctx }) => {
@@ -429,7 +429,48 @@ export const TalentosRouter = createTRPCRouter({
 			return info_gral;
 			//return exclude(talento, ['contrasenia'])
 		}
-		),
+	),
+	saveSelftape: protectedProcedure
+		.input(z.object({
+			id_talento: z.number(),
+			selftape: z.object({
+				nombre: z.string(),
+				type: z.string(),
+				url: z.string(),
+				clave: z.string(),
+				referencia: z.string(),
+				identificador: z.string()
+			})
+		}))
+		.mutation(async ({ input, ctx }) => {
+			if (input.id_talento <= 0) return null;
+			const media_selftape_saved = await ctx.prisma.media.create({
+				data: {
+					nombre: input.selftape.nombre,
+					type: input.selftape.type,
+					url: input.selftape.url,
+					clave: input.selftape.clave,
+					referencia: input.selftape.referencia,
+					identificador: input.selftape.identificador
+				}
+			});
+			if (media_selftape_saved) {
+				const selftape_saved = await ctx.prisma.mediaPorTalentos.create({
+					data: {
+						id_talento: input.id_talento,
+						id_media: media_selftape_saved.id
+					}
+				})
+				if (selftape_saved) {
+					return selftape_saved;
+				}
+			}
+			throw new TRPCError({
+				code: 'INTERNAL_SERVER_ERROR',
+				message: `Ocurrio un error al tratar de actualizar los selftapes de perfil del talento`,
+			});
+		}
+	),
 	saveInfoGralMedia: protectedProcedure
 		.input(z.object({
 			id_talento: z.number(),

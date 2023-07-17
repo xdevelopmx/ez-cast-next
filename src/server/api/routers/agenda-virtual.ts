@@ -6,7 +6,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
+import type { Cazatalentos, HorarioAgenda, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
@@ -40,7 +40,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			})
 
 			if (horario) {
-				const intervalos = horario.bloque_horario.map(b => b.intervalos).flat();
+				//const intervalos = horario.bloque_horario.map(b => b.intervalos).flat();
 				await Promise.all(await horario.bloque_horario.map(async (b) => {
 					b.intervalos.forEach( async (i) => {
 
@@ -95,6 +95,19 @@ export const AgendaVirtualRouter = createTRPCRouter({
 											id_talento: i.talento.id
 										}),
 										type: TipoMensajes.NOTIFICACION_HORARIO_AGENDA_VIRTUAL
+									}
+								})
+							}
+							const cazatalento = await ctx.prisma.cazatalentos.findFirst({where: { id: horario.proyecto.id_cazatalentos }})
+							if (cazatalento) {
+								await ctx.prisma.alertas.create({
+									data: {
+										id_usuario: i.talento.id,
+										tipo_usuario: TipoUsuario.TALENTO,
+										visto: false,
+										mensaje: `El cazatalentos <span style="color: white; font-weight: 800;">“${cazatalento.nombre} ${cazatalento.apellido}”</span> ha confirmado tu <span style="color: white; font-weight: 800;">${(horario.tipo_agenda.toLowerCase() === 'callback') ? 'callback' : 'audición'}</span>
+										el día <span style="color: white; font-weight: 800;">“${b.fecha} a las ${i.hora} horas”</span> para el rol de <span style="color: white; font-weight: 800;">“${i.rol.nombre}”</span>, 
+										comunicate por mensaje para saber los detalles de último minuto para tu casting.`
 									}
 								})
 							}
@@ -384,28 +397,84 @@ export const AgendaVirtualRouter = createTRPCRouter({
 		.mutation(async ({ input, ctx }) => {
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				const horario = await ctx.prisma.horarioAgenda.upsert({
+				let horario = await ctx.prisma.horarioAgenda.findFirst({
+					where: {
+						id_proyecto: input.id_proyecto
+					}
+				});
+				let horario_complete = await ctx.prisma.horarioAgenda.findFirst({
 					where: {
 						id_proyecto: input.id_proyecto
 					},
-					update: {
-						tipo_agenda: input.tipo_agenda,
-						tipo_fechas: input.tipo_fechas,
-						tipo_localizacion: input.tipo_localizacion,
-						notas: input.notas,
-						id_uso_horario: input.id_uso_horario,
-					},
-					create: {
-						tipo_agenda: input.tipo_agenda,
-						tipo_localizacion: input.tipo_localizacion,
-						tipo_fechas: input.tipo_fechas,
-						notas: input.notas,
-						id_uso_horario: input.id_uso_horario,
-						id_proyecto: input.id_proyecto,
-						fecha_creacion: new Date()
+					include: {
+						proyecto: {
+							include: {
+								cazatalentos: true
+							}
+						},
+						bloque_horario: {
+							include: {
+								intervalos: {
+									include: {
+										talento: true, 
+										rol: true
+									}
+								}
+							}
+						}
 					}
-				})
-				
+				});
+				if (horario && horario_complete) {
+					// enviamos alerta a los talentos que esten asignados a algun intervalo
+					const alerts = await Promise.all(horario_complete.bloque_horario.map(async (b) => {
+						return b.intervalos.map(async (i) => {
+							if (i.talento) {
+								return await ctx.prisma.alertas.create({
+									data: {
+										id_usuario: (i.id_talento) ? i.id_talento : 0,
+										tipo_usuario: TipoUsuario.TALENTO,
+										visto: false,
+										mensaje: `Tenemos una mala noticia <span style="color: white; font-weight: 800;">“${i.talento?.nombre} ${i.talento?.apellido}”</span>, <span style="color: white; font-weight: 800;">“${horario_complete?.proyecto.cazatalentos.nombre} ${horario_complete?.proyecto.cazatalentos.apellido}”</span> ha cancelado el
+										casting de <span style="color: white; font-weight: 800;">“${i.rol?.nombre}”</span> para <span style="color: white; font-weight: 800;">“${b.fecha} a las ${i.hora} horas”</span>.`
+									}
+								}) 
+							} 
+							return null;
+						})
+					}))
+					horario = await ctx.prisma.horarioAgenda.update({
+						where: {
+							id: horario.id
+						},
+						data: {
+							tipo_agenda: input.tipo_agenda,
+							tipo_fechas: input.tipo_fechas,
+							tipo_localizacion: input.tipo_localizacion,
+							notas: input.notas,
+							id_uso_horario: input.id_uso_horario,
+						}
+					});
+				} else {
+					horario = await ctx.prisma.horarioAgenda.create({
+						data: {
+							tipo_agenda: input.tipo_agenda,
+							tipo_localizacion: input.tipo_localizacion,
+							tipo_fechas: input.tipo_fechas,
+							notas: input.notas,
+							id_uso_horario: input.id_uso_horario,
+							id_proyecto: input.id_proyecto,
+							fecha_creacion: new Date()
+						},
+						include: {
+							bloque_horario: {
+								include: {
+									intervalos: true
+								}
+							}
+						}
+					})
+				}
+
 				// limpiamos los intervalos por alguna razon no esta funcionando el onDelete Cascade
 				const bloques = await ctx.prisma.bloqueHorariosAgenda.findMany({
 					where: {
@@ -438,7 +507,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 
 				if (input.fechas.length > 0) {
 					const saved_fechas = await ctx.prisma.fechasPorHorarioAgenda.createMany({
-						data: input.fechas.map(f => { return {...f, id_horario_agenda: horario.id}})
+						data: input.fechas.map(f => { return {...f, id_horario_agenda: horario ? horario.id : 0}})
 					})
 					if (!saved_fechas) {
 						throw new TRPCError({
@@ -451,7 +520,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				}
 				if (input.locaciones.length > 0) {
 					const saved_locaciones = await ctx.prisma.localizacionesPorHorarioAgenda.createMany({
-						data: input.locaciones.map(f => { return {...f, id_horario_agenda: horario.id}})
+						data: input.locaciones.map(f => { return {...f, id_horario_agenda: horario ? horario.id : 0}})
 					})
 					if (!saved_locaciones) {
 						throw new TRPCError({
@@ -480,7 +549,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			estado: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('inoputasd', input);
+
 			const saved_intervalos = await ctx.prisma.intervaloBloqueHorario.update({
 				where: {
 					id: input.id_intervalo
@@ -489,16 +558,61 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					id_rol: input.id_rol,
 					id_talento: input.id_talento,
 					estado: input.estado
+				},
+				include: {
+					talento: true,
+					rol: true,
+					bloque_horario: {
+						include: {
+							horario_agenda: {
+								include: {
+									proyecto: true
+								}
+							}
+						}
+					}
 				}
 			})
-
+			
 			if (!saved_intervalos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
 					message: 'Ocurrio un problema al tratar de guardar los intervalos',
 				});
 			}
-			
+			const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
+				where: { id: saved_intervalos.bloque_horario.horario_agenda.proyecto.id_cazatalentos}
+			})
+			if (cazatalentos) {
+
+				let alert_message = '';
+				switch (saved_intervalos.estado) {
+					case Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO: {
+						alert_message = `<span style="color: white; font-weight: 800;">“${cazatalentos.nombre} ${cazatalentos.apellido}”</span>, <span style="color: white; font-weight: 800;">“${saved_intervalos.talento?.nombre} ${saved_intervalos.talento?.apellido}”</span> ha confirmado ${saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback' ? 'el callback' : 'la audicion'} el día 
+						<span style="color: white; font-weight: 800;">“${saved_intervalos.bloque_horario.fecha} a las ${saved_intervalos.hora} horas”</span> para el rol de <span style="color: white; font-weight: 800;">“${saved_intervalos.rol?.nombre}”</span>, déjale saber los detalles de último minuto para su
+						casting.`;
+						break;
+					}
+					case Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO: {
+						alert_message = `¡Hola <span style="color: white; font-weight: 800;">“${cazatalentos.nombre} ${cazatalentos.apellido}”</span>, <span style="color: white; font-weight: 800;">“${saved_intervalos.talento?.nombre} ${saved_intervalos.talento?.apellido}”</span> ha rechazado ${saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback' ? 'el callback' : 'la audicion'} el día 
+						<span style="color: white; font-weight: 800;">“${saved_intervalos.bloque_horario.fecha} a las ${saved_intervalos.hora} horas”</span> para el rol de <span style="color: white; font-weight: 800;">“${saved_intervalos.rol?.nombre}”</span>, déjale saber si tienes fechas y horarios disponibles para el casting.`;
+						break;
+					}
+				}
+				if (alert_message.length > 0) {
+					await ctx.prisma.alertas.create({
+						data: {
+							id_usuario: saved_intervalos.bloque_horario.horario_agenda.proyecto.id_cazatalentos,
+							tipo_usuario: TipoUsuario.CAZATALENTOS,
+							visto: false,
+							mensaje: alert_message
+						}
+					})
+		
+				}
+			}
+
+
 			return saved_intervalos;
 		}
 	),

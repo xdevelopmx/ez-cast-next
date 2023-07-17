@@ -9,6 +9,7 @@ import {
 import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
+import Constants from "~/constants";
 
 export const ProyectosRouter = createTRPCRouter({
 	getProyectosRandom: publicProcedure
@@ -126,10 +127,11 @@ export const ProyectosRouter = createTRPCRouter({
 		.input(z.object({
 			id: z.number(),
 			estatus: z.string(),
+			observaciones: z.string().nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario && [TipoUsuario.CAZATALENTOS, TipoUsuario.ADMIN].includes(ctx.session.user.tipo_usuario)) {
 				const proyecto: Proyecto = await ctx.prisma.proyecto.update({
 					where: {
 						id: input.id
@@ -138,6 +140,7 @@ export const ProyectosRouter = createTRPCRouter({
 						estatus: input.estatus
 					}
 				});
+
 				if (!proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
@@ -146,11 +149,35 @@ export const ProyectosRouter = createTRPCRouter({
 						//cause: theError,
 					});
 				}
+				let alert_message = ``;
+				switch (proyecto.estatus) {
+					case Constants.ESTADOS_PROYECTO.APROBADO: {
+						alert_message = `¡Tu proyecto <span style="color: white; font-weight: 800;">“${proyecto.nombre}”</span> ha sido aprobado con éxito!
+						Te recomendamos estar atento a las aplicaciones que recibas para así encontrar y reclutar a tu
+						talento lo más pronto posible.`;
+						break;
+					}
+					case Constants.ESTADOS_PROYECTO.RECHAZADO: {
+						alert_message = `¡Tu proyecto <span style="color: white; font-weight: 800;">“${proyecto.nombre}”</span> ha sido rechazado!
+						Te recomendamos revisar las siguientes observaciones para que sean corregidos: </br> <span style="color: white; font-weight: 800;"> ${(input.observaciones) ? input.observaciones : 'No se hicieron observaciones'}.</span>`;
+						break;
+					}
+				}
+				if (alert_message.length > 0) {
+					await ctx.prisma.alertas.create({
+						data: {
+							id_usuario: proyecto.id_cazatalentos,
+							tipo_usuario: TipoUsuario.CAZATALENTOS,
+							visto: false,
+							mensaje: alert_message
+						}
+					})
+				}
 				return proyecto;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede modificar los proyectos',
+				message: 'Solo el rol de cazatalentos y admin puede modificar los proyectos',
 				// optional: pass the original error to retain stack trace
 				//cause: theError,
 			});
@@ -354,11 +381,29 @@ export const ProyectosRouter = createTRPCRouter({
     	.input(z.object({
 			id: z.number().nullish(),
 			sindicato: z.object({
-				id_sindicato: z.number().min(1),
+				id_sindicato: z.number({
+					errorMap: (issue, _ctx) => {
+						switch (issue.code) {
+							case 'too_small':
+								return { message: 'Debes elegir un tipo de sindicato' };
+							default:
+								return { message: 'Sindicado invalido' };
+						}
+					},
+				}).min(1),
 				descripcion: z.string()
 			}),
 			tipo_proyecto: z.object({
-				id_tipo_proyecto: z.number().min(1),
+				id_tipo_proyecto: z.number({
+					errorMap: (issue, _ctx) => {
+						switch (issue.code) {
+							case 'too_small':
+								return { message: 'Debes elegir un tipo de proyecto' };
+							default:
+								return { message: 'Tipo proyecto invalido' };
+						}
+					},
+				}).min(1),
 				descripcion: z.string()
 			}),
 			proyecto: z.object({
@@ -372,7 +417,16 @@ export const ProyectosRouter = createTRPCRouter({
 				agencia_publicidad: z.string(),
 				sinopsis: z.string().max(500),
 				detalles_adicionales: z.string().max(500),
-				id_estado_republica: z.number().min(1),
+				id_estado_republica: z.number({
+					errorMap: (issue, _ctx) => {
+						switch (issue.code) {
+							case 'too_small':
+								return { message: 'Debes elegir una locacion valida' };
+							default:
+								return { message: 'Locacion invalida' };
+						}
+					},
+				}).min(1),
 				compartir_nombre: z.boolean(),
 				estatus: z.string(),
 			})

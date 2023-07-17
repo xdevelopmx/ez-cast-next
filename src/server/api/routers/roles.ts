@@ -542,11 +542,10 @@ export const RolesRouter = createTRPCRouter({
 							tipo_usuario: TipoUsuario.CAZATALENTOS,
 							visto: false,
 							mensaje: `<p>¡Hola <b>${cazatalentos.nombre} ${cazatalentos.apellido}</b>! Has recibido
-							<span style="color: white;">nuevas aplicaciones</span> para tu proyecto <b>${rol.proyecto.nombre}</b>, accede a tu billboard personalizado y selecciona
+							<span style="color: white;">nuevas aplicaciones</span> para tu proyecto <b>${rol.proyecto.nombre}</b>, accede a tu <a style="text-decoration: underline; color: white;" href="/cazatalentos/billboard"> billboard personalizado</a> y selecciona
 							a tus favoritos utilizando la herramienta <span style="color: white">destacado</span>.</p>`
 						}
 					})
-
 				}
 			}
 		}

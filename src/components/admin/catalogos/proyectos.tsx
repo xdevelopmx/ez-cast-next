@@ -1,4 +1,4 @@
-import { Circle, Star } from "@mui/icons-material"
+import { CancelOutlined, Check, CheckCircle, CheckCircleOutline, CheckOutlined, Circle, Star } from "@mui/icons-material"
 import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography } from "@mui/material"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
@@ -6,6 +6,7 @@ import { MContainer } from "~/components/layout/MContainer"
 import MotionDiv from "~/components/layout/MotionDiv"
 import { DetallesProyecto } from "~/components/proyecto/detalles"
 import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
+import ConfirmationDialog from "~/components/shared/ConfirmationDialog"
 import { MTable } from "~/components/shared/MTable/MTable"
 import Constants from "~/constants"
 import useNotify from "~/hooks/useNotify"
@@ -17,6 +18,10 @@ export const CatalogoProyectos = () => {
 	const { notify } = useNotify();
     
     const [dialog, setDialog] = useState<{open: boolean, id_proyecto: number}>({open: false, id_proyecto: 0});
+
+    const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'RECHAZAR' | 'APROBAR', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'RECHAZAR', data: new Map });
+
+    const [observaciones, setObservaciones] = useState('');
 
     const [data, setData] = useState<any[]>([]);
 
@@ -30,6 +35,22 @@ export const CatalogoProyectos = () => {
             setData(proyectos.data);
         }
     }, [proyectos.data]);
+
+    const update_estatus = api.proyectos.updateEstadoProyecto.useMutation({
+        onSuccess: (data) => {
+			setData(prev => { return prev.map(p => {
+                if (p.id === data.id) {
+                    p.estatus = data.estatus;
+                }
+                return p;
+            })})
+            setObservaciones('');
+            notify('success', 'Se actualizo el proyecto con exito');
+		},
+		onError: (error) => {
+			notify('error', parseErrorBody(error.message));
+		}
+    })
 
     const update_destacado = api.proyectos.updateDestacado.useMutation({
         onSuccess: (data) => {
@@ -113,6 +134,64 @@ export const CatalogoProyectos = () => {
                                 >
                                     <Star />
                                 </IconButton>
+                                {p.estatus === Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION &&
+                                    <>
+                                        <IconButton
+                                            style={{ color: '#4ab7c6' }}
+                                            aria-label="aprobar proyecto"
+                                            onClick={() => {
+                                                const params = new Map<string, unknown>();
+                                                params.set('id', p.id);
+                                                setConfirmationDialog({ 
+                                                    action: 'APROBAR', 
+                                                    data: params, 
+                                                    opened: true, 
+                                                    title: 'Aprobar Proyecto', 
+                                                    content: <Box>
+                                                        <Typography variant="body2">Seguro que deseas aprobar este proyecto?</Typography>
+                                                    </Box>
+                                                })
+                                            }}
+                                        >
+                                            <CheckCircleOutline />
+                                        </IconButton>
+                                        <IconButton
+                                            style={{ color: '#4ab7c6' }}
+                                            aria-label="rechazar proyecto"
+                                            onClick={() => {
+                                                const params = new Map<string, unknown>();
+                                                params.set('id', p.id);
+                                                setConfirmationDialog({ 
+                                                    action: 'RECHAZAR', 
+                                                    data: params, 
+                                                    opened: true, 
+                                                    title: 'Rechazar Proyecto', 
+                                                    content: <Box>
+                                                        <Typography variant="body2">Seguro que deseas rechazar este proyecto?</Typography>
+                                                        <label
+                                                            style={{fontWeight: 600, width: '100%', marginTop: 10}}
+                                                            className={'form-input-label'}
+                                                            htmlFor={'observaciones-input'}
+                                                        >
+                                                            Observaciones
+                                                        </label>
+                                                        <TextField
+                                                            id="observaciones-input"
+                                                            multiline
+                                                            rows={3}
+                                                            onChange={(e) => {
+                                                                params.set('observaciones', e.target.value);
+                                                                //setObservaciones(e.target.value)
+                                                            }}
+                                                        />
+                                                    </Box>
+                                                })
+                                            }}
+                                        >
+                                            <CancelOutlined />
+                                        </IconButton>
+                                    </>
+                                }
                                 <IconButton 
                                     onClick={(e) => {
                                         setDialog({open: true, id_proyecto: p.id});
@@ -139,6 +218,33 @@ export const CatalogoProyectos = () => {
                             ¡Comienza ahora mismo!</p>
                     </div>
                 }
+            />
+            <ConfirmationDialog
+                opened={confirmation_dialog.opened}
+                onOptionSelected={(confirmed: boolean) => {
+                    if (confirmed) {
+                        switch (confirmation_dialog.action) {
+                            case 'RECHAZAR': {
+                                const id = confirmation_dialog.data.get('id');
+                                const observaciones = confirmation_dialog.data.get('observaciones');
+                                if (id) {
+                                    update_estatus.mutate({id: id as number, estatus: Constants.ESTADOS_PROYECTO.RECHAZADO, observaciones: observaciones as string});
+                                }
+                                break;
+                            }
+                            case 'APROBAR': {
+                                const id = confirmation_dialog.data.get('id');
+                                if (id) {
+                                    update_estatus.mutate({id: id as number, estatus: Constants.ESTADOS_PROYECTO.APROBADO});
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    setConfirmationDialog({ ...confirmation_dialog, opened: false });
+                }}
+                title={confirmation_dialog.title}
+                content={confirmation_dialog.content}
             />
             <Dialog
                 style={{

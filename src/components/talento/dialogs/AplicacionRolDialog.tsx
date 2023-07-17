@@ -157,7 +157,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                                     )
                                 })}
                             </Box>
-                            <Box my={2}>
+                            <Box my={2} sx={{overflowX: 'scroll'}}>
                                 <Typography variant='body2' fontSize={'1rem'}>Videos</Typography>
                                 <Box display={'flex'} flexDirection={'row'} gap={2}>
                                     {talento.data && talento.data.media.filter(m => m.media.type.includes('video')).length === 0 &&
