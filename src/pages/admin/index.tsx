@@ -1,10 +1,11 @@
-import { Inbox, Logout, Mail, Movie, PhotoAlbum } from "@mui/icons-material";
+import { Inbox, Logout, Mail, Movie, PhotoAlbum, VerifiedUserOutlined } from "@mui/icons-material";
 import { CssBaseline, Box, AppBar, Toolbar, Typography, Drawer, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Container } from "@mui/material";
 import { motion } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession, signOut } from "next-auth/react";
 import { useMemo, useState } from "react";
 import { CatalogoProyectos } from "~/components/admin/catalogos/proyectos";
+import { CatalogoTalentos } from "~/components/admin/catalogos/talentos";
 import { Banners } from "~/components/admin/contenido/Banners";
 import { Alerts } from "~/components/layout/Alerts";
 import Constants from "~/constants";
@@ -21,9 +22,12 @@ const AdminIndexPage: NextPage = () => {
         switch (option_selected.key) {
             case 'banners': return <Banners/>;
             case 'proyectos': return <CatalogoProyectos/>;
+            case 'talentos': return <CatalogoTalentos/>
         }
         return null;
     }, [option_selected]);
+
+    console.log(option_selected);
 
     return (
     <Box sx={{ display: 'flex' }}>
@@ -65,6 +69,11 @@ const AdminIndexPage: NextPage = () => {
               title: 'Proyectos',
               icon: <Movie/>,
               key: 'proyectos'
+            },
+            {
+              title: 'Talentos',
+              icon: <VerifiedUserOutlined/>,
+              key: 'talentos'
             }
             ].map((item, index) => (
              <ListItem key={item.key} disablePadding>

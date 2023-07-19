@@ -33,6 +33,9 @@ export default async function handler(req: Request, res: NextApiResponse) {
 			if (talento) {
 				const correct_pass = await bcrypt.compare(form.password, talento.contrasenia);
 				if (correct_pass) {
+					if (!talento.activo) {
+						return res.status(401).json({status: 'error', message: 'Tu usuario ha sido bloqueado por el administrador, por favor comunicate con soporte para saber mas.'});
+					}
 					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: talento.id.toString(), name: `${talento.nombre} ${talento.apellido}`, email: talento.email, tipo_usuario: TipoUsuario.TALENTO, profile_img: '' }});
 				}
 			}

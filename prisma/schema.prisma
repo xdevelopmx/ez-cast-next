@@ -253,6 +253,8 @@ model Talentos {
   apellido                  String
   tipo_membresia            String
   cobro_membresia           String
+  es_destacado Boolean @default(false)
+  activo Boolean @default(true)
   redes_sociales            RedesSocialesPorTalentos[]
   representante             RepresentantesPorTalentos?
   info_basica               InfoBasicaPorTalentos?

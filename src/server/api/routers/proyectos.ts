@@ -562,6 +562,10 @@ export const ProyectosRouter = createTRPCRouter({
 		}
 	),
 	getAll: publicProcedure
+		.input(z.object({
+			order_by: z.any().nullish(),
+			where: z.any().nullish(),
+		}))
 		.query(async ({ input, ctx }) => {
 			const proyectos = await ctx.prisma.proyecto.findMany({
 				include: {
@@ -578,7 +582,8 @@ export const ProyectosRouter = createTRPCRouter({
 					foto_portada: true,
 					archivo: true
 				},
-				orderBy: {
+				where: (input.where) ? input.where : {},
+				orderBy: (input.order_by) ? input.order_by : {
 					id: 'asc',
 				},
 			});

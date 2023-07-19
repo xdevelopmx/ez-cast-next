@@ -24,7 +24,7 @@ import { TalentoDashBoardSelect } from "~/components/cazatalento/talento/talento
 import { TalentoDashBoardRepresentanteSection } from "~/components/representante/talento/TalentoDashBoardRepresentanteSection";
 import { prisma } from "~/server/db";
 
-const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: number, scroll_section: string, can_edit: boolean }> = (props) => {
+const DashBoardTalentosPage: NextPage<{ user?: User, id_talento: number, id_rol: number, scroll_section: string, can_edit: boolean }> = (props) => {
 	const session = useSession();
 	const { notify } = useNotify();
 	const scrollToSection = (sectionId: string) => {
@@ -51,27 +51,40 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
-			<MainLayout menuSiempreBlanco={true} >
+			<MainLayout menuSiempreBlanco={true} hideFooter={!props.user} hideHeader={!props.user}>
 				<div className="d-flex wrapper_ezc">
-					<MenuLateral />
-					<div className="seccion_container col">
-						<br /><br />
-						{props.id_talento > 0 && props.id_rol > 0 && props.user.tipo_usuario === TipoUsuario.CAZATALENTOS &&
+					{props.user &&
+						<MenuLateral />
+					}
+					<div className="seccion_container col" style={{paddingTop: (props.user) ? 70 : 0}}>
+						{props.user &&
+							<>
+								<br /><br />
+							</>
+						}
+						{props.id_talento > 0 && props.id_rol > 0 && props.user?.tipo_usuario === TipoUsuario.CAZATALENTOS &&
 							<TalentoDashBoardSelect id_talento={props.id_talento} id_rol={props.id_rol}/>
 						}
 						<div className="container_box_header">
-							<div className="d-flex justify-content-end align-items-start py-2">
-								{props.id_talento === 0 &&
-									<Alertas />
-								}
-							</div>
-							<div className="d-flex">
-								<motion.img src="/assets/img/iconos/icono_head_chat.png" alt="icono" />
-								{talento.isFetching && <Skeleton style={{ marginLeft: 16 }} width={200} height={24} />}
-								{!talento.isFetching && talento.data && <p className="h4 font-weight-bold mb-0 ml-2"><b>{talento.data.nombre} {talento.data.apellido}</b></p>}
-							</div>
-							{props.id_talento > 0 && props.user.tipo_usuario === TipoUsuario.REPRESENTANTE &&
-								<TalentoDashBoardRepresentanteSection id_talento={props.id_talento} id_representante={parseInt(props.user.id)}/>
+							{props.user &&
+								<div className="d-flex justify-content-end align-items-start py-2">
+									{props.id_talento === 0 &&
+										<Alertas />
+									}
+								</div>
+							}
+							{props.user &&
+								<>
+									<div className="d-flex">
+										<motion.img src="/assets/img/iconos/icono_head_chat.png" alt="icono" />
+										{talento.isFetching && <Skeleton style={{ marginLeft: 16 }} width={200} height={24} />}
+										{!talento.isFetching && talento.data && <p className="h4 font-weight-bold mb-0 ml-2"><b>{talento.data.nombre} {talento.data.apellido}</b></p>}
+									</div>
+									{props.id_talento > 0 && props.user?.tipo_usuario === TipoUsuario.REPRESENTANTE &&
+										<TalentoDashBoardRepresentanteSection id_talento={props.id_talento} id_representante={parseInt(props.user.id)}/>
+									}
+								</>
+							
 							}
 							<br />
 							<MContainer direction="vertical">
@@ -109,7 +122,9 @@ const DashBoardTalentosPage: NextPage<{ user: User, id_talento: number, id_rol: 
 					</div>
 				</div>
 			</MainLayout>
-			<Flotantes />
+			{props.user &&
+				<Flotantes />
+			}
 		</>
 	);
 };

@@ -11,13 +11,15 @@ interface Props {
 
     menuSiempreBlanco?: boolean;
     menuAzul?: boolean;
+    hideFooter?: boolean;
+    hideHeader?: boolean;
 }
 
-export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, style, menuAzul = false }) => {
+export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, style, menuAzul = false, hideFooter, hideHeader }) => {
     const { isLoadingData } = useContext(AppContext)
     return (
         <>
-            <Header menuSiempreBlanco={menuSiempreBlanco} menuAzul={menuAzul} />
+            {!hideHeader && <Header menuSiempreBlanco={menuSiempreBlanco} menuAzul={menuAzul} />}
             <div style={{ marginTop: 76, ...style }}>
                 <MotionDiv show={isLoadingData} animation="fade">
                     <LoadingPage />
@@ -28,7 +30,7 @@ export const MainLayout: FC<Props> = ({ children, menuSiempreBlanco = false, sty
                     </div>
                 </MotionDiv>
             </div>
-            <Footer />
+            {!hideFooter && <Footer />}
         </>
     )
 }

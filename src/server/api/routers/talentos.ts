@@ -23,9 +23,46 @@ function exclude<Talentos, Key extends keyof Talentos>(
 // /uploads/talentos/5/fotos-perfil/FOTO_PERFIL/002.png
 
 export const TalentosRouter = createTRPCRouter({
-	getAll: protectedProcedure
+	getAllTalentosDestacados: protectedProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.talentos.findMany();
+			return await ctx.prisma.talentos.findMany({
+				where: {
+					es_destacado: true
+				},
+				include: {
+					info_basica: {
+						include: {
+							union: {
+								include: {
+									union: true
+								}
+							},
+							estado_republica: true,
+						}
+					},
+					media: {
+						include: {
+							media: true
+						}
+					}
+				}
+			});
+		}
+	),
+	getAll: protectedProcedure
+		.input(z.object({
+			order_by: z.any().nullish(),
+			where: z.any().nullish(),
+			include: z.any().nullish()
+		}))
+		.query(async ({ input, ctx }) => {
+			return await ctx.prisma.talentos.findMany({
+				where: (input.where) ? input.where : {},
+				include: (input.include) ? input.include : {},
+				orderBy: (input.order_by) ? input.order_by : {
+					id: 'asc',
+				},
+			});
 		}
 	),
 	getInfoBasicaByIdTalento: publicProcedure
@@ -292,6 +329,11 @@ export const TalentosRouter = createTRPCRouter({
 					media: {
 						include: {
 							media: true
+						}
+					},
+					reportes: {
+						include: {
+							cazatlentos: true
 						}
 					},
 					activos: {
@@ -1197,6 +1239,56 @@ export const TalentosRouter = createTRPCRouter({
 			}
 
 			return saved_files;
+		}
+	),
+	updateEstaActivo: protectedProcedure
+		.input(z.object({
+			id_talento: z.number(),
+			activo: z.boolean()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const talento_saved = await ctx.prisma.talentos.update({
+				where: {
+					id: input.id_talento
+				},
+				data: {
+					activo: input.activo
+				}
+			});
+
+			if (!talento_saved) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de actualizar el talento',
+				});
+			}
+
+			return talento_saved;
+		}
+	),
+	updateDestacado: protectedProcedure
+		.input(z.object({
+			id_talento: z.number(),
+			destacado: z.boolean()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const talento_saved = await ctx.prisma.talentos.update({
+				where: {
+					id: input.id_talento
+				},
+				data: {
+					es_destacado: input.destacado
+				}
+			});
+
+			if (!talento_saved) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: 'Ocurrio un error al tratar de actualizar el talento',
+				});
+			}
+
+			return talento_saved;
 		}
 	),
 	updateCreditoDestacado: protectedProcedure

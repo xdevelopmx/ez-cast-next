@@ -1,12 +1,14 @@
 import { CancelOutlined, Check, CheckCircle, CheckCircleOutline, CheckOutlined, Circle, Star } from "@mui/icons-material"
-import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, TextField, Typography } from "@mui/material"
+import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Tab, Tabs, TextField, Typography } from "@mui/material"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
+import { TypeOf } from "zod"
 import { MContainer } from "~/components/layout/MContainer"
 import MotionDiv from "~/components/layout/MotionDiv"
 import { DetallesProyecto } from "~/components/proyecto/detalles"
 import { FormGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog"
+import { MSearchInput } from "~/components/shared/MSearchInput"
 import { MTable } from "~/components/shared/MTable/MTable"
 import Constants from "~/constants"
 import useNotify from "~/hooks/useNotify"
@@ -25,7 +27,23 @@ export const CatalogoProyectos = () => {
 
     const [data, setData] = useState<any[]>([]);
 
-    const proyectos = api.proyectos.getAll.useQuery(undefined, {
+    const [estatus_proyecto, setEstatusProyecto] = useState('');
+
+    const [search_text, setSearchText] = useState('');
+
+    const proyectos = api.proyectos.getAll.useQuery({
+        where: (estatus_proyecto.length > 0) ? {
+            estatus: estatus_proyecto
+        } : null,
+        order_by: [
+            {
+                id: 'asc'
+            },
+            {
+                destacado: 'asc'
+            }
+        ]
+    }, {
 		refetchOnWindowFocus: false,
         keepPreviousData: true
 	});
@@ -66,12 +84,36 @@ export const CatalogoProyectos = () => {
 			notify('error', parseErrorBody(error.message));
 		}
     })
+
+    const table_data = useMemo(() => {
+        if (!proyectos.data) {
+            return [];
+        }
+        if (search_text.length === 0) {
+            return proyectos.data;
+        }
+        const s_text = search_text.toLowerCase();
+        return proyectos.data.filter( p => {
+            return (p.nombre.toLowerCase().includes(s_text) || p.estatus.toLowerCase().includes(s_text) || p.tipo?.descripcion.toLowerCase().includes(s_text) || p.created.toLocaleDateString('es-mx').includes(s_text))
+        })
+    }, [search_text, proyectos.data]);
 	
 	return (
 		<Box>
 			<SectionTitle titleSx={{marginTop: 2, marginBottom: 4}}
 				title='Catalogo de Proyectos en EZCast'
 			/>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
+                <Tabs sx={{ my: 2 }} value={estatus_proyecto} onChange={(e, tab) => {setEstatusProyecto(tab)}} aria-label="basic tabs example">
+                    <Tab label="Todos" value={''}/>
+                    <Tab label="Pendientes a aprobar" value={Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION}/>
+                    <Tab label="Aprobados" value={Constants.ESTADOS_PROYECTO.APROBADO}/>
+                    <Tab label="Rechazados" value={Constants.ESTADOS_PROYECTO.RECHAZADO}/>
+                    <Tab label="Por validar" value={Constants.ESTADOS_PROYECTO.POR_VALIDAR}/>
+                    <Tab label="Archivados" value={Constants.ESTADOS_PROYECTO.ARCHIVADO}/>
+                </Tabs>
+                <MSearchInput placeholder="Buscar proyectos" onChange={(value) => { setSearchText(value) }}/>
+            </Box>
 			<MTable
                 columnsHeader={[
                     <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
@@ -93,7 +135,7 @@ export const CatalogoProyectos = () => {
                 backgroundColorHeader='#069cb1'
                 styleHeaderTableCell={{ padding: '5px !important' }}
                 loading={proyectos.isFetching}
-                data={(proyectos.data) ? proyectos.data.map(p => {
+                data={table_data.map(p => {
                     return {
                         nombre: (() => {
                             let color = 'grey';
@@ -125,15 +167,17 @@ export const CatalogoProyectos = () => {
                         fecha: p.created.toLocaleDateString('es-mx'), 
                         acciones: <MContainer direction="horizontal" justify='center'>
                             <>
-                                <IconButton
-                                    style={{ color: (p.destacado) ? 'gold' : 'gray' }}
-                                    aria-label="marcar como destacado"
-                                    onClick={() => {
-                                        update_destacado.mutate({id: p.id, destacado: !p.destacado});
-                                    }}
-                                >
-                                    <Star />
-                                </IconButton>
+                                {p.estatus === Constants.ESTADOS_PROYECTO.APROBADO &&
+                                    <IconButton
+                                        style={{ color: (p.destacado) ? 'gold' : 'gray' }}
+                                        aria-label="marcar como destacado"
+                                        onClick={() => {
+                                            update_destacado.mutate({id: p.id, destacado: !p.destacado});
+                                        }}
+                                    >
+                                        <Star />
+                                    </IconButton>
+                                }
                                 {p.estatus === Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION &&
                                     <>
                                         <IconButton
@@ -206,16 +250,24 @@ export const CatalogoProyectos = () => {
                             </>
                         </MContainer>
                     }
-                }) : []}
+                })}
                 noDataContent={
-                    (proyectos.data && proyectos.data.length > 0) ? undefined :
+                    (table_data.length > 0) ? undefined :
                     (proyectos.isFetching) ? undefined :
-                    <div className="box_message_blue">
-                        <p className="h3">No has creado ningún proyecto</p>
-                        <p>Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.<br />
-                            Recuerda crear todos tus roles y leer los requisitos de aprobación antes de terminar y
-                            mandarlos.<br />
-                            ¡Comienza ahora mismo!</p>
+                    <div style={{padding: 16}} className="box_message_blue">
+                        {estatus_proyecto.length === 0 &&
+                            <>
+                                <p className="h3">No has creado ningún proyecto</p>
+                                <p>Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.<br />
+                                    Recuerda crear todos tus roles y leer los requisitos de aprobación antes de terminar y
+                                    mandarlos.<br />
+                                    ¡Comienza ahora mismo!</p>
+                            </>
+                        }
+                        {estatus_proyecto.length > 0 &&
+                            <p className="h3">No se encontro ningún proyecto con ese estatus</p>
+                        }
+                        
                     </div>
                 }
             />

@@ -39,6 +39,8 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
 
   const container_ref = useRef<HTMLDivElement>(null);
 
+  console.log(redirect);
+
   return (
     <>
       <Head>

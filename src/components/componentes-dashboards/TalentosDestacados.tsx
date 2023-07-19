@@ -12,17 +12,17 @@ type Props = {
 }
 
 export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
-  const talentos = api.cazatalentos.getTalentosDestacadosByCazatalento.useQuery(undefined, {
-    refetchOnWindowFocus: false
-  });
+  const talentos = api.talentos.getAllTalentosDestacados.useQuery();
+
+  console.log(talentos.data);
 
   const data = useMemo(() => {
     if (talentos.data) {
       return talentos.data.map(t => {
-        const foto_perfil = t.talento.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
+        const foto_perfil = t.media.filter(m => m.media.identificador.includes('foto-perfil'))[0];
         return {
           img_profile: (foto_perfil) ? foto_perfil.media.url : '/assets/img/no-image.png',
-          talento: t.talento
+          talento: t
         }
       })
     }
