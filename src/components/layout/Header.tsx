@@ -1,4 +1,4 @@
-import { type FC, useState, useEffect } from 'react'
+import { type FC, useState, useEffect, useContext } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link';
 import useScrolled from '~/hooks/useScrolled';
@@ -6,6 +6,8 @@ import { Alerts } from './Alerts';
 import { useRouter } from 'next/router';
 
 import estilos from './Header.module.css'
+import AppContext from '~/context/app';
+import { IconButton } from '@mui/material';
 
 interface Props {
 	tieneFondoBlanco?: boolean;
@@ -18,7 +20,7 @@ interface Props {
 export const Header: FC<Props> = ({
 	tieneFondoBlanco, disabletieneFondoBlanco = false, menuSiempreBlanco = false, menuAzul = false
 }) => {
-
+	const ctx = useContext(AppContext);
 	const [esBlanco, setEsBlanco] = useState(menuSiempreBlanco ? menuSiempreBlanco : tieneFondoBlanco)
 	const estaArriba = useScrolled()
 	const router = useRouter()
@@ -100,8 +102,16 @@ export const Header: FC<Props> = ({
 							</Link>
 						</li>
 						<li className="nav-item ml-lg-3 mr-lg-3 d-flex leng_box">
-							<motion.img className="active" src='/assets/img/b_mex.png' alt="icono" />
-							<motion.img src="/assets/img/b_eua.png" alt="icono" />
+							<IconButton
+								onClick={() => { ctx.setLang('es') }}
+							>
+								<motion.img className="active" src='/assets/img/b_mex.png' alt="icono" />
+							</IconButton>
+							<IconButton
+								onClick={() => { ctx.setLang('en') }}
+							>
+								<motion.img src="/assets/img/b_eua.png" alt="icono" />
+							</IconButton>
 						</li>
 					</ul>
 				</div>

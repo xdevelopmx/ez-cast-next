@@ -1,8 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { CSSProperties, FC } from 'react'
+import { CSSProperties, FC, useContext } from 'react'
 import { motion } from 'framer-motion'
 import { PagePilingComponent } from './PagePilingComponent';
 import { Footer } from '../layout';
+import useLang from '~/hooks/useLang';
+import AppContext from '~/context/app';
 
 const estilos: CSSProperties = {
     position: 'absolute',
@@ -16,7 +18,8 @@ interface Props {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     return (
         <PagePilingComponent onCambiarPagina={onCambiarPagina}>
             <div className="section" style={estilos}>
@@ -26,10 +29,12 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
                 <video autoPlay loop muted className="video_bg video_mobile" poster="/assets/posters/posterhome.png">
                     <source src="/assets/video/video1.mp4" type="video/mp4" />
                 </video>
-                <div className="elm_abs w-30">
-                    <p className="h2">HAZ CINE Y MÁS</p>
-                    <p>“Cuando te embarcas en un proyecto, un sueño, una meta, cada pieza es importante y como un  rompecabezas, es clave encontrar las piezas que embonen y sumen a tu proyecto.</p>
-                    <p>En Talent Corner® descubre herramientas increíbles que te ayudarán a traer esa visión a la realidad. ¡Que nadie te cierre la puerta y crea las oportunidades que muchos solo imaginan!” </p>
+                <div className="elm_abs w-30" dangerouslySetInnerHTML={{__html: (textos['slide_1']) ? textos['slide_1'] : '<p>Texto No definido</p>'}}>
+                    {/*
+                        <p className="h2">HAZ CINE Y MÁS</p>
+                        <p>“Cuando te embarcas en un proyecto, un sueño, una meta, cada pieza es importante y como un  rompecabezas, es clave encontrar las piezas que embonen y sumen a tu proyecto.</p>
+                        <p>En Talent Corner® descubre herramientas increíbles que te ayudarán a traer esa visión a la realidad. ¡Que nadie te cierre la puerta y crea las oportunidades que muchos solo imaginan!” </p>
+                    */}
                 </div>
                 <a href="#section_1" className="link_bottom">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="css-i6dzq1">
@@ -56,17 +61,8 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
                         <motion.img src="/assets/img/sombra-camara.svg" id="shadow_camera" alt='' />
                     </div>
                     <div className="col-md-4">
-                        <div className="m-4 p-4 d-flex align-items-center projected ">
-                            <p className="m-0 talent_corner">
-                                Talent Corner® es una plataforma digital que funciona como herramienta de Match Maker a nivel producción en diferentes espacios y ámbitos, para crear, hacer cine o exponer tu talento, reuniendo así a aspirantes que buscan dar sus primeros pasos en el mundo artístico tanto a nivel independiente como profesional, así como personas con experiencia que busquen facilitar, agilizar y realizar sus producciones cinematográficas de una manera más organizada e inteligente.
-                                <br /><br />
-                                Talent Corner® consta de 3 diferentes secciones, herramientas que van dirigidas a diferente público, englobando un mismo gremio con una misma finalidad en esta Esquina del Talento.
-                                <br /><br />
-                                Estas son: EZ-CAST, TREEHOUSE Y TALENT +
-                                <br /><br />
-                                Talent Corner® pone a su disposición herramientas y formatos profesionales para sumar y ejecutar proyectos de todo tipo, ¡Del guión a la pantalla grande! ¡Talent Corner®  sirve también como herramienta de AUTOPROMOCIÓN!
-
-                            </p>
+                        <div className="m-4 p-4 d-flex align-items-center projected " dangerouslySetInnerHTML={{__html: (textos['slide_2']) ? textos['slide_2'] : '<p>Texto No definido</p>'}}>
+                            
                         </div>
                     </div>
                 </div>
@@ -84,10 +80,10 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
             <div className="section" style={estilos}>
                 <div className="row no-gutters w-100 h-100" style={{ backgroundColor: "#069cb1" }}>
                     <div className="col-md-6 align-self-center">
-                        <div className="p-lg-5 m-3 text-white">
+                        <div className="p-lg-5 m-3 text-white" >
                             <h1>EZ-CAST</h1>
-                            <p>EZ-CAST el lugar para los que quieren encontrar y ser encontrados, CASTINGS  </p>
-                            <a href="#" className="know_more">Conoce más</a>
+                            <p>{textos['slide_4'] ? textos['slide_4'] : 'Texto No definido'}</p>
+                            <a href="#" className="know_more" style={{textTransform: 'capitalize'}}>{textos['conoce_mas'] ? textos['conoce_mas'] : 'Texto no definido'}</a>
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -112,9 +108,9 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
                     <div className="col-md-6 align-self-center">
                         <div className="p-lg-5 m-3 text-white">
                             <h1>TREEHOUSE</h1>
-                            <p>PRÓXIMAMENTE</p>
-                            <p>¿Una mejor manera de buscar, encontrar, rentar locaciones!</p>
-                            <a href="#" className="know_more">Conoce más</a>
+                            <p style={{textTransform: 'capitalize'}}>{textos['proximamente'] ? textos['proximamente'] : 'Texto no definido'}</p>
+                            <p>{textos['slide_6'] ? textos['slide_6'] : 'Texto no definido'}</p>
+                            <a href="#" className="know_more" style={{textTransform: 'capitalize'}}>{textos['conoce_mas'] ? textos['conoce_mas'] : 'Texto no definido'}</a>
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -139,9 +135,9 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
                     <div className="col-md-6 align-self-center">
                         <div className="p-lg-5 m-3 text-white">
                             <h1>TALENT+</h1>
-                            <p>PRÓXIMAMENTE</p>
-                            <p>Encuentra al profesional independiente adecuado para comenzar a trabajar en su proyecto en minutos. Todo un mundo de talento autónomo a tu alcance.</p>
-                            <a href="#" className="know_more">Conoce más</a>
+                            <p style={{textTransform: 'capitalize'}}>{textos['proximamente'] ? textos['proximamente'] : 'Texto no definido'}</p>
+                            <p>{textos['slide_8'] ? textos['slide_8'] : 'Texto no definido'}</p>
+                            <a href="#" className="know_more" style={{textTransform: 'capitalize'}}>{textos['conoce_mas'] ? textos['conoce_mas'] : 'Texto no definido'}</a>
                         </div>
                     </div>
                     <div className="col-md-6">

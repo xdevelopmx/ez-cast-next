@@ -86,10 +86,10 @@ export const authOptions: NextAuthOptions = {
 				correo_usuario: { label: 'correo_usuario', type: 'text' }
 			},
 			async authorize(credentials, req) {
-				const APP_URL = (process.env.NEXT_PUBLIC_APP_URL) ? process.env.NEXT_PUBLIC_APP_URL : '';
+				const INTERNAL_URL = (process.env.NEXT_PUBLIC_INTERNAL_URL) ? process.env.NEXT_PUBLIC_INTERNAL_URL : '';
 				const login = async (username: string | null, email: string | null, password: string, tipo_usuario: TipoUsuario): Promise<{ id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null } | null>  => {
 					try {
-						return fetch(`${APP_URL}/api/auth/login`, {
+						return fetch(`${INTERNAL_URL}/api/auth/login`, {
 							method: 'POST',
 							body: JSON.stringify({
 								username: username,
@@ -125,6 +125,7 @@ export const authOptions: NextAuthOptions = {
 						case TipoUsuario.ADMIN: tipo_usuario = TipoUsuario.ADMIN; break;
 					}
 					const login_intent = await login( (credentials.user) ? credentials.user : '', (credentials.correo_usuario) ? credentials.correo_usuario : '', (credentials.password) ? credentials.password : '', tipo_usuario);
+					console.log(login_intent);
 					return login_intent;
 				} 
 				return null;

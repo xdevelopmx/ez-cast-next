@@ -23,6 +23,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
+  const [lang, setLang] = useState<'es' | 'en'>('es');
   return (
     <SessionProvider session={session}>
       <DndProvider backend={HTML5Backend}>
@@ -31,7 +32,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
           setAlerts: (alerts: Map<string, AppAlert>) => {
             setAppAlerts(new Map(alerts));
           },
-
+          lang: lang,
+          setLang: (lang) => {
+            setLang(lang);
+          },
           isLoadingData: isLoadingData,
           setIsloadingData: setIsLoadingData,
         }}>
