@@ -4,11 +4,19 @@ import { useState, useEffect } from 'react';
 const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
     en: {
         proximamente: 'comming soon',
-        conoce_mas: 'learn more'
+        conoce_mas: 'learn more',
+        çazatalentos : 'Headhunter',
+        talento : 'Talent',
+        representante : 'Representative',
+        paso : 'Step'
     },
     es: {
         proximamente: 'proximamente',
-        conoce_mas: 'conoce más'
+        conoce_mas: 'conoce más',
+        çazatalentos : 'Cazatalentos',
+        talento : 'Talento',
+        representante : 'Representante',
+        paso : 'Paso'
     }
 }
 
@@ -49,28 +57,92 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
     },
     '/registro': {
         en: {
-            test: 'test',
-            car: 'car',
-            cat: 'Cat'
+            Titulo: 'EZ-CAST REGISTRATION',
+            return: 'BACK TO EZ-CAST INFORMATION',
+            paso_1: '1',
+            crea_perfil : 'Create your profile',
+            nombre : 'Name*',
+            apellidos : 'Lastname*',
+            usuario : 'User*',
+            mail : 'E-mail',
+            contra : 'Password',
+            confirma_contra : 'Confirm Password',
+            registrar_con : 'Or register with',
+            siguiente_paso : 'Next Step ',
+            nombre_corto : 'The name is too short',
+            apellido_corto : 'The lastname is too short',
+            usuario_corto : 'The username is too short',
+            mail_invalido : 'The email is invalid',
+            contra_corta : 'The password is too short',
+            contra_diferente : 'The passwords are not the same',
+            paso_2 : '2',
+            tipo_membresia : 'Type of membresia',
+            gratis : 'Free',
+            anual : 'Annual',
+            mensual : 'Monthly',
+            pago : 'Pay',
+            forma_pago : 'Way to pay',
         },
         es: {
-            test: 'Prueba',
-            car: 'Carro',
-            cat: 'Gato'
+            Titulo: 'REGISTRO EZ-CAST',
+            return: 'REGRESAR A INFORMACIÓN EZ-CAST',
+            paso_1: '1',
+            crea_perfil : 'Crea tu perfil',
+            nombre : 'Nombre*',
+            apellidos : 'Apellidos*',
+            usuario : 'Usuario*',
+            mail : 'Correo electrónico',
+            contra : 'Contraseña',
+            confirma_contra : 'Confirmar Contraseña',
+            registrar_con : 'O registrate con',
+            siguiente_paso : 'Siguiente Paso ',
+            nombre_corto : 'El nombre es demasiado corto',
+            apellido_corto : 'El apellido es demasiado corto',
+            usuario_corto : 'El usuario es demasiado corto',
+            mail_invalido : 'El email es invalido',
+            contra_corta : 'La contraseña es demasiado corta',
+            contra_diferente : 'Las contraseñas no son la misma',
+            paso_2 : '2',
+            tipo_membresia : 'Tipo de membresía',
+            gratis : 'Gratis',
+            anual : 'Anual',
+            mensual : 'Mensual',
+            pago : 'Pago',
+            forma_pago : 'Forma de pago',
         }
     },
     '/login': {
         en: {
-            test: 'test',
-            car: 'car',
-            cat: 'Cat',
-            cow: 'Cow'
+            no_tienes_cuenta: 'You do not have an account?',
+            registrate: 'Sign up here',
+            mail: 'User / Email',
+            password: 'Password',
+            fgtpswd: 'Forgot your password?',
+            restablecer: 'Restore',
+            ingresar_como: 'Login as',
+            accede_con: 'Or access with',
+            necesitas_ayuda: 'Need help?',
+            accede_a :'Access our',
+            tutoriales : 'tutorials and frequently asked questions',
+            descripción_cazatalentos : 'Profile for the person who seeks to "hunt" a person who meets the requirements and the talent that he needs.',
+            descripcion_talento : 'Profile for the person looking to appear on screen and film projects.',
+            descripcion_representante : 'Profile for the person who seeks to facilitate the connection with their talents and find more opportunities for them.',
         },
         es: {
-            test: 'Prueba',
-            car: 'Carro',
-            cat: 'Gato',
-            cow: 'VACA'
+            no_tienes_cuenta: 'No tienes cuenta?',
+            registrate: 'Registrate aquí',
+            mail: 'Usuario / Email',
+            password: 'Contraseña',
+            fgtpswd: 'Olvido su contraseña?',
+            restablecer: 'Restablecer',
+            ingresar_como: 'Ingresar como',
+            accede_con: 'O accede con',
+            necesitas_ayuda: 'Necesitas ayuda?',
+            accede_a : 'Accede a nuestros',
+            tutoriales : 'tutoriales y preguntas frecuentes.',
+            descripción_cazatalentos : 'Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que éste necesita.',
+            descripcion_talento : 'Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.',
+            descripcion_representante : 'Perfil para la persona que busca facilitar la conexión con sus talentos y encontrar más oportunidades para los mismos.',
         }
     }
 }
