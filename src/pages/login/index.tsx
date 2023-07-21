@@ -112,7 +112,7 @@ const LoginPage: NextPage = () => {
 								</MContainer>
 
 							</div>
-							<p className="text-muted">Olvido contraseña? <Link href="/restablecer-contrasena" className="color_a">Restablecer</Link></p>
+							<p className="text-muted">Olvido su contraseña? <Link href="/restablecer-contrasena" className="color_a">Restablecer</Link></p>
 							<p>Ingresar como</p>
 
 							<div className="d-flex align-items-center justify-content-center text-center flex-wrap">
@@ -129,7 +129,7 @@ const LoginPage: NextPage = () => {
 										text={
 											<>
 												<Typography fontSize={14}>
-													Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que esté necesita. 
+													Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que éste necesita. 
 												</Typography>
 											</>
 										}
