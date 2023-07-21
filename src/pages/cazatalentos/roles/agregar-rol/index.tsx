@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { useContext, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
@@ -24,6 +24,8 @@ import { Archivo } from '~/server/api/root'
 import { Media } from '@prisma/client'
 import { FileManager } from '~/utils/file-manager'
 import { User } from 'next-auth'
+import AppContext from '~/context/app'
+import useLang from '~/hooks/useLang'
 
 export type RolInformacionGeneralForm = {
     nombre: string,
@@ -275,6 +277,9 @@ const reducerRol = (state: RolForm, action: { type: string, value: { [key: strin
 }
 
 const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
+
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const router = useRouter()
 
@@ -803,7 +808,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                         url: (state.descripcion_rol.files.lineas.url) ? state.descripcion_rol.files.lineas.url : '',
                         clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${state.descripcion_rol.files.lineas.name}-${time}`,
                         referencia: `ARCHIVOS-ROL-${data.id}`,
-                        identificador: `lineas-rol-${data.id}`
+                        identificador: `lineas-rol-${data.id}`,
+                        public: true
                     }
                 }
             }
@@ -818,7 +824,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                         url: (state.descripcion_rol.files.foto_referencia.url) ? state.descripcion_rol.files.foto_referencia.url : '',
                         clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${state.descripcion_rol.files.foto_referencia.name}-${time}`,
                         referencia: `ARCHIVOS-ROL-${data.id}`,
-                        identificador: `foto-referencia-rol-${data.id}`
+                        identificador: `foto-referencia-rol-${data.id}`,
+                        public: true
                     }
                 }
             } 
@@ -833,7 +840,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                         url: (state.selftape.files.lineas.url) ? state.selftape.files.lineas.url : '',
                         clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${state.selftape.files.lineas.name}-${time}`,
                         referencia: `ARCHIVOS-ROL-${data.id}`,
-                        identificador: `lineas-selftape-rol-${data.id}`
+                        identificador: `lineas-selftape-rol-${data.id}`,
+                        public: true
                     }
                 }
             }
@@ -852,7 +860,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                     url: url,
                                     clave: `cazatalentos/${user.id}/roles/${data.id}/lineas/${e[0]}`,
                                     referencia: `ARCHIVOS-ROL-${data.id}`,
-                                    identificador: `lineas-rol-${data.id}`
+                                    identificador: `lineas-rol-${data.id}`,
+                                    public: true
                                 }
                             }
                             if (e[0] === `${state.descripcion_rol.files.foto_referencia?.file.name}-${time}`) {
@@ -864,7 +873,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                     url: url,
                                     clave: `cazatalentos/${user.id}/roles/${data.id}/foto-referencia/${e[0]}`,
                                     referencia: `ARCHIVOS-ROL-${data.id}`,
-                                    identificador: `foto-referencia-rol-${data.id}`
+                                    identificador: `foto-referencia-rol-${data.id}`,
+                                    public: true
                                 }
                             }
                             if (e[0] === `${state.selftape.files.lineas?.file.name}-${time}`) {
@@ -876,7 +886,8 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                     url: url,
                                     clave: `cazatalentos/${user.id}/roles/${data.id}/lineas-selftape/${e[0]}`,
                                     referencia: `ARCHIVOS-ROL-${data.id}`,
-                                    identificador: `lineas-selftape-rol-${data.id}`
+                                    identificador: `lineas-selftape-rol-${data.id}`,
+                                    public: true
                                 }
                             }
                         }

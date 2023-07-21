@@ -40,7 +40,10 @@ const variants: Variants = {
 }
 
 type RolesIndexPageProps = {
-    user: User,
+    user?: User, 
+    id_proyecto: number, 
+    can_edit: boolean,
+    onProjectChange?: (action: 'PROYECTO_APROBADO' | 'PROYECTO_RECHAZADO') => void
 }
 
 function handleRolApplication(map: Map<string, number>, key: string) {
@@ -52,21 +55,13 @@ function handleRolApplication(map: Map<string, number>, key: string) {
     }
 }
 
-const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
+const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user, id_proyecto, can_edit, onProjectChange }) => {
     const [tabSelected, setTabSelected] = useState<'ACTIVOS' | 'ARCHIVADOS'>('ACTIVOS');
     const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'STATE_CHANGE' | 'DELETE' | 'PROYECTO_ENVIADO_A_APROBACION', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'DELETE', data: new Map });
     const [proyecto_details_expanded, setProyectoDetailsExpanded] = useState(false);
     const { notify } = useNotify();
     const router = useRouter();
     const [expanded_rows, setExpandedRows] = useState<string[]>([]);
-
-    const id_proyecto = useMemo(() => {
-        const { id_proyecto } = router.query;
-        if (id_proyecto) {
-            return parseInt(id_proyecto as string);
-        }
-        return 0;
-    }, [router.query]);
 
     const proyecto = api.proyectos.getById.useQuery(id_proyecto, {
         refetchOnWindowFocus: false
@@ -171,6 +166,32 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
         }
     });
 
+    const IS_ADMIN = user && user.tipo_usuario === TipoUsuario.ADMIN;
+
+    const table_actions = [
+        <Typography key={1} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            Nombre
+        </Typography>,
+        <Typography key={2} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            Estado
+        </Typography>,
+        <Typography key={3} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            No Vistos
+        </Typography>,
+        <Typography key={4} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            Vistos
+        </Typography>,
+        <Typography key={5} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            Destacados
+        </Typography>,
+        <Typography key={6} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            Audición
+        </Typography>,
+        <Typography key={7} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+            Callback
+        </Typography>
+    ];
+
     return (
         <>
             <Head>
@@ -179,21 +200,25 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <MainLayout menuSiempreBlanco={true} >
+            <MainLayout style={{marginTop: (IS_ADMIN) ? 0 : 76}} menuSiempreBlanco={true} hideFooter={IS_ADMIN} hideHeader={IS_ADMIN} >
                 <div className="d-flex wrapper_ezc">
-                    <MenuLateral />
+                    {!IS_ADMIN && <MenuLateral />}
                     <div className="seccion_container col" style={{ paddingTop: 0 }}>
                         <br /><br />
                         <div className="container_box_header">
-                            <div className="d-flex justify-content-end align-items-start py-2">
-                                <Alertas />
-                            </div>
-                            <div className="d-flex">
-                                <Button onClick={() => { void router.replace(`/cazatalentos/dashboard`) }} variant='text' startIcon={<motion.img src="/assets/img/iconos/return_blue.svg" alt="icono" />}>
-                                    <p className="color_a mb-0 ml-2"><b>Regresar a vista general</b></p>
-                                </Button>
+                            {!IS_ADMIN &&
+                                <div className="d-flex justify-content-end align-items-start py-2">
+                                    <Alertas />
+                                </div>
+                            }
+                            {!IS_ADMIN &&
+                                <div className="d-flex">
+                                    <Button onClick={() => { void router.replace(`/cazatalentos/dashboard`) }} variant='text' startIcon={<motion.img src="/assets/img/iconos/return_blue.svg" alt="icono" />}>
+                                        <p className="color_a mb-0 ml-2"><b>Regresar a vista general</b></p>
+                                    </Button>
 
-                            </div>
+                                </div>
+                            }
                             <br />
                             <MContainer direction='horizontal' justify='space-between'>
                                 <MContainer direction='horizontal'>
@@ -227,66 +252,105 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                         </MContainer>
                                     }
                                     <MotionDiv show={proyecto.isFetched} animation='fade'>
-
-                                        <MContainer direction='horizontal' styles={{ alignItems: 'start' }}>
-                                            <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
-                                                <Button
-                                                    className="btn btn-intro btn-price btn_out_line mb-2"
-                                                    startIcon={
-                                                        <Image
-                                                            src={`/assets/img/iconos/cruz_ye.svg`}
-                                                            height={16}
-                                                            width={16}
-                                                            alt={'agregar-rol'}
-                                                        />
-                                                    }
-                                                    style={{
-                                                        padding: '8px 40px',
-                                                        marginTop: 0,
-                                                        marginRight: 10,
-                                                        fontWeight: 500
-                                                    }}
-                                                >
-                                                    Nuevo rol
-                                                </Button>
-
-                                            </Link>
-                                            <MContainer direction='vertical'>
+                                        <>
+                                            {IS_ADMIN && proyecto.data && proyecto.data.estatus === Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION &&
                                                 <>
-                                                    {![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus : '') &&
-                                                        <Button
-                                                            onClick={() => {
-                                                                setConfirmationDialog({ action: 'PROYECTO_ENVIADO_A_APROBACION', data: new Map<string, unknown>(), opened: true, title: 'Enviar Proyecto A Aprobación', content: <Typography variant="body2">{`Seguro que deseas mandar este proyecto a aprobación?`}</Typography> });
-                                                            }}
-                                                            className="btn btn-sm btn-intro btn-price mb-2"
-                                                            style={{
-                                                                padding: '8px 40px',
-                                                                marginTop: 0,
-                                                                display: 'block',
-                                                                height: 40,
-                                                                fontWeight: 500
-                                                            }}
-                                                        >
-                                                            Enviar proyecto para aprobación
-                                                        </Button>
-                                                    }
-
-                                                    {/* <Alert icon={false} sx={{ justifyContent: 'center' }} severity='info' style={{
-                                                        color: 'white', backgroundColor: (() => {
-                                                            let color = 'grey';
-                                                            switch (proyecto.data?.estatus.toUpperCase()) {
-                                                                case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: color = 'gold'; break;
-                                                                case Constants.ESTADOS_PROYECTO.RECHAZADO: color = 'tomato'; break;
-                                                                case Constants.ESTADOS_PROYECTO.APROBADO: color = 'green'; break;
-                                                            }
-                                                            return color;
-                                                        })()
-                                                    }}>
-                                                        PROYECTO {proyecto.data?.estatus.replaceAll('_', ' ')}
-                                                    </Alert> */}
+                                                    <MContainer direction='horizontal' styles={{ alignItems: 'start' }}>
+                                                        <MContainer direction='vertical' styles={{marginRight: 8}}>
+                                                            <Button
+                                                                onClick={() => {
+                                                                    if (onProjectChange) {
+                                                                        onProjectChange('PROYECTO_RECHAZADO');
+                                                                    }
+                                                                }}
+                                                                className="btn btn-sm btn-intro btn-price mb-2"
+                                                                style={{
+                                                                    padding: '8px 40px',
+                                                                    marginTop: 0,
+                                                                    display: 'block',
+                                                                    height: 40,
+                                                                    fontWeight: 500,
+                                                                    backgroundColor: 'tomato',
+                                                                    color: 'white'
+                                                                }}
+                                                            >
+                                                                Rechazar
+                                                            </Button>
+                                                        </MContainer>
+                                                        <MContainer direction='vertical'>
+                                                            <Button
+                                                                onClick={() => {
+                                                                    if (onProjectChange) {
+                                                                        onProjectChange('PROYECTO_APROBADO');
+                                                                    }
+                                                                }}
+                                                                className="btn btn-sm btn-intro btn-price mb-2"
+                                                                style={{
+                                                                    padding: '8px 40px',
+                                                                    marginTop: 0,
+                                                                    display: 'block',
+                                                                    height: 40,
+                                                                    fontWeight: 500,
+                                                                    backgroundColor: 'forestgreen',
+                                                                    color: 'white'
+                                                                }}
+                                                            >
+                                                                Aprobar
+                                                            </Button>
+                                                        </MContainer>
+                                                    </MContainer>
                                                 </>
-                                            </MContainer>
-                                        </MContainer>
+                                            }
+                                            {!IS_ADMIN &&
+                                                <>
+                                                    <MContainer direction='horizontal' styles={{ alignItems: 'start' }}>
+                                                        <Link href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`} >
+                                                            <Button
+                                                                className="btn btn-intro btn-price btn_out_line mb-2"
+                                                                startIcon={
+                                                                    <Image
+                                                                        src={`/assets/img/iconos/cruz_ye.svg`}
+                                                                        height={16}
+                                                                        width={16}
+                                                                        alt={'agregar-rol'}
+                                                                    />
+                                                                }
+                                                                style={{
+                                                                    padding: '8px 40px',
+                                                                    marginTop: 0,
+                                                                    marginRight: 10,
+                                                                    fontWeight: 500
+                                                                }}
+                                                            >
+                                                                Nuevo rol
+                                                            </Button>
+
+                                                        </Link>
+                                                        <MContainer direction='vertical'>
+                                                            <>
+                                                                {![Constants.ESTADOS_PROYECTO.APROBADO, Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION].includes((proyecto.data) ? proyecto.data.estatus : '') &&
+                                                                    <Button
+                                                                        onClick={() => {
+                                                                            setConfirmationDialog({ action: 'PROYECTO_ENVIADO_A_APROBACION', data: new Map<string, unknown>(), opened: true, title: 'Enviar Proyecto A Aprobación', content: <Typography variant="body2">{`Seguro que deseas mandar este proyecto a aprobación?`}</Typography> });
+                                                                        }}
+                                                                        className="btn btn-sm btn-intro btn-price mb-2"
+                                                                        style={{
+                                                                            padding: '8px 40px',
+                                                                            marginTop: 0,
+                                                                            display: 'block',
+                                                                            height: 40,
+                                                                            fontWeight: 500
+                                                                        }}
+                                                                    >
+                                                                        Enviar proyecto para aprobación
+                                                                    </Button>
+                                                                }
+                                                            </>
+                                                        </MContainer>
+                                                    </MContainer>
+                                                </>
+                                            }
+                                        </>
                                     </MotionDiv>
                                 </Box>
 
@@ -457,34 +521,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                     </ul>
                                 </div>
                                 <MTable
+                                    style={{overflowX: 'hidden'}}
                                     styleTableRow={{ cursor: 'pointer' }}
                                     alternate_colors={false}
-                                    columnsHeader={[
-                                        <Typography key={1} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Nombre
-                                        </Typography>,
-                                        <Typography key={2} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Estado
-                                        </Typography>,
-                                        <Typography key={3} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            No Vistos
-                                        </Typography>,
-                                        <Typography key={4} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Vistos
-                                        </Typography>,
-                                        <Typography key={5} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Destacados
-                                        </Typography>,
-                                        <Typography key={6} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Audición
-                                        </Typography>,
-                                        <Typography key={7} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Callback
-                                        </Typography>,
-                                        <Typography key={8} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                            Acciones
-                                        </Typography>
-                                    ]}
+                                    columnsHeader={(can_edit) ? 
+                                        table_actions.concat(<Typography key={8} sx={{ color: '#000' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>Acciones</Typography>)
+                                        :
+                                        table_actions
+                                    }
                                     backgroundColorHeader='#069cb1'
                                     styleHeaderTableCell={{ padding: '5px !important' }}
                                     loading={roles.isFetching}
@@ -565,6 +609,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
                                                 </>
                                             </MContainer>
                                         };
+                                        if (!can_edit) {
+                                            delete content.acciones;
+                                        }
                                         return content;
                                     }) : []}
                                     accordionContent={(element_index: number, container_width: number) => {
@@ -939,11 +986,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
+    const { id_proyecto } = context.query;
     if (session && session.user) {
         if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
             return {
                 props: {
                     user: session.user,
+                    id_proyecto: parseInt(id_proyecto as string)
                 }
             }
         }

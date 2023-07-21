@@ -94,7 +94,7 @@ export const ProyectosRouter = createTRPCRouter({
 			});
 			return proyecto;
 		}
-		),
+	),
 	deleteProyecto: protectedProcedure
 		.input(z.number())
 		.mutation(async ({ input, ctx }) => {
@@ -579,6 +579,7 @@ export const ProyectosRouter = createTRPCRouter({
 							sindicato: true
 						}
 					},
+					cazatalentos: true,
 					foto_portada: true,
 					archivo: true
 				},

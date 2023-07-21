@@ -1,10 +1,10 @@
 import Image from 'next/image';
-import { Box, Button, Dialog, Divider, Grid, Slide, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Divider, FormControlLabel, Grid, Slide, Switch, TextField, Typography } from '@mui/material';
 import React, { useMemo, useState, useEffect, useRef } from 'react'
 import { AddButton, AudioBar, SectionTitle } from '~/components/shared'
 import { MContainer } from '~/components/layout/MContainer';
 import { useRouter } from 'next/router';
-import { api } from '~/utils/api';
+import { api, parseErrorBody } from '~/utils/api';
 import { Carroucel } from '~/components/shared/Carroucel';
 import { getSession } from "next-auth/react";
 import { GetServerSideProps, NextPage } from "next";
@@ -16,6 +16,10 @@ import { AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 import ConfirmationDialog from '~/components/shared/ConfirmationDialog';
 import { TransitionProps } from '@mui/material/transitions';
+import { Archivo } from '~/server/api/root';
+import { FileManager } from '~/utils/file-manager';
+import useNotify from '~/hooks/useNotify';
+import { Delete, Edit, Share } from '@mui/icons-material';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -28,7 +32,10 @@ const Transition = React.forwardRef(function Transition(
 
 export const MediaBank = (props: { id_talento: number, read_only: boolean }) => {
 	const [dialogImage, setDialogImage] = useState<{open: boolean, image: string}>({open: false, image: ''});
+	const [dialogSelftape, setDialogSeltape] = useState({open: false});
+	const [selftape, setSelftape] = useState<{video: Archivo | null, nombre: string, public: boolean}>({video: null, nombre: '', public: true});
 	const router = useRouter();
+	const { notify } = useNotify();
 	const [current_video_url, setCurrentVideoUrl] = useState('');
 
 	const [current_selftape_video_url, setCurrentSeltapeVideoUrl] = useState('');
@@ -80,6 +87,18 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 			selftape_video_player.current.load();
 		}
 	}, [current_selftape_video_url]);
+
+	const saveSelftapeMedia = api.talentos.saveSelftape.useMutation({
+        onSuccess(input) {
+           notify('success', 'Se almaceno el selftape con exito');
+           media_por_talento.refetch();
+		   setSelftape({video: null, nombre: '', public: true});
+		   setDialogSeltape({open: false});
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
 
 	return (
 		<>
@@ -225,11 +244,17 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 													</Typography>
 												</MContainer>
 												<MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
+													
 													{!props.read_only &&
-														<AddButton text='Grabar selftape' aStyles={{ margin: 10 }} onClick={() => {
-															// eslint-disable-next-line @typescript-eslint/no-floating-promises
-															router.push('/talento/self-tape')
-														}} />
+														<Box display={'flex'} flexDirection={'row'} gap={2}>
+															<AddButton text='Subir selftape' aStyles={{ margin: 10 }} onClick={() => {
+																setDialogSeltape({open: true});
+															}} />
+															<AddButton text='Grabar selftape' aStyles={{ margin: 10 }} onClick={() => {
+																// eslint-disable-next-line @typescript-eslint/no-floating-promises
+																router.push('/talento/self-tape')
+															}} />
+														</Box>
 													}
 													{media && media.selftapes.length > 0 &&
 														<>
@@ -237,23 +262,82 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 																<source src={current_selftape_video_url} type="video/mp4" />
 																Lo sentimos tu navegador no soporta videos.
 															</video>
-															<MContainer styles={{ marginTop: 16 }} direction='horizontal'>
-																<>
-																	{media.selftapes.map((v, i) => {
-																		return <Button
-																			key={i}
-																			onClick={() => {
-																				setCurrentSeltapeVideoUrl(v.url);
-																			}}
-																			size='small'
-																			style={{ margin: 8 }}
-																			variant={v.url === current_selftape_video_url ? 'contained' : 'outlined'}
-																			endIcon={<Image style={{ marginLeft: 5, cursor: 'pointer', filter: (v.url === current_selftape_video_url) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />}
-																		>
-																			{v.nombre}
-																		</Button>
-																	})}
-																</>
+															<MContainer styles={{ marginTop: 16, width: '100%' }} direction='horizontal'>
+																<Box display="flex" flexDirection={'column'}>
+																	{media.selftapes.filter(s => s.public).length > 0 &&
+																		<>
+																			<Typography variant='h6'>Publicos</Typography>
+																			<Box display="flex" flexDirection={'row'}>
+																				{media.selftapes.filter(s => s.public).map((v, i) => {
+																					return <Button
+																						key={i}
+																						onClick={() => {
+																							setCurrentSeltapeVideoUrl(v.url);
+																						}}
+																						size='small'
+																						style={{ margin: 8 }}
+																						variant={v.url === current_selftape_video_url ? 'contained' : 'outlined'}
+																						endIcon={<Image style={{ marginLeft: 5, cursor: 'pointer', filter: (v.url === current_selftape_video_url) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />}
+																					>
+																						{v.nombre}
+																					</Button>
+																				})}
+																			</Box>
+																		</>
+																	}
+																	{media.selftapes.filter(s => !s.public).length > 0 &&
+																		<>
+																			<Typography variant='h6'>Privados</Typography>
+																			<Box display="flex" flexDirection={'row'} >
+																				{media.selftapes.filter(s => !s.public).map((v, i) => {
+																					return <Box key={i} width={250} display={"flex"} flexDirection={'column'}> 
+																						<Button
+																							onClick={() => {
+																								setCurrentSeltapeVideoUrl(v.url);
+																							}}
+																							size='small'
+																							variant={v.url === current_selftape_video_url ? 'contained' : 'outlined'}
+																							endIcon={<Image style={{ marginLeft: 5, cursor: 'pointer', filter: (v.url === current_selftape_video_url) ? 'brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)' : '' }} src="/assets/img/iconos/play.svg" width={20} height={20} alt="" />}
+																						>
+																							{v.nombre}
+																						</Button>
+																						<Box my={0.5} gap={0.5} display={'flex'} flexDirection={'row'}  flexWrap={'wrap'} justifyContent={'space-between'}> 
+																							<Button
+																								onClick={() => {
+																								}}
+																								size='small'
+																								style={{flexGrow: 1, borderRadius: 0}}
+																								variant={v.url === current_selftape_video_url ? 'contained' : 'outlined'}
+																								endIcon={<Delete/>}
+																							>
+																							</Button>
+																							<Button
+																								onClick={() => {
+																								}}
+																								size='small'
+																								style={{flexGrow: 1, borderRadius: 0}}
+																								variant={v.url === current_selftape_video_url ? 'contained' : 'outlined'}
+																								endIcon={<Edit/>}
+																							>
+																							</Button>
+																							<Button
+																								onClick={() => {
+																								}}
+																								size='small'
+																							
+																								style={{flexGrow: 1, borderRadius: 0}}
+																								variant={v.url === current_selftape_video_url ? 'contained' : 'outlined'}
+																								endIcon={<Share/>}
+																							>
+																							</Button>
+																						</Box>
+
+																					</Box>
+																				})}
+																			</Box>
+																		</>
+																	}
+																</Box>
 															</MContainer>
 
 														</>
@@ -280,6 +364,114 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 						<div style={{ position: 'relative', width: 500, aspectRatio: '500/720', maxWidth: '100%' }}>
 							<Image fill  src={dialogImage.image} style={{ objectFit: 'cover' }} alt="" />
 						</div>
+					</Dialog>
+					<Dialog
+						fullWidth={true}
+						maxWidth={'xs'}
+						open={dialogSelftape.open}
+						onClose={() => { setDialogSeltape({...dialogSelftape, open: false}) }}
+					>
+						<DialogContent>
+							<Box>
+								<Typography>Selecciona el video que deseas subir a tus selftapes</Typography>
+								<Box ml={'calc(50% - 125px)'} my={2}>
+
+
+									<Button style={{ fontWeight: 800, color: '#069cb1', width: 250 }} className="btn  btn-social mr-1 ml-1" variant="outlined" component="label">
+										<MContainer direction='vertical'>
+												<MContainer direction='horizontal'>
+													<Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />
+													<Typography fontSize={'0.9rem'} fontWeight={700}>
+													Selecciona un video
+													</Typography>
+
+												</MContainer>
+											
+										</MContainer>
+										<input onChange={async (ev) => {
+											if (ev.target.files) {
+												const file = ev.target.files[0];
+												if (file) {
+													const base_64 = await FileManager.convertFileToBase64(file);
+													setSelftape((prev) => { return {...prev, video: {
+														file: file,
+														base64: base_64,
+														name: file.name
+													}}})
+												}
+											}
+										}} hidden accept="video/mp4, video/mov, video/webm" type="file" />
+									</Button>
+								</Box>
+								{selftape.video &&
+									<>
+										<video controls style={{ width: '100%' }} src={selftape.video.base64}>
+											Lo sentimos tu navegador no soporta videos.
+										</video>
+										<Box my={2}>
+											<label
+												style={{fontWeight: 600, width: '100%'}}
+												className={'form-input-label'}
+												htmlFor={'nombre-input'}
+											>
+												Nombre*
+											</label>
+											<TextField
+												size="small"
+												id="nombre-input"
+												type='text'
+												onChange={(e) => {
+													setSelftape((prev) => { return {...prev, nombre: e.target.value }})
+													//params.set('nombre', e.target.value);
+												}}
+											/>
+
+										</Box>
+										<FormControlLabel control={<Switch onChange={() => { 
+											setSelftape((prev) => { return {...prev, public: !prev.public }})
+										}} defaultChecked />} label="Publico" />
+									</>
+								}
+							</Box>
+						</DialogContent>
+						<DialogActions>
+							<Button onClick={() => { setDialogSeltape({...dialogSelftape, open: false}) }}>Cerrar</Button>
+							<Button onClick={async () => {
+								if (selftape.video) {
+									const date = new Date();
+									const name = `selftape-${date.toLocaleDateString('es-mx').replaceAll('/', '-')}-${date.toLocaleTimeString('es-mx')}`;
+									const urls_saved = await FileManager.saveFiles([{path: `talentos/${props.id_talento}/videos`, name: name, file: selftape.video.file, base64: selftape.video.base64}]);
+									if (urls_saved.length > 0) {
+										urls_saved.forEach((res, j) => {
+											Object.entries(res).forEach((e, i) => {
+												const url = e[1].url;  
+												if (url) {
+													saveSelftapeMedia.mutate({
+														id_talento: props.id_talento,
+														selftape: {
+															nombre: (selftape.nombre.length > 0) ? selftape.nombre : name,
+															type: (selftape.video) ? selftape.video.file.type : 'video/webm',
+															url: (url) ? url : '',
+															clave: `talentos/${props.id_talento}/videos/${name}`,
+															referencia: `VIDEOS-SELFTAPE-TALENTO-${props.id_talento}`,
+															identificador: `video-selftape-${name}`,
+															public: selftape.public
+														}
+													})
+												} else {
+													notify('error', `${(name) ? `El video ${name} no se pudo subir` : 'Un video no se pudo subir'}`);
+												}
+											})
+										});
+									}
+								} else {
+									notify('warning', 'No haz seleccionado ningun video');
+								}
+							}}
+							>
+								Subir
+							</Button>
+						</DialogActions>
 					</Dialog>
 				</AnimatePresence>
 			</MainLayout>

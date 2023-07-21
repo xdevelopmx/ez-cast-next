@@ -1,8 +1,10 @@
-import { CancelOutlined, Check, CheckCircle, CheckCircleOutline, CheckOutlined, Circle, Star } from "@mui/icons-material"
+import { CancelOutlined, Check, CheckCircle, CheckCircleOutline, CheckOutlined, Circle, People, Star, VerifiedUser } from "@mui/icons-material"
 import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, CardMedia, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Tab, Tabs, TextField, Typography } from "@mui/material"
+import { useSession } from "next-auth/react"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
 import { TypeOf } from "zod"
+import { CazatalentosPreview } from "~/components/cazatalento/dialogs/cazatalentos-preview"
 import { MContainer } from "~/components/layout/MContainer"
 import MotionDiv from "~/components/layout/MotionDiv"
 import { DetallesProyecto } from "~/components/proyecto/detalles"
@@ -12,6 +14,7 @@ import { MSearchInput } from "~/components/shared/MSearchInput"
 import { MTable } from "~/components/shared/MTable/MTable"
 import Constants from "~/constants"
 import useNotify from "~/hooks/useNotify"
+import RolesIndexPage from "~/pages/cazatalentos/roles"
 import { Archivo } from "~/server/api/root"
 import { api, parseErrorBody } from "~/utils/api"
 import { FileManager } from "~/utils/file-manager"
@@ -19,7 +22,7 @@ import { FileManager } from "~/utils/file-manager"
 export const CatalogoProyectos = () => {
 	const { notify } = useNotify();
     
-    const [dialog, setDialog] = useState<{open: boolean, id_proyecto: number}>({open: false, id_proyecto: 0});
+    const [dialog, setDialog] = useState<{open: boolean, id_proyecto: number, id: 'INFO_CAZATALENTO' | 'INFO_PROYECTO'}>({open: false, id_proyecto: 0, id: 'INFO_PROYECTO'});
 
     const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'RECHAZAR' | 'APROBAR', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'RECHAZAR', data: new Map });
 
@@ -30,6 +33,8 @@ export const CatalogoProyectos = () => {
     const [estatus_proyecto, setEstatusProyecto] = useState('');
 
     const [search_text, setSearchText] = useState('');
+
+    const session = useSession();
 
     const proyectos = api.proyectos.getAll.useQuery({
         where: (estatus_proyecto.length > 0) ? {
@@ -44,7 +49,6 @@ export const CatalogoProyectos = () => {
             }
         ]
     }, {
-		refetchOnWindowFocus: false,
         keepPreviousData: true
 	});
 
@@ -117,18 +121,21 @@ export const CatalogoProyectos = () => {
 			<MTable
                 columnsHeader={[
                     <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        Nombre
+                        Proyecto
                     </Typography>,
+                    <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        Cazatalentos
+                    </Typography>,    
                     <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                         Estado
                     </Typography>,
                     <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                         Tipo
                     </Typography>,
-                    <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                    <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                         Fecha
                     </Typography>,
-                    <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                    <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                         Acciones
                     </Typography>,
                 ]}
@@ -153,6 +160,7 @@ export const CatalogoProyectos = () => {
                                 </MContainer>
                             );
                         })(), 
+                        cazatalentos: p.cazatalentos.nombre + ' ' + p.cazatalentos.apellido,
                         estado: (() => {
                             switch (p.estatus.toUpperCase()) {
                                 case Constants.ESTADOS_PROYECTO.POR_VALIDAR: return 'Por validar';
@@ -178,67 +186,18 @@ export const CatalogoProyectos = () => {
                                         <Star />
                                     </IconButton>
                                 }
-                                {p.estatus === Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION &&
-                                    <>
-                                        <IconButton
-                                            style={{ color: '#4ab7c6' }}
-                                            aria-label="aprobar proyecto"
-                                            onClick={() => {
-                                                const params = new Map<string, unknown>();
-                                                params.set('id', p.id);
-                                                setConfirmationDialog({ 
-                                                    action: 'APROBAR', 
-                                                    data: params, 
-                                                    opened: true, 
-                                                    title: 'Aprobar Proyecto', 
-                                                    content: <Box>
-                                                        <Typography variant="body2">Seguro que deseas aprobar este proyecto?</Typography>
-                                                    </Box>
-                                                })
-                                            }}
-                                        >
-                                            <CheckCircleOutline />
-                                        </IconButton>
-                                        <IconButton
-                                            style={{ color: '#4ab7c6' }}
-                                            aria-label="rechazar proyecto"
-                                            onClick={() => {
-                                                const params = new Map<string, unknown>();
-                                                params.set('id', p.id);
-                                                setConfirmationDialog({ 
-                                                    action: 'RECHAZAR', 
-                                                    data: params, 
-                                                    opened: true, 
-                                                    title: 'Rechazar Proyecto', 
-                                                    content: <Box>
-                                                        <Typography variant="body2">Seguro que deseas rechazar este proyecto?</Typography>
-                                                        <label
-                                                            style={{fontWeight: 600, width: '100%', marginTop: 10}}
-                                                            className={'form-input-label'}
-                                                            htmlFor={'observaciones-input'}
-                                                        >
-                                                            Observaciones
-                                                        </label>
-                                                        <TextField
-                                                            id="observaciones-input"
-                                                            multiline
-                                                            rows={3}
-                                                            onChange={(e) => {
-                                                                params.set('observaciones', e.target.value);
-                                                                //setObservaciones(e.target.value)
-                                                            }}
-                                                        />
-                                                    </Box>
-                                                })
-                                            }}
-                                        >
-                                            <CancelOutlined />
-                                        </IconButton>
-                                    </>
-                                }
+                                <IconButton
+                                    aria-label="cazatalentos"
+                                    onClick={() => {
+                                        //update_destacado.mutate({id: p.id, destacado: !p.destacado});
+                                        setDialog({open: true, id_proyecto: p.id, id: 'INFO_CAZATALENTO'});
+                                    }}
+                                >
+                                    <People/>
+                                </IconButton>
                                 <IconButton 
                                     onClick={(e) => {
-                                        setDialog({open: true, id_proyecto: p.id});
+                                        setDialog({open: true, id_proyecto: p.id, id: 'INFO_PROYECTO'});
                                         e.stopPropagation();
                                     }} 
                                     color="primary" 
@@ -292,23 +251,80 @@ export const CatalogoProyectos = () => {
                                 break;
                             }
                         }
+                    } else {
+                        setDialog({...dialog, open: true})
                     }
                     setConfirmationDialog({ ...confirmation_dialog, opened: false });
                 }}
                 title={confirmation_dialog.title}
                 content={confirmation_dialog.content}
             />
+            <CazatalentosPreview 
+                onClose={() => setDialog({...dialog, open: false})}
+                open={dialog.open && dialog.id === 'INFO_CAZATALENTO'}
+                id_proyecto={dialog.id_proyecto}
+            />
             <Dialog
-                style={{
-                    marginTop: 56
-                }}
                 fullWidth={true}
-                maxWidth={'md'}
-                open={dialog.open}
+                maxWidth={'xl'}
+                open={dialog.open && dialog.id === 'INFO_PROYECTO'}
                 onClose={() => { setDialog({...dialog, open: false}) }}
             >
                 <DialogContent>
-                    <DetallesProyecto id_proyecto={dialog.id_proyecto}/>
+                    <RolesIndexPage 
+                        user={session.data?.user} 
+                        id_proyecto={dialog.id_proyecto} 
+                        can_edit={false}
+                        onProjectChange={(action) => {
+                            setDialog({...dialog, open: false})
+                            switch (action) {
+                                case 'PROYECTO_APROBADO': {
+                                    const params = new Map<string, unknown>();
+                                    params.set('id', dialog.id_proyecto);
+                                    setConfirmationDialog({ 
+                                        action: 'APROBAR', 
+                                        data: params, 
+                                        opened: true, 
+                                        title: 'Aprobar Proyecto', 
+                                        content: <Box>
+                                            <Typography variant="body2">Seguro que deseas aprobar este proyecto?</Typography>
+                                        </Box>
+                                    })
+                                    break;
+                                }
+                                case 'PROYECTO_RECHAZADO': {
+                                    const params = new Map<string, unknown>();
+                                    params.set('id', dialog.id_proyecto);
+                                    setConfirmationDialog({ 
+                                        action: 'RECHAZAR', 
+                                        data: params, 
+                                        opened: true, 
+                                        title: 'Rechazar Proyecto', 
+                                        content: <Box>
+                                            <Typography variant="body2">Seguro que deseas rechazar este proyecto?</Typography>
+                                            <label
+                                                style={{fontWeight: 600, width: '100%', marginTop: 10}}
+                                                className={'form-input-label'}
+                                                htmlFor={'observaciones-input'}
+                                            >
+                                                Observaciones
+                                            </label>
+                                            <TextField
+                                                id="observaciones-input"
+                                                multiline
+                                                rows={3}
+                                                onChange={(e) => {
+                                                    params.set('observaciones', e.target.value);
+                                                    //setObservaciones(e.target.value)
+                                                }}
+                                            />
+                                        </Box>
+                                    })
+                                    break;
+                                }
+                            }
+                        }}
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => { setDialog({...dialog, open: false}) }}>Cerrar</Button>

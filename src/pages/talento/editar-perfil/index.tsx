@@ -760,7 +760,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                                     url: (url) ? url : '',
                                     clave: `talentos/${id_talento}/creditos/${e[0]}`,
                                     referencia: `CREDITOS-TALENTO-${id_talento}`,
-                                    identificador: `${(original_name.includes('clip') ? '' : 'clip-')}${original_name}`
+                                    identificador: `${(original_name.includes('clip') ? '' : 'clip-')}${original_name}`,
+                                    public: true
                                 }
                             } else {
                                 notify('error', `${(original_name) ? `El credito ${original_name} no se pudo subir` : 'Un credito no se pudo subir'}`);

@@ -59,6 +59,27 @@ export const CazatalentosRouter = createTRPCRouter({
 			});
 		}
 	),
+	getByIdProyecto: publicProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			const proyecto = await ctx.prisma.proyecto.findFirst({
+				where: { id: input },
+				include: {
+					cazatalentos: {
+						include: {
+							redes_sociales: true,
+							foto_perfil: true
+						}
+					}
+				}
+			})
+			if (proyecto) {
+				return proyecto.cazatalentos;
+			}
+			return null;
+		}
+	),
 	getById: publicProcedure
 		.input(z.number())
 		.query(async ({ input, ctx }) => {

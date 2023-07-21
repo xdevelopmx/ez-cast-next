@@ -23,6 +23,25 @@ function exclude<Talentos, Key extends keyof Talentos>(
 // /uploads/talentos/5/fotos-perfil/FOTO_PERFIL/002.png
 
 export const TalentosRouter = createTRPCRouter({
+	getSelftapesByIdTalento: protectedProcedure
+		.input(z.object({ id: z.number() }))
+		.query(async ({ input, ctx }) => {
+			
+			const selftapes = await ctx.prisma.mediaPorTalentos.findMany({
+				where: {
+					id_talento: input.id,
+					media: {
+						referencia: `VIDEOS-SELFTAPE-TALENTO-${input.id}`
+					}
+				},
+				include: {
+					media: true
+				}
+			});
+
+			return selftapes;
+		}
+	),
 	getAllTalentosDestacados: protectedProcedure
 		.query(async ({ ctx }) => {
 			return await ctx.prisma.talentos.findMany({
@@ -416,7 +435,7 @@ export const TalentosRouter = createTRPCRouter({
 			return talento;
 			//return exclude(talento, ['contrasenia'])
 		}
-		),
+	),
 	saveMedidas: protectedProcedure
 		.input(z.object({
 			id_talento: z.number(),
@@ -481,7 +500,8 @@ export const TalentosRouter = createTRPCRouter({
 				url: z.string(),
 				clave: z.string(),
 				referencia: z.string(),
-				identificador: z.string()
+				identificador: z.string(),
+				public: z.boolean()
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
@@ -493,7 +513,8 @@ export const TalentosRouter = createTRPCRouter({
 					url: input.selftape.url,
 					clave: input.selftape.clave,
 					referencia: input.selftape.referencia,
-					identificador: input.selftape.identificador
+					identificador: input.selftape.identificador,
+					public: input.selftape.public
 				}
 			});
 			if (media_selftape_saved) {

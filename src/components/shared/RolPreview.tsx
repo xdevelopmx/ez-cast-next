@@ -9,6 +9,7 @@ import { TransitionProps } from '@mui/material/transitions'
 import { User } from 'next-auth';
 import { Cazatalentos } from '@prisma/client';
 import { Check, Close } from '@mui/icons-material';
+import { CazatalentosPreview } from '../cazatalento/dialogs/cazatalentos-preview';
 
 
 interface PropsIndividualData {
@@ -395,64 +396,11 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia2.jpg</Typography>
                 </IndividualData>
             </GridMotion>
-            <Dialog  
-                maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} 
-                open={dialogInfoProductor.open} 
+            <CazatalentosPreview 
                 onClose={() => setDialogInfoProductor({ ...dialogInfoProductor, open: false })}
-                TransitionComponent={Transition}
-            >
-                <IconButton
-                    style={{
-                        position: 'absolute',
-                        right: 0,
-                        color: '#069cb1'
-                    }}
-                    aria-label="Cancelar edicion usuario"
-                    onClick={() => {
-                        setDialogInfoProductor({ ...dialogInfoProductor, open: false })
-                    }}
-                >
-                    <Close />
-                </IconButton>
-                <DialogContent style={{padding: 0, width: 400, overflow: 'hidden'}}>
-                    <MContainer direction='vertical' styles={{padding: 40, alignItems: 'center'}} justify='center'>
-                        <Avatar sx={{ width: 156, height: 156 }} alt="Foto productor" src={rol.proyecto.cazatalentos.foto_perfil ? rol.proyecto.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} />
-                        <MContainer direction='horizontal'>
-                            <motion.img style={{marginRight: 16}}  src="/assets/img/iconos/chair_dir_blue.svg" alt="icono" />
-                            <Typography fontSize={'2rem'}>{rol.proyecto.cazatalentos.nombre} {rol.proyecto.cazatalentos.apellido}</Typography>
-                        </MContainer>
-                        <Divider style={{borderColor: '#069cb1', width: '70%', borderWidth: '1px'}}/>
-                        <Typography style={{color: '#069cb1', marginTop: 16}}>
-                            {rol.proyecto.cazatalentos.posicion}
-                        </Typography>
-                        <Typography variant='body2' paddingLeft={2} paddingRight={2}>
-                            {rol.proyecto.cazatalentos.biografia}
-                        </Typography>
-                        <Box my={3} display={'flex'} flexDirection={'row'} justifyContent={'space-between'} width={'80%'}>
-                            {rol.proyecto.cazatalentos.redes_sociales && rol.proyecto.cazatalentos.redes_sociales.map(red => {
-                                switch (red.nombre) {
-                                    case 'vimeo': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="icono" />;
-                                    case 'linkedin': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="icono" />;
-                                    case 'youtube': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_youtube_blue.svg" alt="icono" />;
-                                    case 'imdb': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_imbd_blue.svg" alt="icono" />;
-                                    case 'twitter': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="icono" />;
-                                    case 'instagram': return <motion.img width={24} height={24} src="/assets/img/iconos/icon_insta_blue.svg" alt="icono" />;
-                                    
-                                }
-                                return null;
-                            })}
-                        </Box>
-                        {rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').length > 0 &&
-                            rol.proyecto.cazatalentos.redes_sociales.filter(r => r.nombre === 'pagina_web').map((r, i) => {
-                                return <MContainer key={i} direction='horizontal' justify='start' styles={{width: '80%', alignItems: 'end'}}>
-                                    <motion.img width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="icono" />
-                                    <Typography ml={2}>{r.url}</Typography>
-                                </MContainer>
-                            })
-                        }
-                    </MContainer>
-                </DialogContent>
-            </Dialog>
+                open={dialogInfoProductor.open}
+                cazatalento={rol.proyecto.cazatalentos}
+            />
             <Dialog  
                 maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} 
                 open={dialogImage.open} 

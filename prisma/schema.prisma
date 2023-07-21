@@ -780,6 +780,7 @@ model Media {
   clave                     String // clave para el s3
   referencia                String // Se utiliza para saber si es parte de un conjunto
   identificador             String // Se utiliza para identificar ese elemento dentro de un conjunto
+  public Boolean @default(true) // se utiliza para saber si el recurso es publico o no
   MediaPorTalentos          MediaPorTalentos[]
   InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
   CreditoTalento            CreditoTalento[]

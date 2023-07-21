@@ -1,4 +1,4 @@
-import { Box, Button, Divider, Grid, IconButton, Skeleton, Slider, SxProps, TablePagination, Theme, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Divider, FormControlLabel, Grid, IconButton, Skeleton, Slider, Switch, SxProps, TablePagination, TextField, Theme, Typography } from "@mui/material";
 import Head from "next/head";
 import Image from 'next/image';
 import Link from "next/link";
@@ -44,6 +44,10 @@ async function getDevices() {
 const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talento}) => {
 
     const router = useRouter();
+
+    const selftapes = api.talentos.getSelftapesByIdTalento.useQuery({id: id_talento}, {
+        refetchOnWindowFocus: false
+    });
 
     const { notify } = useNotify();
 
@@ -156,7 +160,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
     const interval_time_ref = useRef<ReturnType<typeof setInterval> | null>(null);
 
     const formated_lineas = lineas.split('\n').filter(l => l.trim().length > 0);
-    
+
     useEffect(() => {
         if (delay >= 0) {
             if (interval_time_ref.current) {
@@ -192,17 +196,41 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
 
     useEffect(() => {
         if (recorded_url) {
+            const params = new Map<string, unknown>();
+            params.set('public', true);
             setConfirmationDialog({ 
                 action: 'PREVIEW', 
-                data: new Map(),
+                data: params,
                 opened: true, 
                 title: '¿Deseas guardar Self-Tape?', 
                 content: 
                     <Box>
                         <Typography>(Tendrás la posibilidad de reproducirlo y bajarlo en el Media Bank)</Typography>
-                       <video controls autoPlay style={{ width: '100%' }} src={recorded_url}>
+                       <video controls style={{ width: '100%' }} src={recorded_url}>
                             Lo sentimos tu navegador no soporta videos.
                         </video>
+                        <Box my={2}>
+                            <label
+                                style={{fontWeight: 600, width: '100%'}}
+                                className={'form-input-label'}
+                                htmlFor={'nombre-input'}
+                            >
+                                Nombre*
+                            </label>
+                            <TextField
+                                size="small"
+                                id="nombre-input"
+                                type='text'
+                                onChange={(e) => {
+                                    params.set('nombre', e.target.value);
+                                }}
+                            />
+
+                        </Box>
+                        <FormControlLabel control={<Switch onChange={() => { 
+                            const _public = params.get('public') as boolean;
+                            params.set('public', !_public);
+                         }} defaultChecked />} label="Publico" />
                     </Box>
             });
         }
@@ -211,6 +239,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
     const saveSelftapeMedia = api.talentos.saveSelftape.useMutation({
         onSuccess(input) {
            notify('success', 'Se almaceno el selftape con exito');
+           selftapes.refetch();
            setConfirmationDialog(prev => { return { ...prev, opened: false }});
         },
         onError: (error) => {
@@ -218,7 +247,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
         }
     })
 
-   
+    const can_record = selftapes.data && selftapes.data.length < 6;
     return (
         <>
             <Head>
@@ -246,6 +275,12 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                         Un self tape es una técnica utilizada en el mundo cinematográfico en la que una persona se filma a sí misma en una prueba de casting.
                                         ¡Saca ventaja de esta herramienta y graba tus audiciones en segundos!
                                     </Typography>
+                                    {selftapes.data && selftapes.data.length > 0 &&
+                                        <Alert variant="filled" severity={!can_record ? 'warning' : 'info'} sx={{maxWidth: '85%', height: 72, my: 2}} > 
+                                            {!can_record ? 'Solo se permite maximo 6 selftapes por usuario, por favor elimina uno antes de intentar grabar otro' : `Tienes ${selftapes.data?.length} selftapes disponibles en el Media Bank`}
+                                            <Button onClick={() => { router.push('/talento/media-bank') }} variant="contained" color='success' size="small" sx={{ml: 2}}>Ir Media Bank</Button>
+                                        </Alert>
+                                    }
                                     <Box sx={{backgroundColor: (recording) ? 'lightgray' : ''}} width={'85%'} height={'55vh'} border={'solid'} borderColor={'#069cb1'} position={'relative'}>
                                         {!has_permissions.camera &&
                                             <Box display={'flex'} flexDirection={'column'} alignContent={'center'} alignItems={'center'} position={'absolute'} left={'calc(50% - 200px)'} top={'calc(50% - 60px)'} width={400} height={120}>
@@ -260,10 +295,16 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                         }
                                         {has_permissions.camera &&
                                            <>
-                                            {!recording &&
+                                            {can_record && !recording &&
                                                 <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={200} height={16}>
                                                     <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
                                                     <Button onClick={ () => { setRecording(prev => !prev) }} size="small">Grabar self-tape</Button>
+                                                </Box>
+                                            }
+                                            {!can_record &&
+                                                <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={600} height={16}>
+                                                    <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
+                                                    <Typography variant="subtitle2">No puedes grabar mas selftapes</Typography>
                                                 </Box>
                                             }
                                             {recording &&
@@ -392,7 +433,17 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                             switch (confirmation_dialog.action) {
                                 case 'PREVIEW': {
                                     const id = confirmation_dialog.data.get('id');
+                                    const input_name = (confirmation_dialog.data.has('nombre')) ? confirmation_dialog.data.get('nombre') as string : '';
+                                    const is_public = (confirmation_dialog.data.has('public')) ? confirmation_dialog.data.get('public') as boolean : true;
                                     const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/webm');
+                                    const link = document.createElement('a');
+                                    link.href = recorded_url;
+                                    link.setAttribute('download', `selftape.webm`);
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    if (link && link.parentNode) {
+                                        link.parentNode.removeChild(link);
+                                    }
                                     const base_64 = await FileManager.convertFileToBase64(file);
                                     const date = new Date();
                                     const name = `selftape-${date.toLocaleDateString('es-mx').replaceAll('/', '-')}-${date.toLocaleTimeString('es-mx')}`;
@@ -405,12 +456,13 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                     saveSelftapeMedia.mutate({
                                                         id_talento: id_talento,
                                                         selftape: {
-                                                            nombre: name,
+                                                            nombre: (input_name.length > 0) ? input_name : name,
                                                             type: 'video/webm',
                                                             url: (url) ? url : '',
                                                             clave: `talentos/${id_talento}/videos/${name}`,
                                                             referencia: `VIDEOS-SELFTAPE-TALENTO-${id_talento}`,
-                                                            identificador: `video-selftape-${name}`
+                                                            identificador: `video-selftape-${name}`,
+                                                            public: is_public
                                                         }
                                                     })
                                                 } else {
