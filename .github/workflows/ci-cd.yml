@@ -1,0 +1,37 @@
+name: deploy-ez-cast
+run-name: ${{ github.actor }} esta haciendo deploy
+on: [push]
+jobs:
+  deploy-build:
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v3
+      - uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.SSH_HOST }}
+            username: ${{ secrets.SSH_USER }}
+            key: ${{ secrets.KEY }}
+            script: |
+              cd ~/ez-cast-next
+              rm .env
+              touch .env
+              echo NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} >> .env
+              echo NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} >> .env
+              echo NEXT_PUBLIC_INTERNAL_URL=${{ secrets.NEXT_PUBLIC_INTERNAL_URL }} >> .env
+              echo NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }} >> .env
+              echo NEXT_PUBLIC_BUCKET_NAME=${{ secrets.NEXT_PUBLIC_BUCKET_NAME }} >> .env
+              echo NEXT_PUBLIC_AWSDEFAULTREGION=${{ secrets.NEXT_PUBLIC_AWSDEFAULTREGION }} >> .env
+              echo NEXT_PUBLIC_AWSACCESSKEYID=${{ secrets.NEXT_PUBLIC_AWSACCESSKEYID }} >> .env
+              echo NEXT_PUBLIC_AWSSECRETACCESSKEY=${{ secrets.NEXT_PUBLIC_AWSSECRETACCESSKEY }} >> .env
+              echo NEXT_PUBLIC_SMTP_HOST=${{ secrets.NEXT_PUBLIC_SMTP_HOST }} >> .env
+              echo NEXT_PUBLIC_SMTP_PORT=${{ secrets.NEXT_PUBLIC_SMTP_PORT }} >> .env
+              echo NEXT_PUBLIC_SMTP_USER=${{ secrets.NEXT_PUBLIC_SMTP_USER }} >> .env
+              echo NEXT_PUBLIC_SMTP_PASSWORD=${{ secrets.NEXT_PUBLIC_SMTP_PASSWORD }} >> .env
+              cat .env
+              git pull 
+              npm install --only=prod
+              npx prisma generate
+              npx next build
+              forever stopall
+              forever start ./node_modules/.bin/next start
