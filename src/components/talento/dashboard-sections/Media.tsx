@@ -25,8 +25,8 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
         if (media_por_talento.data) {
             const fotos = media_por_talento.data.filter(m => m.media.type.includes('image')).map(a => a.media);
             const audios = media_por_talento.data.filter(m => m.media.type.includes('audio')).map(a => a.media);
-            const videos = media_por_talento.data.filter(m => m.media.type.includes('video') && m.media.public && m.media.referencia.startsWith('VIDEOS-TALENTO')).map(a => a.media);
-			const selftapes = media_por_talento.data.filter(m => m.media.type.includes('video') && m.media.referencia.startsWith('VIDEOS-SELFTAPE')).map(a => a.media);
+            const videos = media_por_talento.data.filter(m => m.media.type.includes('video')  && m.media.referencia.startsWith('VIDEOS-TALENTO')).map(a => a.media);
+			const selftapes = media_por_talento.data.filter(m => m.media.type.includes('video') && m.media.public && m.media.referencia.startsWith('VIDEOS-SELFTAPE')).map(a => a.media);
 			return { fotos: fotos, audios: audios, videos: videos, selftapes: selftapes }
         }
         return null;
