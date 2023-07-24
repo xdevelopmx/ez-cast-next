@@ -1,9 +1,11 @@
-import { Box, Button, ButtonGroup, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Link, Typography } from '@mui/material'
 import React, { type CSSProperties } from 'react'
 import Image from 'next/image'
 import { api, parseErrorBody } from '~/utils/api'
 import Constants from '~/constants'
 import useNotify from '~/hooks/useNotify'
+import { useQuery } from '@tanstack/react-query'
+import { AudioBar } from '../../AudioBar'
 
 const estilos_ellipsis: CSSProperties = {
     overflow: 'hidden',
@@ -68,6 +70,74 @@ export const Message = ({ imagen, mensaje, esMensajePropio, nombre }: Props) => 
                 <Typography>
                     {mensaje}
                 </Typography>
+            </Box>
+        </Box>
+    )
+}
+
+export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre }: Props) => {
+
+    const blob = api.mensajes.getBlobMensaje.useQuery(mensaje, {
+        refetchOnWindowFocus: false
+    });
+
+    return (
+        <Box 
+            sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                margin: '25px 0px',
+                flexDirection: esMensajePropio ? 'row-reverse' : 'row'
+            }}
+        >
+            <Box sx={{
+                position: 'relative',
+                width: '60px',
+                aspectRatio: '1/1',
+                marginRight: esMensajePropio ? '0px' : '20px',
+                marginLeft: esMensajePropio ? '20px' : '0px',
+            }}>
+                <Image src={imagen} style={{
+                    borderRadius: '100%'
+                }} fill alt="" />
+            </Box>
+
+            <Box sx={{
+                width: 'calc( 100% - 80px )',
+                minWidth: '50%',
+                padding: '10px 20px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+                borderRadius: '10px',
+                ...esMensajePropio ? estilos_mensaje_propio : estilos_mensaje_no_propio
+            }}>
+                <Typography sx={{
+                    color: esMensajePropio ? '#fff' : '#069cb1',
+                    //fontWeight: 600,
+                    ...estilos_ellipsis
+                }}>
+                    {nombre}
+                </Typography>
+                {blob.data && blob.data.type.includes('video') &&
+                    <video controls style={{ width: '100%' }}>
+                        <source src={mensaje} type={blob.data.type} />
+                    </video>
+                }
+                {blob.data && blob.data.type.includes('image') &&
+                    <a target="_blank" href={mensaje} rel="noopener noreferrer">
+                        <Image src={mensaje} width={200} height={200} alt='' />
+                    </a>
+                }
+                {blob.data && blob.data.type.includes('audio') &&
+                    <AudioBar
+                        name={'audio'}
+                        url={mensaje}
+                    />
+                }
+                {blob.data && (!blob.data.type.includes('audio') && !blob.data.type.includes('video') && !blob.data.type.includes('image')) &&
+                    <a target="_blank" href={mensaje} rel="noopener noreferrer">
+                        <Typography color={'HighlightText'}>{mensaje}</Typography>
+                    </a>
+                }
             </Box>
         </Box>
     )

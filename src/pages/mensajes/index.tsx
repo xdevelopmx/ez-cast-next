@@ -11,7 +11,7 @@ import { Box, Button, ButtonGroup, Dialog, DialogContent, DialogTitle, Grid, Lin
 import Image from 'next/image'
 import { ConfirmacionDialog } from '~/components/shared/Mensajes/ConfirmacionDialog';
 import { PreviewConversation } from '~/components/shared/Mensajes/PreviewConversation';
-import { Message, MessageNotificacionHorario } from '~/components/shared/Mensajes/Message';
+import { MediaMessage, Message, MessageNotificacionHorario } from '~/components/shared/Mensajes/Message';
 import { Conversaciones, Proyecto } from '@prisma/client';
 import { string } from 'zod';
 import useNotify from '~/hooks/useNotify';
@@ -250,6 +250,16 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                         switch (m.type) {
                                                             case TipoMensajes.TEXT: {
                                                                 const params = JSON.parse(m.mensaje) as {message: string};
+                                                                // si el mensaje es un link entonces lo mostramos como mensaje con media
+                                                                if (Constants.PATTERNS.URL.test(params.message)) {
+                                                                    return <MediaMessage   
+                                                                        key={i}
+                                                                        nombre={`${m.emisor?.nombre}`}
+                                                                        mensaje={params.message}
+                                                                        imagen={`${m.emisor?.profile_url}`}
+                                                                        esMensajePropio={m.id_emisor === parseInt(user.id)}
+                                                                    />
+                                                                }
                                                                 return (
                                                                     <Message
                                                                         key={i}
@@ -348,12 +358,23 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                     justifyContent: 'space-between'
                                                 }}
                                             >
-
                                                 <Box sx={{
                                                     position: 'relative',
                                                     width: 'calc( 100% - 100px )'
                                                 }}>
                                                     <TextField
+                                                        onKeyDown={(e) => {
+                                                            if (e.code === 'Enter') {
+                                                                saveMensaje.mutate({
+                                                                    id_conversacion: (selected_conversacion) ? selected_conversacion.id : 0,
+                                                                    id_emisor: parseInt(user.id),
+                                                                    tipo_usuario_emisor: (user.tipo_usuario) ? user.tipo_usuario : '',
+                                                                    id_receptor: (selected_conversacion) ? selected_conversacion.id_emisor === parseInt(user.id) ? selected_conversacion.id_receptor : selected_conversacion.id_emisor : 0,
+                                                                    tipo_usuario_receptor: (selected_conversacion) ? selected_conversacion.id_emisor === parseInt(user.id) ? selected_conversacion.tipo_usuario_receptor : selected_conversacion.tipo_usuario_emisor : '',
+                                                                    mensaje: msg
+                                                                })
+                                                            }
+                                                        }}
                                                         sx={{
                                                             width: '100%',
 
@@ -367,7 +388,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                             setMsg(e.target.value);
                                                         }}
                                                     />
-
+                                                    {/*
                                                     <Image style={{
                                                         position: 'absolute',
                                                         top: '50%',
@@ -375,6 +396,8 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                         transform: 'translate(0,-50%)'
                                                     }} src={'/assets/img/iconos/icon_camara_blue.svg'}
                                                         width={30} height={30} alt="" />
+                                                    
+                                                    */}
 
                                                 </Box>
 

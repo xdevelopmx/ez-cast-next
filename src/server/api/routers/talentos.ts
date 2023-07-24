@@ -491,10 +491,27 @@ export const TalentosRouter = createTRPCRouter({
 			//return exclude(talento, ['contrasenia'])
 		}
 	),
+	deleteSelftape: protectedProcedure
+		.input(z.number())
+		.mutation(async ({ input, ctx }) => {
+			if (input <= 0) return null;
+			if (input) {
+				const media = await ctx.prisma.media.findFirst({where: { id: input }});
+				if (media) {
+					await FileManager.deleteFiles([media.clave]);
+					await ctx.prisma.media.delete({where: {id: media.id}});
+					await ctx.prisma.mediaPorTalentos.deleteMany({where: {id_media: media.id}});
+					return true;
+				}
+			}
+			return false;
+		}
+	),
 	saveSelftape: protectedProcedure
 		.input(z.object({
 			id_talento: z.number(),
 			selftape: z.object({
+				id: z.number().nullish(),
 				nombre: z.string(),
 				type: z.string(),
 				url: z.string(),
@@ -506,8 +523,24 @@ export const TalentosRouter = createTRPCRouter({
 		}))
 		.mutation(async ({ input, ctx }) => {
 			if (input.id_talento <= 0) return null;
-			const media_selftape_saved = await ctx.prisma.media.create({
-				data: {
+			if (input.selftape.id) {
+				const media = await ctx.prisma.media.findFirst({where: { id: input.selftape.id }});
+				if (media && media.url !== input.selftape.url) {
+					await FileManager.deleteFiles([media.clave]);
+				}
+			}
+			const media_selftape_saved = await ctx.prisma.media.upsert({
+				where: {id: (input.selftape.id) ? input.selftape.id : 0},
+				update: {
+					nombre: input.selftape.nombre,
+					type: input.selftape.type,
+					url: input.selftape.url,
+					clave: input.selftape.clave,
+					referencia: input.selftape.referencia,
+					identificador: input.selftape.identificador,
+					public: input.selftape.public
+				},
+				create: {
 					nombre: input.selftape.nombre,
 					type: input.selftape.type,
 					url: input.selftape.url,
@@ -518,16 +551,21 @@ export const TalentosRouter = createTRPCRouter({
 				}
 			});
 			if (media_selftape_saved) {
-				const selftape_saved = await ctx.prisma.mediaPorTalentos.create({
-					data: {
-						id_talento: input.id_talento,
-						id_media: media_selftape_saved.id
+				const media_por_talento = await ctx.prisma.mediaPorTalentos.findFirst({where: { id_talento: input.id_talento, id_media: media_selftape_saved.id }});
+				if (!media_por_talento) {
+					const selftape_saved = await ctx.prisma.mediaPorTalentos.create({
+						data: {
+							id_talento: input.id_talento,
+							id_media: media_selftape_saved.id
+						}
+					})
+					if (selftape_saved) {
+						return selftape_saved;
 					}
-				})
-				if (selftape_saved) {
-					return selftape_saved;
 				}
+				return media_por_talento;
 			}
+			
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
 				message: `Ocurrio un error al tratar de actualizar los selftapes de perfil del talento`,

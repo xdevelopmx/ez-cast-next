@@ -12,6 +12,7 @@ import { Proyecto } from "@prisma/client";
 import dayjs from "dayjs";
 
 export const MensajesRouter = createTRPCRouter({
+    
     markConversacionAsSeen: publicProcedure.input(z.object({
         id_user_interaction: z.number(),
         id_conversacion: z.number()
@@ -195,6 +196,14 @@ export const MensajesRouter = createTRPCRouter({
             return {...m, emisor: emisor, receptor: receptor}; 
         }))
     }),
+    getBlobMensaje: publicProcedure
+        .input(z.string())
+        .query(async ({ input, ctx }) => {
+            if (input.length <= 0) return null;
+            const media = await((await fetch(input)).blob())
+            return {blob: media.arrayBuffer(), type: media.type};
+        }
+    ),
     getConversaciones: publicProcedure.query(async ({ ctx }) => {
         const user = ctx.session?.user; 
         if (user) {
