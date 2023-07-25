@@ -341,8 +341,10 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 													
 													{!props.read_only &&
 														<Box display={'flex'} flexDirection={'row'} gap={2}>
-															<AddButton text='Subir selftape' aStyles={{ margin: 10 }} onClick={() => {
-																setDialogSeltape({open: true});
+															<AddButton text='Subir selftape' aStyles={{ margin: 10, backgroundColor: (media && media.selftapes.length <= 5) ? '' : 'lightgrey' }} onClick={() => {
+																if (media && media.selftapes.length <= 5) {
+																	setDialogSeltape({open: true});
+																}
 															}} />
 															<AddButton text='Grabar selftape' aStyles={{ margin: 10 }} onClick={() => {
 																// eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -479,36 +481,40 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 						<DialogActions>
 							<Button onClick={() => { setDialogSeltape({...dialogSelftape, open: false}) }}>Cerrar</Button>
 							<Button onClick={async () => {
-								if (selftape.video) {
-									const date = new Date();
-									const name = `selftape-${date.toLocaleDateString('es-mx').replaceAll('/', '-')}-${date.toLocaleTimeString('es-mx')}`;
-									const urls_saved = await FileManager.saveFiles([{path: `talentos/${props.id_talento}/videos`, name: name, file: selftape.video.file, base64: selftape.video.base64}]);
-									if (urls_saved.length > 0) {
-										urls_saved.forEach((res, j) => {
-											Object.entries(res).forEach((e, i) => {
-												const url = e[1].url;  
-												if (url) {
-													saveSelftapeMedia.mutate({
-														id_talento: props.id_talento,
-														selftape: {
-															id: selftape.id,
-															nombre: (selftape.nombre.length > 0) ? selftape.nombre : name,
-															type: (selftape.video) ? selftape.video.file.type : 'video/webm',
-															url: (url) ? url : '',
-															clave: `talentos/${props.id_talento}/videos/${name}`,
-															referencia: `VIDEOS-SELFTAPE-TALENTO-${props.id_talento}`,
-															identificador: `video-selftape-${name}`,
-															public: selftape.public
-														}
-													})
-												} else {
-													notify('error', `${(name) ? `El video ${name} no se pudo subir` : 'Un video no se pudo subir'}`);
-												}
-											})
-										});
+								if ((media && media.selftapes.length <= 5 && !selftape.id) || selftape.id) {
+									if (selftape.video) {
+										const date = new Date();
+										const name = `selftape-${date.toLocaleDateString('es-mx').replaceAll('/', '-')}-${date.toLocaleTimeString('es-mx')}`;
+										const urls_saved = await FileManager.saveFiles([{path: `talentos/${props.id_talento}/videos`, name: name, file: selftape.video.file, base64: selftape.video.base64}]);
+										if (urls_saved.length > 0) {
+											urls_saved.forEach((res, j) => {
+												Object.entries(res).forEach((e, i) => {
+													const url = e[1].url;  
+													if (url) {
+														saveSelftapeMedia.mutate({
+															id_talento: props.id_talento,
+															selftape: {
+																id: selftape.id,
+																nombre: (selftape.nombre.length > 0) ? selftape.nombre : name,
+																type: (selftape.video) ? selftape.video.file.type : 'video/webm',
+																url: (url) ? url : '',
+																clave: `talentos/${props.id_talento}/videos/${name}`,
+																referencia: `VIDEOS-SELFTAPE-TALENTO-${props.id_talento}`,
+																identificador: `video-selftape-${name}`,
+																public: selftape.public
+															}
+														})
+													} else {
+														notify('error', `${(name) ? `El video ${name} no se pudo subir` : 'Un video no se pudo subir'}`);
+													}
+												})
+											});
+										}
+									} else {
+										notify('warning', 'No haz seleccionado ningun video');
 									}
 								} else {
-									notify('warning', 'No haz seleccionado ningun video');
+									notify('warning', 'El limite de selftapes es 6, por favor elimina uno antes de querer guardar otro.');
 								}
 							}}
 							>

@@ -6,7 +6,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import type { Cazatalentos, HorarioAgenda, Proyecto, Talentos } from "@prisma/client";
+import type { BloqueHorariosAgenda, Cazatalentos, HorarioAgenda, IntervaloBloqueHorario, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
@@ -121,36 +121,77 @@ export const AgendaVirtualRouter = createTRPCRouter({
 	),
 	getAllFechasAsignadas: protectedProcedure
 		.query(async ({ ctx }) => {
+			let horarios: (HorarioAgenda & {
+				bloque_horario: (BloqueHorariosAgenda & {
+					intervalos: IntervaloBloqueHorario[];
+				})[];
+			})[] = [];
+			let fechas_map = new Map<string, string>();
+				
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
-				const horarios = await ctx.prisma.horarioAgenda.findMany({
-					where: {
-						proyecto: {
-							id_cazatalentos: parseInt(ctx.session.user.id)
-						}
-					},
-					include: {
-						bloque_horario: {
+			if (ctx.session && ctx.session.user) {
+				switch (ctx.session.user.tipo_usuario) {
+					case TipoUsuario.CAZATALENTOS: {
+						horarios = await ctx.prisma.horarioAgenda.findMany({
+							where: {
+								proyecto: {
+									id_cazatalentos: parseInt(ctx.session.user.id)
+								}
+							},
 							include: {
-								intervalos: true
+								bloque_horario: {
+									include: {
+										intervalos: true
+									}
+								}
 							}
-						}
+						});
+						horarios.forEach(h => {
+							h.bloque_horario.forEach( b => {
+								if (fechas_map.has(b.fecha.toLocaleDateString('es-mx'))) {
+									const reg_fecha = fechas_map.get(b.fecha.toLocaleDateString('es-mx'));
+									if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== h.tipo_agenda) {
+										fechas_map.set(b.fecha.toLocaleDateString('es-mx'), 'AMBAS');
+									}
+								} else {
+									fechas_map.set(b.fecha.toLocaleDateString('es-mx'), h.tipo_agenda);
+								}
+							})
+						})
+						break;
 					}
-				});
-
-				let fechas_map = new Map<string, string>();
-				horarios.forEach(h => {
-					h.bloque_horario.forEach( b => {
-						if (fechas_map.has(b.fecha.toLocaleDateString('es-mx'))) {
-							const reg_fecha = fechas_map.get(b.fecha.toLocaleDateString('es-mx'));
-							if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== h.tipo_agenda) {
-								fechas_map.set(b.fecha.toLocaleDateString('es-mx'), 'AMBAS');
+					case TipoUsuario.TALENTO: {
+						const intervalos = await ctx.prisma.intervaloBloqueHorario.findMany({
+							where: {
+								id_talento: parseInt(ctx.session.user.id),
+								AND: {
+									estado: {
+										in: [Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO]
+									}
+								}
+							},
+							include: {
+								bloque_horario: {
+									include: {
+										horario_agenda: true
+									}
+								}
 							}
-						} else {
-							fechas_map.set(b.fecha.toLocaleDateString('es-mx'), h.tipo_agenda);
-						}
-					})
-				})
+						});
+						intervalos.forEach(i => {
+							if (fechas_map.has(i.bloque_horario.fecha.toLocaleDateString('es-mx'))) {
+								const reg_fecha = fechas_map.get(i.bloque_horario.fecha.toLocaleDateString('es-mx'));
+								if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== i.bloque_horario.horario_agenda.tipo_agenda) {
+									fechas_map.set(i.bloque_horario.fecha.toLocaleDateString('es-mx'), 'AMBAS');
+								}
+							} else {
+								fechas_map.set(i.bloque_horario.fecha.toLocaleDateString('es-mx'), i.bloque_horario.horario_agenda.tipo_agenda);
+							}
+						})
+						break;
+					}
+				}
+				console.log(fechas_map);
 				return Array.from(fechas_map).map(f => { 
 					const d = f[0].split('/');
 					if (d[0] && d[1] && d[2]) {
@@ -161,7 +202,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede obtener las fechas asignadas',
+				message: 'Solo usuarios con sesion puede obtener las fechas asignadas',
 				// optional: pass the original error to retain stack trace
 				//cause: theError,
 			});

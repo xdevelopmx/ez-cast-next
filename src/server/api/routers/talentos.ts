@@ -528,6 +528,15 @@ export const TalentosRouter = createTRPCRouter({
 				if (media && media.url !== input.selftape.url) {
 					await FileManager.deleteFiles([media.clave]);
 				}
+			} else {
+				// si el id es null es que es un nuevo registro
+				const media_por_talento = await ctx.prisma.media.findMany({where: { referencia: `VIDEOS-SELFTAPE-TALENTO-${input.id_talento}` }});
+				if (media_por_talento.length === 6) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: `Ya se alcanzo el limite de selftapes que puedes subir (6)`,
+					});
+				}
 			}
 			const media_selftape_saved = await ctx.prisma.media.upsert({
 				where: {id: (input.selftape.id) ? input.selftape.id : 0},

@@ -18,6 +18,7 @@ import useNotify from '~/hooks/useNotify';
 import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader';
 import { RolPreview } from '~/components/shared/RolPreview';
 import { Close } from '@mui/icons-material';
+import { useRouter } from 'next/router';
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
@@ -38,6 +39,20 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
     const [project_dialog_opened, setProjectDialogOpened] = useState(false);
 
     const msgs_div_ref = useRef<HTMLDivElement>(null);
+
+    const router = useRouter();
+
+    const {id_conversacion} = router.query;
+
+    useEffect(() => {
+        if (conversaciones.data && id_conversacion && selected_conversacion === null) {
+            conversaciones.data.forEach(c => {
+                if (c.id === parseInt(id_conversacion as string)) {
+                    setSelectedConversacion(c);
+                }
+            })
+        }
+    }, [conversaciones.data, id_conversacion]);
 
     const id_rol = useMemo(() => {
         if (selected_conversacion && user.tipo_usuario === TipoUsuario.TALENTO) {

@@ -33,7 +33,8 @@ function getInitialDates() {
 export default function DualDatePicker(props: {
     sx: SxProps,
     direction: 'vertical' | 'horizontal',
-    selected_dates: {day: number, month: number, year: number, tipo_agenda: string}[]
+    selected_dates: {day: number, month: number, year: number, tipo_agenda: string}[],
+    is_dual: boolean
 }) {
     const [dates, setDates] = useState<(Dayjs | null | undefined)[]>(getInitialDates());
     
@@ -143,8 +144,7 @@ export default function DualDatePicker(props: {
                         <ArrowBackIosNewIcon/>
                     </IconButton>
                     <Box sx={{
-                        
-                        width: '40%',
+                        width: (props.is_dual) ? '40%' : '90%',
                         paddingLeft: 8,
                         paddingRight: 8
                     }}>
@@ -169,42 +169,47 @@ export default function DualDatePicker(props: {
                         </div>
                         
                     </Box>
-                    <Divider 
-                        style={{
-                            marginLeft: '5%',
-                            marginRight: '5%',
-                            marginTop: 'auto',
-                            marginBottom: 'auto',
-                            height: (props.direction === 'horizontal') ? '180px' : '2px'
-                        }}
-                        sx={{
-                            border: '2px solid #069cb1'
-                        }} 
-                        orientation={props.direction === 'vertical' ? 'horizontal' : 'vertical' } />
-                    <Box sx={{
-                        width: '40%',
-                        paddingLeft: 8,
-                        paddingRight: 8
-                    }}>
-                         <div id="dualpicker">
-                            <DateCalendar
-                                className="dualpicker"
-                                views={['day']}
-                                autoFocus={false}
-                                
-                                slots={{
-                                    day: ServerDay,
+                    {props.is_dual &&
+                        <>
+                        
+                            <Divider 
+                                style={{
+                                    marginLeft: '5%',
+                                    marginRight: '5%',
+                                    marginTop: 'auto',
+                                    marginBottom: 'auto',
+                                    height: (props.direction === 'horizontal') ? '180px' : '2px'
                                 }}
-                                slotProps={{
-                                    day: {
-                                        highlightedDaysDateTwo,
-                                    } as any,
-                                }}
-                                sx={props.sx}
-                                value={dates[1]}
-                            />
-                         </div>
-                    </Box>
+                                sx={{
+                                    border: '2px solid #069cb1'
+                                }} 
+                                orientation={props.direction === 'vertical' ? 'horizontal' : 'vertical' } />
+                            <Box sx={{
+                                width: '40%',
+                                paddingLeft: 8,
+                                paddingRight: 8
+                            }}>
+                                <div id="dualpicker">
+                                    <DateCalendar
+                                        className="dualpicker"
+                                        views={['day']}
+                                        autoFocus={false}
+                                        
+                                        slots={{
+                                            day: ServerDay,
+                                        }}
+                                        slotProps={{
+                                            day: {
+                                                highlightedDaysDateTwo,
+                                            } as any,
+                                        }}
+                                        sx={props.sx}
+                                        value={dates[1]}
+                                    />
+                                </div>
+                            </Box>
+                        </>
+                    }
                     <IconButton 
                         onClick={() => {
                             let date = dates[0];

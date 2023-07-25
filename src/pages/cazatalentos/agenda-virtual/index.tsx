@@ -369,6 +369,7 @@ const AgendaVirtual = () => {
                                         <Grid container xs={12} columns={12} sx={{ border: '3px solid #069cb1', padding: '30px' }} mt={4}>
                                             <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
                                                 <DualDatePicker 
+                                                    is_dual
                                                     selected_dates={fechas_arr}
                                                     direction="horizontal" 
                                                     sx={estilos_calendario}

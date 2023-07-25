@@ -81,6 +81,9 @@ export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre }: Props
         refetchOnWindowFocus: false
     });
 
+    if (blob.data && blob.data.type === 'application/xml') {
+        return null;
+    }
     return (
         <Box 
             sx={{
@@ -135,7 +138,7 @@ export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre }: Props
                 }
                 {blob.data && (!blob.data.type.includes('audio') && !blob.data.type.includes('video') && !blob.data.type.includes('image')) &&
                     <a target="_blank" href={mensaje} rel="noopener noreferrer">
-                        <Typography color={'HighlightText'}>{mensaje}</Typography>
+                        <Typography color={'#F9B233'}>{mensaje}</Typography>
                     </a>
                 }
             </Box>
