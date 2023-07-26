@@ -1,10 +1,11 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { CSSProperties, FC, useContext } from 'react'
+import { CSSProperties, FC, useContext, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { PagePilingComponent } from './PagePilingComponent';
 import { Footer } from '../layout';
 import useLang from '~/hooks/useLang';
 import AppContext from '~/context/app';
+import useTimeout from '~/hooks/useDelay';
 
 const estilos: CSSProperties = {
     position: 'absolute',
@@ -20,6 +21,23 @@ interface Props {
 export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
     const ctx = useContext(AppContext);
     const textos = useLang(ctx.lang);
+
+    const finished = useTimeout(1500);
+
+    const [videos_urls, setVideosUrls] = useState<{video2: string, video3: string}>({video2: '', video3: ''});
+
+    useEffect(() => {
+        if (finished) {
+            fetch('/assets/video/TCvideo2.mp4').then(res => res.blob()).then(res => {
+                setVideosUrls(prev => { return {...prev, video2: URL.createObjectURL(res)}})
+            })
+            fetch('/assets/video/TCvideo3.mp4').then(res => res.blob()).then(res => {
+                setVideosUrls(prev => { return {...prev, video3: URL.createObjectURL(res)}})
+            })
+            console.log('aqui');
+        }
+    }, [finished]);
+
     return (
         <PagePilingComponent onCambiarPagina={onCambiarPagina}>
             <div className="section" style={estilos}>
@@ -70,10 +88,10 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
 
             <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="/assets/posters/posterhome.png">
-                    <source src="/assets/video/TCvideo2.mp4" type="video/mp4" />
+                    <source src={videos_urls.video2} type="video/mp4" />
                 </video>
                 <video autoPlay loop muted className="video_bg video_mobile" poster="/assets/posters/posterhome.png">
-                    <source src="/assets/video/TCvideo2.mp4" type="video/mp4" />
+                    <source src={videos_urls.video2} type="video/mp4" />
                 </video>
             </div>
 
@@ -96,10 +114,10 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
 
             <div className="section" style={estilos}>
                 <video autoPlay loop muted className="video_bg" poster="/assets/posters/posterprox.png">
-                    <source src="/assets/video/TCvideo3.mp4" type="video/mp4" />
+                    <source src={videos_urls.video3} type="video/mp4" />
                 </video>
                 <video autoPlay loop muted className="video_bg video_mobile" poster="/assets/posters/posterprox.png">
-                    <source src="/assets/video/TCvideo3.mp4" type="video/mp4" />
+                    <source src={videos_urls.video3} type="video/mp4" />
                 </video>
             </div>
 
@@ -155,7 +173,6 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
                 <video autoPlay loop muted className="video_bg video_mobile" poster="/assets/posters/posterprox02.png">
                     <source src="#" type="video/mp4" />
                 </video>
-                <Footer />
             </div>
 
         </PagePilingComponent>

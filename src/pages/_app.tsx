@@ -11,10 +11,11 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import AppContext, { type AppAlert } from "~/context/app";
 import { useState } from "react";
 import { CustomThemeProvider } from "~/theme";
-import { CssBaseline } from "@mui/material";
+import { Box, CssBaseline } from "@mui/material";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, esES } from "@mui/x-date-pickers";
 import 'dayjs/locale/es-mx';
+import { Header } from "~/components";
 
 
 const MyApp: AppType<{ session: Session | null }> = ({

@@ -10,7 +10,7 @@ import { type User } from "next-auth";
 import { getSession } from "next-auth/react";
 import { Carroucel } from "~/components/shared/Carroucel";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
+import { Backdrop, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
 //import { useRouter } from "next/router";
 import { TipoUsuario } from "~/enums";
 import { useContext, useRef, useState } from "react";

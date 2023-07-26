@@ -14,6 +14,7 @@ import useLang from "~/hooks/useLang";
 import { useRouter } from 'next/navigation';
 import useNotify from "~/hooks/useNotify";
 import Constants from "~/constants";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 type RegistroProps = {
 	is_representante: boolean,
@@ -276,6 +277,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 						</Box>
 					</div>
 				</>
+				<ResourceAlert busy={create_user.isLoading}/>
 			</MainLayout>
 		</MotionDiv>
 	);
