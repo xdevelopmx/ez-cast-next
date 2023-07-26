@@ -47,9 +47,10 @@ export type PerfilForm = {
 }
 
 
-type CreateUserForm = {
+export type CreateUserForm = {
 	perfil: PerfilForm,
 	step_active: number,
+	terms_and_conditions_accepted: boolean
 }
 
 const initialState = {
@@ -67,6 +68,7 @@ const initialState = {
 		cobro_membresia: TipoCobro.ANUAL,
 	},
 	step_active: 1,
+	terms_and_conditions_accepted: false
 }
 
 function reducer(state: CreateUserForm, action: { type: string, value: { [key: string]: unknown } }) {
@@ -165,11 +167,14 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 			}
 
 			steps_arr.push(
-				<AceptarTerminos key={4} />
+				<AceptarTerminos state={state} onFormChange={(input: { [key: string]: unknown }) => {
+					dispatch({ type: 'update-form', value: input })
+					console.log(input);
+				}} key={4} />
 			)
 		}
 		return steps_arr;
-	}, [state.perfil]);
+	}, [state.perfil, state.terms_and_conditions_accepted]);
 
 
 
@@ -233,6 +238,10 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 										}
 									}}
 									onFinish={() => {
+										if (!state.terms_and_conditions_accepted) {
+											notify('warning', 'No haz aceptado los terminos y condiciones');
+											return;
+										}
 										console.log(validationStepPerfil)
 										if (!validationStepPerfil.hasErrors) {
 											create_user.mutate({

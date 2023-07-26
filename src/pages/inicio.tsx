@@ -231,7 +231,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
         </div>
         <Dialog
           style={{
-            marginTop: 56
+            marginTop: 56,
           }}
           fullWidth={true}
           maxWidth={'md'}
@@ -239,7 +239,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
           onClose={() => { setDialog({ ...dialog, open: false }) }}
         >
           <DialogContent>
-            <DetallesProyecto id_proyecto={dialog.id_proyecto} />
+            <DetallesProyecto minHeight={532} id_proyecto={dialog.id_proyecto} />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => { setDialog({ ...dialog, open: false }) }}>Cerrar</Button>

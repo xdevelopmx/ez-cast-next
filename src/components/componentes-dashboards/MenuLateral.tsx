@@ -881,7 +881,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<Badge anchorOrigin={{vertical: 'top', horizontal: 'right',}} badgeContent={mensajes_no_vistos.data} color='error'>
 									<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								</Badge>
-								<a href="#">Ayuda</a>
+								<Link href="/ayuda-ezcast" className={(router.pathname === '/ayuda-ezcast') ? 'active' : ''}>Ayuda</Link>
 							</div>
 						}
 						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.CAZATALENTOS &&
@@ -892,7 +892,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<Badge anchorOrigin={{vertical: 'top', horizontal: 'right',}} badgeContent={mensajes_no_vistos.data} color='error'>
 									<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								</Badge>
-								<a href="#">Ayuda</a>
+								<Link href="/ayuda-ezcast" className={(router.pathname === '/ayuda-ezcast') ? 'active' : ''}>Ayuda</Link>
 							</div>
 						}
 						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.REPRESENTANTE &&
@@ -907,7 +907,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 									</>
 								}
 								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
-								<a href="#">Ayuda</a>
+								<Link href="/ayuda-ezcast" className={(router.pathname === '/ayuda-ezcast') ? 'active' : ''}>Ayuda</Link>
 							</div>
 						}
 						<p className="mt-5 mb-2">

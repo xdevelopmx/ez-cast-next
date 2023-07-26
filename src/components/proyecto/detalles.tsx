@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { Box, Button, Divider, Grid, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
 import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { motion } from 'framer-motion';
@@ -31,7 +31,8 @@ const IndividualData: FC<PropsIndividualData> = ({ title, children, stylesContai
 }
 
 interface PropsProyecto {
-    id_proyecto: number
+    id_proyecto: number,
+    minHeight: number | string,
 }
 
 const GridMotion = motion(Grid)
@@ -56,102 +57,108 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
     });
 
     return (
-        <Grid item container xs={12} sx={{ border: '2px solid #928F8F', paddingBottom: '0' }}>
-            <GridMotion container item xs={12} sx={{ alignItems: 'center', padding: '10px' }}>
-                <Grid item xs={4}>
-                    <Box sx={{ position: 'relative', width: '100%', aspectRatio: '6/11' }}>
-                        <Image src={(proyecto.data && proyecto.data.foto_portada) ? proyecto.data.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover' }} fill alt="" />
-                    </Box>
-                </Grid>
-                <Grid
-                    container item xs={8} sx={{ padding: '15px 24px' }}
-                >
-                    <Grid container item xs={12}>
-                        <Grid item xs={9}>
-                            <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
-                                {proyecto.data?.nombre}
-                            </Typography>
+        <Box minHeight={props.minHeight}>
+            {proyecto.isFetching && <CircularProgress sx={{width: 100, height: 64, marginLeft: 'calc(50% - 8px)', marginTop: 'calc(50% - 150px)'}} />}
+            {!proyecto.isFetching &&
+            
+                <Grid item container xs={12} sx={{ border: '2px solid #928F8F', paddingBottom: '0' }}>
+                    <GridMotion container item xs={12} sx={{ alignItems: 'center', padding: '10px' }}>
+                        <Grid item xs={4}>
+                            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '6/11' }}>
+                                <Image src={(proyecto.data && proyecto.data.foto_portada) ? proyecto.data.foto_portada.url : '/assets/img/no-image.png'} style={{ objectFit: 'cover' }} fill alt="" />
+                            </Box>
                         </Grid>
-                        <Grid container item xs={12}>
-                            <Grid item xs={6}>
-                                <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
-                                    Aceptando aplicaciones de:
-                                    <Typography component={'span'} sx={{ marginLeft: '5px', color: '#069cb1', fontSize: '.9rem' }}>
-                                       {proyecto.data?.estado_republica.es}
+                        <Grid
+                            container item xs={8} sx={{ padding: '15px 24px' }}
+                        >
+                            <Grid container item xs={12}>
+                                <Grid item xs={9}>
+                                    <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                        {proyecto.data?.nombre}
                                     </Typography>
-                                </Typography>
+                                </Grid>
+                                <Grid container item xs={12}>
+                                    <Grid item xs={6}>
+                                        <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
+                                            Aceptando aplicaciones de:
+                                            <Typography component={'span'} sx={{ marginLeft: '5px', color: '#069cb1', fontSize: '.9rem' }}>
+                                            {proyecto.data?.estado_republica.es}
+                                            </Typography>
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+
+                                <Grid item xs={12}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src={(proyecto.data && proyecto.data.cazatalentos && proyecto.data.cazatalentos.foto_perfil) ? proyecto.data.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} width={30} height={30} alt="" />
+
+                                        <Typography sx={{ fontSize: '1rem' }}>Proyecto por: </Typography>
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1 }}>
+                                            <Typography sx={{ color: '#069cb1', fontSize: '1rem' }}>{proyecto.data?.cazatalentos.nombre} {proyecto.data?.cazatalentos.apellido}</Typography>
+                                        </Box>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={12} mt={1}>
+                                    <Divider sx={{ borderWidth: 1 }} />
+                                </Grid>
+                                <Grid xs={12}>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                        <Typography>
+                                            {(proyecto.data && proyecto.data.sindicato) ? (proyecto.data.sindicato.id_sindicato === 99) ? proyecto.data.sindicato.descripcion : proyecto.data.sindicato.sindicato.es : 'N/D'}
+                                        </Typography>
+                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                        <Typography>
+                                            {(proyecto.data && proyecto.data.tipo) ? (proyecto.data.tipo.id_tipo_proyecto === 99) ? proyecto.data.tipo.descripcion : proyecto.data.tipo.tipo_proyecto.es : 'N/D'}
+                                        </Typography>
+                                        <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
+                                    </Box>
+                                    <Typography>
+                                        <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Sinopsis:</Typography>
+                                        {proyecto.data?.sinopsis}
+                                    </Typography>
+                                </Grid>
+                                {proyecto.data && proyecto.data.detalles_adicionales && 
+                                    <IndividualData title={'Detalles adicionales:'}>
+                                        <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
+                                            {proyecto.data.detalles_adicionales}
+                                        </Typography>
+                                    </IndividualData>
+                                }
+
+                                <IndividualData title={'Director Casting:'}>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>
+                                        {proyecto.data?.director_casting}
+                                    </Typography>
+                                </IndividualData>
+                                {proyecto.data && proyecto.data.productor &&
+                                    <IndividualData title={'Productor:'}>
+                                    
+                                    </IndividualData>
+                                }
+
+                                {proyecto.data && proyecto.data.casa_productora &&
+                                    <IndividualData title={'Casa productora:'}>
+                                        {proyecto.data.casa_productora}
+                                    </IndividualData>
+                                }
+
+                                {proyecto.data && proyecto.data.director &&
+                                    <IndividualData title={'Director:'}>
+                                        {proyecto.data.director}
+                                    </IndividualData>
+                                }
+
+                                {proyecto.data && proyecto.data.agencia_publicidad &&
+                                    <IndividualData title={'Agencia de publicidad:'}>
+                                        {proyecto.data.agencia_publicidad}
+                                    </IndividualData>
+                                } 
                             </Grid>
                         </Grid>
-
-                        <Grid item xs={12}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src={(proyecto.data && proyecto.data.cazatalentos && proyecto.data.cazatalentos.foto_perfil) ? proyecto.data.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} width={30} height={30} alt="" />
-
-                                <Typography sx={{ fontSize: '1rem' }}>Proyecto por: </Typography>
-
-                                <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1 }}>
-                                    <Typography sx={{ color: '#069cb1', fontSize: '1rem' }}>{proyecto.data?.cazatalentos.nombre} {proyecto.data?.cazatalentos.apellido}</Typography>
-                                </Box>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} mt={1}>
-                            <Divider sx={{ borderWidth: 1 }} />
-                        </Grid>
-                        <Grid xs={12}>
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                                <Typography>
-                                    {(proyecto.data && proyecto.data.sindicato) ? (proyecto.data.sindicato.id_sindicato === 99) ? proyecto.data.sindicato.descripcion : proyecto.data.sindicato.sindicato.es : 'N/D'}
-                                </Typography>
-                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                                <Typography>
-                                    {(proyecto.data && proyecto.data.tipo) ? (proyecto.data.tipo.id_tipo_proyecto === 99) ? proyecto.data.tipo.descripcion : proyecto.data.tipo.tipo_proyecto.es : 'N/D'}
-                                </Typography>
-                                <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
-                            </Box>
-                            <Typography>
-                                <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Sinopsis:</Typography>
-                                {proyecto.data?.sinopsis}
-                            </Typography>
-                        </Grid>
-                        {proyecto.data && proyecto.data.detalles_adicionales && 
-                            <IndividualData title={'Detalles adicionales:'}>
-                                <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
-                                    {proyecto.data.detalles_adicionales}
-                                </Typography>
-                            </IndividualData>
-                        }
-
-                        <IndividualData title={'Director Casting:'}>
-                            <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                {proyecto.data?.director_casting}
-                            </Typography>
-                        </IndividualData>
-                        {proyecto.data && proyecto.data.productor &&
-                            <IndividualData title={'Productor:'}>
-                            
-                            </IndividualData>
-                        }
-
-                        {proyecto.data && proyecto.data.casa_productora &&
-                            <IndividualData title={'Casa productora:'}>
-                                {proyecto.data.casa_productora}
-                            </IndividualData>
-                        }
-
-                        {proyecto.data && proyecto.data.director &&
-                            <IndividualData title={'Director:'}>
-                                {proyecto.data.director}
-                            </IndividualData>
-                        }
-
-                        {proyecto.data && proyecto.data.agencia_publicidad &&
-                            <IndividualData title={'Agencia de publicidad:'}>
-                                {proyecto.data.agencia_publicidad}
-                            </IndividualData>
-                        } 
-                    </Grid>
+                    </GridMotion>
                 </Grid>
-            </GridMotion>
-        </Grid>
+            }
+        </Box>
     )
 }

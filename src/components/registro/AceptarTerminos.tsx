@@ -1,12 +1,18 @@
 import { Grid, type SxProps, Typography } from '@mui/material'
-import React from 'react'
+import React, { FC } from 'react'
 import { MCheckboxGroup } from '../shared'
+import { CreateUserForm } from '~/pages/registro';
 
 const estilos_link: SxProps = {
     textDecoration: 'underline'
 }
 
-export const AceptarTerminos = () => {
+interface Props {
+    state: CreateUserForm,
+    onFormChange: (input: {[id: string]: unknown}) => void;
+}
+
+export const AceptarTerminos: FC<Props> = ({state, onFormChange}) => {
 
 
     return (
@@ -25,20 +31,16 @@ export const AceptarTerminos = () => {
                         onChange={(e, i) => {
                             /* const genero = generos.data?.filter((_, index) => index === i)[0];
                             if (genero) {
-                                onFormChange({
-                                    generos:
-                                        (state.generos.includes(genero.id)) ?
-                                            state.generos.filter(e => e !== genero.id) :
-                                            state.generos.concat([genero.id])
-                                })
+                                
                             } */
+                            onFormChange({
+                                terms_and_conditions_accepted: e
+                            })
                         }}
                         id={'id-terminos-condiciones'}
                         //labelStyle={{ marginBottom: 0, width: '32%' }}
                         options={['Acepto términos y condiciones']}
-                        values={/* (generos.data) ? generos.data.map(g => {
-                                return state.generos.includes(g.id);
-                            }) : */ [false]}
+                        values={[state.terms_and_conditions_accepted]}
                     />
                 </Grid>
             </Grid>
