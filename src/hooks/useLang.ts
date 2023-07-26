@@ -144,6 +144,22 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             descripcion_talento : 'Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.',
             descripcion_representante : 'Perfil para la persona que busca facilitar la conexión con sus talentos y encontrar más oportunidades para los mismos.',
         }
+    },
+    '/inicio': {
+        en: {
+            proyectos_activos: 'Active Projects',
+            ahora_siendo_casteado: 'Now being cast...',
+            destacados: 'Featured',
+            ahora_castenado_en_ezcast: 'Now casting on EZ-Cast',
+            continuar_a_ezcast: 'Continue to EZ-Cast'
+        },
+        es: {
+            proyectos_activos: 'Proyectos Activos',
+            ahora_siendo_casteado: 'Ahora siendo casteado…',
+            destacados: 'destacados',
+            ahora_castenado_en_ezcast: 'Ahora casteando en EZ-Cast',
+            continuar_a_ezcast: 'Continuar a EZ-Cast'
+        }
     }
 }
 

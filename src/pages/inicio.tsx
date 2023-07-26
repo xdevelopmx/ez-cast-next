@@ -13,15 +13,20 @@ import { MContainer } from "~/components/layout/MContainer";
 import { Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
 //import { useRouter } from "next/router";
 import { TipoUsuario } from "~/enums";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { DetallesProyecto } from "~/components/proyecto/detalles";
 import { MBanner } from "~/components/shared/MBanner";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 type InicioPageProps = {
   user: User,
 }
 
 const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
+
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
 
   const [dialog, setDialog] = useState<{ open: boolean, id_proyecto: number }>({ open: false, id_proyecto: 0 });
 
@@ -38,8 +43,6 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
   const redirect = (user.tipo_usuario) ? (user.tipo_usuario === TipoUsuario.TALENTO) ? '/talento/dashboard' : (user.tipo_usuario === TipoUsuario.CAZATALENTOS) ? '/cazatalentos/dashboard' : '/representante/dashboard' : '';
 
   const container_ref = useRef<HTMLDivElement>(null);
-
-  console.log(redirect);
 
   return (
     <>
@@ -59,17 +62,17 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                     fontSize: '30px',
                     fontWeight: '800'
                   }}
-                ><b>Proyectos Activos</b></p>
+                ><b>{(textos['proyectos_activos']) ? textos['proyectos_activos'] : '<p>Texto No definido</p>'}</b></p>
                 <p className="mb-5"
                   style={{
                     fontSize: '24px',
                     fontWeight: '400'
                   }}
-                >Ahora siendo casteado…</p>
+                >{(textos['ahora_siendo_casteado']) ? textos['ahora_siendo_casteado'] : '<p>Texto No definido</p>'}</p>
               </div>
               <div className="d-flex align-items-center">
                 <Link href={redirect} style={{ textDecoration: 'none' }}>
-                  <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
+                  <p className="mb-0 color_a mr-2">{(textos['continuar_a_ezcast']) ? textos['continuar_a_ezcast'] : '<p>Texto No definido</p>'}</p>
                 </Link>
                 <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="icon" />
               </div>
@@ -82,7 +85,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   fontSize: '25px'
                 }}
               >
-                Destacados
+                {(textos['destacados']) ? textos['destacados'] : '<p>Texto No definido</p>'}
               </p>
             </div>
           </div>
@@ -164,7 +167,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               fontSize: '25px'
             }}
           >
-            Ahora casteando en EZ-Cast
+            {(textos['ahora_castenado_en_ezcast']) ? textos['ahora_castenado_en_ezcast'] : '<p>Texto No definido</p>'}
           </p>
           <hr className="hr_blue"
             style={{ margin: '30px 0 40px 0' }}
@@ -221,7 +224,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
           <hr className="hr_blue" style={{ margin: '20px 0 20px 0' }} />
           <div className="d-flex justify-content-end align-items-center">
             <Link href={redirect} style={{ textDecoration: 'none' }}>
-              <p className="mb-0 color_a mr-2">Continuar a EZ-Cast</p>
+              <p className="mb-0 color_a mr-2">{(textos['continuar_a_ezcast']) ? textos['continuar_a_ezcast'] : '<p>Texto No definido</p>'}</p>
             </Link>
             <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="" />
           </div>

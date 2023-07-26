@@ -29,14 +29,14 @@ export const MensajesRouter = createTRPCRouter({
                 }
             },
         })
-        console.log(conversacion);
         if (conversacion) {
             const mensaje = conversacion.mensajes[0];
-            if (mensaje && !mensaje.visto && mensaje.id_receptor === input.id_user_interaction) {
+            if (mensaje && mensaje.id_receptor === input.id_user_interaction) {
                 // si es el usuario el que entra entonces marcamos como visto
-                const saved_mensaje = await ctx.prisma.mensaje.update({
+                const saved_mensaje = await ctx.prisma.mensaje.updateMany({
                     where: {
-                        id: mensaje.id
+                        id_conversacion: conversacion.id,
+                        visto: false
                     },
                     data: {
                         visto: true
@@ -204,6 +204,22 @@ export const MensajesRouter = createTRPCRouter({
             return {blob: media.arrayBuffer(), type: media.type};
         }
     ),
+    getCountMensajesNoVistos: publicProcedure.query(async ({ ctx }) => {
+        const user = ctx.session?.user; 
+        if (user) {
+            const mensajes = await ctx.prisma.mensaje.count({
+                where: {
+                    id_receptor: parseInt(user.id),
+                    tipo_usuario_receptor: user.tipo_usuario,
+                    visto: false
+                },
+                orderBy: { hora_envio: 'desc' }
+            })
+            console.log(mensajes);
+            return mensajes;
+        }
+        return 0;
+    }),
     getConversaciones: publicProcedure.query(async ({ ctx }) => {
         const user = ctx.session?.user; 
         if (user) {

@@ -5,16 +5,21 @@ import MotionDiv from '../layout/MotionDiv'
 import { Box } from '@mui/material';
 import { ConversacionesPreview } from '../shared/ConversacionesPreview';
 import { CalendarPreview } from '../shared/CalendarPreview';
+import { api } from '~/utils/api';
 
 export const Flotantes = () => {
     const [show_conversaciones, setShowConversaciones] = useState(false);
     const [show_calendar, setShowCalendar] = useState(false);
+    const mensajes_no_vistos = api.mensajes.getCountMensajesNoVistos.useQuery();
+
     return (
         <Box position={'relative'}>
             <div className="fixed_items">
                 <div className="container_chat_blue mb-3">
                     <div className="image_chat" onClick={() => { setShowConversaciones(prev => !prev) }}>
-                        <span className="count_msn active">3</span>
+                        {mensajes_no_vistos.data && mensajes_no_vistos.data > 0 &&
+                            <span className="count_msn active">{mensajes_no_vistos.data}</span>
+                        }
                         <motion.img src="/assets/img/iconos/ico_chat_blue.svg" width={55} height={55} alt="icon" />
                     </div>
                     <MotionDiv show={show_conversaciones} style={{position: 'absolute', right: 76, bottom: 0}} animation={'down-to-up'}>

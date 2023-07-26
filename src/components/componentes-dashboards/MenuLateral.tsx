@@ -1,6 +1,6 @@
 import React, { type CSSProperties, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
-import { Grid, IconButton, Button, Typography, Skeleton, Box } from '@mui/material'
+import { Grid, IconButton, Button, Typography, Skeleton, Box, Badge } from '@mui/material'
 import { motion } from 'framer-motion'
 import { CameraAlt, Close } from '@mui/icons-material';
 import { FormGroup } from '../shared/FormGroup';
@@ -52,6 +52,9 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 	const {id_talento} = router.query;
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
+
+	const mensajes_no_vistos = api.mensajes.getCountMensajesNoVistos.useQuery();
+
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
 		refetchOnWindowFocus: false
 	});
@@ -875,7 +878,9 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<Link href="/talento/aplicaciones" className={(router.pathname === '/talento/aplicaciones') ? 'active' : ''}>Tus Aplicaciones</Link>
 								<Link href="/talento/self-tape" className={(router.pathname === '/talento/self-tape') ? 'active' : ''}>Grabar Self-Tape</Link>
 								<Link href="/talento/media-bank" className={(router.pathname === '/talento/media-bank') ? 'active' : ''}>Media Bank</Link>
-								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
+								<Badge anchorOrigin={{vertical: 'top', horizontal: 'right',}} badgeContent={mensajes_no_vistos.data} color='error'>
+									<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
+								</Badge>
 								<a href="#">Ayuda</a>
 							</div>
 						}
@@ -884,7 +889,9 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
 								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
 								<Link href="/cazatalentos/agenda-virtual" className={router.pathname.includes('agenda-virtual') ? 'active' : ''}>Agenda Virtual</Link>
-								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
+								<Badge anchorOrigin={{vertical: 'top', horizontal: 'right',}} badgeContent={mensajes_no_vistos.data} color='error'>
+									<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
+								</Badge>
 								<a href="#">Ayuda</a>
 							</div>
 						}
