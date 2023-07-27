@@ -15,7 +15,7 @@ import { getSession, useSession } from "next-auth/react";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { User } from "next-auth/core/types";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Close, MessageOutlined } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import useNotify from "~/hooks/useNotify";
@@ -23,9 +23,13 @@ import MotionDiv from "~/components/layout/MotionDiv";
 import { TalentoDashBoardSelect } from "~/components/cazatalento/talento/talento-dashboard-select";
 import { TalentoDashBoardRepresentanteSection } from "~/components/representante/talento/TalentoDashBoardRepresentanteSection";
 import { prisma } from "~/server/db";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 const DashBoardTalentosPage: NextPage<{ user?: User, id_talento: number, id_rol: number, scroll_section: string, can_edit: boolean }> = (props) => {
 	const session = useSession();
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
 	const { notify } = useNotify();
 	const scrollToSection = (sectionId: string) => {
 		const section = document.getElementById(sectionId);
@@ -104,7 +108,15 @@ const DashBoardTalentosPage: NextPage<{ user?: User, id_talento: number, id_rol:
 										console.log(id_section);
 										scrollToSection(id_section)
 									}}
-									labels={['Informacion basica', 'Media', 'Creditos', 'Habilidades', 'Medidas', 'Activos', 'Preferencia de roles']}
+									labels={[
+										textos['info_basica'] ? textos['info_basica'] : '', 
+										textos['media'] ? textos['media'] : '', 
+										textos['credito'] ? `${textos['credito']}s` : '', 
+										textos['habilidades'] ? textos['habilidades'] : '',
+										textos['medidas'] ? textos['medidas'] : '', 
+										textos['activos'] ? textos['activos'] : '', 
+										textos['preferencias_roles'] ? textos['preferencias_roles'] : ''
+									]}
 								/>
 								<InfoGeneral id_talento={props.id_talento} read_only={!props.can_edit} />
 							</MContainer>

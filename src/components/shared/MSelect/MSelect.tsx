@@ -1,7 +1,9 @@
 
 import { Box, Checkbox, FormControl, FormControlLabel, FormLabel, InputLabel, ListItemText, makeStyles, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Skeleton, Typography } from '@mui/material';
-import type { CSSProperties, FC, MouseEventHandler, ReactNode } from 'react';
+import { useContext, type CSSProperties, type FC, type MouseEventHandler, type ReactNode } from 'react';
 import { MContainer } from '../../layout/MContainer';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     id: string,
@@ -34,6 +36,9 @@ export const MSelect: FC<Props> = ({
     disabled, loading, className, placeholder, renderValue, multiple, button_props, highlight_default_option, disable_default_option, default_option, icon, labelClassName, label, id, onChange, onClick, value, labelStyle, style, options, tooltip,
     inferiorBlueText, styleRoot = {}, styleMenuProps = {}
 }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
     let label_element: JSX.Element | null = null;
     if (label) {
         label_element = <>
@@ -60,7 +65,7 @@ export const MSelect: FC<Props> = ({
         }
     }
 
-    const _default_option = (disable_default_option) ? [] : [(default_option) ? default_option : { value: default_value, label: 'Selecciona una opcion' }]; 
+    const _default_option = (disable_default_option) ? [] : [(default_option) ? default_option : { value: default_value, label: textos['selecciona_una_opcion'] ? textos['selecciona_una_opcion'] : 'Texto No Definido' }]; 
     
     let multiple_values: string[] = [];
     if (multiple) {

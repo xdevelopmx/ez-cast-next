@@ -1,12 +1,14 @@
 import { TableCell, TableRow, TableContainer, Paper, Table, TableHead, TableBody, TablePagination, Skeleton, TableFooter, Accordion, AccordionSummary, Typography, AccordionDetails, IconButton } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
-import { useMemo, useState, type CSSProperties, type FC, useRef } from "react";
+import { useMemo, useState, type CSSProperties, type FC, useRef, useContext } from "react";
 import MotionDiv from "~/components/layout/MotionDiv";
 import classes from './MTable.module.css';
 import { ExpandMore } from "@mui/icons-material";
 import { MContainer } from "~/components/layout/MContainer";
 import UpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 type MRow = { [key: string]: number | string | boolean | JSX.Element };
 
@@ -35,6 +37,9 @@ export const MTable: FC<MTableProps> = ({
 	noDataContent, accordionContent, disable_animation, loading, data, columnsHeader, headerClassName, headerStyles, backgroundColorData = '#ededed ',
 	backgroundColorHeader = '#EBEBEB', style = {}, alternate_colors = true, styleHeaderRow = {}, styleHeaderTableCell = {}, styleTableRow = {}
 }) => {
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+	console.log(textos);
 	const [pagination, setPagination] = useState<{ page: number, page_size: number }>({ page: 0, page_size: 5 });
 	const [expanded_rows, setExpandedRows] = useState<string[]>([]);
 	const _data = useMemo(() => {
@@ -183,7 +188,7 @@ export const MTable: FC<MTableProps> = ({
 									<TableRow>
 										<TableCell align='left' component="th" scope="row">
 											<Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-												No hay registros
+												{textos['no_registros'] ? textos['no_registros'] : 'Texto No definido'}
 											</Typography>
 										</TableCell>
 									</TableRow>

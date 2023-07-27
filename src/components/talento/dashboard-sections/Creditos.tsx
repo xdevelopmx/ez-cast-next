@@ -1,6 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, IconButton, Typography } from '@mui/material'
 import Image from 'next/image';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { MContainer } from '~/components/layout/MContainer';
 import { SectionTitle } from '~/components/shared';
 import { MTable } from '~/components/shared/MTable/MTable';
@@ -9,8 +9,12 @@ import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { Star } from '@mui/icons-material';
 import useNotify from '~/hooks/useNotify';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
     const router = useRouter();
     const [dialog, setDialog] = useState<{open: boolean, url: string, name: string}>({open: false, url: '', name: ''});
 
@@ -45,7 +49,7 @@ export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
         
             <Grid id="creditos" container sx={{ mt: 10 }}>
                 <Grid item xs={12}>
-                    <SectionTitle title='Créditos' onClickButton={(!props.read_only) ? () => { 
+                    <SectionTitle title={textos['credito'] ? `${textos['credito']}s` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         router.push(`/talento/editar-perfil?step=3&id_talento=${props.id_talento}`)  
                     } : undefined} />
@@ -60,22 +64,22 @@ export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
                         backgroundColorHeader='#069cb1'
                         columnsHeader={[
                             <Typography key={1} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                Título
+                                {textos['titulo'] ? textos['titulo'] : 'Texto No definido'}
                             </Typography>,
                             <Typography key={2} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                Rol
+                                {textos['rol'] ? textos['rol'] : 'Texto No definido'}
                             </Typography>,
                             <Typography key={3} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                Director
+                                {textos['director'] ? textos['director'] : 'Texto No definido'}
                             </Typography>,
                             <Typography key={4} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                Año
+                                {textos['anio'] ? textos['anio'] : 'Texto No definido'}
                             </Typography>,
                             <Typography key={5} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                Clip
+                                {textos['clip'] ? textos['clip'] : 'Texto No definido'}
                             </Typography>,
                             <Typography key={6} sx={{ color: '#fff' }} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                Destacado
+                                {textos['destacado'] ? textos['destacado'] : 'Texto No definido'}
                             </Typography>,
                         ]}
                         data={(data) ? data.creditos.map(credito => {

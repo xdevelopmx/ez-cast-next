@@ -2,11 +2,16 @@ import { Grid, Skeleton, Typography } from "@mui/material"
 import { MContainer } from "~/components/layout/MContainer";
 import { SectionTitle } from "~/components/shared";
 import { api } from '~/utils/api';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import MotionDiv from "~/components/layout/MotionDiv";
 import { useRouter } from "next/router";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 export const Habilidades = (props: {id_talento: number, read_only: boolean}) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
     const router = useRouter();
 
     const habilidades = api.talentos.getHabilidadesByIdTalento.useQuery({id: props.id_talento}, {
@@ -26,24 +31,24 @@ export const Habilidades = (props: {id_talento: number, read_only: boolean}) => 
             const h_map: Map<string, string[]> = new Map();
 
             data.forEach(entry => {
-                if (h_map.has(entry.habilidad.es)) {
-                    const arr = h_map.get(entry.habilidad.es);
+                if (h_map.has((ctx.lang === 'es') ? entry.habilidad.es : entry.habilidad.en)) {
+                    const arr = h_map.get((ctx.lang === 'es') ? entry.habilidad.es : entry.habilidad.en);
                     if (arr) {
-                        h_map.set(entry.habilidad.es, arr.concat([entry.habilidad_especifica.es]));
+                        h_map.set((ctx.lang === 'es') ? entry.habilidad.es : entry.habilidad.en, arr.concat([(ctx.lang === 'es') ? entry.habilidad_especifica.es : entry.habilidad_especifica.en]));
                     }
                 } else {
-                    h_map.set(entry.habilidad.es, [entry.habilidad_especifica.es]);
+                    h_map.set((ctx.lang === 'es') ? entry.habilidad.es : entry.habilidad.en, [(ctx.lang === 'es') ? entry.habilidad_especifica.es : entry.habilidad_especifica.en]);
                 }
             })
             return h_map;
         }
         return null;
-    }, [data])
+    }, [data, ctx.lang])
 
     return (
         <Grid id="habilidades" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Habilidades' onClickButton={(!props.read_only) ? () => { 
+                <SectionTitle title={textos['habilidades'] ? `${textos['habilidades']}` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     router.push(`/talento/editar-perfil?step=4&id_talento=${props.id_talento}`)  
                  } : undefined} />
@@ -52,7 +57,7 @@ export const Habilidades = (props: {id_talento: number, read_only: boolean}) => 
             <Grid item xs={12}>
 
                 {!loading && habilidades.data?.length === 0 &&
-                    <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ninguna habilidad</Typography>
+                    <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['habilidad']}`) : 'Texto No definido'}</Typography>
                 }
                         
                 <MotionDiv show={loading} animation={'fade'}>

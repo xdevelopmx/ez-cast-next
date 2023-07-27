@@ -1,8 +1,10 @@
 import { Check, Close } from "@mui/icons-material";
 import { Dialog, DialogContent, Typography, ButtonGroup, Button, DialogActions, Grid } from "@mui/material"
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import MotionDiv from "~/components/layout/MotionDiv"
 import { MSelect } from "~/components/shared";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 import useNotify from "~/hooks/useNotify";
 import { api, parseErrorBody } from "~/utils/api";
 
@@ -26,6 +28,9 @@ const calzado_ninos = ['7k (8.1cm)', '8k (9.0cm)', '9k (9.8cm)', '10k (10.6cm)',
 	'13.5 (14.0cm)', '14 (14.5cm)', '14.5 (14.9cm)', '15 (15.3cm)', '15.5 (15.7cm)', '16 (16.1cm)'];
 
 export const MedidasDialog = (props: { id_talento: number, opened: boolean, onClose: (changed: boolean) => void }) => {
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
 	const change_content_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const [option_selected, setOptionSelected] = useState<{ current: 'GENERALES' | 'HOMBRE' | 'MUJER' | 'NINO/NINA' | '', updated: 'GENERALES' | 'HOMBRE' | 'MUJER' | 'NINO/NINA' }>({ current: 'GENERALES', updated: 'GENERALES' });
 
@@ -117,35 +122,35 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 				<Grid container sx={{ mt: 0, pl: 4 }}>
 					<Grid item xs={12} mt={4}>
 						<Typography variant="h6">
-							Medidas Vestuario
+							{textos['medidas_vestuario'] ? textos['medidas_vestuario'] : 'Texto No definido'}
 						</Typography>
 						<Typography variant="subtitle2">
-							Elige la categoría que aplique para ti.
+							{textos['dialog_medidas_vestuario_subtitulo'] ? textos['dialog_medidas_vestuario_subtitulo'] : 'Texto No definido'}
 						</Typography>
 						<ButtonGroup sx={{ mt: 2, mb: 4 }} variant="contained" aria-label="outlined primary button group">
 							<Button
 								onClick={() => { setOptionSelected({ current: '', updated: 'GENERALES' }) }}
 								variant={option_selected.current === 'GENERALES' ? 'contained' : 'outlined'}
 							>
-								Generales
+								{textos['generales'] ? textos['generales'] : 'Texto No definido'}
 							</Button>
 							<Button
 								onClick={() => { setOptionSelected({ current: '', updated: 'HOMBRE' }) }}
 								variant={option_selected.current === 'HOMBRE' ? 'contained' : 'outlined'}
 							>
-								Hombre
+								{textos['hombre'] ? textos['hombre'] : 'Texto No definido'}
 							</Button>
 							<Button
 								onClick={() => { setOptionSelected({ current: '', updated: 'MUJER' }) }}
 								variant={option_selected.current === 'MUJER' ? 'contained' : 'outlined'}
 							>
-								Mujer
+								{textos['mujer'] ? textos['mujer'] : 'Texto No definido'}
 							</Button>
 							<Button
 								onClick={() => { setOptionSelected({ current: '', updated: 'NINO/NINA' }) }}
 								variant={option_selected.current === 'NINO/NINA' ? 'contained' : 'outlined'}
 							>
-								Niño/Niña
+								{textos['nino'] ? textos['nino'] : 'Texto No definido'}/{textos['nina'] ? textos['nina'] : 'Texto No definido'}
 							</Button>
 						</ButtonGroup>
 					</Grid>
@@ -154,7 +159,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 						<MotionDiv show={option_selected.current === 'GENERALES'} animation="fade">
 							<Grid container sx={{ mt: 0, pl: 4 }}>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Cadera (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['cadera'] ? textos['cadera'] : 'Texto No definido'}{'(cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -170,7 +175,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Entrepierna (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['entrepierna'] ? textos['entrepierna'] : 'Texto No definido'}{'(cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -186,7 +191,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Guantes'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['guantes'] ? textos['guantes'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -202,7 +207,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Sombrero'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['sombrero'] ? textos['sombrero'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -223,7 +228,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 						<MotionDiv show={option_selected.current === 'HOMBRE'} animation="fade">
 							<Grid container sx={{ mt: 0, pl: 4 }}>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Pecho (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['pecho'] ? textos['pecho'] : 'Texto No definido'}{'(cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -239,7 +244,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Cuello (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['cuello'] ? textos['cuello'] : 'Texto No definido'}{'(cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -255,7 +260,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Mangas (largo cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['mangas'] ? textos['mangas'] : 'Texto No definido'}{`(${textos['largo'] ? textos['largo'] : 'Texto No Definido'} cm)`}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -271,7 +276,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Saco'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['saco'] ? textos['saco'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -287,7 +292,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Playera'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['playera'] ? textos['playera'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -303,7 +308,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Calzado (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['calzado'] ? textos['calzado'] : 'Texto No definido'}{'(cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -324,7 +329,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 						<MotionDiv show={option_selected.current === 'MUJER'} animation="fade">
 							<Grid container sx={{ mt: 0, pl: 4 }}>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Vestido'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['vestido'] ? textos['vestido'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -340,7 +345,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Busto (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['busto'] ? textos['busto'] : 'Texto No definido'}{' (cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -356,7 +361,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Copa'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['copa'] ? textos['copa'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -372,7 +377,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Cadera'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['cadera'] ? textos['cadera'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -388,7 +393,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Playera'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['playera'] ? textos['playera'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -404,7 +409,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Pants (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['pants'] ? textos['pants'] : 'Texto No definido'}{' (cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -420,7 +425,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Calzado (cm)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['calzado'] ? textos['calzado'] : 'Texto No definido'}{' (cm)'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -440,7 +445,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 						<MotionDiv show={option_selected.current === 'NINO/NINA'} animation="fade">
 							<Grid container sx={{ mt: 0, pl: 4 }}>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Niño 4-18 años'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['nino'] ? textos['nino'] : 'Texto No definido'}{' 4-18 '}{textos['anio'] ? textos['anio'] : 'Texto No definido'}s</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -456,7 +461,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Niña 4-18 años'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['nina'] ? textos['nina'] : 'Texto No definido'}{' 4-18 '}{textos['anio'] ? textos['anio'] : 'Texto No definido'}s</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -472,7 +477,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Toddler (bebé)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{`Toddler (${textos['bebe'] ? textos['bebe'] : 'Texto No definido'})`}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -488,7 +493,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Bebé (meses)'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['bebe'] ? textos['bebe'] : 'Texto No definido'}{` (${textos['meses'] ? textos['meses'] : 'Texto No definido'})`}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -504,7 +509,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 									/>
 								</Grid>
 								<Grid item xs={4} mt={4}>
-									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{'Calzado Niños'}</Typography>
+									<Typography fontSize={'1.3rem'} fontWeight={400} variant="subtitle1">{textos['calzado_ninos'] ? textos['calzado_ninos'] : 'Texto No definido'}</Typography>
 								</Grid>
 								<Grid item xs={8} mt={4}>
 									<MSelect
@@ -526,7 +531,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 			</DialogContent>
 			<DialogActions sx={{ justifyContent: 'center' }}>
 				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { props.onClose(false) }} variant='text' startIcon={<Close />}>
-					Cancelar
+					{textos['cancelar'] ? textos['cancelar'] : 'Texto No definido'}
 				</Button>
 				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { 
 					save_medidas.mutate({
@@ -555,7 +560,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 						calzado_ninos: (form && form.calzado_ninos && form.calzado_ninos.trim() !== '') ? form.calzado_ninos : null
 					}) 
 				}} variant='text' startIcon={<Check />}>
-					Guardar
+					{textos['guardar'] ? textos['guardar'] : 'Texto No definido'}
 				</Button>
 			</DialogActions>
 

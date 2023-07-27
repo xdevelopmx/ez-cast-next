@@ -3,11 +3,16 @@ import { MContainer } from "~/components/layout/MContainer";
 import Image from 'next/image';
 import { MTable } from "~/components/shared/MTable/MTable";
 import { api } from '~/utils/api';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useRouter } from "next/router";
 import MotionDiv from "~/components/layout/MotionDiv";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+	
     const [dialog, setDialog] = useState<{open: boolean, url: string, name: string}>({open: false, url: '', name: ''});
     const info = api.talentos.getInfoBasicaByIdTalento.useQuery({ id: props.id_talento }, {
         refetchOnWindowFocus: false,
@@ -58,7 +63,7 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                 <Grid item xs={12} md={7} sx={{ paddingTop: 8 }}>
                     <MContainer className="ml-5" direction="vertical">
                         <MContainer styles={{ alignItems: 'baseline' }} className={`m-1`} direction="horizontal">
-                            <p style={{ fontSize: 30, fontWeight: 900 }}>Información básica</p>
+                            <p style={{ fontSize: 30, fontWeight: 900 }}>{textos['info_basica'] ? textos['info_basica'] : 'Texto No definido'}</p>
                             <Link href={`/talento/editar-perfil?id_talento=${props.id_talento}`} variant="button">
                                 {!props.read_only &&
                                     <Button onClick={() => {
@@ -66,18 +71,18 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                                         router.push('/talento/editar-perfil?step=1')
                                     }} size='small' sx={{ textTransform: 'none', fontSize: '1.1rem' }}
                                         className='ml-2 color_a' variant="text">
-                                        Editar
+                                        {textos['editar'] ? textos['editar'] : 'Texto No definido'}
                                     </Button>
                                 }
                             </Link>
 
                         </MContainer>
                         <MContainer className={`m-1`} direction="horizontal">
-                            <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica && data.info_basica.union) ? (data.info_basica.union.id_union === 99) ? data.info_basica.union.descripcion : data.info_basica.union.union.es : 'N/A'}</Typography>
+                            <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica && data.info_basica.union) ? (data.info_basica.union.id_union === 99) ? data.info_basica.union.descripcion : (ctx.lang === 'es') ? data.info_basica.union.union.es : data.info_basica.union.union.en : 'N/A'}</Typography>
                         </MContainer>
                         <MContainer className={`m-1`} direction="horizontal" styles={{ alignItems: 'center' }}>
                             <p style={{ display: 'flex', alignItems: 'center', fontSize: '1.1rem', fontWeight: 100, margin: 0 }}><span className="badge" ><Image width={32} height={32} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>  </p>
-                            <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica) ? data.info_basica.estado_republica.es : 'N/A'}</Typography>
+                            <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica) ? (ctx.lang === 'es') ? data.info_basica.estado_republica.es : data.info_basica.estado_republica.en : 'N/A'}</Typography>
                         </MContainer>
 
                         <MContainer className={`m-1`} direction="horizontal" styles={{ alignItems: 'center' }}>
@@ -85,13 +90,13 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                             <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (redes_sociales['pagina_web']) ? redes_sociales['pagina_web'] : 'N/A'}</Typography>
                         </MContainer>
                         <MContainer className={`m-1`} direction='vertical' styles={{ maxHeight: 100, width: 140 }}>
-                            <p className="color_a" style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0, fontSize: '1.3rem', fontWeight: 600 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span> Medidas </p>
+                            <p className="color_a" style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0, fontSize: '1.3rem', fontWeight: 600 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span> {textos['medidas'] ? textos['medidas'] : 'Texto No definido'} </p>
                             <MContainer styles={{ height: 20 }} direction="horizontal" justify="space-between">
-                                <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>Peso </p>
+                                <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>{textos['peso'] ? textos['peso'] : 'Texto No definido'} </p>
                                 <p style={{ fontSize: '1.2rem', fontWeight: 500 }} className="ml-4">{(data && data.info_basica) ? `${data.info_basica.peso} kg` : 'N/A'}</p>
                             </MContainer>
                             <MContainer direction="horizontal" justify="space-between" styles={{ maxHeight: 28 }}>
-                                <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>Altura </p>
+                                <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>{textos['altura'] ? textos['altura'] : 'Texto No definido'} </p>
                                 <p style={{ fontSize: '1.2rem', fontWeight: 500 }} className="ml-4">{(data && data.info_basica) ? `${data.info_basica.altura} m` : 'N/A'}</p>
                             </MContainer>
                         </MContainer>
@@ -115,7 +120,7 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                                     variant="outlined"
                                 >
                                     <Image style={{ marginRight: 10 }} width={20} height={20} src="/assets/img/iconos/documento.svg" alt="" />
-                                    Descargar CV
+                                    {textos['descargar'] ? textos['descargar'] : 'Texto No definido'} CV
                                 </Button>
                             </MotionDiv>
                         </MContainer>
@@ -146,7 +151,7 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                 <Grid item xs={12}>
 
                     <MContainer direction="vertical" styles={{ marginTop: 40 }}>
-                        <Typography sx={{ color: '#069CB1' }} fontWeight={600}>Acerca de</Typography>
+                        <Typography sx={{ color: '#069CB1' }} fontWeight={600}>{textos['acerca_de'] ? textos['acerca_de'] : 'Texto No definido'}</Typography>
 
                         <Typography>
                             {data?.info_basica?.biografia}
@@ -154,10 +159,10 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                         <div style={{ marginTop: 32 }}>
                             {creditos.isFetching && <Skeleton className="md-skeleton" />}
                             {!creditos.isFetching && !creditos.data &&
-                                <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun credito</Typography>
+                                <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['credito']}`) : 'Texto No definido'}</Typography>
                             }
                             {!creditos.isFetching && creditos.data && creditos.data.creditos.length > 0 && creditos.data.creditos.filter(c => c.destacado).length === 0 &&
-                                <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>Todavia no tienes creditos destacados</Typography>
+                                <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['credito_destacado']}`) : 'Texto No definido'}</Typography>
                             }
                             {!creditos.isFetching && creditos.data && creditos.data.creditos.filter(c => c.destacado).length > 0 &&
                                 <>
@@ -170,7 +175,7 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                                             alt="estrella"
                                         />
                                         <Typography sx={{ color: '#069CB1', marginLeft: 1 }} fontWeight={600}>
-                                            Créditos destacados
+                                            {textos['creditos_destacados'] ? textos['creditos_destacados'] : 'Texto No definido'}
                                         </Typography>
                                     </MContainer>
                                     <MTable

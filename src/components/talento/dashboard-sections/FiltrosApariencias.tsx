@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Link, Skeleton, TextField, Typography } from "@mui/material";
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { MContainer } from "~/components/layout/MContainer";
 import Image from 'next/image';
 import { SectionTitle } from "~/components/shared";
@@ -8,8 +8,13 @@ import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { MedidasDialog } from "../dialogs/MedidasDialog";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 export const FiltrosApariencias = (props: { id_talento: number, read_only: boolean }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
     const router = useRouter();
     const [dialog, setDialog] = useState<{ opened: boolean, data: Map<string, unknown> }>({ opened: false, data: new Map() })
 
@@ -35,45 +40,45 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
         if (medidas.data) {
             const _medidas = [
                 {
-                    parent: 'Generales',
+                    parent: textos['generales'] ? textos['generales'] : 'Texto No Definido',
                     childrens: [
-                        { name: 'Cadera (cm)', value: medidas.data.general_cadera },
-                        { name: 'Entrepierna (cm)', value: medidas.data.general_entrepiernas },
-                        { name: 'Guantes', value: medidas.data.general_guantes },
-                        { name: 'Sombrero', value: medidas.data.general_sombrero },
+                        { name: `${textos['cadera'] ? textos['cadera'] : 'Texto No Definido'} (cm)`, value: medidas.data.general_cadera },
+                        { name: `${textos['entrepierna'] ? textos['entrepierna'] : 'Texto No Definido'} (cm)`, value: medidas.data.general_entrepiernas },
+                        { name: textos['guantes'] ? textos['guantes'] : 'Texto No Definido', value: medidas.data.general_guantes },
+                        { name: textos['sombrero'] ? textos['sombrero'] : 'Texto No Definido', value: medidas.data.general_sombrero },
                     ]
                 },
                 {
-                    parent: 'Hombre',
+                    parent: textos['hombre'] ? textos['hombre'] : 'Texto No Definido',
                     childrens: [
-                        { name: 'Pecho (cm)', value: medidas.data.hombre_pecho },
-                        { name: 'Cuello (cm)', value: medidas.data.hombre_cuello },
-                        { name: 'Mangas (largo cm)', value: medidas.data.hombre_mangas },
-                        { name: 'Saco', value: medidas.data.hombre_saco },
-                        { name: 'Playera', value: medidas.data.hombre_playera },
-                        { name: 'Calzado (cm)', value: medidas.data.hombre_calzado },
+                        { name: `${textos['pecho'] ? textos['pecho'] : 'Texto No Definido'} (cm)`, value: medidas.data.hombre_pecho },
+                        { name: `${textos['cuello'] ? textos['cuello'] : 'Texto No Definido'} (cm)`, value: medidas.data.hombre_cuello },
+                        { name: `${textos['mangas'] ? textos['mangas'] : 'Texto No Definido'} (${textos['largo'] ? textos['largo'] : 'Texto No Definido'} cm)`, value: medidas.data.hombre_mangas },
+                        { name: textos['saco'] ? textos['saco'] : 'Texto No Definido', value: medidas.data.hombre_saco },
+                        { name: textos['playera'] ? textos['playera'] : 'Texto No Definido', value: medidas.data.hombre_playera },
+                        { name: `${textos['calzado'] ? textos['calzado'] : 'Texto No Definido'} (cm)`, value: medidas.data.hombre_calzado },
                     ]
                 },
                 {
-                    parent: 'Mujer',
+                    parent: textos['mujer'] ? textos['mujer'] : 'Texto No Definido',
                     childrens: [
-                        { name: 'Vestido', value: medidas.data.mujer_vestido },
-                        { name: 'Busto (cm)', value: medidas.data.mujer_busto },
-                        { name: 'Copa', value: medidas.data.mujer_copa },
-                        { name: 'Cadera (cm)', value: medidas.data.mujer_cadera },
-                        { name: 'Playera', value: medidas.data.mujer_playera },
-                        { name: 'Pants (cm)', value: medidas.data.mujer_pants },
-                        { name: 'Calzado (cm)', value: medidas.data.mujer_calzado },
+                        { name: textos['vestido'] ? textos['vestido'] : 'Texto No Definido', value: medidas.data.mujer_vestido },
+                        { name: `${textos['busto'] ? textos['busto'] : 'Texto No Definido'} (cm)`, value: medidas.data.mujer_busto },
+                        { name: textos['copa'] ? textos['copa'] : 'Texto No Definido', value: medidas.data.mujer_copa },
+                        { name: `${textos['cadera'] ? textos['cadera'] : 'Texto No Definido'} (cm)`, value: medidas.data.mujer_cadera },
+                        { name: textos['playera'] ? textos['playera'] : 'Texto No Definido', value: medidas.data.mujer_playera },
+                        { name: `${textos['playera'] ? textos['playera'] : 'Texto No Definido'} (cm)`, value: medidas.data.mujer_pants },
+                        { name: `${textos['calzado'] ? textos['calzado'] : 'Texto No Definido'} (cm)`, value: medidas.data.mujer_calzado },
                     ]
                 },
                 {
-                    parent: 'Niño',
+                    parent: `${textos['nino'] ? textos['nino'] : 'Texto No Definido'} / ${textos['nina'] ? textos['nina'] : 'Texto No Definido'}`,
                     childrens: [
-                        { name: 'Niño 4-18 años', value: medidas.data.nino_4_18_anios },
-                        { name: 'Niña 4-18 años', value: medidas.data.nina_4_18_anios },
-                        { name: 'Toddler (bebé)', value: medidas.data.toddler },
-                        { name: 'Bebé (meses)', value: medidas.data.bebe_meses },
-                        { name: 'Calzado Niños', value: medidas.data.calzado_ninos },
+                        { name: `${textos['nino'] ? textos['nino'] : 'Texto No Definido'} 4-18 ${textos['anio'] ? textos['anio'] : 'Texto No Definido'}s`, value: medidas.data.nino_4_18_anios },
+                        { name: `${textos['nina'] ? textos['nina'] : 'Texto No Definido'} 4-18 ${textos['anio'] ? textos['anio'] : 'Texto No Definido'}s`, value: medidas.data.nina_4_18_anios },
+                        { name: `Toddler (${textos['bebe'] ? textos['bebe'] : 'Texto No Definido'})`, value: medidas.data.toddler },
+                        { name: `${textos['bebe'] ? textos['bebe'] : 'Texto No Definido'} (${textos['meses'] ? textos['meses'] : 'Texto No Definido'})`, value: medidas.data.bebe_meses },
+                        { name: textos['calzado_ninos'] ? textos['calzado_ninos'] : 'Texto No Definido', value: medidas.data.calzado_ninos },
                     ]
                 }
             ]
@@ -87,7 +92,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
             return _medidas_filtered.length === 0 ? null : _medidas_filtered;
         }
         return null;
-    }, [medidas.data]);
+    }, [medidas.data, textos]);
 
     const tatuajes = useMemo(() => {
         if (data) {
@@ -97,7 +102,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                     const _divider = (i < data.tatuajes.length - 1) ? <Divider className="my-2" /> : null;
                     return (
                         <div key={i}>
-                            <Typography fontSize={'1.2rem'} fontWeight={400}>{t.tipo_tatuaje.es}</Typography>
+                            <Typography fontSize={'1.2rem'} fontWeight={400}>{(ctx.lang === 'es') ? t.tipo_tatuaje.es : t.tipo_tatuaje.en}</Typography>
                             <Typography fontSize={'1rem'} fontWeight={400}>{t.descripcion}</Typography>
                             {_divider}
                         </div>
@@ -108,7 +113,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
             }
         }
         return null;
-    }, [data]);
+    }, [data, ctx.lang]);
 
     const piercings = useMemo(() => {
         if (data) {
@@ -117,7 +122,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                     const _divider = (i < data.piercings.length - 1) ? <Divider className="my-2" /> : null;
                     return (
                         <div key={i}>
-                            <Typography fontSize={'1.2rem'} fontWeight={400}>{t.piercing.es}</Typography>
+                            <Typography fontSize={'1.2rem'} fontWeight={400}>{(ctx.lang === 'es') ? t.piercing.es : t.piercing.en}</Typography>
                             <Typography fontSize={'1rem'} fontWeight={400}>{t.descripcion}</Typography>
                             {_divider}
                         </div>
@@ -128,19 +133,19 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
             }
         }
         return null;
-    }, [data]);
+    }, [data, ctx.lang]);
 
     return (
         <>
             <Grid container sx={{ mt: 10 }}>
                 <Grid item xs={12}>
-                    <SectionTitle title='Apariencia' onClickButton={(!props.read_only) ? () => {
+                    <SectionTitle title={textos['apariencia'] ? `${textos['apariencia']}` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => {
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         router.push(`/talento/editar-perfil?step=7&id_talento=${props.id_talento}`)
                     } : undefined} />
                 </Grid>
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Rango de edad a interpretar</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['rango_de_edad_a_interpretar'] ? `${textos['rango_de_edad_a_interpretar']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? `${data.rango_inicial_edad} a ${data.rango_final_edad}` : 'N/D'}</Typography>
@@ -150,27 +155,27 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Se identifica como</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['se_identifica_como'] ? `${textos['se_identifica_como']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.genero) ? data.genero.es : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.genero) ? (ctx.lang === 'es') ? data.genero.es : data.genero.en : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Interesado en interpretar</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['interesado_en_interpretar'] ? `${textos['interesado_en_interpretar']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.generos_interesados_en_interpretar.length > 0) ? data.generos_interesados_en_interpretar.map(g => g.genero.es).join(', ') : 'N/A'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.generos_interesados_en_interpretar.length > 0) ? data.generos_interesados_en_interpretar.map(g => (ctx.lang === 'es') ? g.genero.es : g.genero.en).join(', ') : 'N/A'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Apariencia étnica</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['apariencia_etnica'] ? `${textos['apariencia_etnica']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.apariencia_etnica) ? data.apariencia_etnica.nombre : 'N/D'}</Typography>
@@ -180,20 +185,20 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Nacionalidad / Etnia</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['nacionalidad_etnia'] ? `${textos['nacionalidad_etnia']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? data.nacionalidad.es : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (ctx.lang === 'es') ? data.nacionalidad.es : data.nacionalidad.en : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Color de Cabello</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['color_de_cabello'] ? `${textos['color_de_cabello']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? data.color_cabello.es : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (ctx.lang === 'es') ? data.color_cabello.es : data.color_cabello.en : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
@@ -201,7 +206,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
 
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>¿Dispuesto a cambiar de color de cabello?</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>¿{textos['dispuesto_a_cambiar_de_color_de_cabello'] ? `${textos['dispuesto_a_cambiar_de_color_de_cabello']}` : 'Texto No definido'}?</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (data.disposicion_cambio_color_cabello) ? 'Si' : 'No' : 'N/D'}</Typography>
@@ -211,17 +216,17 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Estilo de Cabello</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['estilo_de_cabello'] ? `${textos['estilo_de_cabello']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? data.estilo_cabello.es : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (ctx.lang === 'es') ? data.estilo_cabello.es : data.estilo_cabello.en : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>¿Dispuesto a cortar cabello?</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>¿{textos['dispuesto_a_cortar_cabello'] ? `${textos['dispuesto_a_cortar_cabello']}` : 'Texto No definido'}?</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (data.disposicion_corte_cabello) ? 'Si' : 'No' : 'N/D'}</Typography>
@@ -231,17 +236,17 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Vello Facial</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['vello_facial'] ? `${textos['vello_facial']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? data.vello_facial.es : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (ctx.lang === 'es') ? data.vello_facial.es : data.vello_facial.en : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>¿Dispuesto a crecer o afeitar vello facial?</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>¿{textos['dispuesto_a_crecer_o_afeitar_vello_facial'] ? `${textos['dispuesto_a_crecer_o_afeitar_vello_facial']}` : 'Texto No definido'}?</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (data.disposicion_afeitar_o_crecer_vello_facial) ? 'Si' : 'No' : 'N/D'}</Typography>
@@ -251,17 +256,17 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Color de ojos</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['color_de_ojos'] ? `${textos['color_de_ojos']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? data.color_ojos.es : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data) ? (ctx.lang === 'es') ? data.color_ojos.es : data.color_ojos.en : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Tatuajes</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['tatuajes'] ? `${textos['tatuajes']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     {loading && <Skeleton className="md-skeleton" />}
@@ -272,7 +277,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Piercings</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['piercings'] ? `${textos['piercings']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     {loading && <Skeleton className="md-skeleton" />}
@@ -283,7 +288,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Gemelo o trillizo</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['gemelo_o_trillizo'] ? `${textos['gemelo_o_trillizo']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.hermanos) ? data.hermanos.descripcion : 'N/D'}</Typography>
@@ -293,14 +298,14 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                 </Grid>
 
                 <Grid item xs={6} mt={4}>
-                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>Atributos o condiciones únicas</Typography>
+                    <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['atributos_o_condiciones_unicas'] ? `${textos['atributos_o_condiciones_unicas']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
                     <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.particularidades.length > 0) ? data.particularidades.map(p => {
                         if (p.id_particularidad === 99) {
                             return p.descripcion;
                         }
-                        return p.particularidad.es;
+                        return (ctx.lang === 'es') ? p.particularidad.es : p.particularidad.en;
                     }).join(', ')
                         :
                         'N/A'}
@@ -310,7 +315,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                     <Divider />
                 </Grid>
                 <Grid id="medidas" my={6} item xs={12}>
-                    <SectionTitle title='Medidas' onClickButton={(!props.read_only) ? () => {
+                    <SectionTitle title={textos['medidas'] ? `${textos['medidas']}` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => {
                         setDialog(prev => { return { ...prev, opened: true } })
                     } : undefined} />
                 </Grid>

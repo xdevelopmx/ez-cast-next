@@ -1,4 +1,4 @@
-import React, { type CSSProperties, useEffect, useMemo, useState } from 'react'
+import React, { type CSSProperties, useEffect, useMemo, useState, useContext } from 'react'
 import Link from 'next/link'
 import { Grid, IconButton, Button, Typography, Skeleton, Box, Badge } from '@mui/material'
 import { motion } from 'framer-motion'
@@ -14,6 +14,8 @@ import useNotify from '~/hooks/useNotify';
 import { type Archivo } from '~/server/api/root';
 import { FileManager } from '~/utils/file-manager';
 import { useRouter } from 'next/router';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 type Props = {
 	stylesRoot?: CSSProperties;
@@ -48,12 +50,12 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 		foto_selected: null,
 		foto_perfil: ''
 	});
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
 	const router = useRouter();
 	const {id_talento} = router.query;
 	const [edit_mode, setEditMode] = useState(false);
 	const session = useSession();
-
-	const mensajes_no_vistos = api.mensajes.getCountMensajesNoVistos.useQuery();
 
 	const cazatalentos = api.cazatalentos.getPerfilById.useQuery((session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS) ? parseInt(session.data.user.id) : 0, {
 		refetchOnWindowFocus: false
@@ -284,7 +286,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								</IconButton>
 							</div>
 							<Button color={'inherit'} style={{ textDecoration: 'underline', fontWeight: 800 }} variant='text' component="label">
-								Cambiar foto
+								{textos['cambiar'] ? textos['cambiar'] : 'Texto No Definido'} {textos['foto'] ? textos['foto'] : 'Texto No Definido'}
 								<input onChange={(ev) => {
 									if (ev.target.files) {
 										const file = ev.target.files[0];
@@ -303,7 +305,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 									show_error_message={false}
 									error={(() => {
 										if (form.nombre.length === 0) {
-											return 'El nombre no debe estar vacio';
+											return textos['field_cant_be_empty'] ? textos['field_cant_be_empty'].replace('[CAMPO]', textos['nombre'] ? textos['nombre'] : 'Texto No Definido') : 'Texto No Definido';
 										}
 										return undefined;
 									})()}
@@ -313,7 +315,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 									onChange={(e) => {
 										setForm({ ...form, nombre: e.target.value })
 									}}
-									label='Nombre*'
+									label={`${textos['nombre'] ? textos['nombre'] : 'Texto No Definido'}*`}
 								/>
 							</MContainer>
 						</Grid>
@@ -378,7 +380,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 									onChange={(e) => {
 										setForm({ ...form, biografia: e.target.value })
 									}}
-									label='Biografia'
+									label={textos['biografia'] ? textos['biografia'] : 'Texto No Definido'}
 								/>
 							</MContainer>
 						</Grid>
@@ -763,7 +765,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								}}
 								style={{ backgroundColor: '#069cb1', width: 200, color: 'white', borderRadius: 16 }}
 							>
-								Guardar Cambios
+								{textos['guardar'] ? textos['guardar'] : 'Texto No Definido'}
 							</Button>
 						</Grid>
 					</Grid>
@@ -869,19 +871,17 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
 						<hr />
 						{is_fetching && <Skeleton className="mt-2 mb-5 text-white open_popup" />}
-						{!is_fetching && <p onClick={() => setEditMode(edit => !edit)} className="mt-2 mb-5 text-white open_popup" data-popup="box_editprofile">Editar perfil</p>}
+						{!is_fetching && <p onClick={() => setEditMode(edit => !edit)} className="mt-2 mb-5 text-white open_popup" data-popup="box_editprofile">{textos['editar'] ? textos['editar'] : 'Texto No Definido'} {textos['perfil'] ? textos['perfil'] : 'Texto No Definido'}</p>}
 						{is_fetching && <Skeleton className="sub_menu" />}
 						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.TALENTO &&
 							<div className="sub_menu">
-								<Link href="/talento/dashboard" className={(router.pathname === '/talento/dashboard') ? 'active' : ''}>Perfil</Link>
+								<Link href="/talento/dashboard" className={(router.pathname === '/talento/dashboard') ? 'active' : ''}>{textos['perfil'] ? textos['perfil'] : 'Texto No Definido'}</Link>
 								<Link href="/talento/billboard" className={(router.pathname === '/talento/billboard') ? 'active' : ''}>Casting Billboard</Link>
-								<Link href="/talento/aplicaciones" className={(router.pathname === '/talento/aplicaciones') ? 'active' : ''}>Tus Aplicaciones</Link>
-								<Link href="/talento/self-tape" className={(router.pathname === '/talento/self-tape') ? 'active' : ''}>Grabar Self-Tape</Link>
+								<Link href="/talento/aplicaciones" className={(router.pathname === '/talento/aplicaciones') ? 'active' : ''}>{textos['tus_aplicaciones'] ? textos['tus_aplicaciones'] : 'Texto No Definido'}</Link>
+								<Link href="/talento/self-tape" className={(router.pathname === '/talento/self-tape') ? 'active' : ''}>{textos['grabar_selftape'] ? textos['grabar_selftape'] : 'Texto No Definido'}</Link>
 								<Link href="/talento/media-bank" className={(router.pathname === '/talento/media-bank') ? 'active' : ''}>Media Bank</Link>
-								<Badge anchorOrigin={{vertical: 'top', horizontal: 'right',}} badgeContent={mensajes_no_vistos.data} color='error'>
-									<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
-								</Badge>
-								<Link href="/ayuda-ezcast" className={(router.pathname === '/ayuda-ezcast') ? 'active' : ''}>Ayuda</Link>
+								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>{textos['mensajes'] ? textos['mensajes'] : 'Texto No Definido'}</Link>
+								<Link href="/ayuda-ezcast" className={(router.pathname === '/ayuda-ezcast') ? 'active' : ''}>{textos['ayuda'] ? textos['ayuda'] : 'Texto No Definido'}</Link>
 							</div>
 						}
 						{!is_fetching && user_info?.tipo_usuario === TipoUsuario.CAZATALENTOS &&
@@ -889,9 +889,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<Link href="/cazatalentos/dashboard" className={(router.pathname === '/cazatalentos/dashboard') ? 'active' : ''}>Mis Proyectos</Link>
 								<Link href="/cazatalentos/billboard" className={(router.pathname === '/cazatalentos/billboard') ? 'active' : ''}>Billboard</Link>
 								<Link href="/cazatalentos/agenda-virtual" className={router.pathname.includes('agenda-virtual') ? 'active' : ''}>Agenda Virtual</Link>
-								<Badge anchorOrigin={{vertical: 'top', horizontal: 'right',}} badgeContent={mensajes_no_vistos.data} color='error'>
-									<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
-								</Badge>
+								<Link href="/mensajes" className={(router.pathname === '/mensajes') ? 'active' : ''}>Mensajes</Link>
 								<Link href="/ayuda-ezcast" className={(router.pathname === '/ayuda-ezcast') ? 'active' : ''}>Ayuda</Link>
 							</div>
 						}
@@ -919,7 +917,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								}}
 								className="text-white"
 								href="#">
-								Cerrar sesión
+								{textos['cerrar_sesion'] ? textos['cerrar_sesion'] : 'Texto No Definido'}
 							</a>
 						</p>
 						<div className="popup_conteiner box_editprofile">
@@ -930,7 +928,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 								<motion.img src="https://randomuser.me/api/portraits/men/34.jpg" alt="avatar" />
 								<motion.img src="/assets/img/iconos/cam_white.svg" alt="" />
 							</div>
-							<p className="mt-1 mb-2"><a className="text-grey" href="#">Cambiar foto</a></p>
+							<p className="mt-1 mb-2"><a className="text-grey" href="#">{textos['cambiar'] ? textos['cambiar'] : 'Texto No Definido'} {textos['foto'] ? textos['foto'] : 'Texto No Definido'}</a></p>
 							<div className="row">
 								<div className="col-12">
 									<div className="form-group">

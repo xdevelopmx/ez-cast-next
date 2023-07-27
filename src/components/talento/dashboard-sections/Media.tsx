@@ -1,13 +1,18 @@
 import Image from 'next/image';
 import { Button, Divider, Grid, Typography } from '@mui/material';
-import React, { useMemo, useState, useEffect, useRef } from 'react'
+import React, { useMemo, useState, useEffect, useRef, useContext } from 'react'
 import { AddButton, AudioBar, SectionTitle } from '~/components/shared'
 import { MContainer } from '~/components/layout/MContainer';
 import { useRouter } from 'next/router';
 import { api } from '~/utils/api';
 import { Carroucel } from '~/components/shared/Carroucel';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 export const Media = (props: { id_talento: number, read_only: boolean }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+	
     const router = useRouter();
     const [current_video_url, setCurrentVideoUrl] = useState('');
 
@@ -64,7 +69,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
     return (
         <Grid id="media" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle title='Media' onClickButton={(!props.read_only) ? () => {
+                <SectionTitle title={textos['media'] ? textos['media'] : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => {
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     router.push(`/talento/editar-perfil?step=2&id_talento=${props.id_talento}`);
                 } : undefined} />
@@ -73,7 +78,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                 <MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px', justifyContent: 'space-between' }}>
                     <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
                         <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
-                        <Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>GALERÍA DE IMÁGENES</Typography>
+                        <Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>{textos['galeria_imagenes'] ? textos['galeria_imagenes'].toUpperCase() : 'Texto No definido'}</Typography>
                     </MContainer>
                     {!props.read_only &&
                         <AddButton
@@ -82,13 +87,16 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                                 router.push('/talento/editar-perfil?step=2')
                             }}
-                            text="Agregar imágenes"
+                            text={textos['agregar'] && textos['imagen'] ? `${textos['agregar']} ${textos['imagen']}` : 'Texto No definido'}
                         />
                     }
                 </MContainer>
                 {media && media.fotos.map((image, i) => {
                     return <Image key={i} width={191} height={217} src={image.url} alt="" /> 
                 })}
+                {!media || media.fotos.length === 0 &&
+                    <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['imagen']}`) : 'Texto No definido'}</Typography>
+                }
                 <Divider sx={{ mt: 3 }} />
             </Grid>
 
@@ -102,7 +110,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
                         {!props.read_only && 
-                            <AddButton text='Agregar videos' aStyles={{ margin: 10 }} onClick={() => {
+                            <AddButton text={textos['agregar'] && textos['video'] ? `${textos['agregar']} ${textos['video']}` : 'Texto No definido'} aStyles={{ margin: 10 }} onClick={() => {
                                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                                 router.push('/talento/editar-perfil?step=2')
                             }} />
@@ -136,7 +144,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                         
                         }
                         {!media || media.videos.length === 0 &&
-                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun video</Typography>
+                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['video']}`) : 'Texto No definido'}</Typography>
                         }
                     </MContainer>
                 </MContainer>
@@ -153,7 +161,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
                         {!props.read_only &&
-                            <AddButton text='Agregar audios' aStyles={{ marginBottom: 10 }} onClick={() => {
+                            <AddButton text={textos['agregar'] && textos['audio'] ? `${textos['agregar']} ${textos['audio']}` : 'Texto No definido'} aStyles={{ marginBottom: 10 }} onClick={() => {
                                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                                     router.push('/talento/editar-perfil?step=2')
                                 }}
@@ -168,7 +176,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                             })
                         }
                         {!media || media.audios.length === 0 &&
-                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun audio</Typography>
+                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['audio']}`) : 'Texto No definido'}</Typography>
                         }
                     </MContainer>
                 </MContainer>
@@ -184,7 +192,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                     </MContainer>
                     <MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
                         {!props.read_only &&
-                            <AddButton text='Grabar selftape' aStyles={{ margin: 10 }} onClick={() => {
+                            <AddButton text={textos['grabar_selftape'] ? textos['grabar_selftape'] : 'Texto No definido'} aStyles={{ margin: 10 }} onClick={() => {
                                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                                 router.push('/talento/self-tape')
                             }} />
@@ -218,7 +226,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
 
                         }
                         {!media || media.selftapes.length === 0 &&
-                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun selftape</Typography>
+                            <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['selftape']}`) : 'Texto No definido'}</Typography>
                         }
                     </MContainer>
                 </MContainer>

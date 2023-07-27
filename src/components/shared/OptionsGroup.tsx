@@ -14,7 +14,7 @@ export const OptionsGroup: FC<Props> = ({ id, labels, onOptionClick, styleContai
     return (
         <>
             <div className="form-group" style={styleContainer}>
-                {labels.map(label => {
+                {labels.filter(l => l.length > 0).map(label => {
                     return <Button
                         sx={styleButton}
                         size='small'
