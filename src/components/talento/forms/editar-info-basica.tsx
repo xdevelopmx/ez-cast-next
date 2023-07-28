@@ -1,4 +1,4 @@
-import { useMemo, type FC } from 'react'
+import { useMemo, type FC, useContext } from 'react'
 import Image from 'next/image';
 import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
@@ -11,6 +11,8 @@ import { FileManager } from '~/utils/file-manager';
 import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
 import { MTooltip } from '~/components/shared/MTooltip';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     state: TalentoFormInfoGral,
@@ -24,8 +26,9 @@ interface Props {
 const EMAIL_PATTERN = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
 export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talento_fetching }) => {
-
-    console.log('TALENTO STATE', state);
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+   
     const uniones = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
@@ -63,7 +66,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     labelClassName={'form-input-label'}
                     value={(state) ? state.nombre : ''}
                     onChange={(e) => { onFormChange({ nombre: e.currentTarget.value }) }}
-                    label='Nombre*'
+                    label={`${textos['nombre'] ? textos['nombre'] : 'Texto No Definido'}*`}
                 />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
@@ -78,7 +81,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             const id = parseInt(e.target.value);
                             onFormChange({ union: { id: id } })
                         }}
-                        label='Union*'
+                        label={`${textos['union'] ? textos['union'] : 'Texto No Definido'}*`}
                     />
                     <MotionDiv show={union_selected.id === 99} animation='fade'>
                         <FormGroup
@@ -89,7 +92,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             onChange={(e) => {
                                 onFormChange({ union: { ...state.union, descripcion: e.currentTarget.value } })
                             }}
-                            label='Nombre Unión'
+                            label={`${textos['nombre_union'] ? textos['nombre_union'] : 'Texto No Definido'}`}
                         />
                     </MotionDiv>
                 </MContainer>
@@ -102,7 +105,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     className={'form-input-md'}
                     value={(state) ? state.id_estado_republica.toString() : '0'}
                     onChange={(e) => { onFormChange({ id_estado_republica: parseInt(e.target.value) }) }}
-                    label='Ubicacion*'
+                    label={`${textos['ubicacion'] ? textos['ubicacion'] : 'Texto No Definido'}*`}
                     icon={<span className="badge"><Image width={24} height={24} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>}
                 />
             </Grid>
@@ -117,7 +120,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         onChange={(e) => {
                             onFormChange({ edad: parseInt(e.target.value), es_menor_de_edad: (parseInt(e.target.value) >= 18) ? 'No' : 'Sí' })
                         }}
-                        label='Edad*'
+                        label={`${textos['edad'] ? textos['edad'] : 'Texto No Definido'}*`}
                     />
 
                 </Grid>
@@ -125,13 +128,13 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     <MRadioGroup
                         style={{ marginLeft: 128 }}
                         id="eres-mayor-de-edad"
-                        options={['Sí', 'No']}
+                        options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                         labelStyle={{ marginLeft: 112, fontWeight: 500, fontSize: '1.1rem', color: '#069cb1' }}
                         value={state.es_menor_de_edad}
                         onChange={(e) => {
-                            onFormChange({ es_menor_de_edad: e.target.value, edad: (e.target.value === 'No') ? 18 : 17 })
+                            onFormChange({ es_menor_de_edad: e.target.value, edad: (e.target.value.includes(textos['no'] ? textos['no'] : 'Texto No Definido')) ? 18 : 17 })
                         }}
-                        label='¿Eres menor de edad?'
+                        label={`¿${textos['eres_menor_de_edad'] ? textos['eres_menor_de_edad'] : 'Texto No Definido'}?`}
                     />
 
                 </Grid>
@@ -141,7 +144,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                 <MotionDiv show={(state) ? state.edad < 18 : false} animation='fade'>
                     <MContainer direction='vertical'>
                         <Typography className='my-2' fontWeight={700} variant="body1" component="p">
-                            Datos de representante o tutor legal*
+                            {textos['datos_representante'] ? textos['datos_representante'] : 'Texto No Definido'}*
                         </Typography>
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
                             <FormGroup
@@ -158,7 +161,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 labelStyle={{ fontWeight: 400 }}
                                 value={(state && state.representante) ? state.representante.nombre : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, nombre: e.currentTarget.value } }) }}
-                                label='Nombre*'
+                                label={`${textos['nombre'] ? textos['nombre'] : 'Texto No Definido'}*`}
                             />
                             <FormGroup
                                 error={(() => {
@@ -174,7 +177,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.email : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, email: e.currentTarget.value } }) }}
-                                label='Correo electrónico*'
+                                label={`${textos['correo_electronico'] ? textos['correo_electronico'] : 'Texto No Definido'}*`}
                             />
                         </MContainer>
                         <MContainer direction='horizontal' styles={{ gap: 40 }}>
@@ -184,7 +187,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.agencia : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, agencia: e.currentTarget.value } }) }}
-                                label='Agencia'
+                                label={textos['agencia'] ? textos['agencia'] : 'Texto No Definido'}
                             />
                             <FormGroup
                                 error={(() => {
@@ -201,7 +204,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 labelClassName={'form-input-label'}
                                 value={(state && state.representante) ? state.representante.telefono : ''}
                                 onChange={(e) => { onFormChange({ representante: { ...state?.representante, telefono: e.currentTarget.value } }) }}
-                                label='Teléfono*'
+                                label={`${textos['telefono'] ? textos['telefono'] : 'Texto No Definido'}*`}
                             />
                         </MContainer>
                     </MContainer>
@@ -226,7 +229,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                                 })
                             }
                         }}
-                        label='Carta Responsiva'
+                        label={textos['carta_responsiva'] ? textos['carta_responsiva'] : 'Texto No Definido'}
                         files={(state.files && state.files.carta_responsiva) ? [state.files.carta_responsiva] : []}
                         filetypes={['pdf', 'doc', 'docx']}
                         height={100}
@@ -251,7 +254,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     <MContainer className='mt-2' styles={{ width: '100%', alignmentBaseline: 'baseline' }} direction='horizontal'>
                         <span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span>
                         <Typography style={{ marginTop: 8, alignmentBaseline: 'baseline' }} fontWeight={700} variant="body1" component="p">
-                            Medidas*
+                            {textos['medidas'] ? textos['medidas'] : 'Texto No Definido'}*
                         </Typography>
                     </MContainer>
                     <MContainer className='mt-2' styles={{ gap: 40 }} direction='horizontal'>
@@ -282,13 +285,13 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             </Typography>
                         </MContainer>
                     </MContainer>
-                    <Typography sx={{ color: '#069CB1' }}>Más adelante, puedes agregar medidas para vestuario en la vista final de tu perfil</Typography>
+                    <Typography sx={{ color: '#069CB1' }}>{textos['info_medidas'] ? textos['info_medidas'] : 'Texto No Definido'}</Typography>
                 </MContainer>
             </Grid>
             <Grid item xs={12} className='my-4' md={7}>
                 <MContainer className='mt-2 mb-4' styles={{ width: '100%' }} direction='vertical'>
                     <Typography fontWeight={700} variant="body1" component="p" style={{ marginBottom: 5 }}>
-                        Acerca de
+                        {textos['biografia'] ? textos['biografia'] : 'Texto No Definido'}
                         <MTooltip
                             text={
                                 <>
@@ -316,7 +319,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             <Grid item xs={12} md={4} className='mt-4' justifyContent={'end'}>
                 <DragNDrop
                     id='id-drag-n-drop-cv'
-                    label='Subir CV'
+                    label={`${textos['subir'] ? textos['subir'] : 'Texto No Definido'} ${textos['cv'] ? textos['cv'] : 'Texto No Definido'}`}
                     max_file_size={5120}
                     download_url={state.files.urls.cv}
                     onDownloadUrlRemove={(url: string) => {
@@ -355,7 +358,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     <MContainer className='my-2' styles={{ width: '50%' }} direction='horizontal'>
                         <span className={'badge'}> <Image className='mr-2' width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="" /> </span>
                         <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
-                            Página web
+                            {textos['pagina_web'] ? textos['pagina_web'] : 'Texto No Definido'}
                         </Typography>
                         <MTooltip sx={{ mt: 1 }} text='Añade aquí el link de tu página web o portafolio que mejor represente tu trabajo, recuerda que este link será visible en tu perfil para los Cazatalentos.' color='orange' placement='right' />
                     </MContainer>
@@ -370,7 +373,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={12}>
                 <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
-                    Link a redes sociales:
+                    {textos['links_a_redes'] ? textos['links_a_redes'] : 'Texto No Definido'}
                 </Typography>
             </Grid>
             <Grid item xs={4} md={2}>

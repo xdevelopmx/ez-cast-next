@@ -3,11 +3,29 @@ import { useState, useEffect } from 'react';
 
 const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
     en: {
+        o: 'or',
+        regresar_paso: 'Previous step',
+        paso_siguiente: 'Next step',
+        guardar_y_terminar_mas_tarde: 'Save and finish later',
+        finalizar: 'Finish',
         field_cant_be_empty: 'The [CAMPO] cant be empty',
         nombre: 'Name', 
+        union: 'Union',
+        ubicacion: 'Location',
         biografia: 'Biography',
         cambiar: 'Change',
         foto: 'Photo',
+        edad: 'Age',
+        agencia: 'Agency',
+        telefono: 'Telephone',
+        correo_electronico: 'Email',
+        archivo: 'File',
+        carta_responsiva: 'Responsive Letter',
+        cv: 'CV',
+        subir: 'Upload',
+        arrastrar_archivos: 'Drag files in the box',
+        si: 'Yes',
+        no: 'No',
         cerrar_sesion: 'Sign Out', 
         selecciona_una_opcion: 'Select an option',
         cancelar: 'Cancel',
@@ -115,14 +133,34 @@ const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         documentos: 'Documents',
         disponibilidad_para: 'Availability for',
         otras_profesiones: 'Other professions',
-        meses_de_embarazo: 'Months of pregnancy'
+        meses_de_embarazo: 'Months of pregnancy',
+        pagina_web: 'Webpage',
+        links_a_redes: 'Links to social media',
     },
     es: {
+        o: 'o',
+        regresar_paso: 'Regresar paso',
+        paso_siguiente: 'Siguiente paso',
+        guardar_y_terminar_mas_tarde: 'Guardar y terminar más tarde',
+        finalizar: 'Finalizar',
         nombre: 'Nombre',
+        union: 'Unión',
+        ubicacion: 'Ubicación',
         biografia: 'Biografía',
         field_cant_be_empty: 'El [CAMPO] no puede estar vacio',
         cambiar: 'Cambiar',
         foto: 'Foto',
+        edad: 'Edad',
+        agencia: 'Agencia',
+        telefono: 'Teléfono',
+        correo_electronico: 'Correo electrónico',
+        archivo: 'Archivo',
+        carta_responsiva: 'Carta Responsiva',
+        cv: 'CV',
+        subir: 'Subir',
+        arrastrar_archivos: 'Arrastrar archivo(s) al recuadro',
+        si: 'Si',
+        no: 'No',
         cerrar_sesion: 'Cerrar Sesión',
         selecciona_una_opcion: 'Selecciona una opción',
         cancelar: 'Cancelar',
@@ -230,7 +268,9 @@ const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         documentos: 'Documentos',
         disponibilidad_para: 'Disponibilidad para',
         otras_profesiones: 'Otras profesiones',
-        meses_de_embarazo: 'Meses de embarazo'
+        meses_de_embarazo: 'Meses de embarazo',
+        pagina_web: 'Página web',
+        links_a_redes: 'Link a redes sociales',
     }
 }
 
@@ -385,6 +425,38 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             acerca_de: 'Acerca de',
             dialog_medidas_vestuario_subtitulo: 'Elige la categoría que aplique para ti.',
             calzado_ninos: 'Calzado Niños'
+        }
+    },
+    '/talento/editar-perfil': {
+        en: {
+            step6_title: 'Role Preferences And Compensations',
+            step7_title: 'Appareance Filters',
+            nombre_union: `Union's Name`,
+            eres_menor_de_edad: 'Are you a minor',
+            datos_representante: 'Data of legal representative or guardian',
+            info_medidas: 'Later on, you can add clothing measurements in the final view of your profile',
+            elegir_foto_perfil: 'Select profile photo',
+            media_fotos_tooltip: 'Test',
+            media_videos_tooltip_titulo: 'Add a videobook or reel.',
+            media_videos_tooltip_body: `A reel consists of editing together a clip that highlights your on-stage moments from later works. We recommend being clear and direct, seeking the best quality in audio and video, and compiling your best works to contrast and showcase.`,
+            media_audios_tooltip: 'Showcase in a short audio your vocal ability; accents, imitations, voices, singing, etc...'
+        },
+        es: {
+            step6_title: 'Preferencia de rol y compensación',
+            step7_title: 'Filtros de Apariencia',
+            nombre_union: 'Nombre Unión',
+            eres_menor_de_edad: 'Eres menor de edad',
+            datos_representante: 'Datos de representante o tutor legal',
+            info_medidas: 'Más adelante, puedes agregar medidas para vestuario en la vista final de tu perfil',
+            elegir_foto_perfil: 'Eligir foto de perfil',
+            info_basica_biografia_tooltip_title: "", 
+            media_fotos_tooltip: 'Prueba',
+            media_videos_tooltip_titulo: 'Añade un videobook o Reel',
+            media_videos_tooltip_body: `Un reel consiste en montar un clip editado que destaque tus
+            momentos en escena de trabajos posteriores, te recomendamos
+            ser claro y directo, buscar la mejor calidad en Audio y
+            Video contrastando y recopilando tus mejores trabajos`,
+            media_audios_tooltip: 'Resalta en un breve audio tu habilidad vocal; acentos, imitaciones, voces, canto, etc...'
         }
     }
 }

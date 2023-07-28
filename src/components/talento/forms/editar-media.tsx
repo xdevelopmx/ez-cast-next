@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { useContext, type FC } from 'react'
 import Image from 'next/image';
 import { Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
@@ -8,6 +8,8 @@ import { FileManager } from '~/utils/file-manager';
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer';
 import { type TalentoFormMedios } from '~/pages/talento/editar-perfil';
 import { MTooltip } from '~/components/shared/MTooltip';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     state: TalentoFormMedios,
@@ -15,6 +17,8 @@ interface Props {
 }
 
 export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     return (
         <Grid container justifyContent={'space-between'} spacing={2} mb={8}>
             <Grid item xs={12} md={8}>
@@ -22,17 +26,17 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                     <MContainer direction='horizontal' styles={{ gap: 10, marginBottom: 5, alignItems: 'center' }}>
                         <span className={'badge'}> <Image width={24} height={24} src="/assets/img/iconos/icono_camara_cart_blue.svg" alt="" /> </span>
                         <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
-                            Fotos
+                            {textos['foto'] ? textos['foto'] : 'Texto No Definido'}s
                         </Typography>
                         <Typography fontWeight={300} fontSize={'1.3rem'} variant="body2" component="p">
                             (Headshots)
                         </Typography>
                         <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
-                            JPG o PNG
+                            JPG {textos['o'] ? textos['o'] : 'Texto No Definido'} PNG
                         </Typography>
-                        <MTooltip text='prueba' color='orange' placement='right' />
+                        <MTooltip text={textos['media_fotos_tooltip'] ? textos['media_fotos_tooltip'] : 'Texto No Definido'} color='orange' placement='right' />
                     </MContainer>
-                    <Typography sx={{ color: '#069CB1', margin: '5px' }}>Elegir foto de perfil</Typography>
+                    <Typography sx={{ color: '#069CB1', margin: '5px' }}>{textos['elegir_foto_perfil'] ? textos['elegir_foto_perfil'] : 'Texto No Definido'}</Typography>
                     <DraggableContainer
                         width={600}
                         direction={'horizontal'}
@@ -75,7 +79,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         height={'130px'}
                         max_file_size={5120}
                         hide_selected
-                        text_button='Añadir foto'
+                        text_button={`${textos['agregar'] ? textos['agregar'] : 'Texto No Definido'} ${textos['foto'] ? textos['foto'] : 'Texto No Definido'}`}
                         onChange={(files: File[]) => {
                             const files_converted = Promise.all(files.map(async (f) => {
                                 const base64 = await FileManager.convertFileToBase64(f);
@@ -109,17 +113,14 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                     (Reel)
                                 </Typography>
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
-                                    MP4 o MOV
+                                    MP4 {textos['o'] ? textos['o'] : 'Texto No Definido'} MOV
                                 </Typography>
                                 <MTooltip
                                     text={
                                         <>
-                                            <Typography fontSize={14} fontWeight={600}>Añade un videobook o Reel.</Typography>
+                                            <Typography fontSize={14} fontWeight={600}>{textos['media_videos_tooltip_titulo'] ? textos['media_videos_tooltip_titulo'] : 'Texto No Definido'}</Typography>
                                             <Typography fontSize={14} fontWeight={400}>
-                                                Un reel consiste en montar un clip editado que destaque tus
-                                                momentos en escena de trabajos posteriores, te recomendamos
-                                                ser claro y directo, buscar la mejor calidad en Audio y
-                                                Video contrastando y recopilando tus mejores trabajos
+                                                {textos['media_videos_tooltip_body'] ? textos['media_videos_tooltip_body'] : 'Texto No Definido'}
                                             </Typography>
                                         </>
                                     }
@@ -134,7 +135,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 max_files={3}
                                 max_file_size={5120}
                                 assign_selected_files_height
-                                text_button='Añadir Video'
+                                text_button={`${textos['agregar'] ? textos['agregar'] : 'Texto No Definido'} ${textos['video'] ? textos['video'] : 'Texto No Definido'}`}
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
                                         const base64 = await FileManager.convertFileToBase64(f);
@@ -168,7 +169,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
                                     MP3 o WAV
                                 </Typography>
-                                <MTooltip text='Resalta en un breve audio tu habilidad vocal; acentos, imitaciones, voces, canto, etc..' color='orange' placement='right' />
+                                <MTooltip text={textos['media_audios_tooltip'] ? textos['media_audios_tooltip'] : 'Texto No Definido'} color='orange' placement='right' />
                             </MContainer>
                             <DragNDrop
                                 id='id-drag-n-drop-audios'
@@ -177,7 +178,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                 max_files={3}
                                 max_file_size={5120}
                                 assign_selected_files_height
-                                text_button='Añadir Audio Clip'
+                                text_button={`${textos['agregar'] ? textos['agregar'] : 'Texto No Definido'} ${textos['audio'] ? textos['audio'] : 'Texto No Definido'}`}
                                 onChange={(files: File[]) => {
                                     const files_converted = Promise.all(files.map(async (f) => {
                                         const base64 = await FileManager.convertFileToBase64(f);

@@ -1,8 +1,10 @@
-import { type CSSProperties, useEffect, useRef, useState, type FC, type ReactNode } from 'react'
+import { type CSSProperties, useEffect, useRef, useState, type FC, type ReactNode, useContext } from 'react'
 import { motion } from 'framer-motion'
 import MotionDiv from '../layout/MotionDiv';
 import { Step, StepLabel, Stepper, type SxProps } from '@mui/material';
 import { MContainer } from '../layout/MContainer';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     onStepChange: (step: number) => void;
@@ -26,7 +28,8 @@ export const MStepper: FC<Props> = ({
     onStepSave, onStepChange, current_step, step_titles, children, onFinish, tooltips, stylesStepper,
     style, styleH3Paso, stylesStep, stylesStepLabel, styleSpanH3PasoTitulo
 }) => {
-
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
     const animation_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
     const [showContent, setShowContent] = useState(false);
     useEffect(() => {
@@ -50,7 +53,7 @@ export const MStepper: FC<Props> = ({
                     ))}
                 </Stepper>
                 <h3 className="paso-stepper" style={styleH3Paso}>
-                    PASO {current_step} <span style={styleSpanH3PasoTitulo}> {step_titles[current_step]}</span>
+                    {textos['paso'] ? textos['paso'] : 'Texto No Definido'} {current_step} <span style={styleSpanH3PasoTitulo}> {step_titles[current_step]}</span>
                     {tooltips && tooltips[current_step]}
                 </h3>
 
@@ -67,7 +70,7 @@ export const MStepper: FC<Props> = ({
                                 <button className="boton-next-step margen" type='button' onClick={() => {
                                     onStepChange(current_step - 1)
                                 }}>
-                                    <motion.img src="/assets/img/iconos/arow_l_blue.svg" /> Regresar Paso
+                                    <motion.img src="/assets/img/iconos/arow_l_blue.svg" /> {textos['regresar_paso'] ? textos['regresar_paso'] : 'Texto No Definido'}
                                 </button>
                             }
                             {children.length > 0 && current_step === 1 && <div />}
@@ -76,7 +79,7 @@ export const MStepper: FC<Props> = ({
                                 <button className="boton-next-step margen" type='button' onClick={() => {
                                     onStepSave(current_step);
                                 }}>
-                                    Guardar y terminar más tarde
+                                    {textos['guardar_y_terminar_mas_tarde'] ? textos['guardar_y_terminar_mas_tarde'] : 'Texto No Definido'}
                                 </button>
                             }
 
@@ -84,14 +87,14 @@ export const MStepper: FC<Props> = ({
                                 <button className="boton-next-step margen" type='button' onClick={() => {
                                     onStepChange(current_step + 1)
                                 }}>
-                                    Siguiente Paso <motion.img src="/assets/img/iconos/arow_r_blue.svg" />
+                                    {textos['paso_siguiente'] ? textos['paso_siguiente'] : 'Texto No Definido'} <motion.img src="/assets/img/iconos/arow_r_blue.svg" />
                                 </button>
                             }
                             {onFinish && children.length > 0 && current_step === children.length &&
                                 <button className="boton-next-step margen" type='button' onClick={() => {
                                     onFinish()
                                 }}>
-                                    Finalizar <motion.img src="/assets/img/iconos/arow_r_blue.svg" />
+                                    {textos['finalizar'] ? textos['finalizar'] : 'Texto No Definido'} <motion.img src="/assets/img/iconos/arow_r_blue.svg" />
                                 </button>
                             }
                         </>

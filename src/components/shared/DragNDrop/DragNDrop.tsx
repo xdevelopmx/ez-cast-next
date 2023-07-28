@@ -1,4 +1,4 @@
-import React, { type ReactNode, useEffect, useRef, useState, CSSProperties } from "react";
+import React, { type ReactNode, useEffect, useRef, useState, CSSProperties, useContext } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import Image from 'next/image';
 import { Alert, Button, IconButton } from "@mui/material";
@@ -10,6 +10,8 @@ import { Close } from "@mui/icons-material";
 import { MTooltip } from "../MTooltip";
 import { MContainer } from "~/components/layout/MContainer";
 import { FileManager } from "~/utils/file-manager";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 //const fileTypes = ["JPG", "PNG", "GIF", "PDF"];
 
@@ -44,6 +46,9 @@ interface Props {
 }
 
 function DragNDrop(props: Props) {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+
     const [files, setFiles] = useState<Map<string, File>>(new Map());
     const [error, setError] = useState<{ type: 'MAX_FILES_REACHED' | 'MAX_SIZE_REACHED' | 'FILE_ALREADY_ADDED', message: string } | null>(null);
     const hide_error_time_ref = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -132,7 +137,7 @@ function DragNDrop(props: Props) {
                                 window.open(props.download_url)
                             }} variant="text"
                             sx={{ textTransform: 'capitalize', textDecoration: 'underline', '&:hover': { textDecoration: 'underline' } }}>
-                            {props.text_label_download || 'Descargar Archivo'}
+                            {props.text_label_download || `${textos['descargar'] ? textos['descargar'] : 'Texto No Definido'} ${textos['archivo'] ? textos['archivo'] : 'Texto No Definido'}`}
                         </Button>
                         {props.onDownloadUrlRemove &&
                             <IconButton
@@ -201,12 +206,12 @@ function DragNDrop(props: Props) {
                                         alt="icono"
                                         className="mr-2"
                                     />}
-                                    <span>{props.text_button || 'Subir Archivo(s)'}</span>
+                                    <span>{props.text_button || `${textos['subir'] ? textos['subir'] : 'Texto No Definido'} ${textos['archivo'] ? textos['archivo'] : 'Texto No Definido'}(s)`}</span>
                                 </div>
                                 {
                                     !props.textoArrastrarArchivos
                                         ? (<p className="mb-1 txt_arrastrar">
-                                            {`Arrastrar archivo(s) al recuadro ${(props.max_files) ? '(Hasta ' + props.max_files.toString() + ' archivos)' : ''}`}
+                                            {`${textos['arrastrar_archivos'] ? textos['arrastrar_archivos'] : 'Texto No Definido'} ${(props.max_files) ? '(Max. ' + props.max_files.toString() + ' ' + textos['archivo'] + 's)' : ''}`}
                                         </p>)
                                         : props.textoArrastrarArchivos
                                 }

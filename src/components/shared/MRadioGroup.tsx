@@ -36,7 +36,7 @@ export const MRadioGroup: FC<Props> = ({
                         aria-labelledby="demo-row-radio-buttons-group-label"
                         name="row-radio-buttons-group"
                     >
-                        {options.map(o => {
+                        {options.filter(o => o.length > 0).map(o => {
                             return <FormControlLabel
                                 key={o}
                                 style={elementStyle}

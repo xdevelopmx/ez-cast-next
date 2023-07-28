@@ -3,7 +3,7 @@ import Head from "next/head";
 
 import { MainLayout } from "~/components";
 import { MStepper } from "~/components/shared/MStepper";
-import { useEffect, useMemo, useReducer } from "react";
+import { useContext, useEffect, useMemo, useReducer } from "react";
 import { EditarActivosTalento, EditarCreditosTalento, EditarFiltrosAparenciasTalento, EditarInfoBasicaTalento, EditarMediaTalento, EditarPreferenciaRolYCompensacionTalento } from "~/components/talento";
 import { NewMedia, type Archivo } from "~/server/api/root";
 import EditarHabilidadesTalento from "~/components/talento/forms/editar-habilidades";
@@ -21,6 +21,8 @@ import { CreditoTalento, Media } from "@prisma/client";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { prisma } from "~/server/db";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 export type TalentoFormInfoGral = {
     nombre: string,
@@ -403,6 +405,8 @@ type EditarTalentoPageProps = {
 }
 
 const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
     const router = useRouter();
     const [state, dispatch] = useReducer(reducer, { ...initialState, step_active: (router.query['step']) ? parseInt(router.query['step'] as string) : 1 });
     const { notify } = useNotify();
@@ -798,7 +802,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                         },
                         id_estado_republica: talento.data.info_basica.id_estado_republica,
                         edad: talento.data.info_basica.edad,
-                        es_menor_de_edad: (talento.data.info_basica.edad >= 18) ? 'No' : 'Sí',
+                        es_menor_de_edad: (talento.data.info_basica.edad >= 18) ? textos['no'] ? textos['no'] : 'Texto No Definido' : textos['si'] ? textos['si'] : 'Texto No Definido',
                         peso: talento.data.info_basica.peso,
                         altura: talento.data.info_basica.altura,
                         biografia: talento.data.info_basica.biografia,
@@ -970,7 +974,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                 })
             }
         }
-    }, [talento.data]);
+    }, [talento.data, textos]);
 
     const editar_info_basica_talento = useMemo(() => {
         return <EditarInfoBasicaTalento
@@ -1116,13 +1120,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                             }
                         }}
                         step_titles={{
-                            1: 'Información básica',
-                            2: 'Media',
-                            3: 'Créditos',
-                            4: 'Habilidades',
-                            5: 'Activos',
-                            6: 'Preferencia de rol y compensación',
-                            7: 'Filtros de Apariencia'
+                            1: textos['info_basica'] ? textos['info_basica'] : 'Texto No Definido',
+                            2: textos['media'] ? textos['media'] : 'Texto No Definido',
+                            3: `${textos['credito'] ? textos['credito'] : 'Texto No Definido'}s`,
+                            4: textos['habilidades'] ? textos['habilidades'] : 'Texto No Definido',
+                            5: textos['activos'] ? textos['activos'] : 'Texto No Definido',
+                            6: textos['step6_title'] ? textos['step6_title'] : 'Texto No Definido',
+                            7: textos['step7_title'] ? textos['step7_title'] : 'Texto No Definido'
                         }}
                         tooltips={{
                             4: <MTooltip
