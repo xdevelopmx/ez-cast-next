@@ -1,4 +1,4 @@
-import { useMemo, type FC } from 'react'
+import { useMemo, type FC, useContext } from 'react'
 import { AddButton, FormGroup } from '~/components';
 import { Button, Divider, Grid, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
@@ -10,6 +10,8 @@ import { api } from '~/utils/api';
 import MotionDiv from '~/components/layout/MotionDiv';
 import useNotify from '~/hooks/useNotify';
 import { Close } from '@mui/icons-material';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     state: TalentoFormActivos,
@@ -19,6 +21,8 @@ const CURRENT_YEAR = new Date().getFullYear();
 const VEHICULO_YEARS = Array.from({ length: 100 }).map((v, i) => CURRENT_YEAR - i);
 
 export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const tipos_vehiculos = api.catalogos.getTipoVehiculos.useQuery();
     const tipos_mascotas = api.catalogos.getTipoMascotas.useQuery();
     const tipos_razas = api.catalogos.getTipoRazasMascotas.useQuery();
@@ -33,12 +37,12 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 return <MSelect
                     id="tipo-raza-select"
                     className={'form-input-md'}
-                    options={(tipos_razas.data) ? tipos_razas.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
+                    options={(tipos_razas.data) ? tipos_razas.data.map(m => { return { value: m.id.toString(), label: ctx.lang === 'es' ? m.es : m.en } }) : []}
                     style={{ width: 200 }}
                     value={state.mascota.id_raza.toString()}
                     onChange={(e) => {
                         const tipo = (tipos_razas.data) ? tipos_razas.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                        onFormChange({ mascota: { ...state.mascota, tipo_raza: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_raza: parseInt(e.target.value) } })
+                        onFormChange({ mascota: { ...state.mascota, tipo_raza: (tipo.length > 0 && tipo[0] != null) ? (ctx.lang === 'es') ? tipo[0].es : tipo[0].en : 'ND', id_raza: parseInt(e.target.value) } })
                     }}
                     label='Raza'
                 />
@@ -46,7 +50,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
         }
         return null;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.mascota]);
+    }, [state.mascota, ctx.lang]);
 
     const vestuario_especifico_select: JSX.Element | null = useMemo(() => {
         if (state.vestuario) {
@@ -54,12 +58,12 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 return <MSelect
                     id="tipo-vestuario-especifico-select"
                     className={'form-input-md'}
-                    options={(tipos_vestuarios_especificos.data) ? tipos_vestuarios_especificos.data.filter(v => v.id_tipo_vestuario === state.vestuario?.id_tipo).map(m => { return { value: m.id.toString(), label: m.es } }) : []}
+                    options={(tipos_vestuarios_especificos.data) ? tipos_vestuarios_especificos.data.filter(v => v.id_tipo_vestuario === state.vestuario?.id_tipo).map(m => { return { value: m.id.toString(), label: ctx.lang === 'es' ? m.es : m.en } }) : []}
                     style={{ width: 200 }}
                     value={state.vestuario.id_tipo_vestuario_especifico.toString()}
                     onChange={(e) => {
                         const tipo = (tipos_vestuarios_especificos.data) ? tipos_vestuarios_especificos.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                        onFormChange({ vestuario: { ...state.vestuario, tipo_especifico: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_tipo_vestuario_especifico: parseInt(e.target.value) } })
+                        onFormChange({ vestuario: { ...state.vestuario, tipo_especifico: (tipo.length > 0 && tipo[0] != null) ? ctx.lang === 'es' ? tipo[0].es : tipo[0].en : 'ND', id_tipo_vestuario_especifico: parseInt(e.target.value) } })
                     }}
                     label='Tipo Vestuario Especifico'
                 />
@@ -67,7 +71,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
         }
         return null;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state.vestuario]);
+    }, [state.vestuario, ctx.lang]);
 
     return (
         <Grid container spacing={2}>
@@ -79,7 +83,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         }}
                         id="mostrar-vehiculos"
                         labelClassName={'label-black-lg'}
-                        options={['Vehículos']}
+                        options={[textos['vehiculos'] ? textos['vehiculos'] : 'Texto No Definido']}
                         values={[state.has_vehiculos]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                     <MotionDiv show={state.has_vehiculos} animation='fade'>
@@ -88,13 +92,13 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <MSelect
                                 id="tipo-vehiculo-select"
                                 className={'form-input-md'}
-                                options={(tipos_vehiculos.data) ? tipos_vehiculos.data.map(v => { return { value: v.id.toString(), label: v.es } }) : []}
+                                options={(tipos_vehiculos.data) ? tipos_vehiculos.data.map(v => { return { value: v.id.toString(), label: (ctx.lang === 'es') ? v.es : v.en } }) : []}
                                 value={state.vehiculo.id_tipo_vehiculo.toString()}
                                 onChange={(e) => {
                                     const tipo = (tipos_vehiculos.data) ? tipos_vehiculos.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                                    onFormChange({ vehiculo: { ...state.vehiculo, tipo: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_tipo_vehiculo: parseInt(e.target.value) } })
+                                    onFormChange({ vehiculo: { ...state.vehiculo, tipo: (tipo.length > 0 && tipo[0] != null) ? (ctx.lang === 'es') ? tipo[0].es : tipo[0].en : 'ND', id_tipo_vehiculo: parseInt(e.target.value) } })
                                 }}
-                                label='Tipo Vehiculo'
+                                label={textos['tipo_vehiculo'] ? textos['tipo_vehiculo'] : 'Texto No Definido'}
                             />
                             <FormGroup
                                 className={'form-input-md'}
@@ -103,7 +107,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, marca: e.target.value } })
                                 }}
-                                label='Marca'
+                                label={textos['marca'] ? textos['marca'] : 'Texto No Definido'}
                             />
                             <FormGroup
                                 className={'form-input-md'}
@@ -112,7 +116,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, modelo: e.target.value } })
                                 }}
-                                label='Modelo'
+                                label={textos['modelo'] ? textos['modelo'] : 'Texto No Definido'}
                             />
                             <FormGroup
                                 className={'form-input-md'}
@@ -121,7 +125,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, color: e.target.value } })
                                 }}
-                                label='Color'
+                                label={textos['color'] ? textos['color'] : 'Texto No Definido'}
                             />
                             <MSelect
                                 id="anio-vehiculo-select"
@@ -132,10 +136,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ vehiculo: { ...state.vehiculo, anio: parseInt(e.target.value) } })
                                 }}
-                                label='Año'
+                                label={textos['anio'] ? textos['anio'] : 'Texto No Definido'}
                             />
                             <AddButton
                                 aStyles={{ marginLeft: 0, width: 100 }}
+                                text={textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
                                 onClick={() => {
                                     if (state.vehiculos) {
                                         if (state.vehiculo &&
@@ -148,10 +153,10 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                             if (state.vehiculos.length < 5) {
                                                 onFormChange({ vehiculos: state.vehiculos.concat([state.vehiculo]) });
                                             } else {
-                                                notify('warning', 'Solo puedes tener hasta 5 vehículos, si deseas agregar otro por favor borra algún vehículo');
+                                                notify('warning', textos['activos_vehiculos_max_validacion'] ? textos['activos_vehiculos_max_validacion'] : 'Texto No Definido');
                                             }
                                         } else {
-                                            notify('warning', 'Por favor llena todos los campos antes de intentar guardar el activo');
+                                            notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', textos['activos'] ? textos['activos'] : 'Texto No Definido') : 'Texto No Definido');
                                         }
                                     } else {
                                         onFormChange({ vehiculos: [state.vehiculo] })
@@ -170,22 +175,22 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MTable
                             columnsHeader={[
                                 <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Tipo
+                                    {textos['tipo'] ? textos['tipo'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Marca
+                                    {textos['marca'] ? textos['marca'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Modelo
-                                </Typography>,
-                                <Typography key={5} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Color
+                                    {textos['modelo'] ? textos['modelo'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Año
+                                    {textos['color'] ? textos['color'] : 'Texto No Definido'}
+                                </Typography>,
+                                <Typography key={5} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                                    {textos['anio'] ? textos['anio'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={6} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Acciones
+                                    {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                                 </Typography>,
                             ]}
                             loading={!state.vehiculos}
@@ -205,7 +210,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         }}
                                         variant="outlined"
                                         startIcon={<Close />}>
-                                        Eliminar
+                                        {textos['eliminar'] ? textos['eliminar'] : 'Texto No Definido'}
                                     </Button>
                                 };
                             }) : []}
@@ -224,7 +229,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         }}
                         id="mostrar-mascotas"
                         labelClassName={'label-black-lg'}
-                        options={['Mascotas']}
+                        options={[textos['mascotas'] ? textos['mascotas'] : 'Texto No Definido']}
                         values={[state.has_mascotas]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                     <MotionDiv show={state.has_mascotas} animation='fade'>
@@ -233,14 +238,14 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <MSelect
                                 id="tipo-mascota-select"
                                 className={'form-input-md'}
-                                options={(tipos_mascotas.data) ? tipos_mascotas.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
+                                options={(tipos_mascotas.data) ? tipos_mascotas.data.map(m => { return { value: m.id.toString(), label: ctx.lang === 'es' ? m.es : m.en } }) : []}
                                 style={{ width: 200 }}
                                 value={state.mascota.id_tipo_mascota.toString()}
                                 onChange={(e) => {
                                     const tipo = (tipos_mascotas.data) ? tipos_mascotas.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                                    onFormChange({ mascota: { ...state.mascota, id_tipo_raza: 0, tipo: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_tipo_mascota: parseInt(e.target.value) } })
+                                    onFormChange({ mascota: { ...state.mascota, id_tipo_raza: 0, tipo: (tipo.length > 0 && tipo[0] != null) ? ctx.lang === 'es' ? tipo[0].es : tipo[0].en : 'ND', id_tipo_mascota: parseInt(e.target.value) } })
                                 }}
-                                label='Tipo Mascota'
+                                label={textos['tipo_mascota'] ? textos['tipo_mascota'] : 'Texto No Definido'}
                             />
                             <>
                                 {raza_select}
@@ -248,16 +253,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <MSelect
                                 id="tamanio-mascota-select"
                                 className={'form-input-md'}
-                                options={[{ value: 'Chico', label: 'Chico' }, { value: 'Mediano', label: 'Mediano' }, { value: 'Grande', label: 'Grande' }]}
+                                options={[{ value: 'Chico', label: textos['chico'] ? textos['chico'] : 'Texto No Definido'}, { value: 'Mediano', label: textos['mediano'] ? textos['mediano'] : 'Texto No Definido' }, { value: 'Grande', label: textos['grande'] ? textos['grande'] : 'Texto No Definido' }]}
                                 style={{ width: 200 }}
                                 value={state.mascota.tamanio}
                                 onChange={(e) => {
                                     onFormChange({ mascota: { ...state.mascota, tamanio: e.target.value } })
                                 }}
-                                label='Tamaño'
+                                label={textos['tamanio'] ? textos['tamanio'] : 'Texto No Definido'}
                             />
                             <AddButton
                                 aStyles={{ marginLeft: 0, width: 100 }}
+                                text={textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
                                 onClick={() => {
                                     if (state.mascotas) {
                                         if (state.mascota &&
@@ -268,13 +274,13 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                                 if (state.mascota.id_tipo_mascota === 5 && state.mascota.id_raza > 0 || state.mascota.id_tipo_mascota !== 5) {
                                                     onFormChange({ mascotas: state.mascotas.concat([state.mascota]) });
                                                 } else {
-                                                    notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                                    notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', textos['activos'] ? textos['activos'] : 'Texto No Definido') : 'Texto No Definido');
                                                 }
                                             }else{
-                                                notify('warning', 'Solo puedes tener hasta 5 mascotas, si deseas agregar otra por favor borra alguna otra mascota');
+                                                notify('warning', textos['activos_mascotas_max_validacion'] ? textos['activos_mascotas_max_validacion'] : 'Texto No Definido');
                                             }
                                         } else {
-                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                            notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', textos['activos'] ? textos['activos'] : 'Texto No Definido') : 'Texto No Definido');
                                         }
                                     } else {
                                         onFormChange({ mascotas: [state.mascota] })
@@ -292,16 +298,16 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MTable
                             columnsHeader={[
                                 <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Mascota
+                                    {textos['mascota'] ? textos['mascota'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Raza
+                                    {textos['raza'] ? textos['raza'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Tamaño
+                                    {textos['tamanio'] ? textos['tamanio'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Acciones
+                                    {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                                 </Typography>,
                             ]}
                             loading={!state.mascotas}
@@ -309,7 +315,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 return {
                                     tipo: mascota.tipo,
                                     tipo_raza: (mascota.id_tipo_mascota === 5) ? mascota.tipo_raza : 'No Aplica',
-                                    tamanio: mascota.tamanio,
+                                    tamanio: (() => {
+                                        //mascota.tamanio
+                                        if (ctx.lang === 'en') {
+                                            switch (mascota.tamanio.toLowerCase()) {
+                                                case 'chico': return 'Small';
+                                                case 'mediano': return 'Medium';
+                                                case 'grande': return 'Large';
+                                            }
+                                        }
+                                        return mascota.tamanio;  
+                                    })(),
                                     delete: <Button
                                         style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }}
                                         onClick={() => {
@@ -319,7 +335,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         }}
                                         variant="outlined"
                                         startIcon={<Close />}>
-                                        Eliminar
+                                        {textos['eliminar'] ? textos['eliminar'] : 'Texto No Definido'}
                                     </Button>
 
                                 }
@@ -339,7 +355,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         }}
                         id="mostrar-vestuario"
                         labelClassName={'label-black-lg'}
-                        options={['Vestuario']}
+                        options={[textos['vestuarios'] ? textos['vestuarios'] : 'Texto No Definido']}
                         values={[state.has_vestuario]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                     <MotionDiv show={state.has_vestuario} animation='fade'>
@@ -348,14 +364,14 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <MSelect
                                 id="tipo-vestuario-select"
                                 className={'form-input-md'}
-                                options={(tipos_vestuarios.data) ? tipos_vestuarios.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
+                                options={(tipos_vestuarios.data) ? tipos_vestuarios.data.map(m => { return { value: m.id.toString(), label: ctx.lang === 'es' ? m.es : m.en } }) : []}
                                 style={{ width: 200 }}
                                 value={state.vestuario.id_tipo.toString()}
                                 onChange={(e) => {
                                     const tipo = (tipos_vestuarios.data) ? tipos_vestuarios.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                                    onFormChange({ vestuario: { ...state.vestuario, tipo: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_tipo: parseInt(e.target.value), id_tipo_especifico: 0 } })
+                                    onFormChange({ vestuario: { ...state.vestuario, tipo: (tipo.length > 0 && tipo[0] != null) ? ctx.lang === 'es' ? tipo[0].es : tipo[0].en : 'ND', id_tipo: parseInt(e.target.value), id_tipo_especifico: 0 } })
                                 }}
-                                label='Tipo Vestuario'
+                                label={textos['tipo_vestuario'] ? textos['tipo_vestuario'] : 'Texto No Definido'}
                             />
                             <>
                                 {vestuario_especifico_select}
@@ -367,16 +383,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ vestuario: { ...state.vestuario, descripcion: e.target.value } })
                                 }}
-                                label='Descripcion'
+                                label={textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}
                             />
                             <AddButton
+                                text={textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
                                 aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.vestuarios) {
                                         if (state.vestuario && state.vestuario.id_tipo > 0 && state.vestuario.id_tipo_vestuario_especifico > 0 && state.vestuario.descripcion.length > 0) {
                                             onFormChange({ vestuarios: state.vestuarios.concat([state.vestuario]) });
                                         } else {
-                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                            notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', textos['activos'] ? textos['activos'] : 'Texto No Definido') : 'Texto No Definido');
                                         }
                                     } else {
                                         onFormChange({ vestuarios: [state.vestuario] })
@@ -394,16 +411,16 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MTable
                             columnsHeader={[
                                 <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Tipo Vestuario
+                                    {textos['tipo_vestuario'] ? textos['tipo_vestuario'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Tipo Vestuario Especifico
+                                    {textos['tipo_vestuario_especifico'] ? textos['tipo_vestuario_especifico'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Descripcion
+                                    {textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Acciones
+                                    {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                                 </Typography>,
                             ]}
                             loading={!state.vestuarios}
@@ -421,7 +438,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         }}
                                         variant="outlined"
                                         startIcon={<Close />}>
-                                        Eliminar
+                                        {textos['eliminar'] ? textos['eliminar'] : 'Texto No Definido'}
                                     </Button>
                                 }
                             }) : []}
@@ -449,14 +466,14 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <MSelect
                                 id="tipo-prop-select"
                                 className={'form-input-md'}
-                                options={(tipos_props.data) ? tipos_props.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
+                                options={(tipos_props.data) ? tipos_props.data.map(m => { return { value: m.id.toString(), label: ctx.lang === 'es' ? m.es : m.en } }) : []}
                                 style={{ width: 200 }}
                                 value={state.prop.id_tipo_props.toString()}
                                 onChange={(e) => {
                                     const tipo = (tipos_props.data) ? tipos_props.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                                    onFormChange({ prop: { ...state.prop, tipo: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_tipo_props: parseInt(e.target.value) } })
+                                    onFormChange({ prop: { ...state.prop, tipo: (tipo.length > 0 && tipo[0] != null) ? ctx.lang === 'es' ? tipo[0].es : tipo[0].en : 'ND', id_tipo_props: parseInt(e.target.value) } })
                                 }}
-                                label='Tipo Prop'
+                                label={textos['tipo_prop'] ? textos['tipo_prop'] : 'Texto No Definido'}
                             />
                             <FormGroup
                                 className={'form-input-md'}
@@ -465,16 +482,17 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ prop: { ...state.prop, descripcion: e.target.value } })
                                 }}
-                                label='Descripcion'
+                                label={textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}
                             />
                             <AddButton
+                                text={textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
                                 aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.props) {
                                         if (state.prop && state.prop.id_tipo_props > 0 && state.prop.descripcion.length > 0) {
                                             onFormChange({ props: state.props.concat([state.prop]) });
                                         } else {
-                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                            notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', textos['activos'] ? textos['activos'] : 'Texto No Definido') : 'Texto No Definido');
                                         }
                                     } else {
                                         onFormChange({ props: [state.prop] })
@@ -493,13 +511,13 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MTable
                             columnsHeader={[
                                 <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Tipo Prop
+                                    {textos['tipo_prop'] ? textos['tipo_prop'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Descripcion
+                                    {textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Acciones
+                                    {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                                 </Typography>,
                             ]}
                             loading={!state.props}
@@ -516,7 +534,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         }}
                                         variant="outlined"
                                         startIcon={<Close />}>
-                                        Eliminar
+                                        {textos['eliminar'] ? textos['eliminar'] : 'Texto No Definido'}
                                     </Button>
                                 }
                             }) : []}
@@ -535,7 +553,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         }}
                         id="mostrar-equipo-deportivo"
                         labelClassName={'label-black-lg'}
-                        options={['Equipo Deportivo']}
+                        options={[textos['equipo_deportivo'] ? textos['equipo_deportivo'] : 'Texto No Definido']}
                         values={[state.has_equipo_deportivo]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                     <MotionDiv show={state.has_equipo_deportivo} animation='fade'>
@@ -544,14 +562,14 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             <MSelect
                                 id="tipo-equipo-deportivo-select"
                                 className={'form-input-md'}
-                                options={(tipo_equipo_deportivo.data) ? tipo_equipo_deportivo.data.map(m => { return { value: m.id.toString(), label: m.es } }) : []}
+                                options={(tipo_equipo_deportivo.data) ? tipo_equipo_deportivo.data.map(m => { return { value: m.id.toString(), label: ctx.lang === 'es' ? m.es : m.en } }) : []}
                                 style={{ width: 200 }}
                                 value={state.equipo_deportivo.id_tipo_equipo_deportivo.toString()}
                                 onChange={(e) => {
                                     const tipo = (tipo_equipo_deportivo.data) ? tipo_equipo_deportivo.data.filter(d => d.id === parseInt(e.target.value)) : [];
-                                    onFormChange({ equipo_deportivo: { ...state.equipo_deportivo, tipo: (tipo.length > 0 && tipo[0] != null) ? tipo[0].es : 'ND', id_tipo_equipo_deportivo: parseInt(e.target.value) } })
+                                    onFormChange({ equipo_deportivo: { ...state.equipo_deportivo, tipo: (tipo.length > 0 && tipo[0] != null) ? ctx.lang === 'es' ? tipo[0].es : tipo[0].en : 'ND', id_tipo_equipo_deportivo: parseInt(e.target.value) } })
                                 }}
-                                label='Tipo Equipo'
+                                label={textos['tipo_equipo'] ? textos['tipo_equipo'] : 'Texto No Definido'}
                             />
                             <FormGroup
                                 className={'form-input-md'}
@@ -560,9 +578,10 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 onChange={(e) => {
                                     onFormChange({ equipo_deportivo: { ...state.equipo_deportivo, descripcion: e.target.value } })
                                 }}
-                                label='Descripcion'
+                                label={textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}
                             />
                             <AddButton
+                                text={textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
                                 aStyles={{ marginLeft: 0, width: 100 }}
                                 onClick={() => {
                                     if (state.equipos_deportivos) {
@@ -570,10 +589,10 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                             if(state.equipos_deportivos.length < 5){
                                                 onFormChange({ equipos_deportivos: state.equipos_deportivos.concat([state.equipo_deportivo]) });
                                             }else{
-                                                notify('warning', 'Solo puedes tener hasta 5 equipos deportivos, si deseas agregar otro por favor borra algún otro equipo deportivo');
+                                                notify('warning', textos['activos_equipo_deportivo_max_validacion'] ? textos['activos_equipo_deportivo_max_validacion'] : 'Texto No Definido');
                                             }
                                         } else {
-                                            notify('warning', 'Por favor llena todos los campos antes de intentar agregar el activo');
+                                            notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', textos['activos'] ? textos['activos'] : 'Texto No Definido') : 'Texto No Definido');
                                         }
                                     } else {
                                         onFormChange({ equipos_deportivos: [state.equipo_deportivo] })
@@ -591,13 +610,13 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MTable
                             columnsHeader={[
                                 <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Tipo Equipo
+                                   {textos['tipo_equipo'] ? textos['tipo_equipo'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                                    Descripcion
+                                    {textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}
                                 </Typography>,
                                 <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-
+                                    {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                                 </Typography>,
                             ]}
                             loading={!state.equipos_deportivos}
@@ -614,7 +633,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                         }}
                                         variant="outlined"
                                         startIcon={<Close />}>
-                                        Eliminar
+                                        {textos['eliminar'] ? textos['eliminar'] : 'Texto No Definido'}
                                     </Button>
                                 }
                             }) : []}

@@ -1,8 +1,10 @@
 
 import { Checkbox, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Radio, RadioGroup, Skeleton, Typography } from '@mui/material';
-import type { ChangeEventHandler, CSSProperties, FC, HTMLInputTypeAttribute } from 'react'
+import { useContext, type ChangeEventHandler, type CSSProperties, type FC, type HTMLInputTypeAttribute } from 'react'
 import { MContainer } from '../layout/MContainer';
 import { MTooltip } from './MTooltip';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     id: string,
@@ -30,6 +32,9 @@ export const MCheckboxGroup: FC<Props> = ({
     disabled, direction, title, titleStyle, onAllOptionChecked, labelClassName, id, onChange, values, labelStyle,
     style, options, fontWeight, textTooltip, styleTooltip = {}, colorTooltip = 'orange', loading
 }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    
     const elements_count = (options.length > 0) ? options.length : 5;
     return (
         <div>
@@ -63,7 +68,7 @@ export const MCheckboxGroup: FC<Props> = ({
                                     }}
                                 />
                             }
-                            label={'Seleccionar todos'} />
+                            label={textos['seleccionar_todos'] ? textos['seleccionar_todos'] : 'Texto No Definido'} />
                         <Divider style={{ margin: 8 }} />
                     </MContainer>
                 </FormGroup>

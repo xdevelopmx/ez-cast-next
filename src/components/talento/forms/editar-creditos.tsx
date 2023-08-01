@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { useContext, type FC } from 'react';
 import Image from 'next/image';
 import { FormGroup } from '~/components';
 import { MContainer } from '~/components/layout/MContainer';
@@ -12,6 +12,8 @@ import { api } from '~/utils/api';
 import useNotify from '~/hooks/useNotify';
 import { MTooltip } from '~/components/shared/MTooltip';
 import { FileManager } from '~/utils/file-manager';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     state: TalentoFormCreditos,
@@ -25,13 +27,15 @@ const YEARS = Array.from({ length: 100 }).map((value: unknown, i: number) => {
 }).sort((a, b) => parseInt(b.value) - parseInt(a.value));
 
 export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const tipo_proyecto = api.catalogos.getTipoProyectos.useQuery();
     const { notify } = useNotify();
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} my={2}>
                 <Typography fontSize={'1.6rem'} fontWeight={600} component={'p'}>
-                    Añadir Crédito
+                {textos['agregar'] ? textos['agregar'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}
                 </Typography>
             </Grid>
 
@@ -41,16 +45,16 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                         styleRoot={{ width: '100%' }}
                         id="tipo-proyecto-select"
                         loading={tipo_proyecto.isFetching}
-                        options={(tipo_proyecto.data) ? tipo_proyecto.data.map(tipo => { return { value: tipo.id.toString(), label: tipo.es } }) : []}
+                        options={(tipo_proyecto.data) ? tipo_proyecto.data.map(tipo => { return { value: tipo.id.toString(), label: (ctx.lang === 'es') ? tipo.es : tipo.en } }) : []}
                         value={state.tipo_proyecto.toString()}
                         onChange={(e) => {
                             onFormChange({ tipo_proyecto: parseInt(e.target.value) })
                         }}
-                        label='Tipo Proyecto'
+                        label={textos['tipo_proyecto'] ? textos['tipo_proyecto'] : 'Texto No Definido'}
                     />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
-                    <FormGroup style={{ width: '100%' }} className={'form-input-md'} labelClassName={'form-input-label'} value={(state) ? state.titulo : ''} onChange={(e) => { onFormChange({ titulo: e.currentTarget.value }) }} label='Título' />
+                    <FormGroup style={{ width: '100%' }} className={'form-input-md'} labelClassName={'form-input-label'} value={(state) ? state.titulo : ''} onChange={(e) => { onFormChange({ titulo: e.currentTarget.value }) }} label={textos['titulo'] ? textos['titulo'] : 'Texto No Definido'} />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
                     <MSelect
@@ -61,11 +65,11 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => {
                             onFormChange({ rol: e.target.value })
                         }}
-                        label='Rol'
+                        label={textos['rol'] ? textos['rol'] : 'Texto No Definido'}
                     />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
-                    <FormGroup style={{ width: '100%' }} className={'form-input-md'} labelClassName={'form-input-label'} value={(state) ? state.director : ''} onChange={(e) => { onFormChange({ director: e.currentTarget.value }) }} label='Director' />
+                    <FormGroup style={{ width: '100%' }} className={'form-input-md'} labelClassName={'form-input-label'} value={(state) ? state.director : ''} onChange={(e) => { onFormChange({ director: e.currentTarget.value }) }} label={textos['director'] ? textos['director'] : 'Texto No Definido'} />
                 </Grid>
                 <Grid item xs={20} md={4} lg={4}>
                     <MContainer direction='vertical'>
@@ -76,7 +80,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             style={{ marginBottom: 8 }}
                             value={(state) ? state.anio.toString() : ''}
                             onChange={(e) => { onFormChange({ anio: parseInt(e.target.value) }) }}
-                            label='Año'
+                            label={textos['anio'] ? textos['anio'] : 'Texto No Definido'}
                         />
                     </MContainer>
                 </Grid>
@@ -96,7 +100,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                     }])
                                 })
                             } else {
-                                notify('warning', 'Por favor llena todos los campos antes de intentar agregar el credito');
+                                notify('warning', textos['llenar_todos_los_campos'] ? textos['llenar_todos_los_campos'].replace('[TYPE]', `${textos['credito']}`) : 'Texto No Definido');
                             }
 
                         }
@@ -105,7 +109,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                         className="btn  btn-social">
                         <Image width={16} height={16} style={{ marginRight: 7 }} src="/assets/img/iconos/cruz_blue.svg"
                             alt="Boton de agregar credito" />
-                        Guardar crédito
+                        {textos['guardar'] ? textos['guardar'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}
                     </a>
                 </Grid>
             </Grid>
@@ -116,7 +120,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
             <Grid item xs={12} xl={12} my={2}>
                 <MContainer direction='vertical'>
                     <Typography my={2} fontSize={'1.6rem'} fontWeight={600} component={'p'}>
-                        Tus Créditos
+                        {textos['tus'] ? textos['tus'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}s
                     </Typography>
                     <MCheckboxGroup
                         onChange={(e) => {
@@ -124,7 +128,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                         }}
                         id="mostrar-anio-perfil"
                         labelStyle={{ fontWeight: '400', fontSize: '1.1rem' }}
-                        options={['Mostrar Año en Perfil']}
+                        options={[textos['mostrar_anio_en_perfil'] ? textos['mostrar_anio_en_perfil'] : 'Texto No Definido']}
                         values={[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                 </MContainer>
@@ -134,21 +138,21 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                     headerClassName='GrayHeader'
                     columnsHeader={[
                         <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Título
+                            {textos['titulo'] ? textos['titulo'] : 'Texto No Definido'}
                         </Typography>,
                         <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Rol
+                            {textos['rol'] ? textos['rol'] : 'Texto No Definido'}
                         </Typography>,
                         <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Director
+                            {textos['director'] ? textos['director'] : 'Texto No Definido'}
                         </Typography>,
                         <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Año
+                            {textos['anio'] ? textos['anio'] : 'Texto No Definido'}
                         </Typography>,
                         <Typography key={5} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Crédito destacado 
+                            {textos['credito_destacado'] ? textos['credito_destacado'] : 'Texto No Definido'} 
                             <MTooltip 
-                                text='Puedes destacar hasta 3 créditos, estos estarán a la vista del Cazatalento.' 
+                                text={textos['creditos_credito_destacado_tooltip']} 
                                 color='orange' 
                                 placement='top' />
                         </Typography>,
@@ -156,7 +160,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             Clip
                         </Typography>,
                         <Typography key={7} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Acciones
+                            {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                         </Typography>
                     ]}
                     data={(state) ? state.creditos.map((credito) => {
@@ -169,14 +173,18 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 style={{ color: (credito.destacado) ? 'gold' : 'gray' }}
                                 aria-label="marcar como"
                                 onClick={() => {
-                                    onFormChange({
-                                        creditos: state.creditos.map(c => {
-                                            if (c.id === credito.id) {
-                                                c.destacado = !credito.destacado;
-                                            }
-                                            return c;
+                                    if (state.creditos.filter(c => c.destacado).length < 3) {
+                                        onFormChange({
+                                            creditos: state.creditos.map(c => {
+                                                if (c.id === credito.id) {
+                                                    c.destacado = !credito.destacado;
+                                                }
+                                                return c;
+                                            })
                                         })
-                                    })
+                                    } else {
+                                        notify('warning', textos['creditos_credito_destacado_max_validacion'] ? textos['creditos_credito_destacado_max_validacion'] : 'Texto No Definido')
+                                    }
                                 }}
                             >
                                 <Star />
@@ -188,7 +196,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                             <MContainer direction='horizontal'>
                                                 <Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />
                                                 <Typography fontSize={'0.9rem'} fontWeight={700}>
-                                                    {credito.clip ? 'Cambiar' : 'Añadir'}
+                                                    {credito.clip ? textos['cambiar'] ? textos['cambiar'] : 'Texto No Definido' : textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
                                                 </Typography>
 
                                             </MContainer>
@@ -218,7 +226,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             acciones:
                                 <Button style={{ textTransform: 'capitalize', fontWeight: 800, color: '#069CB1' }} onClick={() => {
                                     onFormChange({ creditos: state.creditos.filter(c => c.id !== credito.id) })
-                                }} variant="outlined" startIcon={<Close />}> Eliminar </Button>
+                                }} variant="outlined" startIcon={<Close />}> {textos['eliminar'] ? textos['eliminar'] : 'Texto No Definido'} </Button>
                         }
                     }) : []}
                 />

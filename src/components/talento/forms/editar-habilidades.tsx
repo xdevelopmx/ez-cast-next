@@ -1,9 +1,11 @@
-import { useMemo, type FC } from 'react'
+import { useMemo, type FC, useContext } from 'react'
 import { Accordion, AccordionSummary, Typography, AccordionDetails, Skeleton, Chip } from '@mui/material';
 import { Add, ExpandMore, Remove } from '@mui/icons-material';
 import { api } from '~/utils/api';
 import { type TalentoFormHabilidades } from '~/pages/talento/editar-perfil';
 import { MContainer } from '~/components/layout/MContainer';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface EditarHabilidadesTalentoPageProps {
     state: TalentoFormHabilidades,
@@ -11,6 +13,9 @@ interface EditarHabilidadesTalentoPageProps {
 }
 
 const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFormChange, state }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    
     const habilidades = api.catalogos.getHabilidades.useQuery({ include_subcategories: true }, {
         refetchOnWindowFocus: false
     });
@@ -42,7 +47,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <Typography sx={{ margin: 0 }} fontSize={'1.3rem'} fontWeight={500}>{habilidad.es}</Typography>
+                        <Typography sx={{ margin: 0 }} fontSize={'1.3rem'} fontWeight={500}>{ctx.lang === 'es' ? habilidad.es : habilidad.en}</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
                         {habilidad.habilidades_especificas.map((he, j) => {
@@ -64,7 +69,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                                 }}
                                 icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: 'white' }} /> : <Add style={{ color: '#069cb1' }} />}
                                 key={j}
-                                label={he.es}
+                                label={(ctx.lang === 'es') ? he.es : he.en}
                                 style={{
                                     margin: 4,
                                     fontWeight: 800,
@@ -85,7 +90,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
 
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [habilidades.isSuccess, habilidades.isFetching, habilidades.data, state]);
+    }, [habilidades.isSuccess, habilidades.isFetching, habilidades.data, state, ctx.lang]);
     return (
         <MContainer direction='vertical'>
             {accordions.map(a => a)}

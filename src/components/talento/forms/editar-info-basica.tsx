@@ -295,9 +295,9 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <MTooltip
                             text={
                                 <>
-                                    <Typography fontSize={14} fontWeight={600}>Cuentanos sobre ti</Typography>
+                                    <Typography fontSize={14} fontWeight={600}>{textos['info_basica_biografia_tooltip_title'] ? textos['info_basica_biografia_tooltip_title'] : 'Texto No Definido'}</Typography>
                                     <Typography fontSize={14} fontWeight={400}>
-                                        Te recomendamos escribir un texto breve que describa tu formación profesional e intereses
+                                        {textos['info_basica_biografia_tooltip_body'] ? textos['info_basica_biografia_tooltip_body'] : 'Texto No Definido'}
                                     </Typography>
                                 </>
                             }
@@ -335,7 +335,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             })
                         }
                     }}
-                    tooltip={{ text: 'Recuerda añadir la versión más actualizada de tu currículum en formato PDF', color: 'orange', placement: 'top' }}
+                    tooltip={{ text: textos['info_basica_cv_tooltip'] ? textos['info_basica_cv_tooltip'] : 'Texto No Definido', color: 'orange', placement: 'top' }}
                     height={100}
                     files={(state.files && state.files.cv) ? [state.files.cv] : []}
                     filetypes={['PDF', 'DOC', 'DOCX']}
@@ -360,7 +360,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                         <Typography lineHeight={2} fontWeight={700} variant="body1" component="p">
                             {textos['pagina_web'] ? textos['pagina_web'] : 'Texto No Definido'}
                         </Typography>
-                        <MTooltip sx={{ mt: 1 }} text='Añade aquí el link de tu página web o portafolio que mejor represente tu trabajo, recuerda que este link será visible en tu perfil para los Cazatalentos.' color='orange' placement='right' />
+                        <MTooltip sx={{ mt: 1 }} text={textos['info_basica_webpage'] ? textos['info_basica_webpage'] : 'Texto No Definido'} color='orange' placement='right' />
                     </MContainer>
                     <FormGroup
                         className={'form-input-md'}

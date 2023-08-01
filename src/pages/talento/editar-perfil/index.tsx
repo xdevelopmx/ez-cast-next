@@ -865,28 +865,28 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                     type: 'update-activos', value: {
                         vehiculos: (talento.data.activos.vehiculos) ? talento.data.activos.vehiculos.map(vehiculo => {
                             return {
-                                tipo: vehiculo.tipo_vehiculo?.es, id_tipo_vehiculo: vehiculo.id_tipo_vehiculo,
+                                tipo: ctx.lang === 'es' ? vehiculo.tipo_vehiculo?.es : vehiculo.tipo_vehiculo?.en, id_tipo_vehiculo: vehiculo.id_tipo_vehiculo,
                                 marca: vehiculo.marca, modelo: vehiculo.modelo, color: vehiculo.color, anio: vehiculo.anio
                             }
                         }) : [],
                         mascotas: (talento.data.activos.mascotas) ? talento.data.activos.mascotas.map(mascota => {
                             return {
-                                tipo: mascota.tipo_mascota?.es, id_tipo_mascota: mascota.tipo_mascota?.id, tipo_raza: mascota.raza_mascota?.es,
+                                tipo: ctx.lang === 'es' ? mascota.tipo_mascota?.es : mascota.tipo_mascota?.en, id_tipo_mascota: mascota.tipo_mascota?.id, tipo_raza: ctx.lang === 'es' ? mascota.raza_mascota?.es : mascota.raza_mascota?.en,
                                 id_raza: mascota.id_raza, tamanio: mascota.tamanio
                             }
                         }) : [],
                         vestuarios: (talento.data.activos.vestuario) ? talento.data.activos.vestuario.map(vestuario => {
                             return {
-                                tipo: vestuario.tipo_vestuario_especifico?.tipo_vestuario.es, id_tipo: vestuario.tipo_vestuario_especifico?.id_tipo_vestuario,
-                                tipo_especifico: vestuario.tipo_vestuario_especifico?.es, id_tipo_vestuario_especifico: vestuario.id_tipo_vestuario_especifico,
+                                tipo: ctx.lang === 'es' ? vestuario.tipo_vestuario_especifico?.tipo_vestuario.es : vestuario.tipo_vestuario_especifico?.en, id_tipo: vestuario.tipo_vestuario_especifico?.id_tipo_vestuario,
+                                tipo_especifico: ctx.lang === 'es' ? vestuario.tipo_vestuario_especifico?.es : vestuario.tipo_vestuario_especifico?.en, id_tipo_vestuario_especifico: vestuario.id_tipo_vestuario_especifico,
                                 descripcion: vestuario.descripcion
                             }
                         }) : [],
                         props: (talento.data.activos.props) ? talento.data.activos.props.map(prop => {
-                            return { tipo: prop.tipo_props?.es, id_tipo_props: prop.id_tipo_props, descripcion: prop.descripcion }
+                            return { tipo: ctx.lang === 'es' ? prop.tipo_props?.es : prop.tipo_props?.en, id_tipo_props: prop.id_tipo_props, descripcion: prop.descripcion }
                         }) : [],
                         equipos_deportivos: (talento.data.activos.equipo_deportivo) ? talento.data.activos.equipo_deportivo.map(ed => {
-                            return { tipo: ed.tipo_equipo_deportivo?.es, id_tipo_equipo_deportivo: ed.id_tipo_equipo_deportivo, descripcion: ed.descripcion }
+                            return { tipo: ctx.lang === 'es' ? ed.tipo_equipo_deportivo?.es : ed.tipo_equipo_deportivo?.en, id_tipo_equipo_deportivo: ed.id_tipo_equipo_deportivo, descripcion: ed.descripcion }
                         }) : [],
                     }
                 })
@@ -1130,19 +1130,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                         }}
                         tooltips={{
                             4: <MTooltip
-                                text='Incluye todas las habilidades que te diferencien de los demás. ¡Un Cazatalentos puede estar buscando un rol con tus habilidades!'
+                                text={textos['habilidades_tooltip'] ? textos['habilidades_tooltip'] : 'Texto No Definido'}
                                 color='blue'
                                 placement='right'
                             />,
                             5: <MTooltip
                                 text={
                                     <>
-                                        <Typography fontSize={14} fontWeight={600}>De tu casa al set</Typography>
+                                        <Typography fontSize={14} fontWeight={600}>{textos['activos_title_tooltip_title'] ? textos['activos_title_tooltip_title'] : 'Texto No Definido'}</Typography>
                                         <Typography fontSize={14} fontWeight={400}>
-                                            Suma al equipo de producción con los activos que cuentes,
-                                            estos pueden ser muy beneficiosos y dar un giro a la producción
-                                            como plus valía a tu talento, estos pueden ser vestuario, props,
-                                            vehículos, etc...
+                                            {textos['activos_title_tooltip_body'] ? textos['activos_title_tooltip_body'] : 'Texto No Definido'}
                                         </Typography>
                                     </>
                                 }
@@ -1150,7 +1147,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                                 placement='right'
                             />,
                             6: <MTooltip
-                                text='Un rol es un papel que una persona representa dentro de una historia, este personaje puede ser ficticio o real.'
+                                text={textos['preferencias_rol_tooltip'] ? textos['preferencias_rol_tooltip'] : 'Texto No Definido'}
                                 color='blue'
                                 placement='top'
                             />

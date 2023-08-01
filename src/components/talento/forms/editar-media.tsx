@@ -167,7 +167,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                                     Audios
                                 </Typography>
                                 <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
-                                    MP3 o WAV
+                                    MP3 {textos['o'] ? textos['o'] : 'Texto No Definido'} WAV
                                 </Typography>
                                 <MTooltip text={textos['media_audios_tooltip'] ? textos['media_audios_tooltip'] : 'Texto No Definido'} color='orange' placement='right' />
                             </MContainer>

@@ -24,7 +24,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
-  const [lang, setLang] = useState<'es' | 'en'>('es');
+  let default_lang: 'es' | 'en' = 'es';
+  if (typeof window !== "undefined") {
+    const lang = localStorage.getItem('CURRENT_LANG');
+    if (lang && (lang === 'es' || lang === 'en')) {
+      default_lang = lang;
+    }
+  }
+  const [lang, setLang] = useState<'es' | 'en'>(default_lang);
   return (
     <SessionProvider session={session}>
       <DndProvider backend={HTML5Backend}>
@@ -36,6 +43,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           lang: lang,
           setLang: (lang) => {
             setLang(lang);
+            localStorage.setItem('CURRENT_LANG', lang);
           },
           isLoadingData: isLoadingData,
           setIsloadingData: setIsLoadingData,

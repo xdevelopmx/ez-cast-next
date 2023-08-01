@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from 'react'
+import { useEffect, useState, type FC, useContext } from 'react'
 import { FormGroup } from '~/components';
 import { Alert, Divider, Grid, IconButton, Typography } from '@mui/material';
 import { MContainer } from '~/components/layout/MContainer';
@@ -9,6 +9,8 @@ import MotionDiv from '~/components/layout/MotionDiv';
 import useNotify from '~/hooks/useNotify';
 import CloseIcon from '@mui/icons-material/Close';
 import { MTooltip } from '~/components/shared/MTooltip';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     state: TalentoFormPreferencias,
@@ -16,7 +18,9 @@ interface Props {
 }
 
 export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChange, state }) => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    
     const { notify } = useNotify();
 
     const [otrasProfesionesInput, setOtrasProfesionesInput] = useState<string>('')
@@ -68,13 +72,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
         } else {
             setTieneAgenciaRepresentante(false)
         }
-    }, [state.preferencias.nombre_agente, state.preferencias.contacto_agente])
+    }, [state.preferencias.nombre_agente, state.preferencias.contacto_agente]);
+
+    const es_ingles = ctx.lang === 'en';
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
                 <Alert severity="info" icon={false} sx={{ textAlign: 'center', justifyContent: 'center' }}>
-                    Te recomendamos no cerrarte a un solo tipo de rol para tener más oportunidades de ser seleccionado.
+                    {textos['preferencias_rol_alerta'] ? textos['preferencias_rol_alerta'] : 'Texto No Definido'}
                 </Alert>
             </Grid>
             <Grid item xs={6}>
@@ -85,7 +91,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         })
                     }}
                     direction='vertical'
-                    title="Tipo de trabajo"
+                    title={textos['tipo_de_trabajo']}
                     onChange={(e, i) => {
                         if (tipos_trabajo.data) {
                             const tipo_trabajo = tipos_trabajo.data[i]
@@ -104,14 +110,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
-                    options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
+                    options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => es_ingles ? t.en : t.es) : []}
                     values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
             </Grid>
             <Grid item xs={6}>
                 <MTooltip
                     sx={{ mt: 7 }}
-                    text='Selecciona aquellas opciones que vayan de acuerdo a tus habilidades'
+                    text={textos['preferencias_rol_tipo_de_trabajo_tooltip'] ? textos['preferencias_rol_tipo_de_trabajo_tooltip'] : 'Texto No Definido'}
                     color='orange'
                     placement='right'
                 />
@@ -123,27 +129,27 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <MContainer direction='vertical'>
                     <MContainer direction='horizontal'>
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            ¿Estás interesado en trabajo de extra?
+                            ¿{textos['preferencias_rol_interesado_trabajo_extra_title'] ? textos['preferencias_rol_interesado_trabajo_extra_title'] : 'Texto No Definido'}?
                             <MTooltip
-                                text='¿Tienes mucha o poca experiencia y conocimiento dentro de un set? Trabajar de extra puede abrirte muchas puertas y darte conocimiento en el campo, además de que es un rol importante y siempre útil en toda producción.'
+                                text={`¿${textos['preferencias_rol_interesado_trabajo_extra_tooltip'] ? textos['preferencias_rol_interesado_trabajo_extra_tooltip'] : 'Texto No Definido'}?`}
                                 color='orange'
                                 placement='right'
                             />
                         </Typography>
                     </MContainer>
                     <Typography fontSize={'.9rem'} fontWeight={700} style={{ color: '#069cb1' }} component={'p'}>
-                        Si indicas interés en trabajar como extra, aparecerás en la búsqueda de extras del Director
+                        {textos['preferencias_rol_interesado_trabajo_extra_subtitle'] ? textos['preferencias_rol_interesado_trabajo_extra_subtitle'] : 'Texto No Definido'}?
                     </Typography>
                     <MRadioGroup
                         id="interesado-trabajo-extra-group"
-                        options={['Sí', 'No']}
+                        options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
                         disabled={false}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                        value={state.preferencias.interesado_en_trabajos_de_extra ? 'Sí' : 'No'}
+                        value={state.preferencias.interesado_en_trabajos_de_extra ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
                         onChange={(e) => {
                             onFormChange({
                                 preferencias: {
-                                    interesado_en_trabajos_de_extra: e.currentTarget.value === 'Sí'
+                                    interesado_en_trabajos_de_extra: e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')
                                 }
                             })
                         }}
@@ -157,8 +163,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             <Grid item xs={12}>
                 <MCheckboxGroup
                     direction='vertical'
-                    title="Interés en proyectos"
-                    textTooltip='Te recomendamos seleccionar ambas opciones, para aumentar tus posibilidades de ser reclutado. No te limites y genera contactos, experiencia, y nuevos créditos profesionales.'
+                    title={textos['preferencias_rol_interes_en_proyectos'] ? textos['preferencias_rol_interes_en_proyectos'] : 'Texto No Definido'}
+                    textTooltip={textos['preferencias_rol_interes_en_proyectos_tooltip'] ? textos['preferencias_rol_interes_en_proyectos_tooltip'] : 'Texto No Definido'}
                     onChange={(e, i) => {
                         if (tipos_interes_proyectos.data) {
                             const tipo_interes_proyecto = tipos_interes_proyectos.data[i]
@@ -177,7 +183,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="interes-proyectos-checkbox"
                     labelStyle={{ marginBottom: 0 }}
-                    options={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(t => t.es) : []}
+                    options={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(t => es_ingles ? t.en : t.es) : []}
                     values={(tipos_interes_proyectos.data) ? tipos_interes_proyectos.data.map(v => state.interes_en_proyectos.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                 />
             </Grid>
@@ -190,9 +196,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
                     <MContainer direction='horizontal'>
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Locación de Trabajo Principal + Adicionales
+                            {textos['preferencias_rol_locacion'] ? textos['preferencias_rol_locacion'] : 'Texto No Definido'}
                             <MTooltip
-                                text='Agrega el Estado que habites o frecuentes más como Locación Principal, también incluye una locación adicional y amplía tus posibilidades de trabajo.'
+                                text={textos['preferencias_rol_locacion_tooltip'] ? textos['preferencias_rol_locacion_tooltip'] : 'Texto No Definido'}
                                 color='orange'
                                 placement='right'
                             />
@@ -223,7 +229,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                         })
                                     }
                                 }}
-                                label='Principal'
+                                label={textos['principal'] ? textos['principal'] : 'Texto No Definido'}
                             />
                         </MContainer>
 
@@ -236,10 +242,10 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                 style={{ width: 250 }}
                                 value={locacionesAdicionalesSelect}
                                 onChange={(e) => { setLocacionesAdicionalesSelect(e.target.value) }}
-                                label='Adicional'
+                                label={textos['adicional'] ? textos['adicional'] : 'Texto No Definido'}
                             />
                             <AddButton
-                                text='Agregar otra localizacion'
+                                text={textos['preferencias_rol_locacion_button'] ? textos['preferencias_rol_locacion_button'] : 'Texto No Definido'}
                                 onClick={() => {
                                     if (parseInt(locacionesAdicionalesSelect) > 0) {
                                         if (state.locaciones.some(locacion => locacion.id_estado_republica === parseInt(locacionesAdicionalesSelect))) return;
@@ -247,7 +253,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                             locaciones: [...state.locaciones, { es_principal: false, id_estado_republica: parseInt(locacionesAdicionalesSelect) }]
                                         })
                                     } else {
-                                        notify('warning', 'Por favor selecciona otra localizacion antes de intentar agregarla');
+                                        notify('warning', textos['preferencias_rol_locacion_empty_locacion_validation'] ? textos['preferencias_rol_locacion_empty_locacion_validation'] : 'Texto No Definido');
                                     }
                                 }}
                             />
@@ -302,16 +308,16 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <MContainer direction='vertical'>
 
                     <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        Agencia/Representante
+                        {textos['agencia'] ? textos['agencia'] : 'Texto No Definido'}/{textos['representante'] ? textos['representante'] : 'Texto No Definido'}
                     </Typography>
 
                     <MRadioGroup
                         id="agencia-representante-radio"
-                        options={['Sí', 'No']}
+                        options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                        value={tieneAgenciaRepresentante ? 'Sí' : 'No'}
+                        value={tieneAgenciaRepresentante ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
                         onChange={(e) => {
-                            setTieneAgenciaRepresentante(e.currentTarget.value === 'Sí')
+                            setTieneAgenciaRepresentante(e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido'))
                         }}
                         label=''
                     />
@@ -329,13 +335,13 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                         }
                                     })
                                 }}
-                                label='Nombre'
+                                label={textos['nombre'] ? textos['nombre'] : 'Texto No Definido'}
                             />
 
                             <FormGroup
                                 className={'form-input-md'}
                                 type='email'
-                                textBlueLabel={'Correo electrónico'}
+                                textBlueLabel={textos['correo_electronico'] ? textos['correo_electronico'] : 'Texto No Definido'}
                                 value={state.preferencias.contacto_agente}
                                 onChange={(e) => {
                                     onFormChange({
@@ -345,7 +351,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                         }
                                     })
                                 }}
-                                label='Contacto'
+                                label={textos['contacto'] ? textos['contacto'] : 'Texto No Definido'}
                             />
                         </MContainer>
                     </MotionDiv>
@@ -360,12 +366,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             <Grid item xs={12}>
                 <MContainer direction='vertical'>
                     <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        Documentos
+                        {textos['documentos'] ? textos['documentos'] : 'Texto No Definido'}
                     </Typography>
 
                     <MCheckboxGroup
                         direction='vertical'
-                        title="¿Qué documentos oficiales y licencias tienes?"
+                        title={textos['preferencias_rol_documentos_subtitulo'] ? textos['preferencias_rol_documentos_subtitulo'] : 'Texto No Definido'}
                         onChange={(e, i) => {
                             if (tipos_documentos.data) {
                                 const tipo_documento = tipos_documentos.data[i]
@@ -385,7 +391,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         id="documentos-checkbox"
                         labelStyle={{ marginBottom: 0 }}
                         fontWeight={400}
-                        options={(tipos_documentos.data) ? tipos_documentos.data.map(t => t.es) : []}
+                        options={(tipos_documentos.data) ? tipos_documentos.data.map(t => es_ingles ? t.en : t.es) : []}
                         values={(tipos_documentos.data) ? tipos_documentos.data.map(v => state.documentos.map(documento => documento.id_documento).includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
 
@@ -422,12 +428,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
             <Grid item xs={12}>
                 <MContainer direction='vertical'>
                     <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        Disponibilidad para
+                        {textos['disponibilidad_para'] ? textos['disponibilidad_para'] : 'Texto No Definido'}
                     </Typography>
 
                     <MCheckboxGroup
                         direction='horizontal'
-                        title="Algunos directores solicitan actividades específicas, déjales saber si estás dispuesto a realizarlas"
+                        title={textos['preferencias_rol_disponibilidad_subtitulo'] ? textos['preferencias_rol_disponibilidad_subtitulo'] : 'Texto No Definido'}
                         onChange={(e, i) => {
                             if (tipos_disponibilidad.data) {
                                 const tipo_disponibilidad = tipos_disponibilidad.data[i]
@@ -446,7 +452,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         }}
                         id="disponibilidad-para-checkboxgroup"
                         labelStyle={{ marginBottom: 0, width: '32%' }}
-                        options={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(t => t.es) : []}
+                        options={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(t => es_ingles ? t.en : t.es) : []}
                         values={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(v => state.disponibilidad.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
                     />
                 </MContainer>
@@ -458,9 +464,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
             <Grid item xs={12}>
                 <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'} sx={{ marginBottom: 1 }}>
-                    Otras profesiones
+                    {textos['preferencias_rol_otras_profesiones'] ? textos['preferencias_rol_otras_profesiones'] : 'Texto No Definido'}
                     <MTooltip
-                        text='Añade algún trabajo que hayas tenido o tengas fuera del medio ¡Tu habilidad podría estar siendo buscada ahora mismo para el rol de un proyecto!'
+                        text={textos['preferencias_rol_otras_profesiones_tooltip'] ? textos['preferencias_rol_otras_profesiones_tooltip'] : 'Texto No Definido'}
                         color='orange'
                         placement='right'
                     />
@@ -473,7 +479,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         setOtrasProfesionesInput(e.currentTarget.value)
                     }}
                 />
-                <AddButton text='Agregar otra' onClick={() => {
+                <AddButton text={`${textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}`} onClick={() => {
                     if (!otrasProfesionesInput) return;
                     onFormChange({
                         otras_profesiones: [...state.otras_profesiones, otrasProfesionesInput]
@@ -506,22 +512,22 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                 <MContainer direction='horizontal'>
                     <MContainer direction='horizontal' styles={{ alignItems: 'center', gap: 40 }}>
                         <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                            Embarazo
+                            {textos['embarazo'] ? textos['embarazo'] : 'Texto No Definido'}
                         </Typography>
                         <MRadioGroup
                             id="embarazo-radio"
-                            options={['Sí', 'No']}
+                            options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                            value={estaEmbarazada ? 'Sí' : 'No'}
+                            value={estaEmbarazada ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
                             onChange={(e) => {
-                                setEstaEmbarazada(e.currentTarget.value === 'Sí')
+                                setEstaEmbarazada(e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido'))
                             }}
                             label=''
                         />
 
                         <MotionDiv show={estaEmbarazada} animation="fade">
                             <MContainer direction='horizontal'>
-                                <Typography>Meses</Typography>
+                                <Typography>{textos['meses'] ? textos['meses'] : 'Texto No Definido'}</Typography>
                                 <FormGroup
                                     rootStyle={{ margin: 0 }}
                                     type={'number'}
