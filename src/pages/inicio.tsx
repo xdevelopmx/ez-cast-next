@@ -7,7 +7,7 @@ import { LoaderSlide, MainLayout } from "~/components";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { type User } from "next-auth";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { Carroucel } from "~/components/shared/Carroucel";
 import { MContainer } from "~/components/layout/MContainer";
 import { Backdrop, Button, Dialog, DialogActions, DialogContent, Typography } from "@mui/material";
@@ -27,6 +27,8 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
 
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
+
+  const session = useSession();
 
   const [dialog, setDialog] = useState<{ open: boolean, id_proyecto: number }>({ open: false, id_proyecto: 0 });
 

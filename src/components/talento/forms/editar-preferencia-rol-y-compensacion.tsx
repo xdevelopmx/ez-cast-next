@@ -142,10 +142,10 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     </Typography>
                     <MRadioGroup
                         id="interesado-trabajo-extra-group"
-                        options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                        options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                         disabled={false}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                        value={state.preferencias.interesado_en_trabajos_de_extra ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                        value={state.preferencias.interesado_en_trabajos_de_extra ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                         onChange={(e) => {
                             onFormChange({
                                 preferencias: {
@@ -313,9 +313,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
                     <MRadioGroup
                         id="agencia-representante-radio"
-                        options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                        options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                        value={tieneAgenciaRepresentante ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                        value={tieneAgenciaRepresentante ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                         onChange={(e) => {
                             setTieneAgenciaRepresentante(e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido'))
                         }}
@@ -516,9 +516,9 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         </Typography>
                         <MRadioGroup
                             id="embarazo-radio"
-                            options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                            options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                            value={estaEmbarazada ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                            value={estaEmbarazada ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                             onChange={(e) => {
                                 setEstaEmbarazada(e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido'))
                             }}

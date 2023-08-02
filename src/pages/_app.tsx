@@ -1,6 +1,6 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 
 import { api } from "~/utils/api";
 
@@ -24,6 +24,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
+  
   let default_lang: 'es' | 'en' = 'es';
   if (typeof window !== "undefined") {
     const lang = localStorage.getItem('CURRENT_LANG');

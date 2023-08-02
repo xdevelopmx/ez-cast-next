@@ -5,6 +5,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 type ConfirmationDialogProps = {
     title: string,
@@ -14,6 +16,9 @@ type ConfirmationDialogProps = {
 }
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
+    const ctx = React.useContext(AppContext);
+    const textos = useLang(ctx.lang);
+  
     return (
         <div>
             <Dialog
@@ -31,9 +36,9 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => props.onOptionSelected(false)}>Cancelar</Button>
+                    <Button onClick={() => props.onOptionSelected(false)}>{textos['cancelar']}</Button>
                     <Button onClick={() => props.onOptionSelected(true)} autoFocus>
-                        Confirmar
+                        {textos['confirmar']}
                     </Button>
                 </DialogActions>
             </Dialog>

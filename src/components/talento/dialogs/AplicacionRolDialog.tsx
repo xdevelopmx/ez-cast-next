@@ -1,6 +1,6 @@
 import { Check, Close } from "@mui/icons-material";
 import { Dialog, DialogContent, Typography, ButtonGroup, Button, DialogActions, Grid, Divider, Box } from "@mui/material"
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useContext } from "react";
 import MotionDiv from "~/components/layout/MotionDiv"
 import { AudioBar, FormGroup, MSelect, RolCompletoPreview } from "~/components/shared";
 import { RolPreview } from "~/components/shared/RolPreview";
@@ -9,10 +9,14 @@ import Constants from "~/constants";
 import useNotify from "~/hooks/useNotify";
 import { api, parseErrorBody } from "~/utils/api";
 import Image from 'next/image';
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 
 export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: number, id_rol?: number, id_talento?: number, opened: boolean, onClose: (changed: boolean) => void }) => {
-	const { notify } = useNotify();
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    const { notify } = useNotify();
 
     const [ubicacion_selected, setUbicacionSelected] = useState('0');
     const [nota, setNota] = useState('');
@@ -94,7 +98,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
 				<Grid container sx={{ mt: 0 }}>
 					<Grid item xs={12} mt={4}>
 						<Typography variant="h6" color={'#069cb1'}>
-							{props.readonly ? 'Detalles de tu aplicacion' : 'Confirma tu aplicacion'}
+							{props.readonly ? `${textos['detalles']} ${textos['de']} ${textos['tu']} ${textos['aplicacion']}` : `${textos['confirmar']} ${textos['tu']} ${textos['aplicacion']}`}
 						</Typography>
                         <Divider style={{width: '80%'}}/>
 					</Grid>
@@ -108,7 +112,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                     <Grid item xs={12}>
                         <Box display={'flex'} flexDirection={'row'} gap={2}>
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>1.-</Typography>
-                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? 'Ubicacion' : 'Confirma tu ubicacion'}</Typography>
+                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? textos['ubicacion'] : `${textos['confirmar']} ${textos['tu']} ${textos['ubicacion']}`}</Typography>
                         </Box>
                         {props.readonly && aplicacion.data &&
                             <Typography>{aplicacion.data.estado_republica.es}</Typography>
@@ -116,7 +120,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                         {!props.readonly &&
                             <MSelect
                                 id="ubicaciones-select"
-                                label="Ciudad/Estado:"
+                                label={`${textos['ciudad']} / ${textos['estado']}:`}
                                 labelStyle={{ fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
                                 options={(talento.data && talento.data.preferencias) ? talento.data.preferencias.locaciones.map(loc => {
@@ -135,13 +139,13 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                     <Grid item xs={12}>
                         <Box display={'flex'} flexDirection={'row'} gap={2}>
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>2.-</Typography>
-                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? 'Media' : 'Revisa tu media'}</Typography>
+                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? 'Media' : `${textos['revisa']} ${textos['tu']} media`}</Typography>
                         </Box>
                         <Box padding={4}>
-                            <Typography variant='body2' fontSize={'1rem'}>Imagenes</Typography>
+                            <Typography variant='body2' fontSize={'1rem'}>{textos['imagenes']}</Typography>
                             <Box display={'flex'} flexDirection={'row'} gap={2}>
                                 {talento.data && talento.data.media.filter(m => m.media.type.includes('image')).length === 0 &&
-                                    <Typography>No tienes imagenes</Typography>
+                                    <Typography>{textos['no_tienes_elementos']?.replace('[N]', `${textos['imagen']}`)} </Typography>
                                 }
                                 {talento.data && talento.data.media.filter(m => m.media.type.includes('image')).map((m, i) => {
                                     return (
@@ -161,7 +165,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                                 <Typography variant='body2' fontSize={'1rem'}>Videos</Typography>
                                 <Box display={'flex'} flexDirection={'row'} gap={2}>
                                     {talento.data && talento.data.media.filter(m => m.media.type.includes('video')).length === 0 &&
-                                        <Typography>No tienes videos</Typography>
+                                        <Typography>{textos['no_tienes_elementos']?.replace('[N]', `${textos['video']}`)}</Typography>
                                     }
                                     {talento.data && talento.data.media.filter(m => m.media.type.includes('video')).map((m, i) => {
                                         return (
@@ -178,7 +182,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                             <Typography variant='body2' fontSize={'1rem'}>Audios</Typography>
                             <Box display={'flex'} flexDirection={'row'} gap={2}>
                                 {talento.data && talento.data.media.filter(m => m.media.type.includes('audio')).length === 0 &&
-                                    <Typography>No tienes audios</Typography>
+                                    <Typography>{textos['no_tienes_elementos']?.replace('[N]', `${textos['audio']}`)}</Typography>
                                 }
                                 {talento.data && talento.data.media.filter(m => m.media.type.includes('audio')).map((m, i) => {
                                     
@@ -198,7 +202,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                     <Grid item xs={12}>
                         <Box display={'flex'} flexDirection={'row'} gap={2}>
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>3.-</Typography>
-                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? 'Nota' : 'Agrega una nota'}</Typography>
+                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? textos['nota'] : `${textos['agregar']} ${textos['una']} ${textos['nota']}`}</Typography>
                         </Box>
                         <FormGroup
                             type={'text-area'}
@@ -218,7 +222,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
 			</DialogContent>
 			<DialogActions sx={{ justifyContent: 'center' }}>
 				<Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { props.onClose(false) }} variant='text' startIcon={<Close />}>
-					Cerrar
+					{textos['cerrar']}
 				</Button>
                 {!props.readonly &&
                     <Button style={{ textDecoration: 'underline', fontWeight: 800 }} onClick={() => { 
@@ -226,15 +230,15 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                         const id_rol = (props.id_rol) ? props.id_rol : 0;
                         const id_ubicacion = parseInt(ubicacion_selected);
                         if (id_talento <= 0) {
-                            notify('warning', 'No esta definido el talento, por favor contacta a soporte');
+                            notify('warning', `${textos['campo_no_definido']?.replace('[N]', `${textos['talento']}`)}`);
                             return;
                         }
                         if (id_rol <= 0) {
-                            notify('warning', 'No esta definido el rol, por favor contacta a soporte');
+                            notify('warning', `${textos['campo_no_definido']?.replace('[N]', `${textos['rol']}`)}`);
                             return;
                         }
                         if (id_ubicacion <= 0) {
-                            notify('warning', 'No esta definido el talento, por favor contacta a soporte');
+                            notify('warning', `${textos['campo_no_definido']?.replace('[N]', `${textos['ubicacion']}`)}`);
                             return;
                         }
                         createAplicacionTalento.mutate({
@@ -244,7 +248,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                             nota: nota
                         })
                     }} variant='text' startIcon={<Check />}>
-                        Aplicar
+                        {textos['aplicar']}
                     </Button>
                 }
 			</DialogActions>

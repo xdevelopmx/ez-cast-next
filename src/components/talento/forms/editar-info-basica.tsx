@@ -259,7 +259,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     </MContainer>
                     <MContainer className='mt-2' styles={{ gap: 40 }} direction='horizontal'>
                         <MContainer className='mt-2' direction='horizontal' styles={{ gap: 10 }}>
-                            <Typography sx={{ color: '#069CB1' }}>Peso</Typography>
+                            <Typography sx={{ color: '#069CB1' }}>{textos['peso'] ? textos['peso'] : 'Texto No Definido'}</Typography>
                             <FormGroup
                                 style={{ width: 64 }}
                                 value={state.peso.toString()}
@@ -272,7 +272,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                             </Typography>
                         </MContainer>
                         <MContainer className='mt-2 mb-4' direction='horizontal' styles={{ gap: 10 }}>
-                            <Typography sx={{ color: '#069CB1' }}>Altura</Typography>
+                            <Typography sx={{ color: '#069CB1' }}>{textos['altura'] ? textos['altura'] : 'Texto No Definido'}</Typography>
                             <FormGroup
                                 style={{ width: 64 }}
                                 value={state.altura.toString()}

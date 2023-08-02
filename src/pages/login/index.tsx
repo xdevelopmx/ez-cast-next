@@ -1,6 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import { useMemo, useReducer, useState } from "react";
+import { useContext, useMemo, useReducer, useState } from "react";
 import { signIn } from 'next-auth/react'
 
 import { motion } from 'framer-motion'
@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { MContainer } from "~/components/layout/MContainer";
 import Image from "next/image";
 import { MTooltip } from "~/components/shared/MTooltip";
+import AppContext from "~/context/app";
 
 type LoginForm = {
 	user: string,
@@ -34,8 +35,9 @@ function reducer(state: LoginForm, action: { type: string, value: { [key: string
 }
 
 const LoginPage: NextPage = () => {
-
-	const texts = useLang('en');
+	const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+	
 	const { notify } = useNotify();
 	const router = useRouter();
 	const [state, dispatch] = useReducer(reducer, { user: '', password: '', errors: {}, tipo_usuario: TipoUsuario.NO_DEFINIDO });
@@ -187,6 +189,7 @@ const LoginPage: NextPage = () => {
 											password: state.password,
 											tipo_usuario: state.tipo_usuario,
 											correo_usuario: state.user,
+											lang: ctx.lang,
 											redirect: false,
 										}).then(res => {
 											if (res?.ok) {

@@ -331,10 +331,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <Grid item xs={5}>
                             <MRadioGroup
                                 id="dispuesto-cambiar-color"
-                                options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                                options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                                 styleRoot={{ height: 37 }}
                                 labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                                value={state.apariencia.disposicion_cambio_color_cabello ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                                value={state.apariencia.disposicion_cambio_color_cabello ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                                 onChange={(e) => {
                                     onFormChange({
                                         apariencia: {
@@ -356,10 +356,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <Grid item xs={5}>
                             <MRadioGroup
                                 id="dispuesto-cambiar-corte"
-                                options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                                options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                                 styleRoot={{ height: 37 }}
                                 labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                                value={state.apariencia.disposicion_corte_cabello ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                                value={state.apariencia.disposicion_corte_cabello ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                                 onChange={(e) => {
                                     onFormChange({
                                         apariencia: {
@@ -380,10 +380,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         <Grid item xs={5}>
                             <MRadioGroup
                                 id="dispuesto-cambiar-corte"
-                                options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                                options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                                 styleRoot={{ height: 37 }}
                                 labelStyle={{ margin: 0, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                                value={state.apariencia.disposicion_afeitar_o_crecer_vello_facial ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                                value={state.apariencia.disposicion_afeitar_o_crecer_vello_facial ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                                 onChange={(e) => {
                                     onFormChange({
                                         apariencia: {
@@ -422,9 +422,9 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     </Typography>
                     <MRadioGroup
                         id="tiene-tatuajes-distintivos"
-                        options={[textos['si'] ? textos['si'] : 'Texto No Definido', textos['no'] ? textos['no'] : 'Texto No Definido']}
+                        options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                        value={state.has_tatoos ? textos['si'] ? textos['si'] : 'Texto No Definido' : textos['no'] ? textos['no'] : 'Texto No Definido'}
+                        value={state.has_tatoos ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                         onChange={(e) => { 
                             onFormChange({ 
                                 has_tatoos: (e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')),
@@ -438,9 +438,9 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <MotionDiv show={state.has_tatoos} animation='fade'>
                         <>
                             <MContainer direction='horizontal' styles={{ marginBottom: 16, alignItems: 'center', gap: 20 }}>
-                                <Typography>{textos['visibilidad'] ? textos['visibilidad'] : 'Texto No Definido'}</Typography>
+                                <Typography>{textos['filtos_apariencias_piercings_subtitutlo'] ? textos['filtos_apariencias_piercings_subtitutlo'] : 'Texto No Definido'}</Typography>
                                 <MSelect
-                                    id='visibilidad-tatuaje'
+                                    id='filtos_apariencias_piercings_subtitutlo-tatuaje'
                                     options={(tipos_tatuajes.data) ? tipos_tatuajes.data.map(t => { return { value: t.id.toString(), label: es_ingles ? t.en : t.es } }) : []}
                                     style={{ width: 200 }}
                                     onChange={(e) => { onFormChange({ id_tipo_tatuaje: parseInt(e.target.value) }) }}
@@ -464,7 +464,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                         tatuajes: state.tatuajes.concat([{ id_tipo_tatuaje: state.id_tipo_tatuaje, descripcion: state.descripcion_tatoo }])
                                     })
                                 } else {
-                                    notify('warning', 'El campo de visibilidad y descripcion no pueden estar vacios')
+                                    notify('warning', textos['filtros_apariencias_empty_fields_tattoos'] ? textos['filtros_apariencias_empty_fields_tattoos'] : 'Texto No Definido')
                                 }
                             }} />
                             <MContainer direction='horizontal' styles={{ gap: 10 }}>
@@ -500,19 +500,20 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         Piercings
                     </Typography>
                     <Typography>
-                        ¿Tienes algún piercing? Es tu oportunidad, hazle saber al director de casting.?
+                        ¿{textos['filtros_apariencias_piercings_subtitulo'] ? textos['filtros_apariencias_piercings_subtitulo'] : 'Texto No Definido'}?
+                        
                     </Typography>
                     <MRadioGroup
                         id="tiene-piercing"
-                        options={['Sí', 'No']}
+                        options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                         labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                        value={(state.has_piercings) ? 'Sí' : 'No'}
+                        value={(state.has_piercings) ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
                         onChange={(e) => { 
                             onFormChange({ 
-                                has_piercings: (e.currentTarget.value === 'Sí'),
-                                piercings: (e.currentTarget.value === 'Sí') ? state.piercings : [],
-                                id_tipo_piercing: (e.currentTarget.value === 'Sí') ? state.id_tipo_piercing : 0,
-                                descripcion_piercing: (e.currentTarget.value === 'Sí') ? state.descripcion_piercing : '',
+                                has_piercings: (e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')),
+                                piercings: (e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')) ? state.piercings : [],
+                                id_tipo_piercing: (e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')) ? state.id_tipo_piercing : 0,
+                                descripcion_piercing: (e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')) ? state.descripcion_piercing : '',
                             }) 
                         }}
                         label=''
@@ -520,10 +521,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <MotionDiv show={state.has_piercings} animation='fade'>
                         <>
                             <MContainer direction='horizontal' styles={{ gap: 40, alignItems: 'center' }}>
-                                <Typography>Lugar:</Typography>
+                                <Typography>{textos['filtros_apariencias_piercings_lugar'] ? textos['filtros_apariencias_piercings_lugar'] : 'Texto No Definido'}</Typography>
                                 <MSelect
                                     id='tipo-piercing'
-                                    options={(tipos_piercings.data) ? tipos_piercings.data.map(t => { return { value: t.id.toString(), label: t.es } }) : []}
+                                    options={(tipos_piercings.data) ? tipos_piercings.data.map(t => { return { value: t.id.toString(), label: es_ingles ? t.en : t.es } }) : []}
                                     style={{ width: 200 }}
                                     onChange={(e) => { onFormChange({ id_tipo_piercing: parseInt(e.target.value) }) }}
                                     value={state.id_tipo_piercing.toString()}
@@ -531,7 +532,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             </MContainer>
 
                             <MContainer direction='horizontal' styles={{ marginTop: 16, marginBottom: 16, gap: 40, alignItems: 'center' }}>
-                                <Typography>Descripción:</Typography>
+                                <Typography>{textos['descripcion'] ? textos['descripcion'] : 'Texto No Definido'}</Typography>
                                 <FormGroup
                                     className={'form-input-md'}
                                     labelClassName={'form-input-label'}
@@ -541,13 +542,13 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 />
                             </MContainer>
 
-                            <AddButton text='Agregar otro' onClick={() => {
+                            <AddButton text={textos['agregar'] ? textos['agregar'] : 'Texto No Definido'} onClick={() => {
                                 if (state.id_tipo_piercing > 0 && state.descripcion_piercing.length > 0) {
                                     onFormChange({
                                         piercings: state.piercings.concat([{ id_tipo_piercing: state.id_tipo_piercing, descripcion: state.descripcion_piercing }])
                                     })
                                 } else {
-                                    notify('warning', 'El campo de lugar y descripcion no pueden estar vacios')
+                                    notify('warning', textos['filtros_apariencias_empty_fields_piercings'] ? textos['filtros_apariencias_empty_fields_piercings'] : 'Texto No Definido')
                                 }
 
                             }} />
@@ -556,7 +557,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                     let tipo_piercing = '';
                                     const filtered_piercing_type = tipos_piercings.data?.filter(p => p.id === _p.id_tipo_piercing)[0];
                                     if (filtered_piercing_type) {
-                                        tipo_piercing = filtered_piercing_type.es;
+                                        tipo_piercing = es_ingles ? filtered_piercing_type.en : filtered_piercing_type.es;
                                     }
                                     return <Tag
                                         key={i}
@@ -581,16 +582,16 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
             <Grid item xs={12}>
                 <MContainer direction='vertical' styles={{ gap: 20 }}>
                     <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        Gemelo Idéntico o Trillizos
+                        {textos['gemelo_o_trillizo'] ? textos['gemelo_o_trillizo'] : 'Texto No Definido'}
                     </Typography>
                     <MContainer direction='horizontal' styles={{ alignItems: 'center', gap: 40 }}>
-                        <Typography>¿Eres gemelo o trillizo idéntico?</Typography>
+                        <Typography>¿{textos['filtros_apariencias_eres_gemelo_o_trillizo'] ? textos['filtros_apariencias_eres_gemelo_o_trillizo'] : 'Texto No Definido'}?</Typography>
                         <MRadioGroup
                             id="eres-gemelo-trillizo"
-                            options={['Sí', 'No']}
+                            options={[textos['si'] ? textos['si'] : '', textos['no'] ? textos['no'] : '']}
                             labelStyle={{ marginLeft: 112, fontWeight: 800, fontSize: '0.8rem', color: '#069cb1' }}
-                            value={(state.has_hermanos) ? 'Sí' : 'No'}
-                            onChange={(e) => { onFormChange({ has_hermanos: (e.currentTarget.value === 'Sí') }) }}
+                            value={(state.has_hermanos) ? textos['si'] ? textos['si'] : '' : textos['no'] ? textos['no'] : ''}
+                            onChange={(e) => { onFormChange({ has_hermanos: (e.currentTarget.value.includes(textos['si'] ? textos['si'] : 'Texto No Definido')) }) }}
                             label=''
                         />
                     </MContainer>
@@ -600,11 +601,11 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                 <MRadioGroup
                                     style={{}}
                                     id="tienes-hermanos"
-                                    options={(tipos_hermanos.data) ? tipos_hermanos.data.map(h => { return h.es }) : []}
+                                    options={(tipos_hermanos.data) ? tipos_hermanos.data.map(h => { return es_ingles ? h.en : h.es }) : []}
                                     value={state.tipo_hermano_selected}
                                     onChange={(e) => {
                                         const _tipo_hermanos = tipos_hermanos.data?.filter((h) => {
-                                            return e.target.value === h.es
+                                            return e.target.value === h.es || e.target.value === h.en
                                         })[0];
                                         if (_tipo_hermanos) {
                                             onFormChange({
@@ -647,10 +648,10 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
             <Grid item xs={12}>
                 <MContainer direction='vertical' styles={{ gap: 20 }}>
                     <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        Particularidades
+                       {textos['particularidades'] ? textos['particularidades'] : 'Texto No Definido'}
                     </Typography>
                     <Typography>
-                        Algunas veces los directores buscan atributos específicos, déjales saber si tienes alguno de los siguientes
+                        {textos['filtros_apariencias_particularidades_subtitle'] ? textos['filtros_apariencias_particularidades_subtitle'] : 'Texto No Definido'}
                     </Typography>
                     <MContainer direction='vertical'>
                         <MCheckboxGroup
@@ -672,11 +673,11 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                             }) : [false]}
                             id="particularidades-checkboxgroup"
                             labelStyle={{ marginBottom: 0, width: '32%' }}
-                            options={(tipos_particularidades.data) ? tipos_particularidades.data.map(tp => tp.es) : []}
+                            options={(tipos_particularidades.data) ? tipos_particularidades.data.map(tp => es_ingles ? tp.en : tp.es) : []}
                         />
                         <MotionDiv show={state.particularidades.some(e => e.id_particularidad === 99)} animation={'fade'}>
                             <FormGroup
-                                label='Descripcion otro tipo de particularidad'
+                                label={textos['filtros_apariencias_particularidades_otro_tipo'] ? textos['filtros_apariencias_particularidades_otro_tipo'] : 'Texto No Definido'}
                                 className={'form-input-md'}
                                 labelClassName={'form-input-label'}
                                 value={state.descripcion_otra_particularidad}

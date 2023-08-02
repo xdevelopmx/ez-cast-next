@@ -81,14 +81,14 @@ function DragNDrop(props: Props) {
             const all_files = Array.from(files.values());
             const dont_have_repeated = await FileManager.checkFilesRepeatedInArray(all_files.concat(Array.from(selected_files)));
             if (!dont_have_repeated) {
-                setError({ type: 'FILE_ALREADY_ADDED', message: `El archivo ya habia sido agregado` });
+                setError({ type: 'FILE_ALREADY_ADDED', message: textos['FILES_ERRORS_FILE_ALREADY_EXISTS'] ? textos['FILES_ERRORS_FILE_ALREADY_EXISTS'] : 'Texto No Definido' });
                 return false;
             }
             Object.entries(selected_files).every((f) => {
                 const file_size = Math.round((f[1].size / 1024));
                 if (props.max_file_size && file_size > props.max_file_size) {
                     const max_size = props.max_file_size;
-                    setError({ type: 'MAX_SIZE_REACHED', message: `El archivo super el limite maximo de espacio de ${(max_size) ? max_size : 0} kb` });
+                    setError({ type: 'MAX_SIZE_REACHED', message: textos['FILES_ERRORS_FILE_TOO_BIG'] ? textos['FILES_ERRORS_FILE_TOO_BIG'].replace('[SIZE]', `${(max_size) ? max_size : 0}`) : 'Texto No Definido'});
                     return false;
                 }
                 files.set(`${f[1].name}-${f[1].size}-${f[1].type}`, f[1]);
@@ -96,7 +96,7 @@ function DragNDrop(props: Props) {
             })
             props.onChange(Array.from(files.values()));
         } else {
-            setError({ type: 'MAX_FILES_REACHED', message: `El maximo de archivos permitido es ${max_files}` });
+            setError({ type: 'MAX_FILES_REACHED', message: textos['FILES_ERRORS_MAX_FILES_REACHED'] ? textos['FILES_ERRORS_MAX_FILES_REACHED'].replace('[MAX_FILES]', `${max_files}`) : 'Texto No Definido'});
         }
         // reiniciamos el input de archivos ya que lo estamos manejando con estado y se quita para permitir el caso donde el usuario elimine un archivo y quiera
         // volver a seleccionarlo

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from "next/link";
 import { Alertas, FormGroup, MRadioGroup, MainLayout, MenuLateral, RolCompletoPreview } from "~/components";
 
-import { LegacyRef, RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { LegacyRef, RefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DualDatePicker from "~/components/shared/DualDatePicker/DualDatePicker";
@@ -30,6 +30,8 @@ import { TalentoAplicacionesRepresentante } from "~/components/representante/tal
 import { blob } from "aws-sdk/clients/codecommit";
 import { Circle } from "@mui/icons-material";
 import { FileManager } from "~/utils/file-manager";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 type SelftapeTalentoPageProps = {
     user: User,
@@ -42,7 +44,9 @@ async function getDevices() {
 }
 
 const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talento}) => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+  
     const router = useRouter();
 
     const selftapes = api.talentos.getSelftapesByIdTalento.useQuery({id: id_talento}, {
@@ -202,10 +206,10 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                 action: 'PREVIEW', 
                 data: params,
                 opened: true, 
-                title: '¿Deseas guardar Self-Tape?', 
+                title: `¿${textos['deseas_guardar']}?`, 
                 content: 
                     <Box>
-                        <Typography>(Tendrás la posibilidad de reproducirlo y bajarlo en el Media Bank)</Typography>
+                        <Typography>({textos['guardar_dialog_subtitle']})</Typography>
                        <video controls style={{ width: '100%' }} src={recorded_url}>
                             Lo sentimos tu navegador no soporta videos.
                         </video>
@@ -215,7 +219,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                 className={'form-input-label'}
                                 htmlFor={'nombre-input'}
                             >
-                                Nombre*
+                                {textos['nombre']}*
                             </label>
                             <TextField
                                 size="small"
@@ -230,7 +234,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                         <FormControlLabel control={<Switch onChange={() => { 
                             const _public = params.get('public') as boolean;
                             params.set('public', !_public);
-                         }} defaultChecked />} label="Publico" />
+                         }} defaultChecked />} label={textos['publico']} />
                     </Box>
             });
         }
@@ -272,25 +276,23 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                         <Typography>Self-tape</Typography>
                                     </Box>
                                     <Typography>
-                                        Un self tape es una técnica utilizada en el mundo cinematográfico en la que una persona se filma a sí misma en una prueba de casting.
-                                        ¡Saca ventaja de esta herramienta y graba tus audiciones en segundos!
+                                        {textos['title_text']}
                                     </Typography>
                                     {selftapes.data && selftapes.data.length > 0 &&
                                         <Alert variant="filled" severity={!can_record ? 'warning' : 'info'} sx={{maxWidth: '85%', height: 72, my: 2}} > 
-                                            {!can_record ? 'Solo se permite maximo 6 selftapes por usuario, por favor elimina uno antes de intentar grabar otro' : `Tienes ${selftapes.data?.length} selftapes disponibles en el Media Bank`}
-                                            <Button onClick={() => { router.push('/talento/media-bank') }} variant="contained" color='success' size="small" sx={{ml: 2}}>Ir Media Bank</Button>
+                                            {!can_record ? textos['max_selftapes_reached'] : `${textos['current_count_selftape']?.replace('[COUNT]', `${selftapes.data?.length}`)}`}
+                                            <Button onClick={() => { router.push('/talento/media-bank') }} variant="contained" color='success' size="small" sx={{ml: 2}}>{textos['ir_media_bank']}</Button>
                                         </Alert>
                                     }
                                     <Box sx={{backgroundColor: (recording) ? 'lightgray' : ''}} width={'85%'} height={'55vh'} border={'solid'} borderColor={'#069cb1'} position={'relative'}>
                                         {!has_permissions.camera &&
                                             <Box display={'flex'} flexDirection={'column'} alignContent={'center'} alignItems={'center'} position={'absolute'} left={'calc(50% - 200px)'} top={'calc(50% - 60px)'} width={400} height={120}>
                                                 <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
-                                                <Typography>!Atencion!</Typography>
+                                                <Typography>!{textos['atencion']}!</Typography>
                                                 <Typography textAlign={'center'}>
-                                                    Para usar la función de self-tape, debes
-                                                    dar permiso a la aplicación para acceder a tu cámara.
+                                                    {textos['no_camera']}.
                                                 </Typography>
-                                                <Button onClick={ () => { setRecording(prev => true) }} size="small">Activar</Button>
+                                                <Button onClick={ () => { setRecording(prev => true) }} size="small">{textos['activar']}</Button>
                                             </Box>
                                         }
                                         {has_permissions.camera &&
@@ -298,7 +300,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                             {can_record && !recording &&
                                                 <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={200} height={16}>
                                                     <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
-                                                    <Button onClick={ () => { setRecording(prev => !prev) }} size="small">Grabar self-tape</Button>
+                                                    <Button onClick={ () => { setRecording(prev => !prev) }} size="small">{textos['record_selftape']}</Button>
                                                 </Box>
                                             }
                                             {!can_record &&
@@ -318,7 +320,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                         <Box onClick={ () => { setRecording(prev => !prev) }} style={{position: 'absolute', top: 0, right: 0}}>
                                                             <Box sx={{cursor: 'pointer'}} display={'flex'} flexDirection={'row'} mt={2}>
                                                                 <Circle style={{ color: 'tomato', width: 16, height: 16, marginTop: 8}} />
-                                                                <Typography color={'white'} ml={1} mr={4}>Grabando</Typography>
+                                                                <Typography color={'white'} ml={1} mr={4}>{textos['recording']}</Typography>
                                                             </Box>
                                                         </Box>
                                                         <Box sx={{position: 'relative', top: 56, width: '90%'}} ref={textBoxRef} maxHeight={150} overflow={'hidden'} p={4}>
@@ -372,7 +374,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                 onChange={(e) => {
                                                    setLineas(e.target.value)
                                                 }}
-                                                label='Lineas'
+                                                label={textos['lineas']}
                                             />
                                         </Grid>
                                         {/*

@@ -890,10 +890,28 @@ export const TalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 			nombre: z.string(),
 			union: z.object({
-				id: z.number(),
+				id: z.number({
+					errorMap: (issue, _ctx) => {
+						switch (issue.code) {
+							case 'too_small':
+								return { message: 'Debes seleccionar un tipo de union' };
+							default:
+								return { message: 'Union invalida' };
+						}
+					},
+				}).min(1),
 				descripcion: z.string().nullish()
 			}),
-			id_estado_republica: z.number(),
+			id_estado_republica: z.number({
+				errorMap: (issue, _ctx) => {
+					switch (issue.code) {
+						case 'too_small':
+							return { message: 'Debes seleccionar un estado' };
+						default:
+							return { message: 'Locacion invalida' };
+					}
+				},
+			}).min(1),
 			edad: z.number(),
 			peso: z.number(),
 			altura: z.number(),

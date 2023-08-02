@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from "next/link";
 import { Alertas, MainLayout, MenuLateral, RolCompletoPreview } from "~/components";
 
-import { useMemo, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DualDatePicker from "~/components/shared/DualDatePicker/DualDatePicker";
@@ -27,6 +27,8 @@ import { RolPreview } from "~/components/shared/RolPreview";
 import { MedidasDialog } from "~/components/talento/dialogs/MedidasDialog";
 import { AplicacionRolDialog } from "~/components/talento/dialogs/AplicacionRolDialog";
 import { TalentoAplicacionesRepresentante } from "~/components/representante/talento/TalentoAplicacionesRepresentante";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 const estilos_calendario: SxProps<Theme> = {
     '& .MuiPickersCalendarHeader-label': {
@@ -67,7 +69,9 @@ type AplicacionesTalentoPageProps = {
 }
 
 const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_talento}) => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+  
     const router = useRouter();
 
     const { notify } = useNotify();
@@ -94,13 +98,13 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                 return aplicaciones_roles.data.map((aplicacion, i) => (
                     <Box>
                         <Box display={'flex'} flexDirection={'row'} gap={2}>
-                            <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>Estado:</Typography>
+                            <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>{textos['status']}:</Typography>
                             <Typography variant='body2' fontSize={'1.5rem'}>{(() => {
                                 switch (aplicacion.id_estado_aplicacion) {
-                                    case Constants.ESTADOS_APLICACION_ROL.NO_VISTO: return 'No visto';
-                                    case Constants.ESTADOS_APLICACION_ROL.VISTO: return 'Visto';
-                                    case Constants.ESTADOS_APLICACION_ROL.DESTACADO: return 'Destacado';
-                                    case Constants.ESTADOS_APLICACION_ROL.AUDICION: return 'Audicion';
+                                    case Constants.ESTADOS_APLICACION_ROL.NO_VISTO: return textos['no_visto'];
+                                    case Constants.ESTADOS_APLICACION_ROL.VISTO: return textos['visto'];
+                                    case Constants.ESTADOS_APLICACION_ROL.DESTACADO: return textos['destacado'];
+                                    case Constants.ESTADOS_APLICACION_ROL.AUDICION: return textos['audicion'];
                                     case Constants.ESTADOS_APLICACION_ROL.CALLBACK: return 'Callback';
                                 }
                                 return 'ND';
@@ -127,7 +131,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                                             backgroundColor: '#069cb1'
                                         }
                                     }}>
-                                    Ver Aplicacion
+                                    {textos['ver']} {textos['aplicacion']}
                                 </Button>
                             }
                         />
@@ -176,7 +180,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                                                 <Image src="/assets/img/iconos/agenda.svg" width={50} height={50} style={{ margin: '15px 0 0 0', filter: 'invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)' }} alt="" />
                                             </Grid>
                                             <Grid item md={11}>
-                                                <Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>Tus Aplicaciones</Typography>
+                                                <Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>{textos['tus']} {textos['aplicaciones']}</Typography>
                                             </Grid>
                                             {user.tipo_usuario === TipoUsuario.REPRESENTANTE &&
                                                 <TalentoAplicacionesRepresentante id_talento={id_talento} />
@@ -210,13 +214,13 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                                                         }}>
                                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                             <Image src="/assets/img/iconos/arow_l_blue.svg" width={15} height={15} alt="" />
-                                                            <Typography fontWeight={600}>Página previa</Typography>
+                                                            <Typography fontWeight={600}>{textos['pagina_anterior']}</Typography>
                                                         </Box>
                                                     </Button>
 
                                                     {aplicaciones_roles.data && aplicaciones_roles.data.length > 0 &&
                                                         <Typography sx={{ color: '#069cb1' }} fontWeight={600}>
-                                                            Pagina {(pagination.page + 1)} de {Math.ceil(aplicaciones_roles.data.length / pagination.page_size)}
+                                                            {textos['pagina']} {(pagination.page + 1)} {textos['de']?.toLowerCase()} {Math.ceil(aplicaciones_roles.data.length / pagination.page_size)}
                                                         </Typography>                
                                                     }
                                                     <Button
@@ -226,7 +230,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                                                         setPagination(prev => { return {...prev, page: prev.page + 1}});
                                                         }}>
                                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                                            <Typography fontWeight={600}>Siguiente página</Typography>
+                                                            <Typography fontWeight={600}>{textos['siguiente_pagina']}</Typography>
                                                             <Image src="/assets/img/iconos/arow_r_blue.svg" width={15} height={15} alt="" />
                                                         </Box>
                                                     </Button>

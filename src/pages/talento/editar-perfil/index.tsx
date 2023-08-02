@@ -932,7 +932,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
             }
 
             if (talento.data && talento.data.filtros_aparencias) {
-                const hermanos_option_default = (talento.data.filtros_aparencias.hermanos) ? (talento.data.filtros_aparencias.hermanos.id_tipo_hermanos === 99) ? 'Otro' : talento.data.filtros_aparencias.hermanos.descripcion : '';
+                const hermanos_option_default = (talento.data.filtros_aparencias.hermanos) ? (talento.data.filtros_aparencias.hermanos.id_tipo_hermanos === 99) ? textos['otro'] ? textos['otro'] : 'Texto No Definido' : talento.data.filtros_aparencias.hermanos.descripcion : '';
                 let field_other_particularidad = '';
                 if (talento.data.filtros_aparencias.particularidades.some(e => e.id_particularidad === 99)) {
                     const particularidad_filtered = talento.data.filtros_aparencias.particularidades.filter(e => e.id_particularidad === 99)[0];

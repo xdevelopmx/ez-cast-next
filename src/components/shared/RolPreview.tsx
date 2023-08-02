@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { Alert, Avatar, Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Slide, Typography } from '@mui/material'
-import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
+import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment, useContext } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { motion } from 'framer-motion';
 import { type RolCompletoPreview } from './RolesTable';
@@ -10,6 +10,8 @@ import { User } from 'next-auth';
 import { Cazatalentos } from '@prisma/client';
 import { Check, Close } from '@mui/icons-material';
 import { CazatalentosPreview } from '../cazatalento/dialogs/cazatalentos-preview';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 
 interface PropsIndividualData {
@@ -69,10 +71,15 @@ const containerVariants = {
 };
 
 export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
     const [dialogImage, setDialogImage] = useState<{open: boolean, image: string}>({open: false, image: ''});
     const [dialogInfoProductor, setDialogInfoProductor] = useState<{open: boolean}>({open: false});
     
     const [showPreview, setShowPreview] = useState(false)
+
+    const es_ingles = ctx.lang === 'en';
     return (
         <Grid item container xs={12} sx={{ border: (!no_border) ? '2px solid #928F8F' : '' }}>
             <GridMotion container item xs={12} sx={{ alignItems: 'flex-start' }}>
@@ -99,7 +106,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                             {rol.porcentaje_filter &&
                                 <Alert style={{padding: 0, width: '45%', marginTop: 8, marginBottom: 8}} icon={<Check fontSize="inherit" />} severity="success">
                                     <Typography variant='body2'>
-                                        {rol.porcentaje_filter}% de compatibilidad con tu perfil
+                                        {rol.porcentaje_filter}% {textos['compatibilidad_text']}
                                     </Typography>
                                 </Alert>
                             }
@@ -111,11 +118,11 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Image src="/assets/img/iconos/icono_relog_blue.png" width={20} height={20} alt="" />
                                 <Typography sx={{ color: '#069cb1' }}>
-                                    Fecha límite entrega de aplicaciones:
+                                    {textos['fecha_limite_entrega_de_aplicaciones']}:
                                     <Typography component={'span'} sx={{ color: '#069cb1', marginLeft: '5px' }}>
                                         {rol.casting && rol.casting.length > 0 && conversorFecha(new Date(Math.max(
                                             ...rol.casting.map(c => (c.fecha_fin?.getTime() || c.fecha_inicio?.getTime() || 0))
-                                        ))) || 'No especificado'}
+                                        ))) || textos['no_especificado']}
                                     </Typography>
                                 </Typography>
                             </Box>
@@ -123,20 +130,20 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                         <Grid container item xs={12}>
                             <Grid xs={6} item>
                                 <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
-                                    Inicio de proyecto:
+                                    {textos['inicio_de_proyecto']}:
                                     <Typography component={'span'} sx={{ paddingLeft: '5px', paddingRight: '5px', color: '#069cb1', fontSize: '.9rem' }}>
-                                        {rol.filmaciones && rol.filmaciones.length > 0 && rol.filmaciones[0]?.fecha_inicio && conversorFecha(rol.filmaciones[0]?.fecha_inicio) || 'No especificado'}
+                                        {rol.filmaciones && rol.filmaciones.length > 0 && rol.filmaciones[0]?.fecha_inicio && conversorFecha(rol.filmaciones[0]?.fecha_inicio) || textos['no_especificado']}
                                     </Typography>
-                                    en {rol.casting && rol.casting.length > 0 && rol.casting[0]?.estado_republica.es || 'No especificado'}
+                                    {textos['en']} {rol.casting && rol.casting.length > 0 && rol.casting[0]?.estado_republica.es || textos['no_especificado']}
                                 </Typography>
                             </Grid>
                             <Grid item xs={6}>
                                 <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
-                                    Aceptando aplicaciones de:
+                                    {textos['aceptando_aplicaciones_de']}:
                                     <Typography component={'span'} sx={{ marginLeft: '5px', color: '#069cb1', fontSize: '.9rem' }}>
                                         {rol.casting && rol.casting.length > 0 && rol.casting.reduce((acumulador, current) => (
                                             acumulador += current.estado_republica.es + ', '
-                                        ), '').slice(0, -2) || 'No especificado'}
+                                        ), '').slice(0, -2) || textos['no_especificado']}
                                     </Typography>
                                 </Typography>
                             </Grid>
@@ -146,11 +153,11 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                 <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src={(rol.proyecto.cazatalentos.foto_perfil) ? rol.proyecto.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} width={30} height={30} alt="" />
 
-                                <Typography sx={{ fontSize: '1rem' }}>Proyecto por: {rol.proyecto.productor}</Typography>
+                                <Typography sx={{ fontSize: '1rem' }}>{textos['proyecto_por']}: {rol.proyecto.productor}</Typography>
 
                                 <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1, cursor: 'pointer' }}>
                                     <Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" />
-                                    <Button onClick={() => { setDialogInfoProductor({ open: true })}} style={{textTransform: 'capitalize'}}>Ver perfil</Button>
+                                    <Button onClick={() => { setDialogInfoProductor({ open: true })}} style={{textTransform: 'capitalize'}}>{textos['ver']} {textos['perfil']}</Button>
                                 </Box>
                             </Box>
                         </Grid>
@@ -178,7 +185,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                                         ))
                                         : <>
                                             <Typography>
-                                                No especificado
+                                                {textos['no_especificado']}
                                             </Typography>
                                             <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                         </>
@@ -203,7 +210,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                             </Box>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                                 <Typography>
-                                    {rol?.tipo_rol?.tipo || 'No especificado'}
+                                    {rol?.tipo_rol?.tipo || textos['no_especificado']}
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 
@@ -220,7 +227,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                                         ))
                                         : <>
                                             <Typography>
-                                                No especificado
+                                                {textos['no_especificado']}
                                             </Typography>
                                             <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                         </>
@@ -232,7 +239,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                                     {
                                         rol.filtros_demograficos && rol.filtros_demograficos.rango_edad_inicio && rol.filtros_demograficos.rango_edad_fin
                                             ? `${rol.filtros_demograficos.rango_edad_inicio}-${rol.filtros_demograficos.rango_edad_fin}`
-                                            : 'No especificado'
+                                            : textos['no_especificado']
                                     }
                                 </Typography>
                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
@@ -249,7 +256,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                                         ))
                                         : <>
                                             <Typography>
-                                                No especificado
+                                                {textos['no_especificado']}
                                             </Typography>
                                             <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                         </>
@@ -257,12 +264,12 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
 
 
                                 <Typography>
-                                    {rol.filtros_demograficos && rol.filtros_demograficos.pais.es || 'No especificado'}
+                                    {rol.filtros_demograficos && rol.filtros_demograficos.pais.es || textos['no_especificado']}
                                 </Typography>
                             </Box>
                             <Typography>
-                                <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>Descripción:</Typography>
-                                {rol?.descripcion ?? 'No especificado'}
+                                <Typography fontWeight={600} component={'span'} sx={{ paddingRight: '10px' }}>{textos['descripcion']}:</Typography>
+                                {rol?.descripcion ?? textos['no_especificado']}
                             </Typography>
 
                         </Grid>
@@ -277,41 +284,41 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                 transition={{ duration: 0.3 }}
             >
 
-                <IndividualData title={'Habilidades:'}>
+                <IndividualData title={`${textos['habilidades']}:`}>
                     {
                         rol.habilidades && rol.habilidades.habilidades_seleccionadas && rol.habilidades.habilidades_seleccionadas.length > 0
                             ? rol.habilidades.habilidades_seleccionadas.map((h, i) => (
                                 <Fragment key={h.id}>
-                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{h.habilidad.es}</Typography>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{es_ingles ? h.habilidad.en : h.habilidad.es}</Typography>
                                     {i !== rol.habilidades.habilidades_seleccionadas.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
                                 </Fragment>
                             ))
                             : <>
                                 <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                    No especificado
+                                    {textos['no_especificado']}
                                 </Typography>
                             </>
                     }
                 </IndividualData>
 
-                <IndividualData title={'Desnudos o situaciones sexuales:'}>
+                <IndividualData title={`${textos['desnudos_o_situaciones_sexuales']}:`}>
                     {
                         rol.nsfw && rol.nsfw.nsfw_seleccionados && rol.nsfw.nsfw_seleccionados.length > 0
                             ? rol.nsfw.nsfw_seleccionados.map((n, i) => (
                                 <Fragment key={n.id}>
-                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{n.nsfw.es}</Typography>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{es_ingles ? n.nsfw.en : n.nsfw.es}</Typography>
                                     {i !== rol.nsfw.nsfw_seleccionados.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
                                 </Fragment>
                             ))
                             : <>
                                 <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                    No especificado
+                                    {textos['no_especificado']}
                                 </Typography>
                             </>
                     }
                 </IndividualData>
 
-                <IndividualData title={'Locación de casting y fechas:'}>
+                <IndividualData title={`${textos['locacion_de_casting_y_fechas']}:`}>
                     {
                         rol.casting && rol.casting.length > 0
                             ? rol.casting.map((c, i) => (
@@ -325,14 +332,14 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                             ))
                             : <>
                                 <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                    No especificado
+                                    {textos['no_especificado']}
                                 </Typography>
                             </>
                     }
                 </IndividualData>
 
 
-                <IndividualData title={'Locación de filmación y fechas:'}>
+                <IndividualData title={`${textos['locacion_de_filmacion_y_fechas']}:`}>
                     {
                         rol.filmaciones && rol.filmaciones.length > 0
                             ? rol.filmaciones.map((c, i) => (
@@ -346,50 +353,50 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                             ))
                             : <>
                                 <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                    No especificado
+                                    {textos['no_especificado']}
                                 </Typography>
                             </>
                     }
                 </IndividualData>
 
-                <IndividualData title={'Presentación de solicitud:'}>
+                <IndividualData title={`${textos['presentacion_solicitud']}:`}>
                     <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                        {rol?.requisitos?.estado_republica?.es || 'No especificado'}
+                        {rol?.requisitos?.estado_republica?.es || textos['no_especificado']}
                     </Typography>
                     <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                     <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                        {rol.requisitos && rol.requisitos.presentacion_solicitud && conversorFecha(rol.requisitos.presentacion_solicitud) || 'No especificado'}
+                        {rol.requisitos && rol.requisitos.presentacion_solicitud && conversorFecha(rol.requisitos.presentacion_solicitud) || textos['no_especificado']}
                     </Typography>
                     <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                     <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                        {rol.requisitos && rol.requisitos.uso_horario.es || 'No especificado'}
+                        {rol.requisitos && (es_ingles ? rol.requisitos.uso_horario.en : rol.requisitos.uso_horario.es) || textos['no_especificado']}
                     </Typography>
                 </IndividualData>
 
-                <IndividualData title={'Información del trabajo/notas:'}>
+                <IndividualData title={`${textos['informacion_trabajo_y_notas']}:`}>
                     <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                        {rol.detalles_adicionales || 'No especificado'}
+                        {rol.detalles_adicionales || textos['no_especificado']}
                     </Typography>
                 </IndividualData>
 
-                <IndividualData title={'Requisitos:'}>
+                <IndividualData title={`${textos['requisitos']}:`}>
                     {
                         rol.requisitos && rol.requisitos.medios_multimedia && rol.requisitos.medios_multimedia.length > 0
                             ? rol.requisitos.medios_multimedia.map((m, i) => (
                                 <Fragment key={m.id}>
-                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{m.medio_multimedia.es}</Typography>
+                                    <Typography component={'span'} sx={{ color: '#928F8F' }}>{es_ingles ? m.medio_multimedia.en : m.medio_multimedia.es}</Typography>
                                     {i !== rol.requisitos.medios_multimedia.length - 1 && <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />}
                                 </Fragment>
                             ))
                             : <>
                                 <Typography component={'span'} sx={{ color: '#928F8F' }}>
-                                    No especificado
+                                    {textos['no_especificado']}
                                 </Typography>
                             </>
                     }
                 </IndividualData>
 
-                <IndividualData title={'Archivos adicionales:'} stylesContainerData={{ gap: 10 }}>
+                <IndividualData title={`${textos['archivos_adicionales']}:`} stylesContainerData={{ gap: 10 }}>
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>lineas.pdf</Typography>
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>headshot.jpg</Typography>
                     <Typography component={'span'} sx={{ color: '#069cb1', textDecoration: 'underline' }}>referencia1.jpg</Typography>

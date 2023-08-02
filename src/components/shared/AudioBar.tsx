@@ -1,7 +1,9 @@
-import { useEffect, useRef, useMemo, useState, type FC } from 'react'
+import { useEffect, useRef, useMemo, useState, type FC, useContext } from 'react'
 import Image from 'next/image'
 import { MContainer } from '../layout/MContainer'
 import { IconButton, LinearProgress, Typography } from '@mui/material';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     name: string;
@@ -9,6 +11,9 @@ interface Props {
 }
 
 export const AudioBar: FC<Props> = ({ name, url }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
     const audio_player = useRef<HTMLAudioElement | null>(null);
     const [action_selected, setActionSelected] = useState<'PLAY' | 'STOP' | 'PAUSE' | ''>('');
     return (
@@ -52,7 +57,7 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
                     window.open(url);
                 }}
                 sx={{ color: '#069CB1', textDecoration: 'underline', cursor: 'pointer' }}>
-                Descargar
+                {textos['descargar']}
             </Typography>
         </MContainer>
     )

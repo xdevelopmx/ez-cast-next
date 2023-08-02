@@ -19,6 +19,7 @@ declare module "next-auth" {
 	interface User {
 		tipo_usuario?: TipoUsuario;
 		profile_img?: string | null;
+		lang: 'es' | 'en';
 	}
 	interface Session {
 		user?: User;
@@ -28,6 +29,7 @@ declare module "next-auth/jwt" {
 	interface JWT extends User {
 		tipo_usuario?: TipoUsuario;
 		profile_img?: string | null;
+		lang: 'es' | 'en';
 	}
 }
 
@@ -54,10 +56,15 @@ export const authOptions: NextAuthOptions = {
 		signIn({ user, account, profile, email, credentials }) {
 			return true
 		},
-		jwt({ token, user, account, profile, isNewUser }) {
+		jwt({ token, user, trigger, session, account, profile, isNewUser }) {
 			if (user) {
 				token.tipo_usuario = user.tipo_usuario;
 				token.profile_img = user.profile_img;
+				token.lang = user.lang;
+			}
+			if (trigger === "update" && session?.lang) {
+				// Note, that `session` can be any arbitrary object, remember to validate it!
+				token.lang = session.lang;
 			}
 			return token
 		},
@@ -66,6 +73,7 @@ export const authOptions: NextAuthOptions = {
 				session.user.tipo_usuario = token.tipo_usuario;
 				session.user.id = (token.sub) ? token.sub : '0';
 				session.user.profile_img = token.profile_img;
+				session.user.lang = token.lang;
 			}
 			return session
 		},
@@ -83,11 +91,12 @@ export const authOptions: NextAuthOptions = {
 				user: { label: "usuario", type: "text" },
 				password: { label: "password", type: "password" },
 				tipo_usuario: { label: 'tipo_usuario', type: 'text' },
-				correo_usuario: { label: 'correo_usuario', type: 'text' }
+				correo_usuario: { label: 'correo_usuario', type: 'text' },
+				lang: { label: 'lang', type: 'text' },
 			},
 			async authorize(credentials, req) {
 				const INTERNAL_URL = (process.env.NEXT_PUBLIC_INTERNAL_URL) ? process.env.NEXT_PUBLIC_INTERNAL_URL : '';
-				const login = async (username: string | null, email: string | null, password: string, tipo_usuario: TipoUsuario): Promise<{ id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null } | null>  => {
+				const login = async (username: string | null, email: string | null, password: string, tipo_usuario: TipoUsuario, lang: 'es' | 'en'): Promise<{ id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null, lang: 'es' | 'en' } | null>  => {
 					try {
 						return fetch(`${INTERNAL_URL}/api/auth/login`, {
 							method: 'POST',
@@ -99,7 +108,7 @@ export const authOptions: NextAuthOptions = {
 							})
 						}).then(res => res.json()).then((res: { data: { id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null } }) => {
 							if (res.data) {
-								return Promise.resolve(res.data);
+								return Promise.resolve({...res.data, lang: lang});
 							} else {
 								return Promise.resolve(null);
 							}
@@ -124,7 +133,7 @@ export const authOptions: NextAuthOptions = {
 						case TipoUsuario.REPRESENTANTE: tipo_usuario = TipoUsuario.REPRESENTANTE; break;
 						case TipoUsuario.ADMIN: tipo_usuario = TipoUsuario.ADMIN; break;
 					}
-					const login_intent = await login( (credentials.user) ? credentials.user : '', (credentials.correo_usuario) ? credentials.correo_usuario : '', (credentials.password) ? credentials.password : '', tipo_usuario);
+					const login_intent = await login( (credentials.user) ? credentials.user : '', (credentials.correo_usuario) ? credentials.correo_usuario : '', (credentials.password) ? credentials.password : '', tipo_usuario, (credentials.lang) ? credentials.lang === 'es' ? 'es' : 'en' : 'es');
 					console.log(login_intent);
 					return login_intent;
 				} 

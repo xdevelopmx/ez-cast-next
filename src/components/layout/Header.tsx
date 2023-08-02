@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import estilos from './Header.module.css'
 import AppContext from '~/context/app';
 import { IconButton } from '@mui/material';
+import { useSession } from 'next-auth/react';
 
 interface Props {
 	tieneFondoBlanco?: boolean;
@@ -24,6 +25,11 @@ export const Header: FC<Props> = ({
 	const [esBlanco, setEsBlanco] = useState(menuSiempreBlanco ? menuSiempreBlanco : tieneFondoBlanco)
 	const estaArriba = useScrolled()
 	const router = useRouter()
+
+	const { data: sess, status, update } = useSession()
+
+	console.log(sess);
+
 
 	useEffect(() => {
 		if (!menuSiempreBlanco) {
@@ -103,12 +109,18 @@ export const Header: FC<Props> = ({
 						</li>
 						<li className="nav-item ml-lg-3 mr-lg-3 d-flex leng_box">
 							<IconButton
-								onClick={() => { ctx.setLang('es') }}
+								onClick={() => { 
+									update({lang: 'es'});
+									ctx.setLang('es');
+								}}
 							>
 								<motion.img className="active" src='/assets/img/b_mex.png' alt="icono" />
 							</IconButton>
 							<IconButton
-								onClick={() => { ctx.setLang('en') }}
+								onClick={() => { 
+									ctx.setLang('en');
+									update({lang: 'en'});
+								}}
 							>
 								<motion.img src="/assets/img/b_eua.png" alt="icono" />
 							</IconButton>

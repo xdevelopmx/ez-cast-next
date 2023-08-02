@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Box, Button, Dialog, DialogActions, DialogContent, Divider, FormControlLabel, Grid, Slide, Switch, TextField, Typography } from '@mui/material';
-import React, { useMemo, useState, useEffect, useRef } from 'react'
+import React, { useMemo, useState, useEffect, useRef, useContext } from 'react'
 import { AddButton, AudioBar, SectionTitle } from '~/components/shared'
 import { MContainer } from '~/components/layout/MContainer';
 import { useRouter } from 'next/router';
@@ -21,6 +21,8 @@ import { FileManager } from '~/utils/file-manager';
 import useNotify from '~/hooks/useNotify';
 import { Delete, Edit, Share } from '@mui/icons-material';
 import { Media } from '@prisma/client';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 const Transition = React.forwardRef(function Transition(
     props: TransitionProps & {
@@ -32,6 +34,8 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export const MediaBank = (props: { id_talento: number, read_only: boolean }) => {
+	const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 	const [dialogImage, setDialogImage] = useState<{open: boolean, image: string}>({open: false, image: ''});
 	const [dialogSelftape, setDialogSeltape] = useState({open: false});
 	const [selftape, setSelftape] = useState<{video: Archivo | null, nombre: string, public: boolean, id: null | number}>({video: null, nombre: '', public: true, id: null});
@@ -219,7 +223,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 									</Box>
 									<Grid id="media" container sx={{ mt: 10 }}>
 										<Grid item xs={12}>
-											<SectionTitle title='Media' onClickButton={(!props.read_only) ? () => {
+											<SectionTitle title='Media' textButton={`${textos['editar']}`} onClickButton={(!props.read_only) ? () => {
 												// eslint-disable-next-line @typescript-eslint/no-floating-promises
 												router.push(`/talento/editar-perfil?step=2&id_talento=${props.id_talento}`);
 											} : undefined} />
@@ -228,7 +232,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 											<MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px', justifyContent: 'space-between' }}>
 												<MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
 													<Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
-													<Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>GALERÍA DE IMÁGENES</Typography>
+													<Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>{textos['galeria_imagenes']}</Typography>
 												</MContainer>
 												{!props.read_only &&
 													<AddButton
@@ -237,7 +241,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 															// eslint-disable-next-line @typescript-eslint/no-floating-promises
 															router.push('/talento/editar-perfil?step=2')
 														}}
-														text="Agregar imágenes"
+														text={`${textos['agregar']} ${textos['imagenes']}`}
 													/>
 												}
 											</MContainer>
@@ -257,7 +261,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 												</MContainer>
 												<MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
 													{!props.read_only &&
-														<AddButton text='Agregar videos' aStyles={{ margin: 10 }} onClick={() => {
+														<AddButton text={`${textos['agregar']} ${textos['video']}s`} aStyles={{ margin: 10 }} onClick={() => {
 															// eslint-disable-next-line @typescript-eslint/no-floating-promises
 															router.push('/talento/editar-perfil?step=2')
 														}} />
@@ -308,7 +312,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 												</MContainer>
 												<MContainer direction='vertical' styles={{ width: '70%', alignItems: 'flex-end' }}>
 													{!props.read_only &&
-														<AddButton text='Agregar audios' aStyles={{ marginBottom: 10 }} onClick={() => {
+														<AddButton text={`${textos['agregar']} ${textos['audio']}s`} aStyles={{ marginBottom: 10 }} onClick={() => {
 															// eslint-disable-next-line @typescript-eslint/no-floating-promises
 															router.push('/talento/editar-perfil?step=2')
 														}}
@@ -341,12 +345,12 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 													
 													{!props.read_only &&
 														<Box display={'flex'} flexDirection={'row'} gap={2}>
-															<AddButton text='Subir selftape' aStyles={{ margin: 10, backgroundColor: (media && media.selftapes.length <= 5) ? '' : 'lightgrey' }} onClick={() => {
+															<AddButton text={`${textos['subir']} Self-Tape`} aStyles={{ margin: 10, backgroundColor: (media && media.selftapes.length <= 5) ? '' : 'lightgrey' }} onClick={() => {
 																if (media && media.selftapes.length <= 5) {
 																	setDialogSeltape({open: true});
 																}
 															}} />
-															<AddButton text='Grabar selftape' aStyles={{ margin: 10 }} onClick={() => {
+															<AddButton text={`${textos['grabar_selftape']}`} aStyles={{ margin: 10 }} onClick={() => {
 																// eslint-disable-next-line @typescript-eslint/no-floating-promises
 																router.push('/talento/self-tape')
 															}} />
@@ -362,7 +366,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 																<Box display="flex" flexDirection={'column'}>
 																	{media.selftapes.filter(s => s.public).length > 0 &&
 																		<>
-																			<Typography variant='h6'>Publicos</Typography>
+																			<Typography variant='h6'>{textos['publico']}s</Typography>
 																			<Box display="flex" flexDirection={'row'}>
 																				{media.selftapes.filter(s => s.public).map((v, i) => {
 																					return <SelftapeElement key={i} selftape={v}/>
@@ -372,7 +376,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 																	}
 																	{media.selftapes.filter(s => !s.public).length > 0 &&
 																		<>
-																			<Typography variant='h6'>Privados</Typography>
+																			<Typography variant='h6'>{textos['privado']}s</Typography>
 																			<Box display="flex" flexDirection={'row'} >
 																				{media.selftapes.filter(s => !s.public).map((v, i) => {
 																					return <SelftapeElement key={i} selftape={v}/>
@@ -416,7 +420,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 					>
 						<DialogContent>
 							<Box>
-								<Typography>Selecciona el video que deseas subir a tus selftapes</Typography>
+								<Typography>{textos['dialog_selftape_titulo']}</Typography>
 								<Box ml={'calc(50% - 125px)'} my={2}>
 
 
@@ -425,7 +429,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 												<MContainer direction='horizontal'>
 													<Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />
 													<Typography fontSize={'0.9rem'} fontWeight={700}>
-													Selecciona un video
+													{textos['selecciona_un_video']}
 													</Typography>
 
 												</MContainer>
@@ -457,7 +461,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 												className={'form-input-label'}
 												htmlFor={'nombre-input'}
 											>
-												Nombre*
+												{textos['nombre']}*
 											</label>
 											<TextField
 												size="small"
@@ -473,13 +477,13 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 										</Box>
 										<FormControlLabel control={<Switch onChange={() => { 
 											setSelftape((prev) => { return {...prev, public: !prev.public }})
-										}} checked={selftape.public} />} label="Publico" />
+										}} checked={selftape.public} />} label={textos['publico']} />
 									</>
 								}
 							</Box>
 						</DialogContent>
 						<DialogActions>
-							<Button onClick={() => { setDialogSeltape({...dialogSelftape, open: false}) }}>Cerrar</Button>
+							<Button onClick={() => { setDialogSeltape({...dialogSelftape, open: false}) }}>{textos['cerrar']}</Button>
 							<Button onClick={async () => {
 								if ((media && media.selftapes.length <= 5 && !selftape.id) || selftape.id) {
 									if (selftape.video) {
@@ -505,20 +509,20 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 															}
 														})
 													} else {
-														notify('error', `${(name) ? `El video ${name} no se pudo subir` : 'Un video no se pudo subir'}`);
+														notify('error', `${(name) ? `${textos['video_no_se_pudo_subir']?.replace('[N]', name)}` : textos['un_video_no_se_pudo_subir']}`);
 													}
 												})
 											});
 										}
 									} else {
-										notify('warning', 'No haz seleccionado ningun video');
+										notify('warning', `${textos['no_haz_seleccionado_ningun_video']}`);
 									}
 								} else {
-									notify('warning', 'El limite de selftapes es 6, por favor elimina uno antes de querer guardar otro.');
+									notify('warning', `${textos['limite_selftapes']}`);
 								}
 							}}
 							>
-								Guardar
+								{textos['guardar']}
 							</Button>
 						</DialogActions>
 					</Dialog>
