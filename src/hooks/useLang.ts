@@ -779,6 +779,22 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             limite_selftapes: 'El limite de selftapes es 6, por favor elimina uno antes de querer guardar otro',
         }
     },
+    '/cazatalentos/agenda-virtual/horario/[id]': {
+        en: {
+
+        },
+        es: {
+
+        }
+    },
+    '/cazatalentos/agenda-virtual/crear': {
+        en: {
+
+        },
+        es: {
+
+        }
+    }
 
 }
 
@@ -786,6 +802,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
 const useLang = (lang: string) => {
 
     const route = useRouter();
+
+    console.log(route.pathname);
 
     const [texts, setTexts] = useState<{[key: string]: string}>({});
 

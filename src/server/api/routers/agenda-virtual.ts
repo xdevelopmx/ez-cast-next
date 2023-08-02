@@ -12,6 +12,7 @@ import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { generateIntervalos } from "~/utils/dates";
 import dayjs from "dayjs";
+import ApiResponses from "~/utils/api-response";
 
 export const AgendaVirtualRouter = createTRPCRouter({
 	sendHorarios: protectedProcedure
@@ -19,6 +20,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			id_horario: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
+
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_sendHorarios', lang);
 
 			const horario = await ctx.prisma.horarioAgenda.findFirst({
 				where: {
@@ -79,6 +83,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 								})
 							}
 							if (conversacion) {
+								const msg_talento = horario?.tipo_agenda.toLowerCase() === 'callback' ? getResponse('message_talent_callback_text') : getResponse('message_talent_audition_text');
 								await ctx.prisma.mensaje.create({
 									data: {
 										id_conversacion: conversacion.id,
@@ -89,7 +94,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 										visto: false,
 										hora_envio: dayjs().toDate(),
 										mensaje: JSON.stringify({
-											message: `Has sido seleccionado para ${horario?.tipo_agenda.toLowerCase() === 'callback' ? 'el callback' : 'la audicion'} del proyecto ${horario.proyecto?.nombre} el ${b.fecha} en el horario de ${i?.hora}.`,
+											message: `${msg_talento.replace('[N1]', `${horario.proyecto?.nombre}`).replace('[N2]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N3]', `${i?.hora}`)}`,
 											id_intervalo: i.id,
 											id_rol: i.rol.id,
 											id_talento: i.talento.id
@@ -100,14 +105,14 @@ export const AgendaVirtualRouter = createTRPCRouter({
 							}
 							const cazatalento = await ctx.prisma.cazatalentos.findFirst({where: { id: horario.proyecto.id_cazatalentos }})
 							if (cazatalento) {
+								const msg_headhunter = horario?.tipo_agenda.toLowerCase() === 'callback' ? getResponse('message_headhunter_callback_text') : getResponse('message_headhunter_audition_text');
+								
 								await ctx.prisma.alertas.create({
 									data: {
 										id_usuario: i.talento.id,
 										tipo_usuario: TipoUsuario.TALENTO,
 										visto: false,
-										mensaje: `El cazatalentos <span style="color: white; font-weight: 800;">“${cazatalento.nombre} ${cazatalento.apellido}”</span> ha confirmado tu <span style="color: white; font-weight: 800;">${(horario.tipo_agenda.toLowerCase() === 'callback') ? 'callback' : 'audición'}</span>
-										el día <span style="color: white; font-weight: 800;">“${b.fecha} a las ${i.hora} horas”</span> para el rol de <span style="color: white; font-weight: 800;">“${i.rol.nombre}”</span>, 
-										comunicate por mensaje para saber los detalles de último minuto para tu casting.`
+										mensaje: msg_headhunter.replace('[N1]', `${cazatalento.nombre}`).replace('[N2]', `${cazatalento.apellido}`).replace('[N3]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N4]', `${i.hora}`).replace('[N5]', `${i.rol.nombre}`)
 									}
 								})
 							}
@@ -128,89 +133,80 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			})[] = [];
 			let fechas_map = new Map<string, string>();
 				
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-			if (ctx.session && ctx.session.user) {
-				switch (ctx.session.user.tipo_usuario) {
-					case TipoUsuario.CAZATALENTOS: {
-						horarios = await ctx.prisma.horarioAgenda.findMany({
-							where: {
-								proyecto: {
-									id_cazatalentos: parseInt(ctx.session.user.id)
-								}
-							},
-							include: {
-								bloque_horario: {
-									include: {
-										intervalos: true
-									}
+			switch (ctx.session.user.tipo_usuario) {
+				case TipoUsuario.CAZATALENTOS: {
+					horarios = await ctx.prisma.horarioAgenda.findMany({
+						where: {
+							proyecto: {
+								id_cazatalentos: parseInt(ctx.session.user.id)
+							}
+						},
+						include: {
+							bloque_horario: {
+								include: {
+									intervalos: true
 								}
 							}
-						});
-						horarios.forEach(h => {
-							h.bloque_horario.forEach( b => {
-								if (fechas_map.has(b.fecha.toLocaleDateString('es-mx'))) {
-									const reg_fecha = fechas_map.get(b.fecha.toLocaleDateString('es-mx'));
-									if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== h.tipo_agenda) {
-										fechas_map.set(b.fecha.toLocaleDateString('es-mx'), 'AMBAS');
-									}
-								} else {
-									fechas_map.set(b.fecha.toLocaleDateString('es-mx'), h.tipo_agenda);
-								}
-							})
-						})
-						break;
-					}
-					case TipoUsuario.TALENTO: {
-						const intervalos = await ctx.prisma.intervaloBloqueHorario.findMany({
-							where: {
-								id_talento: parseInt(ctx.session.user.id),
-								AND: {
-									estado: {
-										in: [Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO]
-									}
-								}
-							},
-							include: {
-								bloque_horario: {
-									include: {
-										horario_agenda: true
-									}
-								}
-							}
-						});
-						intervalos.forEach(i => {
-							if (fechas_map.has(i.bloque_horario.fecha.toLocaleDateString('es-mx'))) {
-								const reg_fecha = fechas_map.get(i.bloque_horario.fecha.toLocaleDateString('es-mx'));
-								if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== i.bloque_horario.horario_agenda.tipo_agenda) {
-									fechas_map.set(i.bloque_horario.fecha.toLocaleDateString('es-mx'), 'AMBAS');
+						}
+					});
+					horarios.forEach(h => {
+						h.bloque_horario.forEach( b => {
+							if (fechas_map.has(b.fecha.toLocaleDateString('es-mx'))) {
+								const reg_fecha = fechas_map.get(b.fecha.toLocaleDateString('es-mx'));
+								if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== h.tipo_agenda) {
+									fechas_map.set(b.fecha.toLocaleDateString('es-mx'), 'AMBAS');
 								}
 							} else {
-								fechas_map.set(i.bloque_horario.fecha.toLocaleDateString('es-mx'), i.bloque_horario.horario_agenda.tipo_agenda);
+								fechas_map.set(b.fecha.toLocaleDateString('es-mx'), h.tipo_agenda);
 							}
 						})
-						break;
-					}
+					})
+					break;
 				}
-				console.log(fechas_map);
-				return Array.from(fechas_map).map(f => { 
-					const d = f[0].split('/');
-					if (d[0] && d[1] && d[2]) {
-						return { fecha: dayjs(`${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`, 'DD/MM/YYYY').toDate(), tipo_agenda: f[1] }
-					}
-					return { fecha: new Date(f[0]), tipo_agenda: f[1] }
-				});
+				case TipoUsuario.TALENTO: {
+					const intervalos = await ctx.prisma.intervaloBloqueHorario.findMany({
+						where: {
+							id_talento: parseInt(ctx.session.user.id),
+							AND: {
+								estado: {
+									in: [Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO]
+								}
+							}
+						},
+						include: {
+							bloque_horario: {
+								include: {
+									horario_agenda: true
+								}
+							}
+						}
+					});
+					intervalos.forEach(i => {
+						if (fechas_map.has(i.bloque_horario.fecha.toLocaleDateString('es-mx'))) {
+							const reg_fecha = fechas_map.get(i.bloque_horario.fecha.toLocaleDateString('es-mx'));
+							if (reg_fecha && reg_fecha !== 'AMBAS' && reg_fecha !== i.bloque_horario.horario_agenda.tipo_agenda) {
+								fechas_map.set(i.bloque_horario.fecha.toLocaleDateString('es-mx'), 'AMBAS');
+							}
+						} else {
+							fechas_map.set(i.bloque_horario.fecha.toLocaleDateString('es-mx'), i.bloque_horario.horario_agenda.tipo_agenda);
+						}
+					})
+					break;
+				}
 			}
-			throw new TRPCError({
-				code: 'UNAUTHORIZED',
-				message: 'Solo usuarios con sesion puede obtener las fechas asignadas',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+			return Array.from(fechas_map).map(f => { 
+				const d = f[0].split('/');
+				if (d[0] && d[1] && d[2]) {
+					return { fecha: dayjs(`${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`, 'DD/MM/YYYY').toDate(), tipo_agenda: f[1] }
+				}
+				return { fecha: new Date(f[0]), tipo_agenda: f[1] }
 			});
 		}
 	),
     getAllProyectosByCazatalentosWithHorarioAgenda: protectedProcedure
 		.query(async ({ ctx }) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_getAllProyectosByCazatalentosWithHorarioAgenda', lang);
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const proyectos = await ctx.prisma.proyecto.findMany({
 					where: {
@@ -237,15 +233,15 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede obtener los proyectos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('solo_cazatalentos')
 			});
 		}
 	),
 	getAllHorarioAgendaByCazatalento: protectedProcedure
 		.query(async ({ ctx }) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_getAllHorarioAgendaByCazatalento', lang);
+			
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const horarios = await ctx.prisma.horarioAgenda.findMany({
 					where: {
@@ -266,15 +262,11 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						}
 					}
 				});
-
-
 				return horarios;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede obtener los proyectos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('solo_cazatalentos')
 			});
 		}
 	),
@@ -304,7 +296,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 		.input(z.number())
 		.query(async ({ input, ctx }) => {
 			if (input <= 0) return null;
- 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_getHorarioAgendaById', lang);
+			
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const horarios = await ctx.prisma.horarioAgenda.findFirst({
 					where: {
@@ -335,7 +329,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede obtener los proyectos',
+				message: getResponse('solo_cazatalentos'),
 				// optional: pass the original error to retain stack trace
 				//cause: theError,
 			});
@@ -344,6 +338,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 	deleteById: protectedProcedure
 		.input(z.number())
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_deleteById', lang);
+			
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const horario = await ctx.prisma.horarioAgenda.delete({
@@ -355,9 +352,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				if (!horario) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un problema al tratar de eliminar el horario',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_no_pudo_eliminar_horario'),
 					});
 				}
 
@@ -370,7 +365,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				if (!deleted_locaciones) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un problema al tratar de eliminar las locaciones del horario',
+						message: getResponse('error_no_pudo_eliminar_ubicaciones'),
 						// optional: pass the original error to retain stack trace
 						//cause: theError,
 					});
@@ -385,9 +380,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				if (!deleted_fechas_horarios) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un problema al tratar de eliminar las fechas del horario',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_no_pudo_eliminar_fechas_horario'),
 					});
 				}
 
@@ -400,9 +393,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				if (!deleted_bloques) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un problema al tratar de eliminar los bloques del horario',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_no_pudo_eliminar_bloques'),
 					});
 				}
 
@@ -410,9 +401,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede eliminar horarios',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('solo_cazatalentos'),
 			});
 		}
 	),
@@ -436,6 +425,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			id_proyecto: z.number()		
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_create', lang);
+			
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				let horario = await ctx.prisma.horarioAgenda.findFirst({
@@ -475,8 +467,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 										id_usuario: (i.id_talento) ? i.id_talento : 0,
 										tipo_usuario: TipoUsuario.TALENTO,
 										visto: false,
-										mensaje: `Tenemos una mala noticia <span style="color: white; font-weight: 800;">“${i.talento?.nombre} ${i.talento?.apellido}”</span>, <span style="color: white; font-weight: 800;">“${horario_complete?.proyecto.cazatalentos.nombre} ${horario_complete?.proyecto.cazatalentos.apellido}”</span> ha cancelado el
-										casting de <span style="color: white; font-weight: 800;">“${i.rol?.nombre}”</span> para <span style="color: white; font-weight: 800;">“${b.fecha} a las ${i.hora} horas”</span>.`
+										mensaje: getResponse('message_create').replace('[N1]', `${i.talento?.nombre}`).replace('[N2]', `${i.talento?.apellido}`)
+										.replace('[N3]', `${horario_complete?.proyecto.cazatalentos.nombre}`).replace('[N4]', `${horario_complete?.proyecto.cazatalentos.apellido}`)
+										.replace('[N5]', `${i.rol?.nombre}`).replace('[N6]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N7]', `${i.hora}`)
 									}
 								}) 
 							} 
@@ -553,9 +546,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					if (!saved_fechas) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un problema al tratar de guardar las fechas',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_saved_fechas')
 						});
 					}
 				}
@@ -566,9 +557,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					if (!saved_locaciones) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un problema al tratar de guardar las locaciones',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_ubicaciones')
 						});
 					}
 				}
@@ -576,9 +565,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede crear horarios',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_solo_cazatalentos')
 			});
 		}
 	),
@@ -590,7 +577,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			estado: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
-
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_updateIntervaloHorario', lang);
+			
 			const saved_intervalos = await ctx.prisma.intervaloBloqueHorario.update({
 				where: {
 					id: input.id_intervalo
@@ -618,7 +607,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			if (!saved_intervalos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un problema al tratar de guardar los intervalos',
+					message: getResponse('error_saved_intervalos'),
 				});
 			}
 			const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
@@ -629,14 +618,17 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				let alert_message = '';
 				switch (saved_intervalos.estado) {
 					case Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO: {
-						alert_message = `<span style="color: white; font-weight: 800;">“${cazatalentos.nombre} ${cazatalentos.apellido}”</span>, <span style="color: white; font-weight: 800;">“${saved_intervalos.talento?.nombre} ${saved_intervalos.talento?.apellido}”</span> ha confirmado ${saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback' ? 'el callback' : 'la audicion'} el día 
-						<span style="color: white; font-weight: 800;">“${saved_intervalos.bloque_horario.fecha} a las ${saved_intervalos.hora} horas”</span> para el rol de <span style="color: white; font-weight: 800;">“${saved_intervalos.rol?.nombre}”</span>, déjale saber los detalles de último minuto para su
-						casting.`;
+						alert_message = (saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback') ? getResponse('alert_message_callback_confirmado') : getResponse('alert_message_audicion_confirmado');
+						alert_message = alert_message.replace('[N1]', `${cazatalentos.nombre}`).replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${saved_intervalos.talento?.nombre}`)
+						.replace('[N4]', `${saved_intervalos.talento?.apellido}`).replace('[N5]', `${saved_intervalos.bloque_horario.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`)
+						.replace('[N6]', `${saved_intervalos.hora}`).replace('[N7]', `${saved_intervalos.rol?.nombre}`)
 						break;
 					}
 					case Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO: {
-						alert_message = `¡Hola <span style="color: white; font-weight: 800;">“${cazatalentos.nombre} ${cazatalentos.apellido}”</span>, <span style="color: white; font-weight: 800;">“${saved_intervalos.talento?.nombre} ${saved_intervalos.talento?.apellido}”</span> ha rechazado ${saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback' ? 'el callback' : 'la audicion'} el día 
-						<span style="color: white; font-weight: 800;">“${saved_intervalos.bloque_horario.fecha} a las ${saved_intervalos.hora} horas”</span> para el rol de <span style="color: white; font-weight: 800;">“${saved_intervalos.rol?.nombre}”</span>, déjale saber si tienes fechas y horarios disponibles para el casting.`;
+						alert_message = (saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback') ? getResponse('alert_message_callback_rechazado') : getResponse('alert_message_audicion_rechazado');
+						alert_message = alert_message.replace('[N1]', `${cazatalentos.nombre}`).replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${saved_intervalos.talento?.nombre}`)
+						.replace('[N4]', `${saved_intervalos.talento?.apellido}`).replace('[N5]', `${saved_intervalos.bloque_horario.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`)
+						.replace('[N6]', `${saved_intervalos.hora}`).replace('[N7]', `${saved_intervalos.rol?.nombre}`)
 						break;
 					}
 				}
@@ -652,8 +644,6 @@ export const AgendaVirtualRouter = createTRPCRouter({
 		
 				}
 			}
-
-
 			return saved_intervalos;
 		}
 	),
@@ -671,6 +661,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			id_locacion: z.number()		
 		}))
 		.mutation(async ({ input, ctx }) => {	
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_updateBloqueHorario', lang);
+			
 			const horario_agenda = await ctx.prisma.horarioAgenda.findFirst({
 				where: {
 					id: input.id_horario_agenda
@@ -798,7 +791,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			if (!saved_intervalos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un problema al tratar de guardar los intervalos',
+					message: getResponse('error_saved_intervalos')
 				});
 			}
 			
@@ -884,6 +877,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 	),
 	getLocalizacionesGuardadas: protectedProcedure
 		.query(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_getLocalizacionesGuardadas', lang);
+			
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const localizaciones = await ctx.prisma.localizacionesGuardadas.findMany({
@@ -896,9 +892,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede consultar las localizaciones',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_solo_cazatalento'),
 			});
 		}
 	),
@@ -912,7 +906,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			guardado_en_bd: z.boolean()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log(input);
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_updateLocalizacion', lang);
+			
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				if (input.id > 0 && !input.guardado_en_bd) {
@@ -953,9 +949,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					if (!localizacion) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un problema al tratar de guardar la localizacion',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_saved_ubicacion'),
 						});
 					}	
 					return {id: localizacion.id, result: 1};
@@ -964,9 +958,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede guardar localizaciones',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_solo_cazatalento'),
 			});
 		}
 	),
