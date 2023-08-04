@@ -190,10 +190,9 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                                     {paginated_data.length === 0 &&
                                         <Grid item  xs={12}  className="container_list_proyects">
                                             <div style={{width: '80%'}} className="box_message_blue">
-                                                <p className="h3" style={{ fontWeight: 600 }}>No has aplicado a ningún proyecto</p>
+                                                <p className="h3" style={{ fontWeight: 600 }}>{textos['no_aplicaciones_title']}</p>
                                                 <p style={{width: '60%', marginLeft: '20%', textAlign: 'justify'}}>
-                                                    Continúa agregando filtros de apariencia, remarca tus habilidades, activos créditos y aplica a
-                                                    los distintos proyectos en el Casting Billboard que EZ-Cast de Talent Corner tiene para ti.
+                                                    {textos['no_aplicaciones_body']}
                                                 </p>
                                             </div>
                                         </Grid>

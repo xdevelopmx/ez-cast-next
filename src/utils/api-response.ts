@@ -131,7 +131,516 @@ export default function ApiResponses(route: string, lang: string) {
                 error_saved_ubicacion: 'Ocurrio un problema al tratar de guardar la localizacion.',
                 error_solo_cazatalento: 'Solo el rol de cazatalento puede guardar localizaciones.'
             }
-        }
+        },
+        AuthRouter_createUser: {
+            en: {
+                error_no_cifro_contrasena: 'The password could not be encrypted.',
+                error_usuario_o_correo_repetido: 'A user with that username or email already exists, please use another one.',
+                error_usuario_invalido: 'An invalid user type was sent.',
+            },
+            es: {
+                error_no_cifro_contrasena: 'No se pudo cifrar la contraseña.',
+                error_usuario_o_correo_repetido: 'Ya existe un usuario con ese usuario o correo electronico, por favor utiliza otro.',
+                error_usuario_invalido: 'No se envio un tipo de usuario valido',
+            }
+        },
+        BannersRouter_deleteBanner: {
+            en: {
+                error_rol_invalido: 'Only the admin role can modify the banners.',
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de admin puede modificar los banners.',
+            }
+        },
+        BannersRouter_updateBanner: {
+            en: {
+                error_no_guardo_banner: 'An error occurred while trying to save the banner.',
+                error_rol_invalido: 'Only the admin role can modify the banners.',
+            },
+            es: {
+                error_no_guardo_banner: 'Ocurrio un error al tratar de guardar el banner.',
+                error_rol_invalido: 'Solo el rol de admin puede modificar los banners.',
+            }
+        },
+        CazatalentosRouter_getTalentosDestacadosByCazatalento: {
+            en: {
+                error_rol_invalido: 'Only the talent scout role can view their featured talents.',
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede consultar sus talentos destacados.',
+            }
+        },
+        CazatalentosRouter_getReporteTalentoByCazatalento: {
+            en: {
+                error_rol_invalido: 'Only the talent scout role can access the reports.',
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede consultar los reportes.',
+            }
+        },
+        CazatalentosRouter_getNotaTalentoByCazatalento: {
+            en: {
+                error_rol_invalido: 'Only the talent scout role can access the notes.',
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede consultar las notas.',
+            }
+        },
+        CazatalentosRouter_getTalentoRatingByCazatalento: {
+            en: {
+                error_rol_invalido: 'Only the talent scout role can modify the general information.',
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar la informacion general.',
+            }
+        },
+        CazatalentosRouter_getAudicionTalentoByRol: {
+            en: {
+                error_rol_invalido: 'Only the talent scout role can access the talent auditions.',
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede consultar las audiciones de los talentos.',
+            }
+        },
+        CazatalentosRouter_updateReporteTalento: {
+            en: {
+                error_rol_invalido: `Only the talent scout role can modify the talent's report.`,
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar el reporte del talento.',
+            }
+        },
+        CazatalentosRouter_updateNotaTalento: {
+            en: {
+                error_rol_invalido: `Only the talent scout role can modify the talent's notes.`,
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar las notas del talento.',
+            }
+        },
+        CazatalentosRouter_deleteNotaTalento: {
+            en: {
+                error_rol_invalido: `Only the talent scout role can modify the talent's notes.`,
+            },
+            es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar las notas del talento.',
+            }
+        },
+        CazatalentosRouter_marcarComoVistoAplicacionRolTalento: {
+            en: {
+                error_rol_invalido: `Only the talent scout role can modify the talent's rating.`,
+                id_role_not_found: 'The role with that ID was not found.',
+                different_cazatalento: 'Only the talent scout who created the role can modify the talent.',
+            },
+            es: {
+                id_role_not_found: 'No se encontro el rol con ese id',
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar la calificacion del talento.',
+                different_cazatalento: 'Solo el cazatalento que creo el rol puede modificar el talento.'
+            }
+        },
+        CazatalentosRouter_updateTalentoDestacado: {
+            en: {
+                error_rol_invalido: `Only the talent scout role can modify the talent's rating.`,
+                id_role_not_found: 'The role with that ID was not found.',
+                different_cazatalento: 'Only the talent scout who created the role can modify the talent.',
+            },
+            es: {
+                id_role_not_found: 'No se encontro el rol con ese id',
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar la calificacion del talento.',
+                different_cazatalento: 'Solo el cazatalento que creo el rol puede modificar el talento.'
+            }
+        },
+        CazatalentosRouter_updateSeleccionTalento: {
+            en: {
+                error_rol_invalido: `Only the talent scout role can modify the talent's rating.`,
+                id_role_not_found: 'The role with that ID was not found.',
+                different_cazatalento: 'Only the talent scout who created the role can modify the talent.',
+                cazatalento_message: `Talent scout [N1] [N2] has scheduled you for [N3] for the role of [N4] in the project [N5] on the date [N6]. You can see the details on the casting billboard.`,
+                cazatalento_alerta_callback: `You have been <span style="color: white;">selected</span>! You have a <span style="color: white;">[N1]</span> for <b>[N2]</b>. You will be receiving casting information very soon. Congratulations on advancing to the second stage!`,
+                cazatalento_alerta_audicion: `You have been <span style="color: white;">selected</span>! You have a <span style="color: white;">[N1]</span> for <b>[N2]</b>. You will be receiving casting information very soon. Congratulations on advancing to the first stage!`,
+            },
+            es: {
+                id_role_not_found: 'No se encontro el rol con ese id',
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar la calificacion del talento.',
+                different_cazatalento: 'Solo el cazatalento que creo el rol puede modificar el talento.',
+                cazatalento_message: `El cazatalentos [N1] [N2], te ha programado para [N3] para el rol de rol de [N4] del proyecto [N5] en la fecha de [N6], puedes ver los detalles en el casting billboard.`,
+                cazatalento_alerta_callback: `¡Has sido <span style="color: white;">seleccionad@</span>! Tendrás una <span style="color: white;">[N1]</span> para <b>[N2]</b>. Estarás recibiendo información del casting muy pronto. ¡Felicidades por pasar a la segunda etapa!`,
+                cazatalento_alerta_audicion: `¡Has sido <span style="color: white;">seleccionad@</span>! Tendrás una <span style="color: white;">[N1]</span> para <b>[N2]</b>. Estarás recibiendo información del casting muy pronto. ¡Felicidades por pasar a la primera etapa!`,
+            }
+        },
+        CazatalentosRouter_updatePerfil: {
+            en: {
+                error_max_biografia_length: 'The maximum allowed characters is 500.',
+                error_rol_invalido: 'Only the talent scout role can modify the general information.',
+                error_update_cazatalento: `An error occurred while trying to update the talent's name.`,
+                error_delete_redes_sociales: `An error occurred while trying to delete the talent's social media accounts.`,
+                error_save_redes_sociales: `An error occurred while trying to save the talent's social media accounts.`,
+            },
+            es: {
+                error_max_biografia_length: 'El maximo de caracteres permitido es 500.',
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar la informacion general.',
+                error_update_cazatalento: 'Ocurrio un error al tratar de actualizar el nombre del cazatalento.',
+                error_delete_redes_sociales: 'Ocurrio un error al tratar de eliminar las redes sociales del cazatalento.',
+                error_save_redes_sociales: 'Ocurrio un error al tratar de guardar las redes sociales del cazatalento.',
+            }
+        },
+        ProyectosRouter_deleteProyecto: {
+            en: {
+                error_delete_project: 'An error occurred while trying to delete the project.',
+                error_invalid_role: 'Only the talent scout role can modify projects.'
+            },
+            es: {
+                error_delete_project: 'Ocurrio un error al tratar de eliminar el proyecto.',
+                error_invalid_role: 'Solo el rol de cazatalentos puede modificar los proyectos.',
+            }
+        },
+        ProyectosRouter_updateEstadoProyecto: {
+            en: {
+                error_save_project: 'An error occurred while trying to save the project.',
+                message_proyecto_aprobado: `Your project <span style="color: white; font-weight: 800;">[N1]</span> has been successfully approved! We recommend you to stay alert for the applications you receive to find and recruit your talent as soon as possible.`,
+                message_proyecto_rechazado: `Your project <span style="color: white; font-weight: 800;">[N1]</span> has been rejected! We recommend you to review the following observations to make the necessary corrections: </br> <span style="color: white; font-weight: 800;">[N2].</span>`,
+                error_invalid_role: 'Only the talent scout and admin roles can modify projects.'
+            },
+            es: {
+                error_save_project: 'Ocurrio un error al tratar de guardar el proyecto.',
+                message_proyecto_aprobado: `¡Tu proyecto <span style="color: white; font-weight: 800;">[N1]</span> ha sido aprobado con éxito!
+                Te recomendamos estar atento a las aplicaciones que recibas para así encontrar y reclutar a tu
+                talento lo más pronto posible.`,
+                message_proyecto_rechazado: `¡Tu proyecto <span style="color: white; font-weight: 800;">[N1]</span> ha sido rechazado!
+                Te recomendamos revisar las siguientes observaciones para que sean corregidos: </br> <span style="color: white; font-weight: 800;">[N2].</span>`,
+                error_invalid_role: 'Solo el rol de cazatalentos y admin puede modificar los proyectos.',
+            }
+        },
+        ProyectosRouter_updateDestacado: {
+            en: {
+                error_save_project: 'An error occurred while trying to save the project.',
+                error_invalid_role: 'Only the admin role can mark a project as featured.'
+            },
+            es: {
+                error_save_project: 'Ocurrio un error al tratar de guardar el proyecto.',
+                error_invalid_role: 'Solo el rol de admin puede marcar un proyecto como destacado.',
+            }
+        },
+        ProyectosRouter_saveProyectoFiles: {
+            en: {
+                error_invalid_role: 'Only the talent scout role can modify the general information.'
+            },
+            es: {
+                error_invalid_role: 'Solo el rol de cazatalento puede modificar la informacion general.',
+            }
+        },
+        ProyectosRouter_updateProyecto: {
+            en: {
+                error_location_invalido: 'You must choose a valid location.',
+                error_sindicato_invalido: 'You must choose a valid union type.',
+                error_save_project: 'An error occurred while trying to save the project.',
+                error_tipo_proyecto_invalido: 'You must choose a valid project type.',
+                error_save_type_project: 'An error occurred while trying to save the project type.',
+                error_save_sindicato: 'An error occurred while trying to save the project union.',
+                error_invalid_role: 'Only the talent scout role can modify projects.'
+            },
+            es: {
+                error_location_invalido: 'Debes elegir una locacion valida.',
+                error_sindicato_invalido: 'Debes elegir un tipo de sindicato.',
+                error_save_project: 'Ocurrio un error al tratar de guardar el proyecto.',
+                error_tipo_proyecto_invalido: 'Debes elegir un tipo de proyecto.',
+                error_save_type_project: 'Ocurrio un error al tratar de guardar el tipo de proyecto.',
+                error_save_sindicato: 'Ocurrio un error al tratar de guardar el sindicato del proyecto.',
+                error_invalid_role: 'Solo el rol de cazatalentos puede modificar los proyectos.',
+            }
+        },
+        ProyectosRouter_deleteById: {
+            en: {
+                error_cant_delete: 'The project could not be deleted.',
+                error_proyecto_not_found: 'The project with that id was not found.'
+            },
+            es: {
+                error_cant_delete: 'No se pudo eliminar el proyecto.',
+                error_proyecto_not_found: 'No se encontro el proyecto con ese id.'
+            }
+        },
+        RepresentantesRouter_saveMediaInfoBasica: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_saveInfoBasica: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_savePermisos: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_saveMediaValidacion: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_saveValidacion: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_updatePerfil: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_getTalentosAsignados: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_removeTalento: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RepresentantesRouter_assignTalento: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RolesRouter_createAplicacionTalento: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RolesRouter_deleteRolById: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RolesRouter_updateEstadoRolById: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RolesRouter_saveRolFiles: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RolesRouter_saveRol: {
+            en: {
+            },
+            es: {
+            }
+        },
+        RolesRouter_saveCompensacion: {
+            en: {
+            },
+            es: {
+                error_save_compensaciones_no_monetarias: 'No se pudieron guardar las compensaciones no monetarias del rol en la base de datos.',
+                error_save_sueldo: 'No se pudo guardar el sueldo del rol en la base de datos.',
+                error_save_compensaciones: 'No se pudo actualizar las compensaciones del rol en la base de datos.',
+                role_not_found: 'No se encontro el rol en la base de datos.',
+            }
+        },
+        RolesRouter_saveFiltrosDemograficos: {
+            en: {
+            },
+            es: {
+                error_save_animal: 'No se pudo guardar el animal del rol en la base de datos.',
+                error_delete_animal: 'No se pudo eliminar el animal del rol en la base de datos.',
+                error_save_etnias: 'No se pudieron guardar las etnias del rol en la base de datos.',
+                error_save_generos: 'No se pudieron guardar los generos del rol en la base de datos.',
+                error_save_filtros: 'No se pudo actualizar los filtros demograficos del rol en la base de datos.',
+                role_not_found: 'No se encontro el rol en la base de datos.',
+                invalid_age: 'La edad no puede ser mayor a 110 ni menor a 0.',
+                invalid_pais: 'Debes seleccionar una nacionalidad.',
+            }
+        },
+        RolesRouter_saveDescripcionRol: {
+            en: {
+            },
+            es: {
+                error_save_nsfw_seleccionados: 'No se pudieron guardar los nsfw seleccionados del rol.',
+                error_save_nsfw: 'No se pudieron guardar los nsfw del rol.',
+                error_delete_nsfw: 'No se pudieron eliminar los nsfw del rol.',
+                error_save_habilidades_seleccionadas: 'No se pudieron crear las habilidades seleccionadas del rol.',
+                error_save_habilidades: 'No se pudieron crear las habilidades del rol.',
+                error_delete_habilidades: 'No se pudieron eliminar las habilidades del rol.',
+                role_not_found: 'No se encontro el rol en la base de datos.',
+                max_descripcion_reached: 'La descripcion del rol no puede ser mayor a 500 caracteres.',
+                max_nsfw_descripcion_reached: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres.',
+            }
+        },
+        RolesRouter_saveInfoCastingYFilmacion: {
+            en: {
+            },
+            es: {
+                error_saved_fechas: 'No se pudieron guardar los datos de la fechas de filmaciones.',
+                error_delete_fechas: 'No se pudieron eliminar los datos de la fechas de filmaciones.',
+                error_saved_fechas_casting: 'No se pudieron guardar los datos de la fechas de castings.',
+                error_delete_fechas_casting: 'No se pudieron eliminar los datos de la fechas de castings.',
+                no_fechas: 'Se debe definir al menos una fecha.',
+            }
+        },
+        RolesRouter_saveRequisitosRol: {
+            en: {
+            },
+            es: {
+                error_save_medios_multimedia: 'No se pudieron guardar los medios multimedia del rol.',
+                error_delete_medios_multimedia: 'No se pudieron eliminar los medios del rol.',
+                error_save_requisitos: 'No se pudieron guardar los requisitos del rol.',
+                limit_info_trabajo_reached: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres.',
+            }
+        },
+        RolesRouter_saveSelftapeRol: {
+            en: {
+            },
+            es: {
+                limit_indicaciones_reached: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres.',
+                failed: 'No se pudieron actualizar los datos del selftape del rol.',
+            }
+        },
+        TalentosRouter_saveSelftape: {
+            en: {
+            },
+            es: {
+                error_update: `Ocurrio un error al tratar de actualizar los selftapes de perfil del talento.`,
+                limit_reached: `Ya se alcanzo el limite de selftapes que puedes subir (6)`,
+            }
+        },
+        TalentosRouter_updatePerfil: {
+            en: {
+            },
+            es: {
+                error_save_redes_sociales: 'Ocurrio un error al tratar de guardar las redes sociales del talento.',
+                error_delete_redes_sociales: 'Ocurrio un error al tratar de eliminar las redes sociales del talento.',
+                error_save_info_gral: 'Ocurrio un error al tratar de guardar la info general del talento.',
+                error_save_talento: 'Ocurrio un error al tratar de actualizar el nombre del talento.',
+                error_save_foto_perfil: `Ocurrio un error al tratar de actualizar la foto de perfil del talento [N1]`,
+                error_biografia_invalida: 'El maximo de caracteres permitido es 500.',
+            }
+        },
+        TalentosRouter_saveInfoGral: {
+            en: {
+            },
+            es: {
+                error_delete_representante: 'Ocurrio un problema al tratar de eliminar el representante.',
+                error_save_representante: 'Ocurrio un error al tratar de guardar el representante del talento.',
+                error_save_redes_sociales: 'Ocurrio un error al tratar de guardar las redes sociales del talento.',
+                error_delete_redes_sociales: 'Ocurrio un error al tratar de eliminar las redes sociales del talento.',
+                error_save_union: 'Ocurrio un error al tratar de guardar la union del talento.',
+                error_save_info_gral: 'Ocurrio un error al tratar de guardar la info general del talento.',
+                error_save_talento: 'Ocurrio un error al tratar de actualizar el nombre del talento.',
+                error_menor_edad_carta_responsiva: 'Si se es menor de edad la carta responsiva y el representante son obligatorios.',
+                error_menor_edad_representante: 'Si se es menor de edad el representante es obligatorio.',
+                error_biografia_invalida: 'El maximo de caracteres permitido es 500.',
+                error_union_invalida: 'Debes seleccionar un tipo de union valida.',
+                error_locacion_invalida: 'Debes seleccionar un estado valido.'
+            }
+        },
+        TalentosRouter_updateEstaActivo: {
+            en: {
+            },
+            es: {
+                error_update_talento: 'Ocurrio un error al tratar de actualizar el talento',
+            }
+        },
+        TalentosRouter_updateDestacado: {
+            en: {
+            },
+            es: {
+                error_update_talento: 'Ocurrio un error al tratar de actualizar el talento',
+            }
+        },
+        TalentosRouter_updateCreditoDestacado: {
+            en: {
+            },
+            es: {
+                error_save_credito: 'Ocurrio un error al tratar de actualizar el credito.',
+            }
+        },
+        TalentosRouter_saveCreditos: {
+            en: {
+            },
+            es: {
+                error_save_creditos: 'Ocurrio un error al tratar de guardar los creditos por talentos.',
+                error_delete_creditos: 'Ocurrio un error al tratar de eliminar los creditos por talentos.',
+                error_update_creditos: 'Ocurrio un error al tratar de actualizar los creditos por talentos.',
+
+            }
+        },
+        TalentosRouter_saveHabilidades: {
+            en: {
+            },
+            es: {
+                error_save_habilidades: 'Ocurrio un error al tratar de guardar las habilidades por talentos.',
+                error_delete_habilidades: 'Ocurrio un error al tratar de eliminar las habilidades por talentos.',
+            }
+        },
+        TalentosRouter_saveActivos: {
+            en: {
+            },
+            es: {
+                error_save_equipos_deportivos: 'Ocurrio un error al tratar de guardar los equipos deportivos por talentos.',
+                error_delete_equipos_deportivos: 'Ocurrio un error al tratar de eliminar los equipos deportivos por talentos.',
+                error_save_props: 'Ocurrio un error al tratar de guardar los props por talentos.',
+                error_delete_props: 'Ocurrio un error al tratar de eliminar los props por talentos.',
+                error_delete_vestuarios: 'Ocurrio un error al tratar de eliminar los vestuarios por talentos.',
+                error_save_vestuarios: 'Ocurrio un error al tratar de guardar los vestuarios por talentos.',
+                error_delete_mascotas: 'Ocurrio un error al tratar de eliminar las mascotas por talentos.',
+                error_save_mascotas: 'Ocurrio un error al tratar de guardar las mascotas por talentos.',
+                error_delete_vehiculos: 'Ocurrio un error al tratar de eliminar los vehiculos por talentos.',
+                error_save_vehiculos: 'Ocurrio un error al tratar de guardar los vehiculos por talentos.',
+                error_activos_talento_not_found: 'Ocurrio un error al tratar de obtener los activos por talento.',
+            }
+        },
+        TalentosRouter_savePreferencias: {
+            en: {
+            },
+            es: {
+                error_save_otras_profesiones: 'Ocurrio un error al tratar de guardar las otras profesiones por talentos.',
+                error_delete_otras_profesiones: 'Ocurrio un error al tratar de eliminar las otras profesiones por talentos.',
+                error_save_disponibilidad: 'Ocurrio un error al tratar de guardar las disponibilidades por talentos.',
+                error_delete_disponibilidad: 'Ocurrio un error al tratar de eliminar las disponibilidades por talentos.',
+                error_save_documentos: 'Ocurrio un error al tratar de guardar los documentos solicitados por talentos.',
+                error_delete_documentos: 'Ocurrio un error al tratar de eliminar los documentos solicitados por talentos.',
+                error_save_locaciones: 'Ocurrio un error al tratar de guardar las locaciones por talentos.',
+                error_delete_locaciones: 'Ocurrio un error al tratar de eliminar las locaciones por talentos.',
+                error_save_intereses_en_proyectos: 'Ocurrio un error al tratar de guardar los intereses en proyectos por talentos.',
+                error_delete_intereses_en_proyectos: 'Ocurrio un error al tratar de eliminar los intereses por proyecto por talentos.',
+                error_save_tipos_de_trabajo: 'Ocurrio un error al tratar de guardar los tipos de trabajos por talentos.',
+                error_delete_tipos_de_trabajo: 'Ocurrio un error al tratar de eliminar los tipos de trabajos por talentos.',
+                error_locacion_invalida: 'Se debe enviar al menos una locacion principal.',
+
+            }
+        },
+        TalentosRouter_saveFiltrosApariencias: {
+            en: {
+            },
+            es: {
+                error_save_intereses_en_interpretar: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos.',
+                error_delete_intereses_en_interpretar: 'Ocurrio un error al tratar de eliminar los intereses en generos por interpretar por talentos.',
+                error_delete_tatuajes: 'Ocurrio un error al tratar de eliminar los tatuajes por talentos.',
+                error_save_tatuajes: 'Ocurrio un error al tratar de guardar los tatuajes por talentos.',
+                error_delete_piercings: 'Ocurrio un error al tratar de eliminar los piercings por talentos.',
+                error_save_piercings: 'Ocurrio un error al tratar de guardar los piercings por talentos.',
+                error_save_hermanos: 'Ocurrio un error al tratar de guardar el tipo de hermanos por talentos.',
+                error_delete_hermanos: 'Ocurrio un error al tratar de eliminar el tipo de hermano por talentos.',
+                error_delete_particularidades: 'Ocurrio un error al tratar de eliminar las particularidades por talentos.',
+                error_save_particularidades: 'Ocurrio un error al tratar de guardar las particularidades por talentos.'
+            }
+        },
     }
     const _route = API_RESPONSES_TEXTS[route];
     if (_route) {

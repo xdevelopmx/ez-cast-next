@@ -120,9 +120,10 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                                 union={'ND'}
                                 id_talento={t.id}
                                 onDrop={(index) => {
-                                    alert('SE DROPEO ESTE WEON' + index);
-                                }}
-                            />
+                                    alert('SE DROPEO ESTE WEON' + index)
+                                } } 
+                                calificacion={-1} 
+                                estado={'REVISAR ESTO'}                            />
                         </Grid>
                     })}
                 </Grid>

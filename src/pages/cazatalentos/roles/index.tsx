@@ -71,7 +71,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user, id_proyecto, can_
         refetchOnWindowFocus: false
     });
 
-    const delayed_proyecto_fetching = useDelay(proyecto.isFetched, 1500);
+    const delayed_proyecto_fetching = useDelay(1500);
 
     console.log(roles.data);
 
@@ -698,7 +698,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({ user, id_proyecto, can_
                                                                                 {
                                                                                     roles.data[element_index]?.filtros_demograficos?.aparencias_etnicas.map(ae => (
                                                                                         <Fragment key={ae.id_aparencia_etnica}>
-                                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>{ae.aparencia_etnica.nombre}</Typography>
+                                                                                            <Typography component={'span'} sx={{ color: '#928F8F' }}>{ae.aparencia_etnica.es}</Typography>
                                                                                             <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                                                                         </Fragment>
                                                                                     ))

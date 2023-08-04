@@ -8,12 +8,16 @@ import {
 } from "~/server/api/trpc";
 import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
+import ApiResponses from "~/utils/api-response";
 
 export const BannersRouter = createTRPCRouter({
 	deleteBanner: protectedProcedure
 		.input(z.number())
 		.mutation(async ({ input, ctx }) => {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('BannersRouter_deleteBanner', lang);
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.ADMIN) {
 				
                 const banner = await ctx.prisma.banners.findFirst({
@@ -39,9 +43,7 @@ export const BannersRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede modificar los proyectos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 	),
@@ -66,7 +68,9 @@ export const BannersRouter = createTRPCRouter({
             ref: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('INPUT updateBanner', input);
+            const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('BannersRouter_updateBanner', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.ADMIN) {
 				
@@ -129,18 +133,14 @@ export const BannersRouter = createTRPCRouter({
 				if (!banner) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el banner',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_no_guardo_banner')
 					});
 				}
 				return banner;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de admin puede modificar los banners',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 	),

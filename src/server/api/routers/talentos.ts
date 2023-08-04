@@ -10,6 +10,7 @@ import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
 import { prisma } from '../../db';
+import ApiResponses from "~/utils/api-response";
 
 function exclude<Talentos, Key extends keyof Talentos>(
 	talento: Talentos,
@@ -522,6 +523,9 @@ export const TalentosRouter = createTRPCRouter({
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_saveSelftape', lang);
+			
 			if (input.id_talento <= 0) return null;
 			if (input.selftape.id) {
 				const media = await ctx.prisma.media.findFirst({where: { id: input.selftape.id }});
@@ -534,7 +538,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (media_por_talento.length === 6) {
 					throw new TRPCError({
 						code: 'PRECONDITION_FAILED',
-						message: `Ya se alcanzo el limite de selftapes que puedes subir (6)`,
+						message: getResponse('limit_reached'),
 					});
 				}
 			}
@@ -577,7 +581,7 @@ export const TalentosRouter = createTRPCRouter({
 			
 			throw new TRPCError({
 				code: 'INTERNAL_SERVER_ERROR',
-				message: `Ocurrio un error al tratar de actualizar los selftapes de perfil del talento`,
+				message: getResponse('error_update')
 			});
 		}
 	),
@@ -745,23 +749,22 @@ export const TalentosRouter = createTRPCRouter({
 				identificador: z.string()
 			}).nullish(),
 			nombre: z.string(),
-			biografia: z.string({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_big':
-							return { message: 'El maximo de caracteres permitido es 500' };
-						default:
-							return { message: 'Formato de biografia invalido' };
-					}
-				},
-			}).max(500),
+			biografia: z.string(),
 			redes_sociales: z.array(z.object({
 				nombre: z.string(),
 				url: z.string()
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_updatePerfil', lang);
 			if (input.id_talento <= 0) return null;
+			if (input.biografia.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_biografia_invalida')
+				});
+			}
 			if (input.foto_perfil) {
 				const foto_perfil = await ctx.prisma.media.findFirst({
 					where: {
@@ -773,9 +776,7 @@ export const TalentosRouter = createTRPCRouter({
 					if (!result_delete.status) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: `Ocurrio un error al tratar de actualizar la foto de perfil del talento [${result_delete.error}]`,
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('').replace('[N1]', `${result_delete.error}`),
 						});
 					}
 				}
@@ -817,12 +818,9 @@ export const TalentosRouter = createTRPCRouter({
 			if (!talento) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_talento')
 				});
 			}
-
 
 			const info_gral = await ctx.prisma.infoBasicaPorTalentos.upsert({
 				where: {
@@ -845,9 +843,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!info_gral) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de guardar la info general del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_info_gral')
 				});
 			}
 
@@ -860,9 +856,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_redes_sociales) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_redes_sociales')
 				});
 			}
 
@@ -876,9 +870,7 @@ export const TalentosRouter = createTRPCRouter({
 					if (!saved_redes_sociales) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_save_redes_sociales')
 						});
 					}
 				}
@@ -890,41 +882,14 @@ export const TalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 			nombre: z.string(),
 			union: z.object({
-				id: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Debes seleccionar un tipo de union' };
-							default:
-								return { message: 'Union invalida' };
-						}
-					},
-				}).min(1),
+				id: z.number(),
 				descripcion: z.string().nullish()
 			}),
-			id_estado_republica: z.number({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_small':
-							return { message: 'Debes seleccionar un estado' };
-						default:
-							return { message: 'Locacion invalida' };
-					}
-				},
-			}).min(1),
+			id_estado_republica: z.number(),
 			edad: z.number(),
 			peso: z.number(),
 			altura: z.number(),
-			biografia: z.string({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_big':
-							return { message: 'El maximo de caracteres permitido es 500' };
-						default:
-							return { message: 'Formato de biografia invalido' };
-					}
-				},
-			}).max(500),
+			biografia: z.string(),
 			media: z.object({
 				id_cv: z.number().nullish(),
 				id_carta_responsiva: z.number().nullish()
@@ -941,22 +906,38 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_saveInfoGral', lang);
 			if (input.id_talento <= 0) return null;
+			if (input.id_estado_republica <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_locacion_invalida')
+				});
+			}
+			if (input.union.id <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_union_invalida')
+				});
+			}
+			if (input.biografia.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_biografia_invalida')
+				});
+			}
 			if (input.edad < 18 && !input.representante) {
 				throw new TRPCError({
 					code: 'PRECONDITION_FAILED',
-					message: 'Si se es menor de edad el representante es obligatorio',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_menor_edad_representante')
 				});
 			}
 
 			if (input.edad < 18 && !input.media.id_carta_responsiva) {
 				throw new TRPCError({
 					code: 'PRECONDITION_FAILED',
-					message: 'Si se es menor de edad la carta responsiva y el representante son obligatorios',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_menor_edad_carta_responsiva')
 				});
 			}
 
@@ -970,9 +951,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!talento) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de actualizar el nombre del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_talento')
 				});
 			}
 
@@ -1002,9 +981,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!info_gral) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de guardar la info general del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_info_gral')
 				});
 			}
 
@@ -1026,9 +1003,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!union_por_talento) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de guardar la union del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_union')
 				});
 			}
 
@@ -1041,9 +1016,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_redes_sociales) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las redes sociales del talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_redes_sociales')
 				});
 			}
 
@@ -1057,9 +1030,7 @@ export const TalentosRouter = createTRPCRouter({
 					if (!saved_redes_sociales) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar las redes sociales del talento',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_save_redes_sociales')
 						});
 					}
 				}
@@ -1091,9 +1062,7 @@ export const TalentosRouter = createTRPCRouter({
 					if (!saved_representante) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un error al tratar de guardar el representante del talento',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_save_representante')
 						});
 					}
 				}
@@ -1109,9 +1078,7 @@ export const TalentosRouter = createTRPCRouter({
 					if (!deleted_representante) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'Ocurrio un problema al tratar de eliminar el representante',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_delete_representante')
 						});
 					}
 				}
@@ -1251,7 +1218,6 @@ export const TalentosRouter = createTRPCRouter({
 				}
 			}
 
-
 			if (!input.audios || input.audios.length > 0) {
 				const audios_perfil = await ctx.prisma.media.findMany({
 					where: {
@@ -1300,9 +1266,6 @@ export const TalentosRouter = createTRPCRouter({
 				}
 			}
 
-
-
-
 			if (saved_files.ids_fotos.length > 0) {
 				const fotos_saved = await ctx.prisma.mediaPorTalentos.createMany({
 					data: saved_files.ids_fotos.map(id => { return { id_media: id, id_talento: input.id_talento } })
@@ -1333,6 +1296,8 @@ export const TalentosRouter = createTRPCRouter({
 			activo: z.boolean()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_updateEstaActivo', lang);
 			const talento_saved = await ctx.prisma.talentos.update({
 				where: {
 					id: input.id_talento
@@ -1345,7 +1310,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!talento_saved) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de actualizar el talento',
+					message: getResponse('error_update_talento')
 				});
 			}
 
@@ -1358,6 +1323,8 @@ export const TalentosRouter = createTRPCRouter({
 			destacado: z.boolean()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_updateDestacado', lang);
 			const talento_saved = await ctx.prisma.talentos.update({
 				where: {
 					id: input.id_talento
@@ -1370,7 +1337,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!talento_saved) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de actualizar el talento',
+					message: getResponse('error_update_talento')
 				});
 			}
 
@@ -1384,6 +1351,8 @@ export const TalentosRouter = createTRPCRouter({
 			destacado: z.boolean()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_updateCreditoDestacado', lang);
 			const credito_saved = await ctx.prisma.creditoTalento.update({
 				where: {
 					id: input.id_credito
@@ -1396,9 +1365,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!credito_saved) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de actualizar el credito',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_credito')
 				});
 			}
 
@@ -1428,6 +1395,8 @@ export const TalentosRouter = createTRPCRouter({
 			}))
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_saveCreditos', lang);
 			console.log('INPUT saveCreditos', input)
 			if (input.id_talento <= 0) return null;
 			input.creditos.forEach(c => {
@@ -1449,9 +1418,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!creditos_por_talentos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de actualizar los creditos por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_update_creditos')
 				});
 			}
 
@@ -1476,9 +1443,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_creditos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los creditos por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_creditos')
 				});
 			}
 
@@ -1532,9 +1497,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!created_creditos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los creditos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_creditos')
 					});
 				}
 			}
@@ -1551,6 +1514,8 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_saveHabilidades', lang);
 			if (input.id_talento <= 0) return null;
 			const deleted_habilidades = await ctx.prisma.habilidadesPorTalentos.deleteMany({
 				where: {
@@ -1560,9 +1525,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_habilidades) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las habilidades por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_habilidades')
 				});
 			}
 
@@ -1573,9 +1536,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_habilidades) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar las habilidades por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_habilidades')
 					});
 				}
 			}
@@ -1611,6 +1572,8 @@ export const TalentosRouter = createTRPCRouter({
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_saveActivos', lang);
 			if (input.id_talento <= 0) return null;
 			const activos_por_talento = await ctx.prisma.activosPorTalentos.upsert({
 				where: { id_talento: input.id_talento },
@@ -1623,9 +1586,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!activos_por_talento) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de obtener los activos por talento',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_activos_talento_not_found')
 				});
 			}
 
@@ -1637,9 +1598,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_vehiculos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los vehiculos por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_vehiculos')
 				});
 			}
 
@@ -1650,9 +1609,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_vehiculos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los vehiculos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_vehiculos')
 					});
 				}
 			}
@@ -1665,9 +1622,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_mascotas) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las mascotas por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_mascotas')
 				});
 			}
 
@@ -1678,9 +1633,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_mascotas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar las mascotas por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_mascotas')
 					});
 				}
 			}
@@ -1693,9 +1646,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_vestuarios) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los vestuarios por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_vestuarios')
 				});
 			}
 
@@ -1706,9 +1657,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_vestuarios) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los vestuarios por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_vestuarios')
 					});
 				}
 			}
@@ -1721,9 +1670,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_props) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los props por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_props')
 				});
 			}
 
@@ -1734,9 +1681,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_props) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los props por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_props'),
 					});
 				}
 			}
@@ -1749,9 +1694,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_equipos_deportivos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los equipos deportivos por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_equipos_deportivos')
 				});
 			}
 
@@ -1762,9 +1705,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_equipos_deportivos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los equipos deportivos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_equipos_deportivos')
 					});
 				}
 			}
@@ -1785,16 +1726,7 @@ export const TalentosRouter = createTRPCRouter({
 			locaciones: z.array(z.object({
 				es_principal: z.boolean(),
 				id_estado_republica: z.number()
-			}), {
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_small':
-							return { message: 'Se debe enviar al menos una locacion en la peticion' };
-						default:
-							return { message: 'Formato de locacion invalido' };
-					}
-				},
-			}).min(1),
+			})),
 			documentos: z.array(z.object({
 				id_documento: z.number(),
 				descripcion: z.string()
@@ -1803,17 +1735,23 @@ export const TalentosRouter = createTRPCRouter({
 			otras_profesiones: z.array(z.string().min(3)),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_savePreferencias', lang);
 			if (input.id_talento <= 0) return null;
 			
 			if (input.locaciones.length === 0 || !input.locaciones.some(l => l.es_principal)) {
 				throw new TRPCError({
 					code: 'PRECONDITION_FAILED',
-					message: 'Se debe enviar al menos una locacion principal',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_locacion_invalida')
 				});
 			}
 
+			if (input.locaciones.filter(l => l.id_estado_republica <= 0).length > 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_locacion_invalida')
+				});
+			}
 
 			const preferencias = await ctx.prisma.preferenciasPorTalentos.upsert({
 				where: { id_talento: input.id_talento },
@@ -1841,9 +1779,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_tipos_de_trabajos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los tipos de trabajos por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_tipos_de_trabajo')
 				});
 			}
 
@@ -1855,9 +1791,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_tipos_de_trabajo) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los tipos de trabajos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_tipos_de_trabajo')
 					});
 				}
 			}
@@ -1871,9 +1805,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_intereses_en_proyectos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los intereses por proyecto por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_intereses_en_proyectos')
 				});
 			}
 
@@ -1885,9 +1817,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_intereses_en_proyectos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los intereses en proyectos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_intereses_en_proyectos')
 					});
 				}
 			}
@@ -1901,9 +1831,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_locaciones) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las locaciones por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_locaciones')
 				});
 			}
 
@@ -1915,9 +1843,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_locaciones) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar las locaciones por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_locaciones')
 					});
 				}
 			}
@@ -1931,9 +1857,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_documentos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los documentos solicitados por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_documentos')
 				});
 			}
 
@@ -1945,9 +1869,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_documentos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los documentos solicitados por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_documentos')
 					});
 				}
 			}
@@ -1961,9 +1883,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_disponibilidad) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las disponibilidades por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_disponibilidad')
 				});
 			}
 
@@ -1975,9 +1895,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_disponibilidad) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar las disponibilidades por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_disponibilidad')
 					});
 				}
 			}
@@ -1991,9 +1909,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_otras_profesiones) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las otras profesiones por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_otras_profesiones')
 				});
 			}
 
@@ -2005,9 +1921,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_otras_profesiones) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar las otras profesiones por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_otras_profesiones')
 					});
 				}
 			}
@@ -2050,6 +1964,8 @@ export const TalentosRouter = createTRPCRouter({
 			}))
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('TalentosRouter_saveFiltrosApariencias', lang);
 			if (input.id_talento <= 0) return null;
 			
 			const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
@@ -2070,9 +1986,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_intereses_en_interpretar) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los intereses en generos por interpretar por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_intereses_en_interpretar')
 				});
 			}
 
@@ -2084,9 +1998,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_intereses_en_interpretar) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_intereses_en_interpretar')
 					});
 				}
 			}
@@ -2100,9 +2012,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_tatuajes) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los tatuajes por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_tatuajes')
 				});
 			}
 
@@ -2114,9 +2024,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_tatuajes) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los tatuajes por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_tatuajes')
 					});
 				}
 			}
@@ -2130,9 +2038,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_piercings) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar los piercings por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_piercings')
 				});
 			}
 
@@ -2144,9 +2050,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_piercings) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar los piercings por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_piercings')
 					});
 				}
 			}
@@ -2164,9 +2068,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_hermanos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el tipo de hermanos por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_hermanos')
 					});
 				}
 			} else {
@@ -2179,13 +2081,10 @@ export const TalentosRouter = createTRPCRouter({
 				if (!deleted_hermanos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar el tipo de hermano por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_hermanos')
 					});
 				}
 			}
-
 
 			const deleted_particularidades = await ctx.prisma.particularidadesPorTalentos.deleteMany({
 				where: {
@@ -2196,9 +2095,7 @@ export const TalentosRouter = createTRPCRouter({
 			if (!deleted_particularidades) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'Ocurrio un error al tratar de eliminar las particularidades por talentos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_particularidades')
 				});
 			}
 
@@ -2210,9 +2107,7 @@ export const TalentosRouter = createTRPCRouter({
 				if (!saved_particularidades) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar las particularidades por talentos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_particularidades')
 					});
 				}
 			}

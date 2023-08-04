@@ -43,7 +43,7 @@ export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         desde_hasta: 'From [N1] to [N2]',
         cerrar: 'Close',
         pagado: 'Paid',
-        no_pagado: 'Not Paid',
+        no_pagado: 'Unpaid',
         de: 'Of',
         confirmar: 'Confirm',
         todos: 'All',
@@ -710,7 +710,7 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             filtros_aplicados: 'Applied Filters',
             validacion_filtro_con_autorellenado: 'You cannot remove this filter when the autofill option is enabled',
             no_opciones_seleccionadas: 'There is no option selected yet',
-            no_filtros: 'There is no filter added yet',
+            no_filtros: 'There are no filter added yet',
             no_proyectos_titulo: 'It seems like you are referring to the fact that there are no projects that match your profile',
             no_proyectos_body: 'Make sure to keep your profile up to date so that we can provide you with projects that match your characteristics.',
         },
@@ -730,8 +730,12 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
     },
     '/talento/aplicaciones': {
         en: {
+            no_aplicaciones_title: 'You have not applied to any project',
+            no_aplicaciones_body: 'Continue adding appearance filters, highlighting your skills, showcasing your credits, and applying to different projects on the Casting Billboard that EZ-Cast by Talent Corner has for you.',
         },
         es: {
+            no_aplicaciones_title: 'No has aplicado a ningún proyecto',
+            no_aplicaciones_body: 'Continúa agregando filtros de apariencia, remarca tus habilidades, activos créditos y aplica a los distintos proyectos en el Casting Billboard que EZ-Cast de Talent Corner tiene para ti.'
         }
     },
     '/talento/self-tape': {

@@ -9,6 +9,7 @@ import {
 } from "~/server/api/trpc";
 import type { Cazatalentos, Talentos } from "@prisma/client";
 import { TipoUsuario } from "~/enums";
+import ApiResponses from "~/utils/api-response";
 
 export const AuthRouter = createTRPCRouter({
     createUser: publicProcedure
@@ -30,16 +31,15 @@ export const AuthRouter = createTRPCRouter({
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
-			console.log('el input', input);
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AuthRouter_createUser', lang);
 
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			const hashed_password = await bcrypt.hash(input.user.contrasenia, 12);
 			if (!hashed_password) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo cifrar la contrasena',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_no_cifro_contrasena')
 				});
 			}
 			switch (input.tipo_usuario) {
@@ -63,9 +63,7 @@ export const AuthRouter = createTRPCRouter({
 					if (talento) {
 						throw new TRPCError({
 							code: 'CONFLICT',
-							message: 'Ya existe un usuario con ese usuario o correo electronico, por favor utiliza otro',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_usuario_o_correo_repetido')
 						});
 					}
 					return await ctx.prisma.talentos.create({
@@ -93,9 +91,7 @@ export const AuthRouter = createTRPCRouter({
 					if (cazatalento) {
 						throw new TRPCError({
 							code: 'CONFLICT',
-							message: 'Ya existe un usuario con ese usuario o correo electronico, por favor utiliza otro',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_usuario_o_correo_repetido')
 						});
 					}
 					return await ctx.prisma.cazatalentos.create({
@@ -135,9 +131,7 @@ export const AuthRouter = createTRPCRouter({
 					if (representante) {
 						throw new TRPCError({
 							code: 'CONFLICT',
-							message: 'Ya existe un usuario con ese usuario o correo electronico, por favor utiliza otro',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_usuario_o_correo_repetido')
 						});
 					}
 					return await ctx.prisma.representante.create({
@@ -161,9 +155,7 @@ export const AuthRouter = createTRPCRouter({
 			
 			throw new TRPCError({
 				code: 'BAD_REQUEST',
-				message: 'No se envio un tipo de usuario valido',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_usuario_invalido')
 			});
 		}
 	),

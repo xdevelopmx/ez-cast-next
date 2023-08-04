@@ -713,7 +713,8 @@ model AparenciasEtnicasPorRoles {
 
 model CatalogoAparenciasEtnicas {
   id                              Int                            @id
-  nombre                          String
+  en String
+  es String
   aparencias_etnicas_por_roles    AparenciasEtnicasPorRoles[]
   filtros_apariencia_por_talentos FiltrosAparenciasPorTalentos[]
 }
@@ -822,7 +823,8 @@ model RequisitosPorRoles {
 
 model CatalogoIdiomas {
   id                 Int                  @id @default(autoincrement())
-  nombre             String
+  es             String
+  en String
   RequisitosPorRoles RequisitosPorRoles[]
 }
 

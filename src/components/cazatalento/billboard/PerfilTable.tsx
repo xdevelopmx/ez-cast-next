@@ -110,7 +110,7 @@ export const PerfilTable: FC<Props> = ({ rol }) => {
                             rol?.filtros_demograficos && rol?.filtros_demograficos?.aparencias_etnicas && rol?.filtros_demograficos?.aparencias_etnicas.length > 0
                                 ? rol?.filtros_demograficos.aparencias_etnicas.map(ae => (
                                     <Fragment key={ae.id}>
-                                        <Typography>{ae.aparencia_etnica.nombre}</Typography>
+                                        <Typography>{ae.aparencia_etnica.es}</Typography>
                                         <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                     </Fragment>
                                 ))

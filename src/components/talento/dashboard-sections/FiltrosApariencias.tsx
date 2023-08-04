@@ -178,7 +178,7 @@ export const FiltrosApariencias = (props: { id_talento: number, read_only: boole
                     <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['apariencia_etnica'] ? `${textos['apariencia_etnica']}` : 'Texto No definido'}</Typography>
                 </Grid>
                 <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.apariencia_etnica) ? data.apariencia_etnica.nombre : 'N/D'}</Typography>
+                    <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.apariencia_etnica) ? ctx.lang === 'en' ? data.apariencia_etnica.en : data.apariencia_etnica.es : 'N/D'}</Typography>
                 </Grid>
                 <Grid item my={2} xs={12}>
                     <Divider />

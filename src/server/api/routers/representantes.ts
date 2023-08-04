@@ -11,6 +11,7 @@ import { FileManager } from "~/utils/file-manager";
 import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import dayjs from "dayjs";
+import ApiResponses from "~/utils/api-response";
 
 export const RepresentantesRouter = createTRPCRouter({
 	getAll: protectedProcedure
@@ -67,6 +68,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_saveMediaInfoBasica', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
 
@@ -158,6 +162,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_saveInfoBasica', lang);
+
 			console.log(input);
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
@@ -270,6 +277,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_savePermisos', lang);
+
 			console.log(input);
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
@@ -312,6 +322,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_saveMediaValidacion', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
 
@@ -395,6 +408,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			})),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_saveValidacion', lang);
+
 			console.log(input);
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
@@ -460,6 +476,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_updatePerfil', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
 
@@ -555,6 +574,9 @@ export const RepresentantesRouter = createTRPCRouter({
 	}),
 	getTalentosAsignados: protectedProcedure
 		.query(async ({ ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_getTalentosAsignados', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
 				const talentos = await ctx.prisma.talentosRepresentados.findMany({
@@ -586,6 +608,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_removeTalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
 				return await ctx.prisma.talentosRepresentados.deleteMany({
@@ -608,6 +633,9 @@ export const RepresentantesRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RepresentantesRouter_assignTalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.REPRESENTANTE) {
 				const result =  await ctx.prisma.talentosRepresentados.create({

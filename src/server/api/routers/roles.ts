@@ -12,6 +12,7 @@ import { Troubleshoot } from "@mui/icons-material";
 import Constants from "~/constants";
 import { Mensaje } from "@prisma/client";
 import dayjs from "dayjs";
+import ApiResponses from "~/utils/api-response";
 
 export type NewRol = {
 	id_rol: number,
@@ -449,6 +450,9 @@ export const RolesRouter = createTRPCRouter({
 		id_ubicacion: z.number(),
 		nota: z.string()
 	})).mutation(async ({ input, ctx }) => {
+		const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+		const getResponse = ApiResponses('RolesRouter_createAplicacionTalento', lang);
+
 		if (input.id_rol <= 0 || input.id_talento <= 0 || input.id_ubicacion <= 0) return null;
 		const result = await ctx.prisma.aplicacionRolPorTalento.create({
 			data: {
@@ -721,6 +725,9 @@ export const RolesRouter = createTRPCRouter({
 	deleteRolById: protectedProcedure
 		.input(z.number())
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_deleteRolById', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const rol = await ctx.prisma.roles.delete({
@@ -752,6 +759,9 @@ export const RolesRouter = createTRPCRouter({
 			estatus: z.string(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_updateEstadoRolById', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const rol = await ctx.prisma.roles.update({
@@ -812,6 +822,9 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveRolFiles', lang);
+
 			console.log('INPUT saveRolFiles', input)
 			const user = ctx.session.user;
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
@@ -1054,53 +1067,13 @@ export const RolesRouter = createTRPCRouter({
 					descripcion: z.string(),
 					tamanio: z.string()
 				}).nullish(),
-				rango_edad_inicio: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'La edad no puede ser menor a 0' };
-							case 'too_big':
-								return { message: 'La edad no puede ser mayor a 110' };
-							default:
-								return { message: 'Formato de biografia invalido' };
-						}
-					},
-				}).min(0).max(110),
-				rango_edad_fin: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'La edad no puede ser menor a 0' };
-							case 'too_big':
-								return { message: 'La edad no puede ser mayor a 110' };
-							default:
-								return { message: 'Formato de biografia invalido' };
-						}
-					},
-				}).min(0).max(110),
+				rango_edad_inicio: z.number(),
+				rango_edad_fin: z.number(),
 				rango_edad_en_meses: z.boolean(),
-				id_pais: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Debes seleccionar una nacionalidad en el apartado de filtros demograficos' };
-							default:
-								return { message: 'Formato de nacionalidad invalido' };
-						}
-					},
-				}).min(1),
+				id_pais: z.number(),
 			}).nullish(),
 			descripcion_rol: z.object({
-				descripcion: z.string({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_big':
-								return { message: 'La descripcion del rol no puede ser mayor a 500 caracteres' };
-							default:
-								return { message: 'Formato de descripcion del rol invalido' };
-						}
-					},
-				}).max(500),
+				descripcion: z.string(),
 				detalles_adicionales: z.string().nullish(),
 				habilidades: z.array(z.number()),
 				especificacion_habilidad: z.string(),
@@ -1108,16 +1081,7 @@ export const RolesRouter = createTRPCRouter({
 				id_color_ojos: z.number(),
 				nsfw: z.object({
 					ids: z.array(z.number()),
-					descripcion: z.string({
-						errorMap: (issue, _ctx) => {
-							switch (issue.code) {
-								case 'too_big':
-									return { message: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres' };
-								default:
-									return { message: 'Formato de descripcion NSFW invalido' };
-							}
-						},
-					}).max(500)
+					descripcion: z.string()
 				}).nullish(),
 			}),
 			casting: z.object({
@@ -1125,67 +1089,83 @@ export const RolesRouter = createTRPCRouter({
 				fechas: z.array(z.object({
 					inicio: z.date(),
 					fin: z.date().nullish(),
-				}), {
-					errorMap: (issue, _ctx) => {
-						console.log(issue);
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Se debe definir al menos una fecha para castings' };
-							default:
-								return { message: 'Formato de fechas invalido' };
-						}
-					}
-				}).min(1)
+				}))
 			}),
 			filmaciones: z.object({
 				id_estado_republica: z.number(),
 				fechas: z.array(z.object({
 					inicio: z.date(),
 					fin: z.date().nullish(),
-				}), {
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Se debe definir al menos una fecha para filmaciones' };
-							default:
-								return { message: 'Formato de fechas invalido' };
-						}
-					}
-				}).min(1),
+				})),
 			}),
 			requisitos: z.object({
 				fecha_presentacion: z.string(),
 				id_uso_horario: z.number(),
-				info_trabajo: z.string({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_big':
-								return { message: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres' };
-							default:
-								return { message: 'Formato de informacion de trabajo del rol invalido' };
-						}
-					},
-				}).max(500),
+				info_trabajo: z.string(),
 				id_idioma: z.number(),
 				medios_multimedia_a_incluir: z.array(z.number()),
 				id_estado_donde_aceptan_solicitudes: z.number()
 			}),
 			selftape: z.object({
-				indicaciones: z.string({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_big':
-								return { message: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres' };
-							default:
-								return { message: 'Formato de las indicaciones del selftape invalido' };
-						}
-					},
-				}).max(500),
+				indicaciones: z.string(),
 				pedir_selftape: z.boolean(),
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
-
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveRol', lang);
+			if (input.filtros_demograficos) {
+				if (input.filtros_demograficos.rango_edad_inicio > 110 || input.filtros_demograficos.rango_edad_inicio <= 0 || input.filtros_demograficos.rango_edad_fin > 110 || input.filtros_demograficos.rango_edad_fin <= 0) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('invalid_age')
+					});
+				}
+				if (input.filtros_demograficos.id_pais <= 0) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('invalid_pais')
+					});
+				}
+			}
+			if (input.descripcion_rol) {
+				if (input.descripcion_rol.descripcion.length > 500) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('invalid_descripcion')
+					});
+				}
+				if (input.descripcion_rol.nsfw && input.descripcion_rol.nsfw.descripcion.length > 500) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('invalid_descripcion_nsfw')
+					});
+				}
+			}
+			if (input.casting && input.casting.fechas.length === 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('invalid_castings')
+				});
+			} 
+			if (input.filmaciones && input.filmaciones.fechas.length === 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('invalid_filmaciones')
+				});
+			}
+			if (input.requisitos && input.requisitos.info_trabajo.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('invalid_requisitos')
+				});
+			}
+			if (input.selftape && input.selftape.indicaciones.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('invalid_selftape')
+				});
+			}
 			const rol = await ctx.prisma.roles.upsert({
 				where: {
 					id: input.id_rol
@@ -1242,9 +1222,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!compensaciones) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo actualizar las compensaciones del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_comp')
 				});
 			}
 
@@ -1266,9 +1244,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!sueldo) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo guardar el sueldo del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_sueldo')
 					});
 				}
 			} else {
@@ -1290,9 +1266,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_compensaciones_no_monetarias) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar las compensaciones no monetarias del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_comp_mone')
 					});
 				}
 			}
@@ -1322,9 +1296,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!filtros_demograficos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo actualizar los filtros demograficos del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_filtros')
 					});
 				}
 
@@ -1339,9 +1311,7 @@ export const RolesRouter = createTRPCRouter({
 					if (!saved_generos) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'No se pudieron guardar los generos del rol en la base de datos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_save_generos')
 						});
 					}
 				}
@@ -1357,9 +1327,7 @@ export const RolesRouter = createTRPCRouter({
 					if (!saved_etnias) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'No se pudieron guardar las etnias del rol en la base de datos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_save_etnias')
 						});
 					}
 				}
@@ -1380,9 +1348,7 @@ export const RolesRouter = createTRPCRouter({
 					if (!saved_animal) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'No se pudo guardar el animal del rol en la base de datos',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_save_animal')
 						});
 					}
 				}
@@ -1414,9 +1380,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!rol_updated) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se encontro el rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_rol')
 				});
 			}
 			
@@ -1432,9 +1396,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!habilidades_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron crear las habilidades del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_habilidades')
 				});
 			}
 
@@ -1445,9 +1407,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!habilidades_seleccionadas_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron crear las habilidades seleccionadas del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_habilidades_seleccionadas')
 				});
 			}
 
@@ -1467,9 +1427,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!nsfw_por_rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los nsfw del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_nsfw')
 					});
 				}
 				const nsfw_seleccionados_por_rol = await ctx.prisma.nSFWSeleccionadosPorRoles.createMany({
@@ -1478,9 +1436,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!nsfw_seleccionados_por_rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los nsfw seleccionados del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_nsfw_seleccionados')
 					});
 				}
 			}
@@ -1503,9 +1459,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!saved_fechas_casting) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron guardar los datos de la fechas de castings',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_fechas_casting')
 				});
 			}
 
@@ -1527,9 +1481,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!saved_fechas_filmaciones) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron guardar los datos de la fechas de filmaciones',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_fechas_filmaciones')
 				});
 			}
 
@@ -1558,9 +1510,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!requisitos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron guardar los requisitos del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_requisitos')
 				});
 			}
 
@@ -1585,7 +1535,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!saved_medios_multimedia_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron guardar los medios multimedia del rol',
+					message: getResponse('error_save_medios_multimedia')
 					// optional: pass the original error to retain stack trace
 					//cause: theError,
 				});
@@ -1611,9 +1561,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!selftape) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron actualizar los datos del selftape del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('failed')
 				});
 			}
 
@@ -1667,14 +1615,14 @@ export const RolesRouter = createTRPCRouter({
 			).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveCompensacion', lang);
 			console.log('input-save compensacion', input)
 			const rol = await ctx.prisma.roles.findUnique({ where: { id: input.id_rol } });
 			if (!rol) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: 'No se encontro el rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('role_not_found')
 				});
 			}
 
@@ -1698,9 +1646,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!compensaciones) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo actualizar las compensaciones del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_compensaciones')
 				});
 			}
 
@@ -1722,9 +1668,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!sueldo) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo guardar el sueldo del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_sueldo')
 					});
 				}
 			} else {
@@ -1747,9 +1691,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_compensaciones_no_monetarias) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar las compensaciones no monetarias del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_compensaciones_no_monetarias')
 					});
 				}
 			}
@@ -1766,50 +1708,31 @@ export const RolesRouter = createTRPCRouter({
 				descripcion: z.string(),
 				tamanio: z.string()
 			}).nullish(),
-			rango_edad_inicio: z.number({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_small':
-							return { message: 'La edad no puede ser menor a 0' };
-						case 'too_big':
-							return { message: 'La edad no puede ser mayor a 110' };
-						default:
-							return { message: 'Formato de biografia invalido' };
-					}
-				},
-			}).min(0).max(110),
-			rango_edad_fin: z.number({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_small':
-							return { message: 'La edad no puede ser menor a 0' };
-						case 'too_big':
-							return { message: 'La edad no puede ser mayor a 110' };
-						default:
-							return { message: 'Formato de biografia invalido' };
-					}
-				},
-			}).min(0).max(110),
+			rango_edad_inicio: z.number(),
+			rango_edad_fin: z.number(),
 			rango_edad_en_meses: z.boolean(),
-			id_pais: z.number({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_small':
-							return { message: 'Debes seleccionar una nacionalidad' };
-						default:
-							return { message: 'Formato de nacionalidad invalido' };
-					}
-				},
-			}).min(1)
+			id_pais: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveFiltrosDemograficos', lang);
+			if (input.id_pais <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('invalid_pais')
+				});
+			}
+			if (input.rango_edad_inicio > 110 || input.rango_edad_inicio <= 0 || input.rango_edad_fin > 110 || input.rango_edad_fin <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('invalid_age')
+				});
+			}
 			const rol = await ctx.prisma.roles.findUnique({ where: { id: input.id_rol } });
 			if (!rol) {
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: 'No se encontro el rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('role_not_found')
 				});
 			}
 
@@ -1835,9 +1758,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!filtros_demograficos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo actualizar los filtros demograficos del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_filtros')
 				});
 			}
 
@@ -1852,9 +1773,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_generos) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los generos del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_generos')
 					});
 				}
 			}
@@ -1870,9 +1789,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_etnias) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar las etnias del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_etnias')
 					});
 				}
 			}
@@ -1881,9 +1798,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!deleted_animal) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudo eliminar el animal del rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_delete_animal')
 				});
 			}
 
@@ -1899,9 +1814,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_animal) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudo guardar el animal del rol en la base de datos',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_animal')
 					});
 				}
 			}
@@ -1911,31 +1824,13 @@ export const RolesRouter = createTRPCRouter({
 	saveDescripcionRol: publicProcedure
 		.input(z.object({
 			id_rol: z.number(),
-			descripcion: z.string({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_big':
-							return { message: 'La descripcion del rol no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de descripcion del rol invalido' };
-					}
-				},
-			}).max(500),
+			descripcion: z.string(),
 			detalles_adicionales: z.string().nullish(),
 			habilidades: z.array(z.number()),
 			especificacion_habilidad: z.string(),
 			nsfw: z.object({
 				ids: z.array(z.number()),
-				descripcion: z.string({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_big':
-								return { message: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres' };
-							default:
-								return { message: 'Formato de descripcion NSFW invalido' };
-						}
-					},
-				}).max(500)
+				descripcion: z.string()
 			}).nullish(),
 			lineas: z.object({
 				base64: z.string(),
@@ -1947,6 +1842,20 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveDescripcionRol', lang);
+			if (input.descripcion.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('max_descripcion_reached')
+				});
+			}
+			if (input.nsfw && input.nsfw.descripcion.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('max_nsfw_descripcion_reached')
+				});
+			}
 			const rol = await ctx.prisma.roles.update({
 				where: {
 					id: input.id_rol
@@ -1971,9 +1880,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se encontro el rol en la base de datos',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('role_not_found')
 				});
 			}
 
@@ -1982,9 +1889,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!deleted_habilidades) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar las habilidades del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_habilidades')
 					});
 				}
 			}
@@ -2000,9 +1905,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!habilidades_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron crear las habilidades del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_habilidades')
 				});
 			}
 
@@ -2013,9 +1916,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!habilidades_seleccionadas_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron crear las habilidades seleccionadas del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_habilidades_seleccionadas')
 				});
 			}
 
@@ -2025,9 +1926,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!deleted_nsfw) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar los nsfw del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_nsfw')
 					});
 				}
 			}
@@ -2042,9 +1941,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!nsfw_por_rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los nsfw del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_nsfw')
 					});
 				}
 				const nsfw_seleccionados_por_rol = await ctx.prisma.nSFWSeleccionadosPorRoles.createMany({
@@ -2053,9 +1950,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!nsfw_seleccionados_por_rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los nsfw seleccionados del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_nsfw_seleccionados')
 					});
 				}
 			}
@@ -2069,28 +1964,26 @@ export const RolesRouter = createTRPCRouter({
 			fechas: z.array(z.object({
 				inicio: z.date(),
 				fin: z.date().nullish(),
-			}), {
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_small':
-							return { message: 'Se debe definir al menos una fecha' };
-						default:
-							return { message: 'Formato de fechas invalido' };
-					}
-				}
-			}).min(1),
+			})),
 			action: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveInfoCastingYFilmacion', lang);
+
+			if (input.fechas.length === 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('no_fechas')
+				});
+			}
 
 			if (input.action === 'casting') {
 				const deleted_fechas = await ctx.prisma.castingPorRoles.deleteMany({ where: { id_rol: input.id_rol } });
 				if (!deleted_fechas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar los datos de la fechas de castings',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_fechas_casting')
 					});
 				}
 				const saved_fechas = await ctx.prisma.castingPorRoles.createMany({
@@ -2106,9 +1999,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_fechas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los datos de la fechas de castings',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_saved_fechas_casting')
 					});
 				}
 				return saved_fechas;
@@ -2117,9 +2008,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!deleted_fechas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar los datos de la fechas de filmaciones',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_fechas')
 					});
 				}
 				const saved_fechas = await ctx.prisma.filmacionPorRoles.createMany({
@@ -2135,9 +2024,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!saved_fechas) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron guardar los datos de la fechas de filmaciones',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_saved_fechas')
 					});
 				}
 				return saved_fechas;
@@ -2149,21 +2036,21 @@ export const RolesRouter = createTRPCRouter({
 			id_rol: z.number(),
 			fecha_presentacion: z.string(),
 			id_uso_horario: z.number(),
-			info_trabajo: z.string({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_big':
-							return { message: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de informacion de trabajo del rol invalido' };
-					}
-				},
-			}).max(500),
+			info_trabajo: z.string(),
 			id_idioma: z.number(),
 			medios_multimedia_a_incluir: z.array(z.number()),
 			id_estado_donde_aceptan_solicitudes: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveRequisitosRol', lang);
+
+			if (input.info_trabajo.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('limit_info_trabajo_reached')
+				});
+			}
 
 			const requisitos = await ctx.prisma.requisitosPorRoles.upsert({
 				where: {
@@ -2189,9 +2076,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!requisitos) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron guardar los requisitos del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_requisitos')
 				});
 			}
 
@@ -2211,9 +2096,7 @@ export const RolesRouter = createTRPCRouter({
 				if (!deleted_medios_multimedia_por_rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'No se pudieron eliminar los medios del rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_medios_multimedia')
 					});
 				}
 			}
@@ -2225,9 +2108,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!saved_medios_multimedia_por_rol) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron guardar los medios multimedia del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_save_medios_multimedia')
 				});
 			}
 
@@ -2238,16 +2119,7 @@ export const RolesRouter = createTRPCRouter({
 	saveSelftapeRol: publicProcedure
 		.input(z.object({
 			id_rol: z.number(),
-			indicaciones: z.string({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-						case 'too_big':
-							return { message: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres' };
-						default:
-							return { message: 'Formato de las indicaciones del selftape invalido' };
-					}
-				},
-			}).max(500),
+			indicaciones: z.string(),
 			pedir_selftape: z.boolean(),
 			lineas: z.object({
 				base64: z.string(),
@@ -2255,6 +2127,15 @@ export const RolesRouter = createTRPCRouter({
 			}).nullish(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('RolesRouter_saveSelftapeRol', lang);
+			if (input.indicaciones.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('limit_indicaciones_reached')
+				});
+			}
 			const selftape = await ctx.prisma.selftapePorRoles.upsert({
 				where: {
 					id_rol: input.id_rol
@@ -2273,9 +2154,7 @@ export const RolesRouter = createTRPCRouter({
 			if (!selftape) {
 				throw new TRPCError({
 					code: 'INTERNAL_SERVER_ERROR',
-					message: 'No se pudieron actualizar los datos del selftape del rol',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('failed')
 				});
 			}
 			return selftape;

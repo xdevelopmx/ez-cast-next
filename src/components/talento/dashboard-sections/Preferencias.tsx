@@ -193,7 +193,7 @@ export const Preferencias = (props: {id_talento: number, read_only: boolean}) =>
                 <Typography fontSize={'1.4rem'} sx={{ color: '#069cb1' }} fontWeight={600}>{textos['meses_de_embarazo'] ? `${textos['meses_de_embarazo']}` : 'Texto No definido'}</Typography>
             </Grid>
             <Grid item alignItems={'self-start'} xs={6} mt={4}>
-                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.meses_embarazo) ? `${data.meses_embarazo} Meses` : 'N/A' }</Typography>
+                <Typography fontSize={'1rem'} fontWeight={400} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.meses_embarazo) ? `${data.meses_embarazo} ${textos['meses']}` : 'N/A' }</Typography>
             </Grid>
             <Grid item my={2} xs={12}>
                 <Divider />

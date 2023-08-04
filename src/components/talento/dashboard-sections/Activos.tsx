@@ -38,11 +38,21 @@ export const Activos = (props: { id_talento: number, read_only: boolean }) => {
         if (data) {
             arrays = {
                 mascotas: data.mascotas.map((m) => {
+                    let tamanio = m.tamanio;
+                    //mascota.tamanio
+                    if (ctx.lang === 'en') {
+                        switch (m.tamanio.toLowerCase()) {
+                            case 'chico': tamanio = 'Small'; break;
+                            case 'mediano': tamanio = 'Medium'; break;
+                            case 'grande': tamanio = 'Large'; break;
+                        }
+                    }
+                    
                     if (m.tipo_mascota) {
                         if (m.id_tipo_mascota === 5 && m.raza_mascota) {
-                            return { tipo: (ctx.lang === 'es') ? m.tipo_mascota.es : m.tipo_mascota.en, raza: (ctx.lang === 'es') ? m.raza_mascota.es : m.raza_mascota.en, tamanio: m.tamanio }
+                            return { tipo: (ctx.lang === 'es') ? m.tipo_mascota.es : m.tipo_mascota.en, raza: (ctx.lang === 'es') ? m.raza_mascota.es : m.raza_mascota.en, tamanio: tamanio }
                         }
-                        return { tipo: (ctx.lang === 'es') ? m.tipo_mascota.es : m.tipo_mascota.en, raza: 'N/A', tamanio: m.tamanio }
+                        return { tipo: (ctx.lang === 'es') ? m.tipo_mascota.es : m.tipo_mascota.en, raza: 'N/A', tamanio: tamanio }
                     }
                     return { tipo: 'N/D', raza: 'N/D', tamanio: 'N/D' };
                 }),

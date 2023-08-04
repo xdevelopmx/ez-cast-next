@@ -249,7 +249,7 @@ export const RolPreview: FC<PropsRol> = ({ rol, action, no_border, no_poster }) 
                                         ? rol.filtros_demograficos.aparencias_etnicas.map(ae => (
                                             <Fragment key={ae.id}>
                                                 <Typography>
-                                                    {ae.aparencia_etnica.nombre}
+                                                    {es_ingles ? ae.aparencia_etnica.en : ae.aparencia_etnica.es}
                                                 </Typography>
                                                 <Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
                                             </Fragment>

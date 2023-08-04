@@ -192,7 +192,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         label={textos['apariencia_etnica'] ? textos['apariencia_etnica'] : 'Texto No Definido'}
                         loading={is_loading}
                         id='etinia-select'
-                        options={(apariencias_etnicas.isSuccess && apariencias_etnicas.data) ? apariencias_etnicas.data.map(u => { return { value: u.id.toString(), label: u.nombre } }) : []}
+                        options={(apariencias_etnicas.isSuccess && apariencias_etnicas.data) ? apariencias_etnicas.data.map(u => { return { value: u.id.toString(), label: es_ingles ? u.en : u.es } }) : []}
                         style={{ width: 250 }}
                         value={`${state.apariencia.id_apariencia_etnica}`}
                         onChange={(e) => {

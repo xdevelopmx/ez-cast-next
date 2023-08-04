@@ -11,6 +11,7 @@ import { FileManager } from "~/utils/file-manager";
 import { TipoConversaciones, TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import dayjs from "dayjs";
+import ApiResponses from "~/utils/api-response";
 
 export const CazatalentosRouter = createTRPCRouter({
     getAll: publicProcedure
@@ -20,6 +21,9 @@ export const CazatalentosRouter = createTRPCRouter({
 	),
 	getTalentosDestacadosByCazatalento: protectedProcedure
 		.query(async ({ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_getTalentosDestacadosByCazatalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const talentos_destacados = await ctx.prisma.talentosDestacados.findMany({
@@ -53,9 +57,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede consultar sus talentos destacados',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 	),
@@ -113,6 +115,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.query(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_getReporteTalentoByCazatalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const reporte = await ctx.prisma.reporteTalentos.findFirst({
@@ -128,9 +133,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede consultar los reportes',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido'),
 			});
 		}
 	),
@@ -139,6 +142,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.query(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_getNotaTalentoByCazatalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const nota = await ctx.prisma.notasTalentos.findFirst({
@@ -151,9 +157,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede consultar las notas',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido'),
 			});
 		}
 	),
@@ -162,6 +166,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.query(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_getTalentoRatingByCazatalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const destacado = await ctx.prisma.talentosDestacados.findFirst({
@@ -174,9 +181,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido'),
 			});
 		}
 	),
@@ -186,6 +191,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_rol: z.number()
 		}))
 		.query(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_getAudicionTalentoByRol', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const audicion = await ctx.prisma.audicionTalento.findFirst({
@@ -198,9 +206,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede consultar las audiciones de los talentos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido'),
 			});
 		}
 	),
@@ -211,6 +217,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			comentario: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updateReporteTalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				let reporte = await ctx.prisma.reporteTalentos.findFirst({
@@ -243,9 +252,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar el reporte del talento',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido'),
 			});
 		}
     ),
@@ -255,6 +262,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			nota: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updateNotaTalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				let nota = await ctx.prisma.notasTalentos.findFirst({
@@ -285,9 +295,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar las notas del talento',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido'),
 			});
 		}
 	),
@@ -296,6 +304,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_talento: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_deleteNotaTalento', lang);
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const result = await ctx.prisma.notasTalentos.deleteMany({
@@ -309,9 +320,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar las notas del talento',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 	),
@@ -321,6 +330,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			id_talento: z.number(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_marcarComoVistoAplicacionRolTalento', lang);
+
 			if (input.id_talento <= 0 || input.id_rol <= 0) return null;
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
@@ -336,9 +348,7 @@ export const CazatalentosRouter = createTRPCRouter({
 					if (parseInt(user.id) !== rol.proyecto.id_cazatalentos) {
 						throw new TRPCError({
 							code: 'UNAUTHORIZED',
-							message: 'Solo elcazatalento que creo el rol puede modificar el talento',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('different_cazatalento')
 						});
 					}
 					const aplicacion_rol_por_talento = await ctx.prisma.aplicacionRolPorTalento.findFirst({
@@ -361,14 +371,12 @@ export const CazatalentosRouter = createTRPCRouter({
 				}
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: 'No se encontro el rol con ese id',
+					message: getResponse('id_role_not_found'),
 				});
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la calificacion del talento',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 	),
@@ -379,6 +387,9 @@ export const CazatalentosRouter = createTRPCRouter({
   			calificacion: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updateTalentoDestacado', lang);
+
 			if (input.id_rol <= 0 || input.id_talento <= 0) return null;
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
@@ -394,7 +405,7 @@ export const CazatalentosRouter = createTRPCRouter({
 					if (parseInt(user.id) !== rol.proyecto.id_cazatalentos) {
 						throw new TRPCError({
 							code: 'UNAUTHORIZED',
-							message: 'Solo elcazatalento que creo el rol puede modificar el talento',
+							message: getResponse('different_cazatalento'),
 						});
 					}
 					let destacado = await ctx.prisma.talentosDestacados.findFirst({
@@ -454,12 +465,12 @@ export const CazatalentosRouter = createTRPCRouter({
 				}
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: 'No se encontro el rol con ese id',
+					message: getResponse('id_role_not_found'),
 				});
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la calificacion del talento',
+				message: getResponse('error_rol_invalido'),
 				// optional: pass the original error to retain stack trace
 				//cause: theError,
 			});
@@ -474,6 +485,9 @@ export const CazatalentosRouter = createTRPCRouter({
 			mensaje: z.string(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updateSeleccionTalento', lang);
+
 			if (input.id_rol <= 0 || input.id_talento <= 0) return null;
 			const fecha_audicion = dayjs(input.fecha_audicion, 'DD/MM/YYYY').toDate();
 			const user = ctx.session.user; 
@@ -494,7 +508,7 @@ export const CazatalentosRouter = createTRPCRouter({
 					if (parseInt(user.id) !== rol.proyecto.id_cazatalentos) {
 						throw new TRPCError({
 							code: 'UNAUTHORIZED',
-							message: 'Solo elcazatalento que creo el rol puede modificar el talento',
+							message: getResponse('different_cazatalento'),
 						});
 					}
 					let audicion = await ctx.prisma.audicionTalento.findFirst({
@@ -595,7 +609,9 @@ export const CazatalentosRouter = createTRPCRouter({
 									visto: false,
 									hora_envio: dayjs().toDate(),
 									mensaje: JSON.stringify({
-										message: `El cazatalentos ${rol.proyecto.cazatalentos.nombre} ${rol.proyecto.cazatalentos.apellido}, te ha programado para ${input.tipo_audicion} para el rol de rol de ${rol.nombre} del proyecto ${rol.proyecto.nombre} en la fecha de ${input.fecha_audicion}, puedes ver los detalles en el casting billboard.`
+										message: getResponse('cazatalento_message').replace('[N1]', `${rol.proyecto.cazatalentos.nombre}`).replace('[N2]', `${rol.proyecto.cazatalentos.apellido}`)
+										.replace('[N3]', `${input.tipo_audicion}`).replace('[N4]', `${rol.nombre}`)
+										.replace('[N5]', `${rol.proyecto.nombre}`).replace('[N6]', `${input.fecha_audicion}`)
 									}),
 									type: TipoMensajes.TEXT
 								}
@@ -623,13 +639,15 @@ export const CazatalentosRouter = createTRPCRouter({
 								id: rol.proyecto.id_cazatalentos
 							}
 						})
+
+						const _alerta_msg = input.tipo_audicion.toLowerCase() === 'callback' ? getResponse('cazatalento_alerta_callback') : getResponse('cazatalento_alerta_audicion');
+
 						await ctx.prisma.alertas.create({
 							data: {
 								id_usuario: talento.id,
 								tipo_usuario: TipoUsuario.TALENTO,
 								visto: false,
-								mensaje: `¡Has sido <span style="color: white;">seleccionad@</span>! Tendrás una <span style="color: white;">${input.tipo_audicion}</span> para
-								<b>${rol.proyecto.nombre}</b>. Estarás recibiendo información del casting muy pronto. ¡Felicidades por pasar a la ${input.tipo_audicion.toLowerCase() === 'callback' ? 'segunda' : 'primera'} etapa!`
+								mensaje: _alerta_msg.replace('[N1]', `${input.tipo_audicion}`).replace('[N2]', `${rol.proyecto.nombre}`)
 							}
 						})
 					}
@@ -637,14 +655,12 @@ export const CazatalentosRouter = createTRPCRouter({
 				}
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: 'No se encontro el rol con ese id',
+					message: getResponse('id_role_not_found')
 				});
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la audicion del talento',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
     ),
@@ -661,22 +677,23 @@ export const CazatalentosRouter = createTRPCRouter({
 			nombre: z.string(),
             posicion: z.string(),
 			compania: z.string(),
-			biografia: z.string({
-				errorMap: (issue, _ctx) => {
-					switch (issue.code) {
-					case 'too_big':
-						return { message: 'El maximo de caracteres permitido es 500' };
-					default:
-						return { message: 'Formato de biografia invalido' };
-					}
-				},
-			}).max(500),
+			biografia: z.string(),
 			redes_sociales: z.array(z.object({
 				nombre: z.string(),
 				url: z.string()
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updatePerfil', lang);
+
+			if (input.biografia.length > 500) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_max_biografia_length')
+				});
+			}
+
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				let id_foto_perfil_media: number | undefined = undefined;
@@ -714,9 +731,7 @@ export const CazatalentosRouter = createTRPCRouter({
 				if (!cazatalento) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de actualizar el nombre del cazatalento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_update_cazatalento')
 					});
 				}
 				
@@ -729,9 +744,7 @@ export const CazatalentosRouter = createTRPCRouter({
 				if (!deleted_redes_sociales) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar las redes sociales del cazatalento',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_redes_sociales')
 					});
 				}
 
@@ -745,9 +758,7 @@ export const CazatalentosRouter = createTRPCRouter({
 						if (!saved_redes_sociales) {
 							throw new TRPCError({
 								code: 'INTERNAL_SERVER_ERROR',
-								message: 'Ocurrio un error al tratar de guardar las redes sociales del cazatalento',
-								// optional: pass the original error to retain stack trace
-								//cause: theError,
+								message: getResponse('error_save_redes_sociales')
 							});
 						}
 					}
@@ -756,9 +767,7 @@ export const CazatalentosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
     )

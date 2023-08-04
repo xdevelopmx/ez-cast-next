@@ -57,6 +57,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
         return { id: 0, descripcion: '' };
     }, [state.union, uniones.data]);
 
+    const es_ingles = ctx.lang === 'en';
+
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={6} lg={4}>
@@ -74,7 +76,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
                     <MSelect
                         loading={is_loading}
                         id="union-select"
-                        options={(uniones.isSuccess && uniones.data) ? uniones.data.map(u => { return { value: u.id.toString(), label: u.es } }) : []}
+                        options={(uniones.isSuccess && uniones.data) ? uniones.data.map(u => { return { value: u.id.toString(), label: es_ingles ? u.en : u.es } }) : []}
                         className={'form-input-md'}
                         value={union_selected.id.toString()}
                         onChange={(e) => {

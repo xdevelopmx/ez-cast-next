@@ -10,6 +10,7 @@ import type { Cazatalentos, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
+import ApiResponses from "~/utils/api-response";
 
 export const ProyectosRouter = createTRPCRouter({
 	getProyectosRandom: publicProcedure
@@ -98,6 +99,9 @@ export const ProyectosRouter = createTRPCRouter({
 	deleteProyecto: protectedProcedure
 		.input(z.number())
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_deleteProyecto', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const proyecto: Proyecto = await ctx.prisma.proyecto.delete({
@@ -108,18 +112,14 @@ export const ProyectosRouter = createTRPCRouter({
 				if (!proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar el proyecto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_project'),
 					});
 				}
 				return proyecto;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede modificar los proyectos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_invalid_role'),
 			});
 		}
 		),
@@ -130,6 +130,9 @@ export const ProyectosRouter = createTRPCRouter({
 			observaciones: z.string().nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_updateEstadoProyecto', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario && [TipoUsuario.CAZATALENTOS, TipoUsuario.ADMIN].includes(ctx.session.user.tipo_usuario)) {
 				const proyecto: Proyecto = await ctx.prisma.proyecto.update({
@@ -144,22 +147,17 @@ export const ProyectosRouter = createTRPCRouter({
 				if (!proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el proyecto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_project')
 					});
 				}
 				let alert_message = ``;
 				switch (proyecto.estatus) {
 					case Constants.ESTADOS_PROYECTO.APROBADO: {
-						alert_message = `¡Tu proyecto <span style="color: white; font-weight: 800;">“${proyecto.nombre}”</span> ha sido aprobado con éxito!
-						Te recomendamos estar atento a las aplicaciones que recibas para así encontrar y reclutar a tu
-						talento lo más pronto posible.`;
+						alert_message = getResponse('message_proyecto_aprobado').replace('[N1]', `${proyecto.nombre}`);
 						break;
 					}
 					case Constants.ESTADOS_PROYECTO.RECHAZADO: {
-						alert_message = `¡Tu proyecto <span style="color: white; font-weight: 800;">“${proyecto.nombre}”</span> ha sido rechazado!
-						Te recomendamos revisar las siguientes observaciones para que sean corregidos: </br> <span style="color: white; font-weight: 800;"> ${(input.observaciones) ? input.observaciones : 'No se hicieron observaciones'}.</span>`;
+						alert_message = getResponse('message_proyecto_rechazado').replace('[N1]', `${proyecto.nombre}`).replace('[N2]', `${(input.observaciones) ? input.observaciones : 'No se hicieron observaciones'}`)
 						break;
 					}
 				}
@@ -177,9 +175,7 @@ export const ProyectosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos y admin puede modificar los proyectos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_invalid_role')
 			});
 		}
 	),
@@ -189,6 +185,9 @@ export const ProyectosRouter = createTRPCRouter({
 			destacado: z.boolean(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_updateDestacado', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.ADMIN) {
 				const proyecto: Proyecto = await ctx.prisma.proyecto.update({
@@ -202,18 +201,14 @@ export const ProyectosRouter = createTRPCRouter({
 				if (!proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el proyecto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_project')
 					});
 				}
 				return proyecto;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de admin puede marcar un proyecto como destacado',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_invalid_role')
 			});
 		}
 	),
@@ -240,6 +235,9 @@ export const ProyectosRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_saveProyectoFiles', lang);
+
 			console.log('INPUT saveProyectoFiles', input)
 			const user = ctx.session.user; 
 			if (user && user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
@@ -371,9 +369,7 @@ export const ProyectosRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la informacion general',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_invalid_role')
 			});
 		}
 	),
@@ -381,29 +377,11 @@ export const ProyectosRouter = createTRPCRouter({
     	.input(z.object({
 			id: z.number().nullish(),
 			sindicato: z.object({
-				id_sindicato: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Debes elegir un tipo de sindicato' };
-							default:
-								return { message: 'Sindicado invalido' };
-						}
-					},
-				}).min(1),
+				id_sindicato: z.number(),
 				descripcion: z.string()
 			}),
 			tipo_proyecto: z.object({
-				id_tipo_proyecto: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Debes elegir un tipo de proyecto' };
-							default:
-								return { message: 'Tipo proyecto invalido' };
-						}
-					},
-				}).min(1),
+				id_tipo_proyecto: z.number(),
 				descripcion: z.string()
 			}),
 			proyecto: z.object({
@@ -417,21 +395,35 @@ export const ProyectosRouter = createTRPCRouter({
 				agencia_publicidad: z.string(),
 				sinopsis: z.string().max(500),
 				detalles_adicionales: z.string().max(500),
-				id_estado_republica: z.number({
-					errorMap: (issue, _ctx) => {
-						switch (issue.code) {
-							case 'too_small':
-								return { message: 'Debes elegir una locacion valida' };
-							default:
-								return { message: 'Locacion invalida' };
-						}
-					},
-				}).min(1),
+				id_estado_republica: z.number(),
 				compartir_nombre: z.boolean(),
 				estatus: z.string(),
 			})
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_updateProyecto', lang);
+			if (input.proyecto.id_estado_republica <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_location_invalido')
+				});
+			}
+
+			if (input.tipo_proyecto.id_tipo_proyecto <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_tipo_proyecto_invalido')
+				});
+			}
+
+			if (input.sindicato.id_sindicato <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_sindicato_invalido')
+				});
+			}
+
 			console.log(input);
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
@@ -445,9 +437,7 @@ export const ProyectosRouter = createTRPCRouter({
 				if (!proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el proyecto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_project')
 					});
 				}
 
@@ -461,9 +451,7 @@ export const ProyectosRouter = createTRPCRouter({
 				if (!tipo_por_proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el tipo de proyecto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_type_project')
 					});
 				}
 
@@ -477,18 +465,14 @@ export const ProyectosRouter = createTRPCRouter({
 				if (!sindicato_por_proyecto) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el sindicato del proyecto',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_sindicato')
 					});
 				}
 				return proyecto;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede modificar los proyectos',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_invalid_role')
 			});
 		}
 		),
@@ -497,6 +481,9 @@ export const ProyectosRouter = createTRPCRouter({
 			id: z.number(),
 		}))
 		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_deleteById', lang);
+
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
 				const proyecto: Proyecto | null = await ctx.prisma.proyecto.findUnique({ where: { id: input.id } });
@@ -506,9 +493,7 @@ export const ProyectosRouter = createTRPCRouter({
 					if (!deleted_proyecto) {
 						throw new TRPCError({
 							code: 'INTERNAL_SERVER_ERROR',
-							message: 'No se pudo eliminar el proyecto',
-							// optional: pass the original error to retain stack trace
-							//cause: theError,
+							message: getResponse('error_cant_delete')
 						});
 					}
 					return deleted_proyecto;
@@ -516,9 +501,7 @@ export const ProyectosRouter = createTRPCRouter({
 
 				throw new TRPCError({
 					code: 'NOT_FOUND',
-					message: 'No se encontro el proyecto con ese id',
-					// optional: pass the original error to retain stack trace
-					//cause: theError,
+					message: getResponse('error_proyecto_not_found')
 				});
 			}
 		}

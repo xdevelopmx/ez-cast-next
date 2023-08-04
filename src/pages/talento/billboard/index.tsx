@@ -485,7 +485,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                                     }}
                                                     placeholder={textos['apariencia_etnica']}
                                                     multiple
-                                                    options={(apariencias_etnicas.data) ? apariencias_etnicas.data.map(er => { return { label: er.nombre, value: er.id.toString() } }) : []}                                                                                     
+                                                    options={(apariencias_etnicas.data) ? apariencias_etnicas.data.map(er => { return { label: es_ingles? er.en : er.es, value: er.id.toString() } }) : []}                                                                                     
                                                 />
                                                 <MSelect
                                                     id="nacionalidades-etnicas-select"
@@ -768,7 +768,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({ user, id_proyecto
                                 const etnia = apariencias_etnicas.data?.filter(tp => tp.id === tipo)[0];
                                 if (etnia) {
                                     return (
-                                        <Tag key={i} styles={{marginRight: 1}} text={etnia.nombre}
+                                        <Tag key={i} styles={{marginRight: 1}} text={es_ingles ? etnia.en : etnia.es}
                                             onRemove={(e) => {
                                                 setFormFiltros(prev => {return {...prev, id_apariencia_etnica: form_filtros.id_apariencia_etnica.filter(i => i !== tipo)}})
                                             }}

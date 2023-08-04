@@ -409,7 +409,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({ user, id_proy
 														{detalles_rol.apariencias_etnicas.length > 0 &&
 															detalles_rol.apariencias_etnicas.map(ae => {
 																return <>
-																	<Typography>{ae.aparencia_etnica.nombre}</Typography>
+																	<Typography>{ae.aparencia_etnica.es}</Typography>
 																	<Divider style={{ borderWidth: 1, height: 12, borderColor: '#069cb1', margin: 8 }} orientation='vertical' />
 																</>
 															})

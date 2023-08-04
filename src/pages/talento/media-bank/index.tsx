@@ -245,6 +245,9 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 													/>
 												}
 											</MContainer>
+											{!media || media.fotos.length === 0 &&
+												<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['imagen']}`) : 'Texto No definido'}</Typography>
+											}
 											{media && media.fotos.map((image, i) => {
 												return <Image onClick={() => { setDialogImage({image: image.url, open: true}) }} key={i} width={191} height={217} src={image.url} alt="" />
 											})}
@@ -295,7 +298,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 
 													}
 													{!media || media.videos.length === 0 &&
-														<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun video</Typography>
+														<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['video']}`) : 'Texto No definido'}</Typography>
 													}
 												</MContainer>
 											</MContainer>
@@ -327,7 +330,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 														})
 													}
 													{!media || media.audios.length === 0 &&
-														<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun audio</Typography>
+														<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['audio']}`) : 'Texto No definido'}</Typography>
 													}
 												</MContainer>
 											</MContainer>
@@ -390,8 +393,8 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 														</>
 
 													}
-													{!media || media.selftapes.length === 0 &&
-														<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>No haz capturado aun ningun selftape</Typography>
+													 {!media || media.selftapes.length === 0 &&
+														<Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['selftape']}`) : 'Texto No definido'}</Typography>
 													}
 												</MContainer>
 											</MContainer>
