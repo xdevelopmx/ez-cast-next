@@ -17,9 +17,9 @@ export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {
     
   return (
     <>
-        <div className="d-lg-flex ml-lg-5 mt-lg-4 jc-c">
+        <div className="d-lg-flex ml-lg-5 mt-lg-4 jc-c" style={{ gap: '40px'}}>
             <div className="mr-2 ml-2 mt-2">
-                <select value={state.tipo_usuario} onChange={(e) => {onFormChange({tipo_usuario: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
+                <select value={state.tipo_usuario} onChange={(e) => {onFormChange({tipo_usuario: e.currentTarget.value})}} className="form-control form-control-sm select_custom" style={{fontSize:18}}>
                     <option value={TipoUsuario.TALENTO}>Talento</option>
                     {!state.is_representante &&
                         <>
@@ -30,7 +30,7 @@ export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {
                 </select>
             </div>
             <div className="mr-2 ml-2 mt-2">
-                <select value={state.tipo_membresia} onChange={(e) => {onFormChange({tipo_membresia: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
+                <select value={state.tipo_membresia} onChange={(e) => {onFormChange({tipo_membresia: e.currentTarget.value})}} className="form-control form-control-sm select_custom" style={{fontSize:18}}>
                     <option value={TipoMembresia.GRATIS}>{TipoMembresia.GRATIS}</option>
                     <option value={TipoMembresia.STANDARD}>{TipoMembresia.STANDARD}</option>
                     <option value={TipoMembresia.PREMIUM}>{TipoMembresia.PREMIUM}</option>
@@ -39,7 +39,7 @@ export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {
             </div>
             {state.tipo_membresia !== TipoMembresia.GRATIS &&
                 <div className="mr-2 ml-2 mt-2">
-                    <select value={state.cobro_membresia} onChange={(e) => {onFormChange({cobro_membresia: e.currentTarget.value})}} className="form-control form-control-sm select_custom">
+                    <select value={state.cobro_membresia} onChange={(e) => {onFormChange({cobro_membresia: e.currentTarget.value})}} className="form-control form-control-sm select_custom" style={{fontSize:18}}>
                         <option value={TipoCobro.ANUAL}>Anual</option>
                         <option value={TipoCobro.MENSUAL}>Mensual</option>
                     </select>

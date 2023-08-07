@@ -185,7 +185,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 				<>
 					<div className="intro_container text-center ezcast_container pb-3">
 						<motion.img src="assets/img/iconos/EZ_Claqueta_N_S.svg" className="logo_head_registro" alt="" />
-						<p className="h1 text-uppercase text-white m-0">Registro EZ-CAST</p>
+						<p className="h1 text-uppercase text-white m-0" style={{fontSize:45, fontWeight:700}}>Registro EZ-CAST</p>
 					</div>
 					<div className="intro_container">
 						<Link href="/login" className="text-dark">
