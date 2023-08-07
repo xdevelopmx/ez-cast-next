@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { motion } from 'framer-motion'
 import { Box, Button, Grid, IconButton, Menu, MenuItem, Typography } from '@mui/material'
@@ -8,8 +8,13 @@ import { getSession, useSession } from 'next-auth/react'
 import { User } from 'next-auth'
 import Image from 'next/image';
 import useNotify from '~/hooks/useNotify'
+import AppContext from '~/context/app'
+import useLang from '~/hooks/useLang'
 
 export const Alertas = () => {
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
+
   const { notify } = useNotify();
   const session = useSession();
   const [show_alertas, setShowAlertas] = useState(false);
@@ -23,7 +28,7 @@ export const Alertas = () => {
 
   const updateOneSeen = api.alertas.updateOneSeen.useMutation({
     onSuccess(data, input) {
-      notify('success', 'Se actualizo la alerta con exito');
+      notify('success', `${textos['success_update_alert']}`);
       alertas.refetch();
     },
     onError: (error) => {
@@ -33,7 +38,7 @@ export const Alertas = () => {
 
   const markAllAsSeen = api.alertas.markAllAsSeen.useMutation({
     onSuccess(data, input) {
-      notify('success', 'Se actualizaron las alertas con exito');
+      notify('success', `${textos['success_update_alert']}`);
       alertas.refetch();
     },
     onError: (error) => {
@@ -43,7 +48,7 @@ export const Alertas = () => {
 
   const deleteOne = api.alertas.deleteOne.useMutation({
     onSuccess(data, input) {
-      notify('success', 'Se elimino la alerta con exito');
+      notify('success', `${textos['success_delete_alert']}`);
       alertas.refetch();
     },
     onError: (error) => {

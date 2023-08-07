@@ -42,7 +42,7 @@ export const MedidasDialog = (props: { id_talento: number, opened: boolean, onCl
 
 	const save_medidas = api.talentos.saveMedidas.useMutation({
 		onSuccess: (input) => {
-			notify('success', 'Se actualizaron las medidas con exito');
+			notify('success', `${textos['success_update_medidas']}`);
 			props.onClose(true);
 		},
 		onError: (error) => {

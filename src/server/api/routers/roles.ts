@@ -528,7 +528,8 @@ export const RolesRouter = createTRPCRouter({
 							visto: false,
 							hora_envio: dayjs().toDate(),
 							mensaje: JSON.stringify({
-								message: `El talento ${talento.nombre} ${talento.apellido}, se ha postulado al rol de ${rol.nombre} del proyecto ${rol.proyecto.nombre}, puedes ver los detalles en el casting billboard.`
+								message: getResponse('conversacion_message').replace('[N1]', `${talento.nombre}`).replace('[N2]', `${talento.apellido}`)
+								.replace('[N3]', `${rol.nombre}`).replace('[N4]', `${rol.proyecto.nombre}`)
 							}),
 							type: TipoMensajes.TEXT
 						}
@@ -545,9 +546,8 @@ export const RolesRouter = createTRPCRouter({
 							id_usuario: rol.proyecto.id_cazatalentos,
 							tipo_usuario: TipoUsuario.CAZATALENTOS,
 							visto: false,
-							mensaje: `<p>¡Hola <b>${cazatalentos.nombre} ${cazatalentos.apellido}</b>! Has recibido
-							<span style="color: white;">nuevas aplicaciones</span> para tu proyecto <b>${rol.proyecto.nombre}</b>, accede a tu <a style="text-decoration: underline; color: white;" href="/cazatalentos/billboard"> billboard personalizado</a> y selecciona
-							a tus favoritos utilizando la herramienta <span style="color: white">destacado</span>.</p>`
+							mensaje: getResponse('alerta_message').replace('[N1]', `${cazatalentos.nombre}`)
+							.replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${rol.proyecto.nombre}`)
 						}
 					})
 				}
@@ -738,18 +738,14 @@ export const RolesRouter = createTRPCRouter({
 				if (!rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de eliminar el rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_delete_rol')
 					});
 				}
 				return rol;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede modificar los roles',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 		),
@@ -775,18 +771,14 @@ export const RolesRouter = createTRPCRouter({
 				if (!rol) {
 					throw new TRPCError({
 						code: 'INTERNAL_SERVER_ERROR',
-						message: 'Ocurrio un error al tratar de guardar el rol',
-						// optional: pass the original error to retain stack trace
-						//cause: theError,
+						message: getResponse('error_save_rol')
 					});
 				}
 				return rol;
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalentos puede modificar los roles',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 		),
@@ -1028,9 +1020,7 @@ export const RolesRouter = createTRPCRouter({
 			}
 			throw new TRPCError({
 				code: 'UNAUTHORIZED',
-				message: 'Solo el rol de cazatalento puede modificar la informacion del rol',
-				// optional: pass the original error to retain stack trace
-				//cause: theError,
+				message: getResponse('error_rol_invalido')
 			});
 		}
 		),

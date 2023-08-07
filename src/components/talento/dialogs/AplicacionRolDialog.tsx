@@ -84,7 +84,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
 
     const createAplicacionTalento = api.roles.createAplicacionTalento.useMutation({
         onSuccess: (data) => {
-            notify('success', 'Se creo la aplicacion para este rol con exito');
+            notify('success', `${textos['success_application_talento_created']}`);
             props.onClose(true);
         }, 
         onError: (err) => {

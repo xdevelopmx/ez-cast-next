@@ -432,7 +432,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const saveInfoGral = api.talentos.saveInfoGral.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardo la informacion general con exito');
+            notify('success', `${textos['success_save_info_gral']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -443,7 +443,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const saveMedios = api.talentos.saveMedios.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardaron los archivos con exito');
+            notify('success', `${textos['success_save_medios']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -454,7 +454,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const saveCreditos = api.talentos.saveCreditos.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardo los creditos con exito');
+            notify('success', `${textos['success_save_creditos']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -465,7 +465,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const saveHabilidades = api.talentos.saveHabilidades.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardaron las habilidades con exito');
+            notify('success', `${textos['success_save_habilidades']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -476,7 +476,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const saveActivos = api.talentos.saveActivos.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardaron los activos con exito');
+            notify('success', `${textos['success_save_activos']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -487,7 +487,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const savePreferencias = api.talentos.savePreferencias.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardaron las preferencias con exito');
+            notify('success', `${textos['success_save_preferencias']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -498,7 +498,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
 
     const saveFiltrosApariencias = api.talentos.saveFiltrosApariencias.useMutation({
         onSuccess(input) {
-            notify('success', 'Se guardaron los filtros de apariencias con exito');
+            notify('success', `${textos['success_save_filtros']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             talento.refetch();
         },
@@ -654,7 +654,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                                 })
                             }
                         } else {
-                            notify('error', `${(original_name) ? `La imagen ${original_name} no se pudo subir` : 'Una imagen no se pudo subir'}`);
+                            const msg = (original_name) ? textos['error_upload_image_with_name']?.replace('[N1]', original_name) : textos['error_upload_image'];
+                            notify('error', `${msg}`);
                         }
                     })
                 });
@@ -688,7 +689,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                                 })  
                             }
                         } else {
-                            notify('error', `${(original_name) ? `El video ${original_name} no se pudo subir` : 'Un video no se pudo subir'}`);
+                            const msg = (original_name) ? textos['error_upload_video_with_name']?.replace('[N1]', original_name) : textos['error_upload_video'];
+                            notify('error', `${msg}`);
                         }
                     })
                 });
@@ -723,7 +725,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                                 })  
                             }
                         } else {
-                            notify('error', `${(original_name) ? `El audio ${original_name} no se pudo subir` : 'Un audio no se pudo subir'}`);
+                            const msg = (original_name) ? textos['error_upload_audio_with_name']?.replace('[N1]', original_name) : textos['error_upload_audio'];
+                            notify('error', `${msg}`);
                         }
                     })
                 });
@@ -768,7 +771,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({ id_talento, step 
                                     public: true
                                 }
                             } else {
-                                notify('error', `${(original_name) ? `El credito ${original_name} no se pudo subir` : 'Un credito no se pudo subir'}`);
+                                const msg = (original_name) ? textos['error_upload_credito_with_name']?.replace('[N1]', original_name) : textos['error_upload_credito'];
+                                notify('error', `${msg}`);
                             }
                         })
                     });

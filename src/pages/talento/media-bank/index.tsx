@@ -102,7 +102,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 
 	const saveSelftapeMedia = api.talentos.saveSelftape.useMutation({
         onSuccess(input) {
-           notify('success', 'Se almaceno el selftape con exito');
+           notify('success', `${textos['success_save_selftape_media']}`);
            media_por_talento.refetch();
 		   setSelftape({video: null, nombre: '', public: true, id: null});
 		   setDialogSeltape({open: false});
@@ -114,7 +114,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 
 	const deleteSelftapeMedia = api.talentos.deleteSelftape.useMutation({
         onSuccess(input) {
-           notify('success', 'Se elimino el selftape con exito');
+           notify('success', `${textos['success_delete_selftape_media']}`);
            media_por_talento.refetch();
         },
         onError: (error) => {
@@ -185,7 +185,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 					<Button
 						onClick={async () => {
 							navigator.clipboard.writeText(props.selftape.url);
-                            notify('success', 'Se copio el link');
+                            notify('success', `${textos['link_copied']}`);
 						}}
 						size='small'
 					

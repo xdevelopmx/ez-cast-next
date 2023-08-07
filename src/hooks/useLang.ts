@@ -214,6 +214,19 @@ export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         embarazo: 'Pregnancy',
         pagina_web: 'Webpage',
         links_a_redes: 'Links to social media',
+        success_update_alert: 'Alert successfully updated.',
+        success_delete_alert: 'Alert successfully deleted.',
+        success_update_talento: 'Talent successfully updated.',
+        success_update_cazatalento: 'Talent scout successfully updated.',
+        success_update_representante: 'Representative successfully updated.',
+        warning_rango_fechas: 'Please add the second date before proceeding.',
+        warning_fecha_individual: 'Please add a valid date.',
+        success_update_creditos: 'Credits successfully saved.',
+        success_application_talento_created: 'Application for this role successfully created.',
+        success_update_medidas: 'Measurements successfully updated.',
+        calzado_ninos: 'Children Shoes',
+        acerca_de: 'About Us',
+        dialog_medidas_vestuario_subtitulo: 'Choose the category that applies to you.',
     },
     es: {
         atencion: 'Atención',
@@ -427,6 +440,19 @@ export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         embarazo: 'Embarazo',
         pagina_web: 'Página web',
         links_a_redes: 'Link a redes sociales',
+        success_update_alert: 'Se actualizo la alerta con exito',
+        success_delete_alert: 'Se elimino la alerta con exito',
+        success_update_talento: 'Se actualizo el talento con exito',
+        success_update_cazatalento: 'Se actualizo el cazatalento con exito',
+        success_update_representante: 'Se actualizo el representante con exito',
+        warning_rango_fechas: 'Por favor agregar la segunda fecha antes de continuar',
+        warning_fecha_individual: 'Por favor agrega una fecha valida',
+        success_update_creditos: 'Se guardo los creditos con exito',
+        success_application_talento_created: 'Se creo la aplicacion para este rol con exito',
+        success_update_medidas: 'Se actualizaron las medidas con exito',
+        calzado_ninos: 'Calzado Niños',
+        acerca_de: 'Acerca de',
+        dialog_medidas_vestuario_subtitulo: 'Elige la categoría que aplique para ti.',
     }
 }
 
@@ -492,6 +518,10 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             mensual : 'Monthly',
             pago : 'Pay',
             forma_pago : 'Way to pay',
+            success_login: 'Successful Authentication',
+            validar_campos_form: 'Please first correct the errors in the form.',
+            no_ha_aceptado_terminos: 'You have not accepted the terms and conditions.',
+            errores_en_formulario: 'There are errors in the form, please correct them and try again.',
         },
         es: {
             Titulo: 'REGISTRO EZ-CAST',
@@ -519,6 +549,10 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             mensual : 'Mensual',
             pago : 'Pago',
             forma_pago : 'Forma de pago',
+            success_login: 'Autenticacion Exitosa',
+            validar_campos_form: 'Por favor primero corrige los errores del formulario',
+            no_ha_aceptado_terminos: 'No haz aceptado los terminos y condiciones',
+            errores_en_formulario: 'Hay errores en el formulario, por favor corrigelos y intenta de nuevo',
         }
     },
     '/login': {
@@ -537,6 +571,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             descripción_cazatalentos : 'Profile for the person who seeks to "hunt" a person who meets the requirements and the talent that he needs.',
             descripcion_talento : 'Profile for the person looking to appear on screen and film projects.',
             descripcion_representante : 'Profile for the person who seeks to facilitate the connection with their talents and find more opportunities for them.',
+            success_login: 'Successful Authentication',
+            error_login: 'Incorrect username or password.',
+            error_form: 'Please correct the form before proceeding with the login.'
         },
         es: {
             no_tienes_cuenta: 'No tienes cuenta?',
@@ -553,6 +590,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             descripción_cazatalentos : 'Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que éste necesita.',
             descripcion_talento : 'Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.',
             descripcion_representante : 'Perfil para la persona que busca facilitar la conexión con sus talentos y encontrar más oportunidades para los mismos.',
+            success_login: 'Autenticacion Exitosa',
+            error_login: 'Usuario u contraseña incorrectos',
+            error_form: 'Por favor corrige el formulario antes de continuar con el inicio de sesion',
         }
     },
     '/inicio': {
@@ -573,14 +613,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
     },
     '/talento/dashboard': {
         en: {
-            acerca_de: 'About Us',
-            dialog_medidas_vestuario_subtitulo: 'Choose the category that applies to you.',
-            calzado_ninos: 'Children Shoes'
         },
         es: {
-            acerca_de: 'Acerca de',
-            dialog_medidas_vestuario_subtitulo: 'Elige la categoría que aplique para ti.',
-            calzado_ninos: 'Calzado Niños'
         }
     },
     '/talento/editar-perfil': {
@@ -640,6 +674,21 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             filtros_apariencias_particularidades_otro_tipo: 'Description of another type of peculiarity',
             filtros_apariencias_empty_fields_piercings: 'The fields of place and description cannot be empty',
             filtros_apariencias_empty_fields_tattoos: 'The fields of visibility and description cannot be empty',
+            success_save_info_gral: 'General information successfully saved.',
+            success_save_medios: 'Files successfully saved.',
+            success_save_creditos: 'Credits successfully saved.',
+            success_save_habilidades: 'Skills successfully saved.',
+            success_save_activos: 'Assets successfully saved.',
+            success_save_preferencias: 'Preferences successfully saved.',
+            success_save_filtros: 'Appearance filters successfully saved.',
+            error_upload_image: 'An image could not be uploaded.',
+            error_upload_image_with_name: 'The image [N1] could not be uploaded.',
+            error_upload_audio: 'An audio could not be uploaded.',
+            error_upload_audio_with_name: 'The audio [N1] could not be uploaded.',
+            error_upload_video: 'A video could not be uploaded.',
+            error_upload_video_with_name: 'The video [N1] could not be uploaded.',
+            error_upload_credito: 'A credit could not be uploaded.',
+            error_upload_credito_with_name: 'The credit [N1] could not be uploaded.'
         },
         es: {
             step6_title: 'Preferencia de rol y compensación',
@@ -700,6 +749,21 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             filtros_apariencias_particularidades_otro_tipo: 'Descripcion otro tipo de particularidad',
             filtros_apariencias_empty_fields_piercings: 'El campo de lugar y descripcion no pueden estar vacios',
             filtros_apariencias_empty_fields_tattoos: 'El campo de visibilidad y descripcion no pueden estar vacios',
+            success_save_info_gral: 'Se guardo la informacion general con exito',
+            success_save_medios: 'Se guardaron los archivos con exito',
+            success_save_creditos: 'Se guardo los creditos con exito',
+            success_save_habilidades: 'Se guardaron las habilidades con exito',
+            success_save_activos: 'Se guardaron los activos con exito',
+            success_save_preferencias: 'Se guardaron las preferencias con exito',
+            success_save_filtros: 'Se guardaron los filtros de apariencias con exito',
+            error_upload_image: 'Una imagen no se pudo subir',
+            error_upload_image_with_name: 'La imagen [N1] no se pudo subir',
+            error_upload_audio: 'Un audio no se pudo subir',
+            error_upload_audio_with_name: 'El audio [N1] no se pudo subir',
+            error_upload_video: 'Un video no se pudo subir',
+            error_upload_video_with_name: 'El video [N1] no se pudo subir',
+            error_upload_credito: 'Un credito no se pudo subir',
+            error_upload_credito_with_name: 'El credito [N1] no se pudo subir',
         },
     },
     '/talento/billboard': {
@@ -749,7 +813,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             deseas_guardar: 'Do you want to save the Self-Tape',
             guardar_dialog_subtitle: 'You will have the option to play and download it in the Media Bank',
             no_camera: 'To use the self-tape function, you must grant permission to the application to access your camera',
-
+            error_didnt_upload: 'A video could not be uploaded.',
+            error_didnt_upload_with_name: 'The video [N1] could not be uploaded.',
+            success_save_selftape_media: 'The self-tape was successfully stored.',            
         },
         es: {
             title_text: 'Un self tape es una técnica utilizada en el mundo cinematográfico en la que una persona se filma a sí misma en una prueba de casting. ¡Saca ventaja de esta herramienta y graba tus audiciones en segundos!',
@@ -761,7 +827,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             deseas_guardar: 'Deseas guardar Self-Tape',
             guardar_dialog_subtitle: 'Tendrás la posibilidad de reproducirlo y bajarlo en el Media Bank',
             no_camera: 'Para usar la función de self-tape, debes dar permiso a la aplicación para acceder a tu cámara',
-
+            error_didnt_upload: `Un video no se pudo subir`,
+            error_didnt_upload_with_name: `El video [N1] no se pudo subir`,
+            success_save_selftape_media: 'Se almaceno el selftape con exito',
         }
     },
     '/talento/media-bank': {
@@ -772,7 +840,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             un_video_no_se_pudo_subir: 'The video couldn`t be uploaded',
             no_haz_seleccionado_ningun_video: `You haven't selected any video`,
             limite_selftapes: 'The self-tapes limit is 6; please delete one before attempting to save another',
-
+            success_save_selftape_media: 'The self-tape was successfully saved.',
+            success_delete_selftape_media: 'The self-tape was successfully deleted.',
+            link_copied: 'The link was copied.',            
         },
         es: {
             dialog_selftape_titulo: 'Selecciona el video que deseas subir a tus selftapes',
@@ -781,6 +851,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             un_video_no_se_pudo_subir: 'Un video no se pudo subir',
             no_haz_seleccionado_ningun_video: 'No haz seleccionado ningun video',
             limite_selftapes: 'El limite de selftapes es 6, por favor elimina uno antes de querer guardar otro',
+            success_save_selftape_media: 'Se almaceno el selftape con exito.',
+            success_delete_selftape_media: 'Se elimino el selftape con exito',
+            link_copied: 'Se copio el link',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
@@ -796,16 +869,37 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
 
         },
         es: {
+            
+        }
+    },
+    '/admin/login': {
+        en: {
+
+        },
+        es: {
 
         }
-    }
+    },
+    '/admin': {
+        en: {
+
+        },
+        es: {
+
+        }
+    },
 
 }
 
 
 const useLang = (lang: string) => {
-
+    
     const route = useRouter();
+
+    if (route.pathname === '/admin') {
+        lang = "es";
+    }
+                
 
     console.log(route.pathname);
 

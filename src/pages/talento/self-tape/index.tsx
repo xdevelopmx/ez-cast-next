@@ -242,7 +242,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
 
     const saveSelftapeMedia = api.talentos.saveSelftape.useMutation({
         onSuccess(input) {
-           notify('success', 'Se almaceno el selftape con exito');
+           notify('success', `${textos['success_save_selftape_media']}`);
            selftapes.refetch();
            setConfirmationDialog(prev => { return { ...prev, opened: false }});
         },
@@ -468,7 +468,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                         }
                                                     })
                                                 } else {
-                                                    notify('error', `${(name) ? `El video ${name} no se pudo subir` : 'Un video no se pudo subir'}`);
+                                                    const msg = (name) ? textos['error_didnt_upload_with_name']?.replace('[N1]', name) : textos['error_didnt_upload'];
+                                                    notify('error', `${msg}`);
                                                 }
                                             })
                                         });

@@ -1,4 +1,4 @@
-import { type FC, type CSSProperties, useState, useEffect } from "react"
+import { type FC, type CSSProperties, useState, useEffect, useContext } from "react"
 import { Box, Button, Divider, Typography } from "@mui/material"
 import { MSelect } from "./MSelect/MSelect";
 import { MRadioGroup } from "./MRadioGroup";
@@ -7,6 +7,8 @@ import { FormGroup } from "./FormGroup";
 import MotionDiv from "../layout/MotionDiv";
 import { Tag } from "./Tag";
 import useNotify from "~/hooks/useNotify";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 interface Props {
     title?: string;
@@ -39,6 +41,8 @@ export const StateNDates: FC<Props> = ({
     onAgregarFecha,
     onEliminarFecha,
 }) => {
+    const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
 
     const [valueRadio, setValueRadio] = useState('Rango de fechas')
 
@@ -128,7 +132,7 @@ export const StateNDates: FC<Props> = ({
                                             fin.setDate(fin.getDate() + 1);
                                             onAgregarFecha({inicio: inicio, fin: fin})
                                         }  else {
-                                            notify('warning', 'Por favor agregar la segunda fecha antes de continuar');
+                                            notify('warning', `${textos['warning_rango_fechas']}`);
                                         }
                                         break;
                                     }
@@ -138,7 +142,7 @@ export const StateNDates: FC<Props> = ({
                                             inicio.setDate(inicio.getDate() + 1);
                                             onAgregarFecha({inicio: inicio, fin: undefined})
                                         }  else {
-                                            notify('warning', 'Por favor agrega una fecha valida');
+                                            notify('warning', `${textos['warning_fecha_individual']}`);
                                         }
                                         break;
                                     }

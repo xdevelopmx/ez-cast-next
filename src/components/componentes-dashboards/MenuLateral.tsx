@@ -86,7 +86,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
 	const update_perfil_talento = api.talentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
-			notify('success', 'Se actualizo el talento con exito');
+			notify('success', `${textos['success_update_talento']}`);
 			setEditMode(false)
 			void talento.refetch();
 			void media_por_talento.refetch();
@@ -98,7 +98,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
 	const update_perfil_cazatalento = api.cazatalentos.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
-			notify('success', 'Se actualizo el cazatalento con exito');
+			notify('success', `${textos['success_update_cazatalento']}`);
 			setEditMode(false)
 			void cazatalentos.refetch();
 		},
@@ -109,7 +109,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
 	const update_perfil_representante = api.representantes.updatePerfil.useMutation({
 		onSuccess: (data, input) => {
-			notify('success', 'Se actualizo el representante con exito');
+			notify('success', `${textos['success_update_representante']}`);
 			setEditMode(false)
 			void representante.refetch();
 		},

@@ -415,36 +415,106 @@ export default function ApiResponses(route: string, lang: string) {
         },
         RolesRouter_createAplicacionTalento: {
             en: {
+                conversacion_message: `The talent [N1] [N2] has applied for the role of [N3] in the project [N4]. You can check the details on the casting billboard.`,
+                alerta_message: `<p>Hello <b>[N1] [N2]</b>! You have received <span style="color: white;">new applications</span> for your project <b>[N3]</b>, access your <a style="text-decoration: underline; color: white;" href="/cazatalentos/billboard">personalized billboard</a> and select your favorites using the <span style="color: white">highlight</span> tool.</p>`
             },
             es: {
+                conversacion_message: `El talento [N1] [N2], se ha postulado al rol de [N3] del proyecto [N4], puedes ver los detalles en el casting billboard.`,
+                alerta_message: `<p>¡Hola <b>[N1] [N2]</b>! Has recibido
+                <span style="color: white;">nuevas aplicaciones</span> para tu proyecto <b>[N3]</b>, accede a tu <a style="text-decoration: underline; color: white;" href="/cazatalentos/billboard"> billboard personalizado</a> y selecciona
+                a tus favoritos utilizando la herramienta <span style="color: white">destacado</span>.</p>`
             }
         },
         RolesRouter_deleteRolById: {
             en: {
+                error_rol_invalido: 'Only the talent scout role can modify roles.',
+                error_delete_rol: 'An error occurred while trying to delete the role.',
             },
             es: {
+                error_rol_invalido: 'Solo el rol de cazatalentos puede modificar los roles.',
+                error_delete_rol: 'Ocurrio un error al tratar de eliminar el rol.',
             }
         },
         RolesRouter_updateEstadoRolById: {
             en: {
+                error_rol_invalido: 'Only the talent scout role can modify roles.',
+                error_save_rol: 'An error occurred while trying to save the role.',
             },
             es: {
+                error_rol_invalido: 'Solo el rol de cazatalentos puede modificar los roles.',
+                error_save_rol: 'Ocurrio un error al tratar de guardar el rol.',
             }
         },
         RolesRouter_saveRolFiles: {
-            en: {
+            en: { 
+                error_rol_invalido: 'Only the talent scout role can modify the role information.',
             },
             es: {
+                error_rol_invalido: 'Solo el rol de cazatalento puede modificar la informacion del rol.',
             }
         },
         RolesRouter_saveRol: {
             en: {
+                failed: 'Failed to update the self-tape data of the role.',
+                error_save_medios_multimedia: 'Failed to save the multimedia media of the role.',
+                error_save_requisitos: 'Failed to save the requirements of the role.',
+                error_save_fechas_filmaciones: 'Failed to save the filming dates data.',
+                error_save_fechas_casting: 'Failed to save the casting dates data.',
+                error_save_nsfw_seleccionados: 'Failed to save the selected nsfw for the role.',
+                error_save_nsfw: 'Failed to save the nsfw for the role.',
+                error_save_habilidades_seleccionadas: 'Failed to create the selected skills for the role.',
+                error_save_habilidades: 'Failed to create the skills for the role.',
+                error_save_rol: 'Failed to update the role.',
+                error_save_animal: 'Failed to save the animal of the role in the database.',
+                error_save_etnias: 'Failed to save the ethnicities of the role in the database.',
+                error_save_generos: 'Failed to save the genders of the role in the database.',
+                error_save_filtros: 'Failed to update the demographic filters of the role in the database.',
+                error_save_comp_mone: 'Failed to save the non-monetary compensations of the role in the database.',
+                error_save_sueldo: 'Failed to save the salary of the role in the database.',
+                error_save_comp: 'Failed to update the compensations of the role in the database.',
+                invalid_age: 'Age cannot be greater than 110 or less than 0.',
+                invalid_pais: 'You must select a nationality.',
+                invalid_descripcion: 'The role description cannot exceed 500 characters.',
+                invalid_descripcion_nsfw: 'The NSFW content description cannot exceed 500 characters.',
+                invalid_castings: 'At least one casting date must be defined.',
+                invalid_filmaciones: 'At least one filming date must be defined.',
+                invalid_selftape: 'Self-tape instructions cannot exceed 500 characters.',
+                invalid_requisitos: 'The work information for the role cannot exceed 500 characters.',
             },
             es: {
+                failed: 'No se pudieron actualizar los datos del selftape del rol.',
+                error_save_medios_multimedia: 'No se pudieron guardar los medios multimedia del rol.',
+                error_save_requisitos: 'No se pudieron guardar los requisitos del rol.',
+                error_save_fechas_filmaciones: 'No se pudieron guardar los datos de la fechas de filmaciones.',
+                error_save_fechas_casting: 'No se pudieron guardar los datos de la fechas de castings.',
+                error_save_nsfw_seleccionados: 'No se pudieron guardar los nsfw seleccionados del rol.',
+                error_save_nsfw: 'No se pudieron guardar los nsfw del rol.',
+                error_save_habilidades_seleccionadas: 'No se pudieron crear las habilidades seleccionadas del rol.',
+                error_save_habilidades: 'No se pudieron crear las habilidades del rol.',
+                error_save_rol: 'No se pudo actualizar el rol.',
+                error_save_animal: 'No se pudo guardar el animal del rol en la base de datos.',
+                error_save_etnias: 'No se pudieron guardar las etnias del rol en la base de datos.',
+                error_save_generos: 'No se pudieron guardar los generos del rol en la base de datos.',
+                error_save_filtros: 'No se pudo actualizar los filtros demograficos del rol en la base de datos.',
+                error_save_comp_mone: 'No se pudieron guardar las compensaciones no monetarias del rol en la base de datos.',
+                error_save_sueldo: 'No se pudo guardar el sueldo del rol en la base de datos.',
+                error_save_comp: 'No se pudo actualizar las compensaciones del rol en la base de datos.',
+                invalid_age: 'La edad no puede ser mayor a 110 ni menor a 0.',
+                invalid_pais: 'Debes seleccionar una nacionalidad.',
+                invalid_descripcion: 'La descripcion del rol no puede ser mayor a 500 caracteres.',
+                invalid_descripcion_nsfw: 'La descripcion del contenido NSFW no puede ser mayor a 500 caracteres.',
+                invalid_castings: 'Se debe definir al menos una fecha para castings.',
+                invalid_filmaciones: 'Se debe definir al menos una fecha para filmaciones.',
+                invalid_selftape: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres.',
+                invalid_requisitos: 'La informacion de trabajo del  rol no puede ser mayor a 500 caracteres.',
             }
         },
         RolesRouter_saveCompensacion: {
             en: {
+                error_save_compensaciones_no_monetarias: 'Failed to save the non-monetary compensations of the role in the database.',
+                error_save_sueldo: 'Failed to save the salary of the role in the database.',
+                error_save_compensaciones: 'Failed to update the compensations of the role in the database.',
+                role_not_found: 'The role was not found in the database.'
             },
             es: {
                 error_save_compensaciones_no_monetarias: 'No se pudieron guardar las compensaciones no monetarias del rol en la base de datos.',
@@ -455,6 +525,14 @@ export default function ApiResponses(route: string, lang: string) {
         },
         RolesRouter_saveFiltrosDemograficos: {
             en: {
+                error_save_animal: 'Failed to save the animal of the role in the database.',
+                error_delete_animal: 'Failed to delete the animal of the role in the database.',
+                error_save_etnias: 'Failed to save the ethnicities of the role in the database.',
+                error_save_generos: 'Failed to save the genders of the role in the database.',
+                error_save_filtros: 'Failed to update the demographic filters of the role in the database.',
+                role_not_found: 'The role was not found in the database.',
+                invalid_age: 'Age cannot be greater than 110 or less than 0.',
+                invalid_pais: 'You must select a nationality.'
             },
             es: {
                 error_save_animal: 'No se pudo guardar el animal del rol en la base de datos.',
@@ -469,6 +547,15 @@ export default function ApiResponses(route: string, lang: string) {
         },
         RolesRouter_saveDescripcionRol: {
             en: {
+                error_save_nsfw_seleccionados: 'Failed to save the selected nsfw for the role.',
+                error_save_nsfw: 'Failed to save the nsfw for the role.',
+                error_delete_nsfw: 'Failed to delete the nsfw for the role.',
+                error_save_habilidades_seleccionadas: 'Failed to create the selected skills for the role.',
+                error_save_habilidades: 'Failed to create the skills for the role.',
+                error_delete_habilidades: 'Failed to delete the skills for the role.',
+                role_not_found: 'The role was not found in the database.',
+                max_descripcion_reached: 'The role description cannot exceed 500 characters.',
+                max_nsfw_descripcion_reached: 'The NSFW content description cannot exceed 500 characters.'
             },
             es: {
                 error_save_nsfw_seleccionados: 'No se pudieron guardar los nsfw seleccionados del rol.',
@@ -484,6 +571,11 @@ export default function ApiResponses(route: string, lang: string) {
         },
         RolesRouter_saveInfoCastingYFilmacion: {
             en: {
+                error_saved_fechas: 'Failed to save the filming dates data.',
+                error_delete_fechas: 'Failed to delete the filming dates data.',
+                error_saved_fechas_casting: 'Failed to save the casting dates data.',
+                error_delete_fechas_casting: 'Failed to delete the casting dates data.',
+                no_fechas: 'At least one date must be defined.'
             },
             es: {
                 error_saved_fechas: 'No se pudieron guardar los datos de la fechas de filmaciones.',
@@ -495,6 +587,10 @@ export default function ApiResponses(route: string, lang: string) {
         },
         RolesRouter_saveRequisitosRol: {
             en: {
+                error_save_medios_multimedia: 'Failed to save the multimedia media of the role.',
+                error_delete_medios_multimedia: 'Failed to delete the media of the role.',
+                error_save_requisitos: 'Failed to save the requirements of the role.',
+                limit_info_trabajo_reached: 'The work information for the role cannot exceed 500 characters.'
             },
             es: {
                 error_save_medios_multimedia: 'No se pudieron guardar los medios multimedia del rol.',
@@ -505,6 +601,8 @@ export default function ApiResponses(route: string, lang: string) {
         },
         RolesRouter_saveSelftapeRol: {
             en: {
+                limit_indicaciones_reached: 'Self-tape instructions cannot exceed 500 characters.',
+                failed: 'Failed to update the self-tape data of the role.'
             },
             es: {
                 limit_indicaciones_reached: 'Las indicaciones del selftape no puede ser mayor a 500 caracteres.',
@@ -513,6 +611,8 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_saveSelftape: {
             en: {
+                error_update: `An error occurred while trying to update the talent's profile selftapes.`,
+                limit_reached: 'You have reached the limit of selftapes you can upload (6).'
             },
             es: {
                 error_update: `Ocurrio un error al tratar de actualizar los selftapes de perfil del talento.`,
@@ -521,6 +621,12 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_updatePerfil: {
             en: {
+                error_save_redes_sociales: `An error occurred while trying to save the talent's social media.`,
+                error_delete_redes_sociales: `An error occurred while trying to delete the talent's social media.`,
+                error_save_info_gral: `An error occurred while trying to save the talent's general information.`,
+                error_save_talento: `An error occurred while trying to update the talent's name.`,
+                error_save_foto_perfil: 'An error occurred while trying to update the profile picture of talent [N1].',
+                error_biografia_invalida: 'The maximum allowed characters is 500.'
             },
             es: {
                 error_save_redes_sociales: 'Ocurrio un error al tratar de guardar las redes sociales del talento.',
@@ -533,6 +639,18 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_saveInfoGral: {
             en: {
+                error_delete_representante: 'There was a problem trying to delete the representative.',
+                error_save_representante: `An error occurred while trying to save the talent's representative.`,
+                error_save_redes_sociales: `An error occurred while trying to save the talent's social media.`,
+                error_delete_redes_sociales: `An error occurred while trying to delete the talent's social media.`,
+                error_save_union: `An error occurred while trying to save the talent's union.`,
+                error_save_info_gral: `An error occurred while trying to save the talent's general information.`,
+                error_save_talento: `An error occurred while trying to update the talent's name.`,
+                error_menor_edad_carta_responsiva: `If you are a minor, the letter of responsibility and the representative are mandatory.`,
+                error_menor_edad_representante: 'If you are a minor, the representative is mandatory.',
+                error_biografia_invalida: 'The maximum allowed characters is 500.',
+                error_union_invalida: 'You must select a valid union type.',
+                error_locacion_invalida: 'You must select a valid state.'
             },
             es: {
                 error_delete_representante: 'Ocurrio un problema al tratar de eliminar el representante.',
@@ -551,6 +669,7 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_updateEstaActivo: {
             en: {
+                error_update_talento: 'An error occurred while trying to update the talent.'
             },
             es: {
                 error_update_talento: 'Ocurrio un error al tratar de actualizar el talento',
@@ -558,6 +677,7 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_updateDestacado: {
             en: {
+                error_update_talento: 'An error occurred while trying to update the talent.'
             },
             es: {
                 error_update_talento: 'Ocurrio un error al tratar de actualizar el talento',
@@ -565,6 +685,7 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_updateCreditoDestacado: {
             en: {
+                error_save_credito: 'An error occurred while trying to update the credit.',
             },
             es: {
                 error_save_credito: 'Ocurrio un error al tratar de actualizar el credito.',
@@ -572,16 +693,20 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_saveCreditos: {
             en: {
+                error_save_creditos: 'An error occurred while trying to save the talent credits.',
+                error_delete_creditos: 'An error occurred while trying to delete the talent credits.',
+                error_update_creditos: 'An error occurred while trying to update the talent credits.'
             },
             es: {
                 error_save_creditos: 'Ocurrio un error al tratar de guardar los creditos por talentos.',
                 error_delete_creditos: 'Ocurrio un error al tratar de eliminar los creditos por talentos.',
                 error_update_creditos: 'Ocurrio un error al tratar de actualizar los creditos por talentos.',
-
             }
         },
         TalentosRouter_saveHabilidades: {
             en: {
+                error_save_habilidades: `An error occurred while trying to save the talent's skills.`,
+            error_delete_habilidades: `An error occurred while trying to delete the talent's skills.`
             },
             es: {
                 error_save_habilidades: 'Ocurrio un error al tratar de guardar las habilidades por talentos.',
@@ -590,6 +715,17 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_saveActivos: {
             en: {
+                error_save_equipos_deportivos: 'An error occurred while trying to save the sports equipment for talents.',
+                error_delete_equipos_deportivos: 'An error occurred while trying to delete the sports equipment for talents.',
+                error_save_props: 'An error occurred while trying to save the props for talents.',
+                error_delete_props: 'An error occurred while trying to delete the props for talents.',
+                error_delete_vestuarios: 'An error occurred while trying to delete the wardrobes for talents.',
+                error_save_vestuarios: 'An error occurred while trying to save the wardrobes for talents.',
+                error_delete_mascotas: 'An error occurred while trying to delete the mascots for talents.',
+                error_save_mascotas: 'An error occurred while trying to save the mascots for talents.',
+                error_delete_vehiculos: 'An error occurred while trying to delete the vehicles for talents.',
+                error_save_vehiculos: 'An error occurred while trying to save the vehicles for talents.',
+                error_activos_talento_not_found: 'An error occurred while trying to retrieve the assets for talent.'
             },
             es: {
                 error_save_equipos_deportivos: 'Ocurrio un error al tratar de guardar los equipos deportivos por talentos.',
@@ -607,6 +743,19 @@ export default function ApiResponses(route: string, lang: string) {
         },
         TalentosRouter_savePreferencias: {
             en: {
+                error_save_otras_profesiones: 'An error occurred while trying to save other professions for talents.',
+                error_delete_otras_profesiones: 'An error occurred while trying to delete other professions for talents.',
+                error_save_disponibilidad: 'An error occurred while trying to save availabilities for talents.',
+                error_delete_disponibilidad: 'An error occurred while trying to delete availabilities for talents.',
+                error_save_documentos: 'An error occurred while trying to save requested documents for talents.',
+                error_delete_documentos: 'An error occurred while trying to delete requested documents for talents.',
+                error_save_locaciones: 'An error occurred while trying to save locations for talents.',
+                error_delete_locaciones: 'An error occurred while trying to delete locations for talents.',
+                error_save_intereses_en_proyectos: 'An error occurred while trying to save project interests for talents.',
+                error_delete_intereses_en_proyectos: 'An error occurred while trying to delete project interests for talents.',
+                error_save_tipos_de_trabajo: 'An error occurred while trying to save work types for talents.',
+                error_delete_tipos_de_trabajo: 'An error occurred while trying to delete work types for talents.',
+                error_locacion_invalida: 'At least one main location must be provided.'
             },
             es: {
                 error_save_otras_profesiones: 'Ocurrio un error al tratar de guardar las otras profesiones por talentos.',
@@ -622,11 +771,20 @@ export default function ApiResponses(route: string, lang: string) {
                 error_save_tipos_de_trabajo: 'Ocurrio un error al tratar de guardar los tipos de trabajos por talentos.',
                 error_delete_tipos_de_trabajo: 'Ocurrio un error al tratar de eliminar los tipos de trabajos por talentos.',
                 error_locacion_invalida: 'Se debe enviar al menos una locacion principal.',
-
             }
         },
         TalentosRouter_saveFiltrosApariencias: {
             en: {
+                error_save_intereses_en_interpretar: 'An error occurred while trying to save interests in genres to interpret for talents.',
+                error_delete_intereses_en_interpretar: 'An error occurred while trying to delete interests in genres to interpret for talents.',
+                error_delete_tatuajes: 'An error occurred while trying to delete tattoos for talents.',
+                error_save_tatuajes: 'An error occurred while trying to save tattoos for talents.',
+                error_delete_piercings: 'An error occurred while trying to delete piercings for talents.',
+                error_save_piercings: 'An error occurred while trying to save piercings for talents.',
+                error_save_hermanos: 'An error occurred while trying to save the type of siblings for talents.',
+                error_delete_hermanos: 'An error occurred while trying to delete the type of sibling for talents.',
+                error_delete_particularidades: 'An error occurred while trying to delete particularities for talents.',
+                error_save_particularidades: 'An error occurred while trying to save particularities for talents.'
             },
             es: {
                 error_save_intereses_en_interpretar: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos.',
@@ -645,6 +803,7 @@ export default function ApiResponses(route: string, lang: string) {
     const _route = API_RESPONSES_TEXTS[route];
     if (_route) {
         const texts = _route[lang];
+        console.log(lang);
         if (texts) {
             return (_key: string) => {
                 const _text = texts[_key];

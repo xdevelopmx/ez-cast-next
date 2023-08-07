@@ -35,7 +35,7 @@ export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
 
     const update_credito = api.talentos.updateCreditoDestacado.useMutation({
         onSuccess(data, input) {
-            notify('success', 'Se guardo los creditos con exito');
+            notify('success', `${textos['success_update_creditos']}`);
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
             creditos.refetch();
         },

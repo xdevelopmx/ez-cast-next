@@ -193,18 +193,18 @@ const LoginPage: NextPage = () => {
 											redirect: false,
 										}).then(res => {
 											if (res?.ok) {
-												notify('success', 'Autenticacion Exitosa');
+												notify('success', `${textos['success_login']}`);
 												router.push('/inicio');
 											} else {
-												notify('error', 'Usuario u contraseña incorrectos');
+												notify('error', `${textos['error_login']}`);
 											}
 											console.log(res);
 										}).catch((err: Error) => {
 											notify('error', err.message);
 										});
 									} else {
-										dispatch({ type: 'update-form', value: { errors: validationLogin.errors } })
-										notify('warning', 'Por favor corrige el formulario antes de continuar con el inicio de sesion')
+										dispatch({ type: 'update-form', value: { errors: validationLogin.errors } });
+										notify('warning', `${textos['error_form']}`);
 									}
 								}}>Log In</button>
 							</div>

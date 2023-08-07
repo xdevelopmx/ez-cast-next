@@ -6,7 +6,7 @@ import { AceptarTerminos, CreaTuPerfil, MainLayout, Pago, TipoDeMembresia } from
 import MotionDiv from "~/components/layout/MotionDiv";
 import Link from "next/link";
 import { Box } from "@mui/material";
-import { useEffect, useMemo, useReducer } from "react";
+import { useContext, useEffect, useMemo, useReducer } from "react";
 import { MStepper } from "~/components/shared/MStepper";
 import { TipoCobro, TipoMembresia, TipoUsuario } from "~/enums";
 import { api, parseErrorBody } from "~/utils/api";
@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import useNotify from "~/hooks/useNotify";
 import Constants from "~/constants";
 import { ResourceAlert } from "~/components/shared/ResourceAlert";
+import AppContext from "~/context/app";
 
 type RegistroProps = {
 	is_representante: boolean,
@@ -86,8 +87,9 @@ function reducer(state: CreateUserForm, action: { type: string, value: { [key: s
 
 const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave}) => {
 
-	const texts = useLang('es');
-
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
+    
 	const [state, dispatch] = useReducer(reducer, initialState);
 
 	useEffect(() => {
@@ -109,7 +111,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 					redirect: false,
 				}).then(res => {
 					if (res?.ok) {
-						notify('success', 'Autenticacion Exitosa');
+						notify('success', `${textos['success_login']}`);
 						router.push('/inicio');
 					}
 					console.log(res);
@@ -120,7 +122,6 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 			if (onSave) {
 				onSave(input.id, state.perfil.tipo_usuario);
 			}
-			console.log('Se guardo con exito', input);
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message))
@@ -228,7 +229,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 											case 2: {
 												console.log(validationStepPerfil)
 												if (validationStepPerfil.hasErrors) {
-													notify('warning', 'Por favor primero corrige los errores del formulario');
+													notify('warning', `${textos['validar_campos_form']}`);
 													dispatch({ type: 'update-perfil', value: { errors: validationStepPerfil.errors } });
 												} else {
 													dispatch({ type: 'update-form', value: { step_active: step } });
@@ -240,7 +241,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 									}}
 									onFinish={() => {
 										if (!state.terms_and_conditions_accepted) {
-											notify('warning', 'No haz aceptado los terminos y condiciones');
+											notify('warning', `${textos['no_ha_aceptado_terminos']}`);
 											return;
 										}
 										console.log(validationStepPerfil)
@@ -252,7 +253,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 												}
 											});
 										} else {
-											notify('warning', 'Hay errores en el formulario, por favor corrigelos y intenta de nuevo');
+											notify('warning', `${textos['errores_en_formulario']}`);
 										}
 									}}
 									current_step={state.step_active}
