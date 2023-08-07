@@ -55,7 +55,7 @@ export const Header: FC<Props> = ({
 				style={menuAzul ? {
 					backgroundColor: '#069cb1'
 				} : {}}>
-				<Link href="/" className="navbar-brand ml-lg-5 w-sm-50" style={{ marginRight: 0 }}>
+				<Link href="/" className="navbar-brand w-sm-50" style={{ margin: '0 0 0 80px' }}>
 					{(menuAzul || !esBlanco) &&
 						<motion.img
 							src="/assets/img/logo_blanco.svg"

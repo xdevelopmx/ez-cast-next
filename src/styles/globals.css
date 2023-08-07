@@ -136,6 +136,12 @@ h4 {
   font-family: "Tenor Sans", arial;
 }
 
+.h1-login {
+  font-family: "Tenor Sans", arial;
+  color: #000;
+  font-size: 30px;
+}
+
 p,
 a,
 label,
