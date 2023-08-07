@@ -56,24 +56,28 @@ const LoginPage: NextPage = () => {
 
 	return (
 		<MotionDiv show={true} animation='down-to-up'>
-			<MainLayout style={{ margin: 0 }}>
+			<MainLayout style={{ marginTop: 40 }}>
 				<CarrucelFondo>
 					<div className="box_cart_login">
 						<div className="login_container text-center">
-							<Image src="/assets/img/iconos/EZ_Claqueta_N_S.svg" width={50} height={50} alt="" style={{margin: '0 0 10px'}} />
-							<p className="h1 text-uppercase mb-3 text-center">EZ-CAST</p>
+							<Image src="/assets/img/iconos/EZ_Claqueta_N_S.svg" width={40} height={40} alt="" style={{margin: '25px 0 10px'}} />
+							<h1 className="h1-login text-uppercase mb-3 text-center">EZ-CAST</h1>
 							<p className="text-muted">No tienes cuenta? <Link href="/registro" className="color_a">Registrate aquí</Link></p>
-							<div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
-								<MContainer direction="horizontal">
-									<label style={{ marginRight: 16 }} htmlFor="user">Usuario / Email</label>
+							<div className="d-lg-flex align-items-center justify-content-center box_input">
+								<MContainer direction="horizontal" styles={{width: '100%', maxWidth: 300}} className="w-100 d-lg-flex justify-content-between">
+									<label style={{ margin: '4px 16px 0 0', fontSize: 15, fontWeight: 500 }} htmlFor="user">Usuario / Email</label>
 									<FormGroup
 										error={state.errors.user}
 										show_error_message
 										className={`form-control form-control-sm text_custom ${(state.user.length < 2) ? '' : 'login_custom'} m-0`}
 										labelStyle={{ fontWeight: 400 }}
 										style={{ 
-											width: 250,
-											borderColor: '#069cb1!important'
+											width: '190px',
+											fontSize: 13,
+											borderColor: '#069cb1!important',
+											background: 'transparent',
+											borderRadius: 100,
+											padding: '0px 5px',
 										}}
 										value={state.user}
 										onChange={(e) => {
@@ -87,9 +91,9 @@ const LoginPage: NextPage = () => {
 									/>
 								</MContainer>
 							</div>
-							<div className="d-lg-flex align-items-center justify-content-center p-2 box_input">
-								<MContainer direction="horizontal">
-									<label style={{ marginRight: 40 }} htmlFor="user">Contraseña</label>
+							<div className="d-lg-flex align-items-center justify-content-center box_input w-100">
+								<MContainer direction="horizontal"  styles={{width: '100%', maxWidth: 300}} className="w-100 d-lg-flex justify-content-between">
+									<label style={{ margin: '4px 16px 0 0', fontSize: 15, fontWeight: 500 }} htmlFor="user">Contraseña</label>
 									<FormGroup
 										type="password"
 										show_error_message
@@ -98,8 +102,12 @@ const LoginPage: NextPage = () => {
 										labelStyle={{ fontWeight: 400 }}
 										value={state.password}
 										style={{ 
-											width: 250,
-											borderColor: '#069cb1!important'
+											width: '190px',
+											fontSize: 13,
+											borderColor: '#069cb1!important',
+											background: 'transparent',
+											borderRadius: 100,
+											padding: '0px 5px',
 										}}
 										onChange={(e) => {
 											dispatch({
@@ -122,12 +130,15 @@ const LoginPage: NextPage = () => {
 									<span
 										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.CAZATALENTOS ? 'active' : ''}`}
 										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.CAZATALENTOS } }) }}
-										style={{padding: '2px 10px'}}
+										style={{padding: '2px 10px', borderColor: '#069cb1', color: (state.tipo_usuario === TipoUsuario.CAZATALENTOS ? '#fff' : '#000') }}
 									>
 										Cazatalentos
 									</span>
 									<MTooltip
 										color='orange'
+										sx={{
+											margin: '0!important'
+										}}
 										text={
 											<>
 												<Typography fontSize={14}>
@@ -142,10 +153,14 @@ const LoginPage: NextPage = () => {
 									<span
 										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.TALENTO ? 'active' : ''}`}
 										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.TALENTO } }) }}
+										style={{borderColor: '#069cb1', color: (state.tipo_usuario === TipoUsuario.TALENTO ? '#fff' : '#000')}}
 									>
 										Talento
 									</span>
 									<MTooltip
+										sx={{
+											margin: '0!important'
+										}}
 										color='orange'
 										text={
 											<>
@@ -161,12 +176,15 @@ const LoginPage: NextPage = () => {
 									<span
 										className={`switch_span switch_login ${state.tipo_usuario === TipoUsuario.REPRESENTANTE ? 'active' : ''}`}
 										onClick={() => { dispatch({ type: 'update-form', value: { tipo_usuario: TipoUsuario.REPRESENTANTE } }) }}
-										style={{padding: '2px 10px'}}
+										style={{padding: '2px 10px', borderColor: '#069cb1', color: (state.tipo_usuario === TipoUsuario.REPRESENTANTE ? '#fff' : '#000')}}
 									>
 										Representante
 									</span>
 									<MTooltip
 										color='orange'
+										sx={{
+											margin: '0!important'
+										}}
 										text={
 											<>
 												<Typography fontSize={14}>

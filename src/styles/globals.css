@@ -136,6 +136,12 @@ h4 {
   font-family: "Tenor Sans", arial;
 }
 
+.h1-login {
+  font-family: "Tenor Sans", arial;
+  color: #000;
+  font-size: 30px;
+}
+
 p,
 a,
 label,
@@ -3281,8 +3287,9 @@ p.edo_pendiente {
   font-weight: 900;
   margin: 32px 0 32px 0;
   color: #069CB1;
-  border-bottom: 2px solid #069CB1;
+  border-bottom: 2px solid #909295;
   font-family: 'Gill Sans';
+  padding-bottom: 10px;
 }
 
 .paso-stepper span {
