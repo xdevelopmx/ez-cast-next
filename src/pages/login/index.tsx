@@ -56,7 +56,7 @@ const LoginPage: NextPage = () => {
 
 	return (
 		<MotionDiv show={true} animation='down-to-up'>
-			<MainLayout style={{ margin: 0 }}>
+			<MainLayout style={{ marginTop: 40 }}>
 				<CarrucelFondo>
 					<div className="box_cart_login">
 						<div className="login_container text-center">
@@ -72,7 +72,7 @@ const LoginPage: NextPage = () => {
 										className={`form-control form-control-sm text_custom ${(state.user.length < 2) ? '' : 'login_custom'} m-0`}
 										labelStyle={{ fontWeight: 400 }}
 										style={{ 
-											width: '180px',
+											width: '190px',
 											fontSize: 13,
 											borderColor: '#069cb1!important',
 											background: 'transparent',
@@ -102,7 +102,7 @@ const LoginPage: NextPage = () => {
 										labelStyle={{ fontWeight: 400 }}
 										value={state.password}
 										style={{ 
-											width: '180px',
+											width: '190px',
 											fontSize: 13,
 											borderColor: '#069cb1!important',
 											background: 'transparent',
