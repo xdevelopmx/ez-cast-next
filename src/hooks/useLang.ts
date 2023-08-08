@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 
 export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
     en: {
+        agencia_publicidad : 'Advertising agency',
+        casa_productora : 'Production House',
+        productor : 'Producer',
         nuevo_proyecto : 'New Project',
         alertas : 'Your alerts',
         agenda_virtual : 'Virtual diary',
@@ -236,6 +239,9 @@ export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         dialog_medidas_vestuario_subtitulo: 'Choose the category that applies to you.',
     },
     es: {
+        agencia_publicidad : 'Agencia de publicidad',
+        casa_productora : 'Casa Productora',
+        productor : 'Productor',
         nuevo_proyecto : 'Nuevo Proyecto',
         alertas : 'Tus alertas',
         agenda_virtual : 'Virtual diary',
@@ -920,6 +926,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             director_de_casting : 'Casting Director*',
             numero_telefono : 'Phone number*',
             confirmar_correo : 'Confirm Email',
+            equipo_creativo : 'Creative Team',
+            detalles_adicionales : '',
         },
         es : {
             comencemos : '¡Comencemos!',
@@ -932,6 +940,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             director_de_casting : 'Director de casting*',
             numero_telefono : 'Número de teléfono*',
             confirmar_correo : 'Confirmar correo electrónico',
+            equipo_creativo : 'Equipo Creativo',
+            detalles_adicionales : 'Detalles adicionales',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
