@@ -30,7 +30,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
             </Grid>
-            <Grid item xs={12} md={3} mt={8}>
+            <Grid item xs={12} md={4} mt={8}>
                 <FormGroup
                     error={(state.errors.nombre && state.nombre != null) ? state.errors.nombre : undefined}
                     show_error_message
@@ -46,7 +46,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     label='Nombre de proyecto*'
                 />
             </Grid>
-            <Grid item xs={12} md={3} mt={8}>
+            <Grid item xs={12} md={4} mt={8}>
                 <MSelect
                     id="sindicato-select"
                     loading={tipos_sindicatos.isFetching}
@@ -61,7 +61,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     label='Sindicato*'
                 />
             </Grid>
-            <Grid item xs={12} md={3} mt={8}>
+            <Grid item xs={12} md={4} mt={8}>
                 <MSelect
                     id="tipo-proyectos-select"
                     loading={tipos_proyectos.isFetching}
@@ -93,8 +93,8 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     label='Tipo Proyecto*'
                 />
             </Grid>
-            <Grid item xs={12} md={3} mt={8} justifyContent='end'></Grid>
-            <Grid item xs={12} md={3} mt={8} >
+            <Grid item xs={12} md={4} mt={8}></Grid>
+            <Grid item xs={12} md={4} mt={8} justifyContent='end'>
                 <MotionDiv show={state.id_sindicato === 99} animation='fade'>
                     <FormGroup
                         className={'form-input-md'}
@@ -110,7 +110,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                     />
                 </MotionDiv>
             </Grid>
-            <Grid item xs={12} md={3} mt={8}>
+            <Grid item xs={12} md={4} mt={8} justifyContent='end'>
                 <MotionDiv show={state.id_tipo === 99} animation='fade'>
                     <FormGroup
                         className={'form-input-md'}

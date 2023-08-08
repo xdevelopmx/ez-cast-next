@@ -100,7 +100,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                     alt="icon-change"
                                 />
                                 <Typography>
-                                    Cambiar a {state.rango_edad_en_meses ? 'meses' : 'años'}
+                                    Cambiar a {state.rango_edad_en_meses ? 'años' : 'meses'}
                                 </Typography>
                             </Button>
                         </Grid>

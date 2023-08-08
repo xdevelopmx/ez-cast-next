@@ -207,8 +207,8 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                     //error={state.nombre.length < 2 ? 'El nombre es demasiado corto' : undefined}
                     type='number'
                     show_error_message
-                    className={'form-input-md'}
-                    labelStyle={{ fontWeight: 600 }}
+                    className={'form-input-md flex'}
+                    labelStyle={{ fontWeight: 600, width: 200, display:"flex", alignItems: "end", paddingBottom: 5 }}
                     labelClassName={'form-input-label'}
                     value={`${state.compensacion.suma_total_compensaciones_no_monetarias || '0'}`}
                     onChange={(e) => {

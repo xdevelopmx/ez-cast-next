@@ -109,7 +109,7 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={12} md={6} mt={2}>
+            <Grid item xs={12} md={6} mt={4}>
                 <MCheckboxGroup
                     loading={fetching}
                     onAllOptionChecked={(checked) => {

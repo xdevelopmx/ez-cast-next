@@ -423,7 +423,7 @@ const Proyecto: NextPage = () => {
         />
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [state.compartir_nombre, state.files])
-
+   
     return (
         <>
 
