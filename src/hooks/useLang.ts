@@ -928,6 +928,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             confirmar_correo : 'Confirm Email',
             equipo_creativo : 'Creative Team',
             detalles_adicionales : '',
+            sinopsis : 'Synopsis* ',
+            agregar_archivo : 'Add file',
+            instruccion : '(Script, Storyboard or Contract)',
         },
         es : {
             comencemos : '¡Comencemos!',
@@ -942,6 +945,9 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             confirmar_correo : 'Confirmar correo electrónico',
             equipo_creativo : 'Equipo Creativo',
             detalles_adicionales : 'Detalles adicionales',
+            sinopsis : 'Sinopsis* ',
+            agregar_archivo : 'Agregar Archivo',
+            instruccion : '(Guión, Storyboard o Contrato)',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
