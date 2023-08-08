@@ -3,6 +3,11 @@ import { useState, useEffect } from 'react';
 
 export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
     en: {
+        agenda_virtual : 'Virtual diary',
+        mis_proyectos : 'My projects',
+        editar_perfil: 'Edit profile',
+        fecha:'Date',
+        bienvenido : 'Welcome',
         atencion: 'Attention',
         activar: 'Activate',
         publico: 'Public',
@@ -229,6 +234,11 @@ export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         dialog_medidas_vestuario_subtitulo: 'Choose the category that applies to you.',
     },
     es: {
+        agenda_virtual : 'Virtual diary',
+        mis_proyectos : 'My projects',
+        editar_perfil: 'Edit profile',
+        fecha : 'fecha',
+        bienvenido : 'Bienvenido',
         atencion: 'Atención',
         activar: 'Activar',
         publico: 'Publico',
@@ -854,6 +864,42 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             success_save_selftape_media: 'Se almaceno el selftape con exito.',
             success_delete_selftape_media: 'Se elimino el selftape con exito',
             link_copied: 'Se copio el link',
+        }
+    },
+    '/cazatalentos/dashboard': {
+        en: {
+            encabezado : 'Requirements for approval:',
+            destacados : 'Featured',
+            alertas : 'Your alerts',
+            requisito_uno : 'You will need to create specific roles.',
+            requisito_dos : 'Submit an abstract describing your project.',
+            requisito_tres : 'Include details of my characters including physical traits, personality and scene development.',
+            requisito_cuatro : 'If your project includes a minor, the character description must include the number of hours on set and details inherent to the character',
+            requisito_cinco : 'You will need to create specific roles.',
+            requisito_seis : 'Submit an abstract describing your project.',
+            requisito_siete : 'Include details of my characters including physical traits, personality and scene development.',
+            requisito_ocho : 'If your project includes a minor, the character description must include the number of hours on set and details inherent to the character',
+            proyectos : 'Projects',
+            nuevo_proyecto : 'New Project',
+            activos : 'Active',
+            archivados : 'Archived',
+        },
+        es: {
+            encabezado : 'Requisitos para aprobación:',
+            destacados : 'Destacados',
+            alertas : 'Tus alertas',
+            requisito_uno : 'Deberás crear roles específicos.',
+            requisito_dos : 'Presentar un resumen que describa tu proyecto.',
+            requisito_tres : 'Incluir detalles de mis personajes incluyendo rasgos físicos, personalidad y desarrollo en escena.',
+            requisito_cuatro : 'Si tu proyecto incluye a un menor de edad, la descripción del personaje deberá incluir el número de horas en set y detalles inherentes al personaje',
+            requisito_cinco : 'Deberás crear roles específicos.',
+            requisito_seis : 'Presentar un resumen que describa tu proyecto.',
+            requisito_siete : 'Incluir detalles de mis personajes incluyendo rasgos físicos, personalidad y desarrollo en escena.',
+            requisito_ocho : 'Si tu proyecto incluye a un menor de edad, la descripción del personaje deberá incluir el número de horas en set y detalles inherentes al personaje',
+            proyectos : 'Proyectos',
+            nuevo_proyecto : 'Nuevo Proyecto',
+            activos : 'Activos',
+            archivados :'Archivados',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
