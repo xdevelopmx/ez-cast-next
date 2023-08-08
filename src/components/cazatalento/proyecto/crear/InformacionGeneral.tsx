@@ -106,7 +106,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                                 sindicato: e.target.value
                             })
                         }}
-                        label='Nombre Sindicato'
+                        label='Nombre Sindicato *'
                     />
                 </MotionDiv>
             </Grid>

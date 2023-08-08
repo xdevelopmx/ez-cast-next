@@ -3,7 +3,7 @@ import { useContext, useEffect, useMemo, useReducer, useRef, useState } from 're
 import { GetServerSideProps, type NextPage } from 'next'
 import Head from 'next/head'
 import { motion } from 'framer-motion'
-import { Alert, Grid, Typography } from '@mui/material'
+import { Alert, Button, Grid, Typography } from '@mui/material'
 import { Alertas, Flotantes, MainLayout, MenuLateral } from '~/components'
 import { DescripcionDelRol, InformacionGeneralRol } from '~/components/cazatalento/roles'
 import { CompensacionRol } from '~/components/cazatalento/roles/agregar-rol/secciones/CompensacionRol'
@@ -1030,7 +1030,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                 <div className="col d-flex justify-content-center" >
                                     <div className="mr-3">
                                         {form_validate.complete &&
-                                            <button
+                                            <Button
                                                 onClick={() => {
                                                     console.log(form_validate.data);
                                                     if (state.informacion_general.nombre.length > 1 && state.informacion_general.id_tipo_rol > 0) {
@@ -1048,12 +1048,12 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                                 type="button"
                                             >
                                                 <Typography>{`${form_validate.complete ? 'Guardar e ir a proyectos' : 'Por favor llena los campos'}`} </Typography>
-                                            </button>
+                                            </Button>
                                         }
                                     </div>
                                     {form_validate.complete &&
                                         <div>
-                                            <button
+                                            <Button
                                                 onClick={() => {
                                                     if (state.informacion_general.nombre.length > 1 && state.informacion_general.id_tipo_rol > 0) {
                                                         setOnSaveAction('reset-form');
@@ -1068,7 +1068,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                                 type="button"
                                             >
                                                 <Typography>Guardar {`${form_validate.complete ? '' : 'borrador'}`} y crear otro rol</Typography>
-                                            </button>
+                                            </Button>
                                         </div>
                                     }
                                 </div>
