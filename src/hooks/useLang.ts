@@ -883,6 +883,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             nuevo_proyecto : 'New Project',
             activos : 'Active',
             archivados : 'Archived',
+            no_tienes_proyectos : "You don't have any projects archived",
+            aqui_apareceran : 'Here will appear all the projects that you have placed as archived',
         },
         es: {
             encabezado : 'Requisitos para aprobación:',
@@ -900,6 +902,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             nuevo_proyecto : 'Nuevo Proyecto',
             activos : 'Activos',
             archivados :'Archivados',
+            no_tienes_proyectos : 'No tienes ningún proyecto archivado',
+            aqui_apareceran : 'Aqui apareceran todos los proyectos que hayas colocado como archivados',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
