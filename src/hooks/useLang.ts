@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 
 export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
     en: {
+        nuevo_proyecto : 'New Project',
+        alertas : 'Your alerts',
         agenda_virtual : 'Virtual diary',
         mis_proyectos : 'My projects',
         editar_perfil: 'Edit profile',
@@ -234,6 +236,8 @@ export const COMMON_TEXTS: {[lang: string]: {[key: string]: string}} = {
         dialog_medidas_vestuario_subtitulo: 'Choose the category that applies to you.',
     },
     es: {
+        nuevo_proyecto : 'Nuevo Proyecto',
+        alertas : 'Tus alertas',
         agenda_virtual : 'Virtual diary',
         mis_proyectos : 'My projects',
         editar_perfil: 'Edit profile',
@@ -870,7 +874,6 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
         en: {
             encabezado : 'Requirements for approval:',
             destacados : 'Featured',
-            alertas : 'Your alerts',
             requisito_uno : 'You will need to create specific roles.',
             requisito_dos : 'Submit an abstract describing your project.',
             requisito_tres : 'Include details of my characters including physical traits, personality and scene development.',
@@ -889,7 +892,6 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
         es: {
             encabezado : 'Requisitos para aprobación:',
             destacados : 'Destacados',
-            alertas : 'Tus alertas',
             requisito_uno : 'Deberás crear roles específicos.',
             requisito_dos : 'Presentar un resumen que describa tu proyecto.',
             requisito_tres : 'Incluir detalles de mis personajes incluyendo rasgos físicos, personalidad y desarrollo en escena.',
@@ -904,6 +906,28 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             archivados :'Archivados',
             no_tienes_proyectos : 'No tienes ningún proyecto archivado',
             aqui_apareceran : 'Aqui apareceran todos los proyectos que hayas colocado como archivados',
+        }
+    },
+    '/cazatalentos/proyecto': {
+        en : {
+            comencemos : "Let's start!",
+            info_gral : 'General information',
+            nombre_proyecto : 'Project name*',
+            sindicato : 'Labor union*',
+            tipo_proyecto : 'Project Type*',
+            contacto_casting : 'Casting Contact',
+            privacidad : 'This information will not be shared with the public',
+            director_de_casting : 'Casting Director*',
+        },
+        es : {
+            comencemos : '¡Comencemos!',
+            info_gral : 'Información General',
+            nombre_proyecto : 'Nombre de proyecto*',
+            sindicato : 'Sindicato*',
+            tipo_proyecto : 'Tipo Proyecto*',
+            contacto_casting : 'Contacto de Casting',
+            privacidad : 'Esta información no se compartirá con el público',
+            director_de_casting : 'Director de casting*',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
