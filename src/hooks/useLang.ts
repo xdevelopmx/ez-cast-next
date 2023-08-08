@@ -918,6 +918,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             contacto_casting : 'Casting Contact',
             privacidad : 'This information will not be shared with the public',
             director_de_casting : 'Casting Director*',
+            numero_telefono : 'Phone number*',
+            confirmar_correo : 'Confirm Email',
         },
         es : {
             comencemos : '¡Comencemos!',
@@ -928,6 +930,8 @@ const TEXTS_BY_PATHNAME: {[path: string]: {[lang: string]: {[key: string]: strin
             contacto_casting : 'Contacto de Casting',
             privacidad : 'Esta información no se compartirá con el público',
             director_de_casting : 'Director de casting*',
+            numero_telefono : 'Número de teléfono*',
+            confirmar_correo : 'Confirmar correo electrónico',
         }
     },
     '/cazatalentos/agenda-virtual/horario/[id]': {
