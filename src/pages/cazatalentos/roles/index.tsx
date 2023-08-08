@@ -496,7 +496,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       display: "block",
                                       height: 40,
                                       fontWeight: 500,
-                                      textTransform: 'none'
+                                      textTransform: "none",
                                     }}
                                   >
                                     Enviar proyecto para aprobación
@@ -513,7 +513,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
               </MContainer>
               <MContainer direction="vertical">
                 <MContainer direction="horizontal">
-                  <MContainer direction="horizontal">
+                  <MContainer
+                    direction="horizontal"
+                    styles={{ alignItems: "center" }}
+                  >
                     <CircleIcon
                       style={{
                         color: (() => {
@@ -534,13 +537,19 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         })(),
                         width: 12,
                         height: 12,
-                        marginTop: 6,
-                        marginRight: 4,
+                        marginRight: 5,
                       }}
                     />
-                    <Typography variant="subtitle2">
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        textTransform: "capitalize !important",
+                      }}
+                    >
                       {proyecto.data
-                        ? proyecto.data?.estatus.replaceAll("_", " ")
+                        ? proyecto.data?.estatus
+                            .replaceAll("_", " ")
+                            .toLocaleLowerCase()
                         : "ND"}
                     </Typography>
                   </MContainer>
@@ -809,8 +818,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             ),
                             estado:
                               r.estatus === "SIN_FINALIZAR"
-                                ? "SIN_FINALIZAR"
-                                : "ARCHIVADO",
+                                ? "Pendiente"
+                                : "Archivado",
                             no_vistos: (
                               <MContainer
                                 direction="horizontal"
@@ -955,8 +964,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       params.set(
                                         "state",
                                         r.estatus.toUpperCase() === "ARCHIVADO"
-                                          ? "SIN_FINALIZAR"
-                                          : "ARCHIVADO"
+                                          ? "Pendiente"
+                                          : "Archivado"
                                       );
                                       setConfirmationDialog({
                                         action: "STATE_CHANGE",
@@ -1239,7 +1248,68 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   )}
 
-                                  {/* {<Typography component={'span'} sx={{ color: '#928F8F' }}>Sin unión</Typography>} */}
+                                  {roles.data &&
+                                  roles.data[element_index]?.proyecto &&
+                                  roles.data[element_index]?.proyecto
+                                    ?.sindicato &&
+                                  roles.data[element_index]?.proyecto?.sindicato
+                                    ?.sindicato ? (
+                                    <>
+                                      <Fragment>
+                                        <Divider
+                                          style={{
+                                            borderWidth: 1,
+                                            height: 12,
+                                            borderColor: "#069cb1",
+                                            margin: 8,
+                                          }}
+                                          orientation="vertical"
+                                        />
+                                        <Typography
+                                          component={"span"}
+                                          sx={{ color: "#928F8F" }}
+                                        >
+                                          {
+                                            roles.data[element_index]?.proyecto
+                                              ?.sindicato?.sindicato.es
+                                          }
+                                        </Typography>
+                                        <Divider
+                                          style={{
+                                            borderWidth: 1,
+                                            height: 12,
+                                            borderColor: "#069cb1",
+                                            margin: 8,
+                                          }}
+                                          orientation="vertical"
+                                        />
+                                      </Fragment>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Divider
+                                        style={{
+                                          borderWidth: 1,
+                                          height: 12,
+                                          borderColor: "#069cb1",
+                                          margin: 8,
+                                        }}
+                                        orientation="vertical"
+                                      />
+                                      <Typography sx={{ color: "#928F8F" }}>
+                                        No especificado
+                                      </Typography>
+                                      <Divider
+                                        style={{
+                                          borderWidth: 1,
+                                          height: 12,
+                                          borderColor: "#069cb1",
+                                          margin: 8,
+                                        }}
+                                        orientation="vertical"
+                                      />
+                                    </>
+                                  )}
                                 </MContainer>
 
                                 <MContainer
@@ -1427,7 +1497,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   <Typography
                                     component={"span"}
                                     fontWeight={600}
-                                    sx={{ paddingRight: 1 }}
+                                    sx={{
+                                      paddingRight: 1,
+                                      fontStyle: "italic",
+                                    }}
                                   >
                                     Descripción:
                                   </Typography>
@@ -1441,7 +1514,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             <Grid item xs={12}>
                               <Divider
                                 style={{
-                                  margin: '6px 0',
+                                  margin: "6px 0",
                                 }}
                               />
                             </Grid>
@@ -1464,7 +1537,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Habilidades:
@@ -1535,7 +1608,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Grid item xs={12}>
                                       <Divider
                                         style={{
-                                          margin: '6px 0',
+                                          margin: "6px 0",
                                         }}
                                       />
                                     </Grid>
@@ -1546,7 +1619,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Desnudos situaciones sexuales:
@@ -1616,7 +1689,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Grid item xs={12}>
                                       <Divider
                                         style={{
-                                          margin: '6px 0',
+                                          margin: "6px 0",
                                         }}
                                       />
                                     </Grid>
@@ -1627,7 +1700,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Locación de casting y fechas:
@@ -1685,7 +1758,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Grid item xs={12}>
                                       <Divider
                                         style={{
-                                          margin: '6px 0',
+                                          margin: "6px 0",
                                         }}
                                       />
                                     </Grid>
@@ -1696,7 +1769,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Locación de filmación y fechas:
@@ -1755,7 +1828,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Grid item xs={12}>
                                       <Divider
                                         style={{
-                                          margin: '6px 0',
+                                          margin: "6px 0",
                                         }}
                                       />
                                     </Grid>
@@ -1766,7 +1839,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Presentación de solicitud:
@@ -1838,7 +1911,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Grid item xs={12}>
                                       <Divider
                                         style={{
-                                          margin: '6px 0',
+                                          margin: "6px 0",
                                         }}
                                       />
                                     </Grid>
@@ -1849,7 +1922,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Requisitos:
@@ -1928,7 +2001,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Grid item xs={12}>
                                       <Divider
                                         style={{
-                                          margin: '6px 0',
+                                          margin: "6px 0",
                                         }}
                                       />
                                     </Grid>
@@ -1939,7 +2012,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
-                                            fontStyle: 'italic'
+                                            fontStyle: "italic",
                                           }}
                                         >
                                           Archivos adicionales:
