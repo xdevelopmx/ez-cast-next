@@ -483,7 +483,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         action: "PROYECTO_ENVIADO_A_APROBACION",
                                         data: new Map<string, unknown>(),
                                         opened: true,
-                                        title: "Enviar Proyecto A Aprobación",
+                                        title: "Enviar proyecto a aprobación",
                                         content: (
                                           <Typography variant="body2">{`Seguro que deseas mandar este proyecto a aprobación?`}</Typography>
                                         ),
@@ -496,6 +496,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       display: "block",
                                       height: 40,
                                       fontWeight: 500,
+                                      textTransform: 'none'
                                     }}
                                   >
                                     Enviar proyecto para aprobación
@@ -1114,7 +1115,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                           <Grid
                             container
                             p={2}
-                            style={{ width: container_width }}
+                            style={{ width: container_width, paddingLeft: 40 }}
                           >
                             <Grid item container xs={12}>
                               <Grid item xs={7}>
@@ -1437,8 +1438,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 </Typography>
                               </Grid>
                             </Grid>
-                            <Grid item xs={12} mt={1}>
-                              <Divider />
+                            <Grid item xs={12}>
+                              <Divider
+                                style={{
+                                  margin: '6px 0',
+                                }}
+                              />
                             </Grid>
                             <Grid container>
                               <AnimatePresence>
@@ -1459,6 +1464,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Habilidades:
@@ -1526,8 +1532,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         </MContainer>
                                       </MContainer>
                                     </Grid>
-                                    <Grid item xs={12} mt={1}>
-                                      <Divider />
+                                    <Grid item xs={12}>
+                                      <Divider
+                                        style={{
+                                          margin: '6px 0',
+                                        }}
+                                      />
                                     </Grid>
                                     <Grid item container xs={12}>
                                       <MContainer direction="horizontal">
@@ -1536,6 +1546,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Desnudos situaciones sexuales:
@@ -1602,8 +1613,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         </MContainer>
                                       </MContainer>
                                     </Grid>
-                                    <Grid item xs={12} mt={1}>
-                                      <Divider />
+                                    <Grid item xs={12}>
+                                      <Divider
+                                        style={{
+                                          margin: '6px 0',
+                                        }}
+                                      />
                                     </Grid>
                                     <Grid item container xs={12}>
                                       <MContainer direction="horizontal">
@@ -1612,6 +1627,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Locación de casting y fechas:
@@ -1666,8 +1682,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         </MContainer>
                                       </MContainer>
                                     </Grid>
-                                    <Grid item xs={12} mt={1}>
-                                      <Divider />
+                                    <Grid item xs={12}>
+                                      <Divider
+                                        style={{
+                                          margin: '6px 0',
+                                        }}
+                                      />
                                     </Grid>
                                     <Grid item container xs={12}>
                                       <MContainer direction="horizontal">
@@ -1676,6 +1696,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Locación de filmación y fechas:
@@ -1731,8 +1752,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         </MContainer>
                                       </MContainer>
                                     </Grid>
-                                    <Grid item xs={12} mt={1}>
-                                      <Divider />
+                                    <Grid item xs={12}>
+                                      <Divider
+                                        style={{
+                                          margin: '6px 0',
+                                        }}
+                                      />
                                     </Grid>
                                     <Grid item container xs={12}>
                                       <MContainer direction="horizontal">
@@ -1741,6 +1766,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Presentación de solicitud:
@@ -1809,8 +1835,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         </MContainer>
                                       </MContainer>
                                     </Grid>
-                                    <Grid item xs={12} mt={1}>
-                                      <Divider />
+                                    <Grid item xs={12}>
+                                      <Divider
+                                        style={{
+                                          margin: '6px 0',
+                                        }}
+                                      />
                                     </Grid>
                                     <Grid item container xs={12}>
                                       <MContainer direction="horizontal">
@@ -1819,6 +1849,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Requisitos:
@@ -1894,8 +1925,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         </MContainer>
                                       </MContainer>
                                     </Grid>
-                                    <Grid item xs={12} mt={1}>
-                                      <Divider />
+                                    <Grid item xs={12}>
+                                      <Divider
+                                        style={{
+                                          margin: '6px 0',
+                                        }}
+                                      />
                                     </Grid>
                                     <Grid item container xs={12}>
                                       <MContainer direction="horizontal">
@@ -1904,6 +1939,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           sx={{
                                             color: "#928F8F",
                                             paddingRight: 1,
+                                            fontStyle: 'italic'
                                           }}
                                         >
                                           Archivos adicionales:
