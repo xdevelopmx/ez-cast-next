@@ -40,8 +40,8 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                 return <Accordion key={i}>
                     <AccordionSummary
                         style={{
-                            color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? 'white' : 'black',
-                            backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#069cb1' : 'white',
+                            color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#f2f2f2' : 'black',
+                            backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.length > 0) ? '#069cb1' : '#f2f2f2',
                         }}
                         expandIcon={<ExpandMore />}
                         aria-controls="panel1a-content"
@@ -67,14 +67,15 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                                         onFormChange({ habilidades_seleccionadas: new Map(state.habilidades_seleccionadas) });
                                     }
                                 }}
-                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: 'white' }} /> : <Add style={{ color: '#069cb1' }} />}
+                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: '#f2f2f2' }} /> : <Add style={{ color: '#069cb1' }} />}
                                 key={j}
                                 label={(ctx.lang === 'es') ? he.es : he.en}
                                 style={{
                                     margin: 4,
                                     fontWeight: 800,
-                                    color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'white' : '#069cb1',
-                                    borderColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'black' : '#069cb1',
+                                    borderRadius: 10,
+                                    color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#f2f2f2' : '#069cb1',
+                                    borderColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'none' : '#069cb1',
                                     backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#069cb1' : 'white'
                                 }}
                                 variant="outlined"

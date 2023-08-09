@@ -3293,11 +3293,13 @@ p.edo_pendiente {
   color: #069CB1;
   border-bottom: 2px solid #909295;
   font-family: 'Gill Sans';
+  text-transform: uppercase;
   padding-bottom: 10px;
 }
 
 .paso-stepper span {
   font-weight: 500;
+  text-transform: none;
 }
 
 .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed, .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active {
