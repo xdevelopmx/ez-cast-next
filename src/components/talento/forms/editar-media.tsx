@@ -21,22 +21,22 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
     const textos = useLang(ctx.lang);
     return (
         <Grid container justifyContent={'space-between'} spacing={2} mb={8}>
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={7}>
                 <MContainer direction='vertical'>
                     <MContainer direction='horizontal' styles={{ gap: 10, marginBottom: 5, alignItems: 'center' }}>
                         <span className={'badge'}> <Image width={24} height={24} src="/assets/img/iconos/icono_camara_cart_blue.svg" alt="" /> </span>
-                        <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
+                        <Typography fontWeight={700} fontSize={'1.1rem'} variant="body1" component="p">
                             {textos['foto'] ? textos['foto'] : 'Texto No Definido'}s
                         </Typography>
-                        <Typography fontWeight={300} fontSize={'1.3rem'} variant="body2" component="p">
+                        <Typography fontWeight={300} fontSize={'1.1rem'} variant="body2" component="p">
                             (Headshots)
                         </Typography>
-                        <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
+                        <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.8rem'} variant="body1" component="p">
                             JPG {textos['o'] ? textos['o'] : 'Texto No Definido'} PNG
                         </Typography>
-                        <MTooltip text={textos['media_fotos_tooltip'] ? textos['media_fotos_tooltip'] : 'Texto No Definido'} color='orange' placement='right' />
+                        <MTooltip text={textos['media_fotos_tooltip'] ? textos['media_fotos_tooltip'] : 'Texto No Definido'} sx={{width: '10px!important'}} color='orange' placement='right' />
                     </MContainer>
-                    <Typography sx={{ color: '#069CB1', margin: '5px' }}>{textos['elegir_foto_perfil'] ? textos['elegir_foto_perfil'] : 'Texto No Definido'}</Typography>
+                    <Typography sx={{ color: '#069CB1', margin: '25px 5px 5px 0px' }}>{textos['elegir_foto_perfil'] ? textos['elegir_foto_perfil'] : 'Texto No Definido'}</Typography>
                     <DraggableContainer
                         width={600}
                         direction={'horizontal'}
@@ -61,8 +61,8 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
 
                                             alt={`Imagen ${foto.name}`}
                                             key={foto.name}
-                                            width={60}
-                                            height={80}
+                                            width={80}
+                                            height={110}
                                             src={foto.base64}
                                         />
                                     </div>
@@ -100,19 +100,19 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={5}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <MContainer direction='vertical'>
                             <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
-                                <span className={'badge'}> <Image width={24} height={20} src="/assets/img/iconos/web_cam_blue.png" alt="" /> </span>
-                                <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
+                                <span className={'badge'}> <Image width={22} height={19} src="/assets/img/iconos/web_cam_blue.png" alt="" /> </span>
+                                <Typography fontWeight={700} fontSize={'1.1rem'} variant="body1" component="p">
                                     Videos
                                 </Typography>
-                                <Typography fontWeight={300} fontSize={'1.3rem'} variant="body2" component="p">
+                                <Typography fontWeight={300} fontSize={'1.1rem'} variant="body2" component="p">
                                     (Reel)
                                 </Typography>
-                                <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
+                                <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.8rem'} variant="body1" component="p">
                                     MP4 {textos['o'] ? textos['o'] : 'Texto No Definido'} MOV
                                 </Typography>
                                 <MTooltip
@@ -163,10 +163,10 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MContainer direction='vertical'>
                             <MContainer direction='horizontal' styles={{ gap: 10, alignItems: 'center' }}>
                                 <span className={'badge'}> <Image width={24} height={24} src="/assets/img/iconos/micro_web_blue.svg" alt="" /> </span>
-                                <Typography fontWeight={700} fontSize={'1.3rem'} variant="body1" component="p">
+                                <Typography fontWeight={700} fontSize={'1.1rem'} variant="body1" component="p">
                                     Audios
                                 </Typography>
-                                <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.9rem'} variant="body1" component="p">
+                                <Typography style={{ marginTop: 4 }} fontWeight={400} fontSize={'.8rem'} variant="body1" component="p">
                                     MP3 {textos['o'] ? textos['o'] : 'Texto No Definido'} WAV
                                 </Typography>
                                 <MTooltip text={textos['media_audios_tooltip'] ? textos['media_audios_tooltip'] : 'Texto No Definido'} color='orange' placement='right' />

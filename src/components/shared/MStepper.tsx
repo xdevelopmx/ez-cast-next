@@ -76,7 +76,7 @@ export const MStepper: FC<Props> = ({
                             {children.length > 0 && current_step === 1 && <div />}
 
                             {onStepSave && children.length > 0 && current_step < children.length &&
-                                <button className="boton-next-step margen" type='button' onClick={() => {
+                                <button className={`${current_step === 1 ? 'ml-65' : '' } boton-next-step margen`} type='button' onClick={() => {
                                     onStepSave(current_step);
                                 }}>
                                     {textos['guardar_y_terminar_mas_tarde'] ? textos['guardar_y_terminar_mas_tarde'] : 'Texto No Definido'}

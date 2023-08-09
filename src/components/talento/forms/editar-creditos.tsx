@@ -33,9 +33,9 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
     const { notify } = useNotify();
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12} my={2}>
+            <Grid item xs={12} my={0}>
                 <Typography fontSize={'1.6rem'} fontWeight={600} component={'p'}>
-                {textos['agregar'] ? textos['agregar'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}
+                {textos['aniadir'] ? textos['aniadir'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}
                 </Typography>
             </Grid>
 
@@ -77,7 +77,7 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                             styleRoot={{ width: '100%' }}
                             id="edad-select"
                             options={YEARS}
-                            style={{ marginBottom: 8 }}
+                            style={{ marginBottom: 0 }}
                             value={(state) ? state.anio.toString() : ''}
                             onChange={(e) => { onFormChange({ anio: parseInt(e.target.value) }) }}
                             label={textos['anio'] ? textos['anio'] : 'Texto No Definido'}
@@ -105,9 +105,9 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
 
                         }
                     }}
-                        style={{ padding: '4px 6px', fontWeight: 800, color: '#069cb1' }}
+                        style={{ padding: '4px 16px', fontWeight: 800, color: '#069cb1' }}
                         className="btn  btn-social">
-                        <Image width={16} height={16} style={{ marginRight: 7 }} src="/assets/img/iconos/cruz_blue.svg"
+                        <Image width={13} height={13} style={{ marginRight: 7 }} src="/assets/img/iconos/cruz_blue.svg"
                             alt="Boton de agregar credito" />
                         {textos['guardar'] ? textos['guardar'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}
                     </a>
@@ -117,9 +117,9 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
 
 
 
-            <Grid item xs={12} xl={12} my={2}>
+            <Grid item xs={12} xl={12} my={0}>
                 <MContainer direction='vertical'>
-                    <Typography my={2} fontSize={'1.6rem'} fontWeight={600} component={'p'}>
+                    <Typography my={0} fontSize={'1.6rem'} fontWeight={600} component={'p'}>
                         {textos['tus'] ? textos['tus'] : 'Texto No Definido'} {textos['credito'] ? textos['credito'] : 'Texto No Definido'}s
                     </Typography>
                     <MCheckboxGroup
@@ -133,33 +133,33 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                     />
                 </MContainer>
             </Grid>
-            <Grid item xs={12} mb={8}>
+            <Grid item xs={12} mb={6}>
                 <MTable
                     headerClassName='GrayHeader'
                     columnsHeader={[
-                        <Typography key={1} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={1} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             {textos['titulo'] ? textos['titulo'] : 'Texto No Definido'}
                         </Typography>,
-                        <Typography key={2} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={2} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             {textos['rol'] ? textos['rol'] : 'Texto No Definido'}
                         </Typography>,
-                        <Typography key={3} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={3} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             {textos['director'] ? textos['director'] : 'Texto No Definido'}
                         </Typography>,
-                        <Typography key={4} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={4} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             {textos['anio'] ? textos['anio'] : 'Texto No Definido'}
                         </Typography>,
-                        <Typography key={5} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={5} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             {textos['credito_destacado'] ? textos['credito_destacado'] : 'Texto No Definido'} 
                             <MTooltip 
                                 text={textos['creditos_credito_destacado_tooltip']} 
                                 color='orange' 
                                 placement='top' />
                         </Typography>,
-                        <Typography key={6} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={6} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             Clip
                         </Typography>,
-                        <Typography key={7} fontSize={'1.2rem'} fontWeight={600} component={'p'}>
+                        <Typography key={7} fontSize={'1rem'} fontWeight={600} component={'p'} sx={{textAlign: 'left', padding: '0px 6px'}}>
                             {textos['acciones'] ? textos['acciones'] : 'Texto No Definido'}
                         </Typography>
                     ]}
@@ -190,13 +190,13 @@ export const EditarCreditosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 <Star />
                             </IconButton>,
                             clip:
-                                <Button style={{ minWidth: 150, padding: 6, fontWeight: 800, color: '#069cb1' }} className="btn  btn-social mr-1 ml-1" variant="outlined" component="label">
+                                <Button style={{ minWidth: 10, padding: 6, fontWeight: 800, color: '#069cb1' }} className="btn  btn-social mr-1 ml-1" variant="outlined" component="label">
                                     <MContainer direction='vertical'>
                                         <>
                                             <MContainer direction='horizontal'>
-                                                <Image width={16} height={16} className="mr-2" src="/assets/img/iconos/cruz_blue.svg" alt="Boton de agregar credito" />
+                                                <Image width={14} height={14} className="mr-2" style={{marginTop: 3}} src="/assets/img/iconos/cruz_blue.svg" alt="Boton de añadir credito" />
                                                 <Typography fontSize={'0.9rem'} fontWeight={700}>
-                                                    {credito.clip ? textos['cambiar'] ? textos['cambiar'] : 'Texto No Definido' : textos['agregar'] ? textos['agregar'] : 'Texto No Definido'}
+                                                    {credito.clip ? textos['cambiar'] ? textos['cambiar'] : 'Texto No Definido' : textos['aniadir'] ? textos['aniadir'] : 'Texto No Definido'}
                                                 </Typography>
 
                                             </MContainer>

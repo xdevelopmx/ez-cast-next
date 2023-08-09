@@ -136,7 +136,7 @@ export const MTable: FC<MTableProps> = ({
                 {columnsHeader &&
                   columnsHeader.map((c, i) => (
                     <TableCell
-                      align="center"
+                      align="left"
                       sx={{ ...styleHeaderTableCell, color: "#000" }}
                       key={i}
                     >
@@ -186,7 +186,7 @@ export const MTable: FC<MTableProps> = ({
                               <TableCell
                                 style={{ padding: "0px 8px" }}
                                 key={i}
-                                align="center"
+                                align="left"
                                 component="th"
                                 scope="row"
                               >
@@ -195,7 +195,7 @@ export const MTable: FC<MTableProps> = ({
                             );
                           }
                           return (
-                            <TableCell key={i} align="center">
+                            <TableCell key={i} align="left">
                               {val[1]}
                             </TableCell>
                           );
@@ -220,7 +220,7 @@ export const MTable: FC<MTableProps> = ({
                               <TableCell
                                 style={{ padding: "0px 8px" }}
                                 key={i}
-                                align="center"
+                                align="left"
                                 component="th"
                                 scope="row"
                               >
@@ -229,7 +229,7 @@ export const MTable: FC<MTableProps> = ({
                             );
                           }
                           return (
-                            <TableCell key={i} align="center">
+                            <TableCell key={i} align="left">
                               {val[1]}
                             </TableCell>
                           );
@@ -253,7 +253,7 @@ export const MTable: FC<MTableProps> = ({
                   <TableRow>
                     <TableCell align="left" component="th" scope="row">
                       <Typography
-                        fontSize={"1.2rem"}
+                        fontSize={"1rem"}
                         fontWeight={600}
                         component={"p"}
                       >

@@ -30,7 +30,7 @@ const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
 export const MTooltip: FC<Props> = ({ onClick, sx, text, placement, color, icon }) => {
 	return (
 		<BootstrapTooltip color={color} placement={placement} title={text}>
-			<IconButton onClick={onClick} sx={sx} style={icon ? {} : { marginLeft: 16, border: 'solid', color: '#069cb1', width: 16, height: 16 }}>
+			<IconButton onClick={onClick} sx={sx} style={icon ? {} : { marginLeft: 16, border: '2px solid #069cb1', color: '#069cb1', width: 16, height: 16 }}>
 				{icon ? icon : <QuestionMark sx={{ width: 16, heigth: 16 }} />}
 			</IconButton>
 		</BootstrapTooltip>

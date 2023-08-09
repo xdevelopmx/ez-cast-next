@@ -127,10 +127,10 @@ function ContainerWithDeleteButton(props: { id: number, content: JSX.Element, on
         top: -3
       }}>
         <IconButton
-          sx={{ backgroundColor: '#EBEBEB', width: 20, height: 20, padding: 1 }}
+          sx={{ backgroundColor: '#EBEBEB', width: 13, height: 13, padding: '7px' }}
           onClick={() => { props.onItemRemove(props.id) }} aria-label="delete"
         >
-          <Close width={'100%'} />
+          <span style={{fontSize: '13px', fontWeight: 900}}>x</span>
         </IconButton>
       </div>
       <div style={{ left: 0, top: 0, aspectRatio: '16/9' }}>

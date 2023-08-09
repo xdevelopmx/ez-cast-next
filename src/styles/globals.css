@@ -76,6 +76,10 @@ button:focus {
   /* Color del pulgar de la barra de desplazamiento */
 }
 
+.ml-65 {
+  margin-left: 130px;
+}
+
 .container_text_scroll::-webkit-scrollbar-track {
   background-color: #F2F2F2;
   /* Color del track de la barra de desplazamiento */
