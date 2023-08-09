@@ -12,6 +12,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import {
   Box,
   Button,
+  Dialog,
   Divider,
   Grid,
   IconButton,
@@ -30,6 +31,7 @@ import MotionDiv from "~/components/layout/MotionDiv";
 import { TipoUsuario } from "~/enums";
 import { Alertas } from "~/components/componentes-dashboards/Alertas copy";
 //import useDelay from "~/hooks/useDelay";
+import estilos from "./estilos.module.css";
 
 const variants: Variants = {
   initial: {
@@ -89,6 +91,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   const router = useRouter();
   const [expanded_rows, setExpandedRows] = useState<string[]>([]);
 
+  const [modalConfirmacion, setModalConfirmacion] = useState(false);
+
   const proyecto = api.proyectos.getById.useQuery(id_proyecto, {
     refetchOnWindowFocus: false,
   });
@@ -98,8 +102,6 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   });
 
   //const delayed_proyecto_fetching = useDelay(1500);
-
-  console.log(roles.data);
 
   const talentos_applications_stats = useMemo(() => {
     const map = new Map<string, number>();
@@ -288,6 +290,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
         hideFooter={IS_ADMIN}
         hideHeader={IS_ADMIN}
       >
+        <button onClick={() => setModalConfirmacion(true)}>abrir modal</button>
         <div className="d-flex wrapper_ezc">
           {!IS_ADMIN && <MenuLateral />}
           <div className="seccion_container col" style={{ paddingTop: 0 }}>
@@ -485,7 +488,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         opened: true,
                                         title: "Enviar proyecto a aprobación",
                                         content: (
-                                          <Typography variant="body2">{`Seguro que deseas mandar este proyecto a aprobación?`}</Typography>
+                                          <Typography variant="body2">{`¿Seguro que deseas mandar este proyecto a aprobación?`}</Typography>
                                         ),
                                       });
                                     }}
@@ -495,8 +498,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       marginTop: 0,
                                       display: "block",
                                       height: 40,
-                                      fontWeight: 500,
+                                      fontWeight: 700,
                                       textTransform: "none",
+                                      color: "#000",
                                     }}
                                   >
                                     Enviar proyecto para aprobación
@@ -1105,7 +1109,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               style={{
                                 position: "absolute",
                                 width: 20,
-                                top: 8,
+                                top: -8,
                                 right: 8,
                               }}
                               color="primary"
@@ -1115,9 +1119,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               {expanded_rows.includes(
                                 `panel${element_index}`
                               ) ? (
-                                <UpIcon sx={{ color: "#928F8F" }} />
-                              ) : (
                                 <DownIcon sx={{ color: "#928F8F" }} />
+                              ) : (
+                                <UpIcon sx={{ color: "#928F8F" }} />
                               )}
                             </IconButton>
                           </div>
@@ -2120,6 +2124,20 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
         title={confirmation_dialog.title}
         content={confirmation_dialog.content}
       />
+
+      <Dialog
+        open={modalConfirmacion}
+        onClose={() => setModalConfirmacion(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <h3>Se ha enviado tu proyecto para aprobación</h3>
+        <p>
+          Latino/Hispano Nacionalidad al pendiente de tu correo electrónico, ya
+          que ahí recibirás respuesta a tu proyecto.
+        </p>
+        <p>¿Dudas? Visita nuestro centro de ayuda aquí.</p>
+      </Dialog>
     </>
   );
 };
