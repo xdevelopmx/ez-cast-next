@@ -1105,7 +1105,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               style={{
                                 position: "absolute",
                                 width: 20,
-                                top: -8,
+                                top: 8,
                                 right: 8,
                               }}
                               color="primary"
@@ -1115,9 +1115,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               {expanded_rows.includes(
                                 `panel${element_index}`
                               ) ? (
-                                <DownIcon sx={{ color: "#928F8F" }} />
-                              ) : (
                                 <UpIcon sx={{ color: "#928F8F" }} />
+                              ) : (
+                                <DownIcon sx={{ color: "#928F8F" }} />
                               )}
                             </IconButton>
                           </div>

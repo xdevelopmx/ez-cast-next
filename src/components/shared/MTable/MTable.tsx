@@ -184,7 +184,7 @@ export const MTable: FC<MTableProps> = ({
                           if (i === 0) {
                             return (
                               <TableCell
-                                style={{ padding: 8 }}
+                                style={{ padding: "0px 8px" }}
                                 key={i}
                                 align="center"
                                 component="th"
@@ -218,7 +218,7 @@ export const MTable: FC<MTableProps> = ({
                           if (i === 0) {
                             return (
                               <TableCell
-                                style={{ padding: 8 }}
+                                style={{ padding: "0px 8px" }}
                                 key={i}
                                 align="center"
                                 component="th"
