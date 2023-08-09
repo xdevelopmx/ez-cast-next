@@ -290,7 +290,6 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
         hideFooter={IS_ADMIN}
         hideHeader={IS_ADMIN}
       >
-        <button onClick={() => setModalConfirmacion(true)}>abrir modal</button>
         <div className="d-flex wrapper_ezc">
           {!IS_ADMIN && <MenuLateral />}
           <div className="seccion_container col" style={{ paddingTop: 0 }}>
@@ -2103,6 +2102,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   id: id_proyecto,
                   estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION,
                 });
+                setModalConfirmacion(true);
                 break;
               }
               case "STATE_CHANGE": {
@@ -2131,12 +2131,33 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <h3>Se ha enviado tu proyecto para aprobación</h3>
-        <p>
-          Latino/Hispano Nacionalidad al pendiente de tu correo electrónico, ya
-          que ahí recibirás respuesta a tu proyecto.
-        </p>
-        <p>¿Dudas? Visita nuestro centro de ayuda aquí.</p>
+        <div className={estilos.modal}>
+          <Button
+            className={estilos["modal-cerrar"]}
+            onClick={() => setModalConfirmacion(false)}
+          >
+            <Image
+              src="/assets/img/iconos/close.svg"
+              width={20}
+              height={20}
+              alt=""
+            />
+          </Button>
+          <h3 className={estilos["modal-confirmacion-h3"]}>
+            Se ha enviado tu proyecto para aprobación
+          </h3>
+          <p className={estilos["modal-p"]}>
+            Latino/Hispano Nacionalidad al pendiente de tu correo electrónico,
+            ya que ahí recibirás respuesta a tu proyecto.
+          </p>
+          <p>
+            ¿Dudas? Visita nuestro centro de ayuda{" "}
+            <a className={estilos["modal-a"]} href={"/"} target="_blank">
+              {" "}
+              aquí.
+            </a>{" "}
+          </p>
+        </div>
       </Dialog>
     </>
   );

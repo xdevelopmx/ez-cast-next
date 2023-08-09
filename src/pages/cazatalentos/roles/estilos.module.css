@@ -1,0 +1,32 @@
+.modal {
+  position: relative;
+  padding: 50px 80px;
+}
+
+.modal-confirmacion-h3 {
+  font-family: "Gill Sans Bold";
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+.modal-p {
+  margin: 30px 0px;
+}
+
+.modal-a {
+  color: #069cb1;
+  text-decoration: underline;
+}
+
+.modal-a:hover {
+  color: #069cb1;
+}
+
+.modal-cerrar {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
