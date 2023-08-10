@@ -1,90 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "mysql"
+  // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
 
 model TalentosRepresentados {
-  id               Int      @id @default(autoincrement())
+  id                Int                              @id @default(autoincrement())
   id_representante Int
-  id_talento       Int
-  hora_asignacion  DateTime
+  id_talento Int
+  hora_asignacion DateTime
+  talento           Talentos            @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  representante           Representante            @relation(fields: [id_representante], references: [id], onDelete: Cascade) 
 }
 
 model Conversaciones {
-  id                    Int    @id @default(autoincrement())
-  id_emisor             Int
-  id_receptor           Int
-  tipo_usuario_emisor   String
+  id                Int                              @id @default(autoincrement())
+  id_emisor Int
+  tipo_usuario_emisor String
+  id_receptor Int
   tipo_usuario_receptor String
-  emisor_perfil_url     String
-  receptor_perfil_url   String
-  id_proyecto           Int?
+  emisor_perfil_url String
+  receptor_perfil_url String
+  id_proyecto Int?
+  proyecto          Proyecto?                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  mensajes Mensaje[]
 }
 
 model Mensaje {
-  id                    Int      @id @default(autoincrement())
-  id_conversacion       Int
-  id_emisor             Int
-  id_receptor           Int
-  visto                 Boolean
-  hora_envio            DateTime
-  mensaje               String   @db.VarChar(1024)
-  type                  String
-  tipo_usuario_emisor   String
+  id                Int                              @id @default(autoincrement())
+  id_conversacion Int
+  id_emisor Int
+  tipo_usuario_emisor String
+  id_receptor Int
   tipo_usuario_receptor String
+  visto Boolean
+  hora_envio DateTime
+  mensaje String @db.VarChar(1024)
+  type String
+  conversacion Conversaciones @relation(fields: [id_conversacion], references: [id], onDelete: Cascade)
 }
 
 model Alertas {
-  id           Int     @id @default(autoincrement())
-  id_usuario   Int
+  id                Int                              @id @default(autoincrement())
+  id_usuario Int
   tipo_usuario String
-  visto        Boolean
-  mensaje      String  @db.VarChar(1024)
+  visto Boolean
+  mensaje String @db.VarChar(1024)
 }
 
 model HorarioAgenda {
   id                Int                              @id @default(autoincrement())
   tipo_agenda       String
   tipo_localizacion String
+  tipo_fechas       String
   notas             String
+  fecha_creacion    DateTime
   id_uso_horario    Int
   id_proyecto       Int                              @unique
-  fecha_creacion    DateTime
-  tipo_fechas       String
-  bloque_horario    BloqueHorariosAgenda[]
-  fechas            FechasPorHorarioAgenda[]
   proyecto          Proyecto                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
-  uso_horario       CatalogoTipoUsosHorario          @relation(fields: [id_uso_horario], references: [id])
+  fechas            FechasPorHorarioAgenda[]
   localizaciones    LocalizacionesPorHorarioAgenda[]
+  uso_horario       CatalogoTipoUsosHorario          @relation(fields: [id_uso_horario], references: [id])
+  bloque_horario    BloqueHorariosAgenda[]
 }
 
 model BloqueHorariosAgenda {
   id                            Int                            @id @default(autoincrement())
   id_horario_agenda             Int
   fecha                         DateTime
+  tipo_administracion_intervalo String
   hora_inicio                   String
   hora_fin                      String
   minutos_por_talento           Int
   hora_descanso_inicio          String?
   hora_descanso_fin             String?
   id_locacion                   Int
-  tipo_administracion_intervalo String
-  horario_agenda                HorarioAgenda                  @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
   locacion                      LocalizacionesPorHorarioAgenda @relation(fields: [id_locacion], references: [id], onDelete: Cascade)
+  horario_agenda                HorarioAgenda                  @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
+  intervalos                    IntervaloBloqueHorario[]
 }
 
 model IntervaloBloqueHorario {
-  id                Int    @id @default(autoincrement())
+  id                Int                  @id @default(autoincrement())
   id_bloque_horario Int
+  hora        String
   id_rol            Int?
   id_talento        Int?
   estado            String
   tipo              String
-  hora              String
+  bloque_horario    BloqueHorariosAgenda @relation(fields: [id_bloque_horario], references: [id], onDelete: Cascade)
+  rol               Roles?               @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  talento           Talentos?            @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model LocalizacionesGuardadas {
@@ -104,8 +120,8 @@ model LocalizacionesPorHorarioAgenda {
   direccion2            String?
   codigo_postal         Int
   id_horario_agenda     Int
-  bloque_horario_agenda BloqueHorariosAgenda[]
   estado_republica      CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
+  bloque_horario_agenda BloqueHorariosAgenda[]
   horario_agenda        HorarioAgenda            @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
 }
 
@@ -127,16 +143,16 @@ model Cazatalentos {
   tipo_membresia       String
   cobro_membresia      String
   id_openpay           String
+  id_foto_perfil_media Int?
   posicion             String
   compania             String
   biografia            String
-  id_foto_perfil_media Int?
-  foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
-  notas_talentos       NotasTalentos[]
   proyectos            Proyecto[]
+  foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
   redes_sociales       RedesSocialesPorCazatalentos[]
   reportes_talentos    ReporteTalentos[]
   talentos_destacados  TalentosDestacados[]
+  notas_talentos       NotasTalentos[]
 }
 
 model Representante {
@@ -153,13 +169,14 @@ model Representante {
   posicion             String
   compania             String
   biografia            String                          @db.VarChar(512)
-  verificado           Boolean                         @default(false)
-  cuentas              CuentasPorRepresentante?
+  foto_perfil          Media?                          @relation(fields: [id_foto_perfil_media], references: [id])
+  verificado Boolean @default(false)
+  redes_sociales       RedesSocialesPorRepresentante[]
   info_basica          InfoBasicaRepresentante?
   permisos             PermisosRepresentante?
-  redes_sociales       RedesSocialesPorRepresentante[]
-  foto_perfil          Media?                          @relation(fields: [id_foto_perfil_media], references: [id])
+  cuentas              CuentasPorRepresentante[]
   validacion           ValidacionRepresentante?
+  representados TalentosRepresentados[]
 }
 
 model InfoBasicaRepresentante {
@@ -169,10 +186,10 @@ model InfoBasicaRepresentante {
   direccion           String
   cp                  Int
   id_media_cv         Int?
-  estado_republica    CatalogoEstadosRepublica         @relation(fields: [id_estado_republica], references: [id])
   media               Media?                           @relation(fields: [id_media_cv], references: [id])
-  representante       Representante                    @relation(fields: [id_representante], references: [id], onDelete: Cascade)
   union               UnionPorInfoBasicaRepresentante?
+  representante       Representante                    @relation(fields: [id_representante], references: [id], onDelete: Cascade)
+  estado_republica    CatalogoEstadosRepublica         @relation(fields: [id_estado_republica], references: [id])
 }
 
 model UnionPorInfoBasicaRepresentante {
@@ -180,17 +197,17 @@ model UnionPorInfoBasicaRepresentante {
   id_union                     Int
   descripcion                  String?
   id_info_basica_representante Int                     @unique
-  info_basica_represntante     InfoBasicaRepresentante @relation(fields: [id_info_basica_representante], references: [id], onDelete: Cascade)
   union                        CatalogoUniones         @relation(fields: [id_union], references: [id])
+  info_basica_represntante     InfoBasicaRepresentante @relation(fields: [id_info_basica_representante], references: [id], onDelete: Cascade)
 }
 
 model PermisosRepresentante {
   id                                      Int           @id @default(autoincrement())
+  puede_aceptar_solicitudes_talento       Boolean
+  puede_aceptar_solicitudes_representante Boolean
   puede_editar_perfil_talento             Boolean
   puede_editar_perfil_representante       Boolean
   id_representante                        Int           @unique
-  puede_aceptar_solicitudes_representante Boolean
-  puede_aceptar_solicitudes_talento       Boolean
   representante                           Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
 }
 
@@ -209,53 +226,61 @@ model CuentasPorRepresentante {
 model ValidacionRepresentante {
   id                      Int           @id @default(autoincrement())
   id_media_copia_licencia Int?
+  media                   Media?        @relation(fields: [id_media_copia_licencia], references: [id])
   numero_clientes         Int
   imdb_pro_link           String
   id_representante        Int           @unique
-  media                   Media?        @relation(fields: [id_media_copia_licencia], references: [id])
   representante           Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
+  directores DirectoresCastingValidacionRepresentante[]
 }
 
 model DirectoresCastingValidacionRepresentante {
-  id                 Int    @id @default(autoincrement())
-  id_validacion      Int
-  nombre             String
-  apellido           String
+  id                      Int           @id @default(autoincrement())
+  id_validacion Int
+  nombre String
+  apellido String
   correo_electronico String
-  telefono           String
+  telefono String
+  validacion ValidacionRepresentante  @relation(fields: [id_validacion], references: [id], onDelete: Cascade)
 }
 
 model Talentos {
-  id                 Int                           @id @default(autoincrement())
-  apellido           String
-  cobro_membresia    String
-  contrasenia        String
-  email              String
-  nombre             String
-  tipo_membresia     String
-  usuario            String
-  es_destacado       Boolean                       @default(false)
-  activo             Boolean                       @default(true)
-  activos            ActivosPorTalentos?
-  aplicaciones       AplicacionRolPorTalento[]
-  audiciones         AudicionTalento[]
-  creditos           CreditosPorTalentos?
-  filtros_aparencias FiltrosAparenciasPorTalentos?
-  habilidades        HabilidadesPorTalentos[]
-  info_basica        InfoBasicaPorTalentos?
-  media              MediaPorTalentos[]
-  medidas            MedidasPorTalentos?
-  notas              NotasTalentos[]
-  preferencias       PreferenciasPorTalentos?
-  redes_sociales     RedesSocialesPorTalentos[]
-  reportes           ReporteTalentos[]
-  representante      RepresentantesPorTalentos?
-  destacados         TalentosDestacados?
+  id                        Int                           @id @default(autoincrement())
+  usuario                   String
+  email                     String
+  contrasenia               String
+  nombre                    String
+  apellido                  String
+  tipo_membresia            String
+  cobro_membresia           String
+  es_destacado Boolean @default(false)
+  activo Boolean @default(true)
+  redes_sociales            RedesSocialesPorTalentos[]
+  representante             RepresentantesPorTalentos?
+  info_basica               InfoBasicaPorTalentos?
+  media                     MediaPorTalentos[]
+  creditos                  CreditosPorTalentos?
+  habilidades               HabilidadesPorTalentos[]
+  activos                   ActivosPorTalentos?
+  preferencias              PreferenciasPorTalentos?
+  filtros_aparencias        FiltrosAparenciasPorTalentos?
+  medidas                   MedidasPorTalentos?
+  aplicaciones              AplicacionRolPorTalento[]
+  audiciones                AudicionTalento[]
+  reportes                  ReporteTalentos[]
+  notas                     NotasTalentos[]
+  destacados                TalentosDestacados[]
+  intervalos_bloque_horario IntervaloBloqueHorario[]
+  representantes TalentosRepresentados[]
 }
 
 model MedidasPorTalentos {
   id                   Int      @id @default(autoincrement())
   id_talento           Int      @unique
+  general_cadera       Int?
+  general_entrepiernas Int?
+  general_guantes      Int?
+  general_sombrero     Int?
   hombre_pecho         Int?
   hombre_cuello        Int?
   hombre_mangas        Int?
@@ -274,10 +299,6 @@ model MedidasPorTalentos {
   toddler              String?
   bebe_meses           String?
   calzado_ninos        String?
-  general_cadera       Int?
-  general_entrepiernas Int?
-  general_guantes      Int?
-  general_sombrero     Int?
   talento              Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
@@ -287,9 +308,10 @@ model RepresentantesPorTalentos {
   agencia                   String
   email                     String
   telefono                  String
-  id_talento                Int      @unique
+  //url_carta_responsiva String?
   id_media_carta_responsiva Int?
   media                     Media?   @relation(fields: [id_media_carta_responsiva], references: [id])
+  id_talento                Int      @unique
   talento                   Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
@@ -299,13 +321,14 @@ model InfoBasicaPorTalentos {
   peso                Int
   altura              Int
   biografia           String                     @db.VarChar(512)
+  //url_cv              String?
   id_talento          Int                        @unique
   id_estado_republica Int
   id_media_cv         Int?
-  estado_republica    CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
-  talento             Talentos                   @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  media               Media?                     @relation(fields: [id_media_cv], references: [id], map: "media_cv")
+  media               Media?                     @relation(map: "media_cv", fields: [id_media_cv], references: [id])
   union               UnionPorInfoBasicaTalento?
+  talento             Talentos                   @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  estado_republica    CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
 }
 
 model CreditosPorTalentos {
@@ -326,18 +349,18 @@ model CreditoTalento {
   anio                    Int
   destacado               Boolean
   id_media_clip           Int?
+  media                   Media?              @relation(map: "creditos_talento", fields: [id_media_clip], references: [id])
   creditos_por_talentos   CreditosPorTalentos @relation(fields: [id_creditos_por_talento], references: [id], onDelete: Cascade)
-  media                   Media?              @relation(fields: [id_media_clip], references: [id], map: "creditos_talento")
 }
 
 model HabilidadesPorTalentos {
   id                      Int                            @id @default(autoincrement())
+  id_habilidad            Int
   id_habilidad_especifica Int
   id_talento              Int
-  id_habilidad            Int
+  talento                 Talentos                       @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   habilidad_especifica    CatalogoHabilidadesEspecificas @relation(fields: [id_habilidad_especifica], references: [id], onDelete: Cascade)
   habilidad               CatalogoHabilidades            @relation(fields: [id_habilidad], references: [id], onDelete: Cascade)
-  talento                 Talentos                       @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model UnionPorInfoBasicaTalento {
@@ -345,17 +368,17 @@ model UnionPorInfoBasicaTalento {
   id_union                    Int
   descripcion                 String?
   id_info_basica_por_talentos Int                   @unique
-  info_basica_por_talentos    InfoBasicaPorTalentos @relation(fields: [id_info_basica_por_talentos], references: [id], onDelete: Cascade)
   union                       CatalogoUniones       @relation(fields: [id_union], references: [id])
+  info_basica_por_talentos    InfoBasicaPorTalentos @relation(fields: [id_info_basica_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model CatalogoUniones {
   id                            Int                               @id
-  en                            String
   es                            String
+  en                            String
+  union_por_info_basica_talento UnionPorInfoBasicaTalento[]
   sindicato_por_proyecto        SindicatoPorProyecto[]
   union_por_representante       UnionPorInfoBasicaRepresentante[]
-  union_por_info_basica_talento UnionPorInfoBasicaTalento[]
 }
 
 model RedesSocialesPorTalentos {
@@ -400,52 +423,53 @@ model Proyecto {
   director              String
   agencia_publicidad    String
   sinopsis              String
+  destacado             Boolean                  @default(false)
+  id_archivo_media      Int?
   detalles_adicionales  String
+  id_estado_republica   Int
+  created               DateTime                 @default(now())
+  id_foto_portada_media Int?
   compartir_nombre      Boolean                  @default(true)
   estatus               String                   @default("POR_VALIDAR")
   id_cazatalentos       Int
-  id_estado_republica   Int
-  created               DateTime                 @default(now())
-  id_archivo_media      Int?
-  id_foto_portada_media Int?
-  destacado             Boolean                  @default(false)
-  horario_agenda        HorarioAgenda?
-  cazatalentos          Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   estado_republica      CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
-  archivo               Media?                   @relation("media_archivo", fields: [id_archivo_media], references: [id], map: "media_archivo")
-  foto_portada          Media?                   @relation("media_foto_portada", fields: [id_foto_portada_media], references: [id], map: "media_foto_portada")
+  cazatalentos          Cazatalentos             @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
+  archivo               Media?                   @relation("media_archivo", map: "media_archivo", fields: [id_archivo_media], references: [id])
+  foto_portada          Media?                   @relation("media_foto_portada", map: "media_foto_portada", fields: [id_foto_portada_media], references: [id])
   rol                   Roles[]
-  sindicato             SindicatoPorProyecto?
   tipo                  TipoProyectoPorProyecto?
+  sindicato             SindicatoPorProyecto?
+  horario_agenda        HorarioAgenda?
+  conversaciones Conversaciones[]
 }
 
 model AplicacionRolPorTalento {
   id                   Int                              @id @default(autoincrement())
   id_rol               Int
-  id_talento           Int
-  id_estado_aplicacion Int
-  id_ubicacion         Int
-  nota                 String                           @default("")
-  estado_aplicacion    CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
   rol                  Roles                            @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  id_talento           Int
   talento              Talentos                         @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  estado_republica     CatalogoEstadosRepublica         @relation(fields: [id_ubicacion], references: [id])
+  id_estado_aplicacion Int
+  nota String @default("")
+  id_ubicacion Int
+  estado_aplicacion    CatalogoEstadosAplicacionesRoles @relation(fields: [id_estado_aplicacion], references: [id], onDelete: Cascade)
+  estado_republica CatalogoEstadosRepublica @relation(fields: [id_ubicacion], references: [id])
 }
 
 model NotasTalentos {
   id              Int          @id @default(autoincrement())
+  id_cazatalentos Int
   id_talento      Int
   nota            String
-  id_cazatalentos Int
   cazatlentos     Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
 
 model TalentosDestacados {
   id              Int          @id @default(autoincrement())
-  id_talento      Int          @unique
-  calificacion    Int
   id_cazatalentos Int
+  id_talento      Int
+  calificacion    Int
   cazatalentos    Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
 }
@@ -453,9 +477,9 @@ model TalentosDestacados {
 model ReporteTalentos {
   id              Int                          @id @default(autoincrement())
   id_talento      Int
+  id_cazatalentos Int
   id_tipo_reporte Int
   comentario      String
-  id_cazatalentos Int
   cazatlentos     Cazatalentos                 @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos                     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   reporte         CatalogoTiposReportesTalento @relation(fields: [id_tipo_reporte], references: [id], onDelete: Cascade)
@@ -465,11 +489,11 @@ model AudicionTalento {
   id             Int      @id @default(autoincrement())
   id_talento     Int
   id_rol         Int
+  fecha_audicion DateTime
   tipo_audicion  String
   mensaje        String
-  fecha_audicion DateTime
-  rol            Roles    @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   talento        Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
+  rol            Roles    @relation(fields: [id_rol], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTiposReportesTalento {
@@ -488,14 +512,14 @@ model CatalogoEstadosAplicacionesRoles {
 
 model Banners {
   id               Int     @id @default(autoincrement())
-  redirect_url     String
-  id_media_content Int
-  isButton         Boolean
   position         String
-  ref              String
+  isButton         Boolean
   text             String
+  redirect_url     String
   type             String
+  id_media_content Int
   identificador    String
+  ref              String
   content          Media   @relation(fields: [id_media_content], references: [id])
 }
 
@@ -504,8 +528,8 @@ model TipoProyectoPorProyecto {
   id_proyecto      Int                   @unique
   id_tipo_proyecto Int
   descripcion      String
-  proyecto         Proyecto              @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   tipo_proyecto    CatalogoTipoProyectos @relation(fields: [id_tipo_proyecto], references: [id])
+  proyecto         Proyecto              @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
 }
 
 model SindicatoPorProyecto {
@@ -513,8 +537,8 @@ model SindicatoPorProyecto {
   id_proyecto  Int             @unique
   id_sindicato Int
   descripcion  String
-  proyecto     Proyecto        @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   sindicato    CatalogoUniones @relation(fields: [id_sindicato], references: [id])
+  proyecto     Proyecto        @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTipoProyectos {
@@ -525,66 +549,67 @@ model CatalogoTipoProyectos {
 }
 
 model Roles {
-  id                       Int                       @id @default(autoincrement())
-  nombre                   String
-  id_tipo_rol              Int
-  descripcion              String?
-  detalles_adicionales     String?
-  estatus                  String                    @default("SIN_FINALIZAR")
-  id_proyecto              Int
-  id_media_foto_referencia Int?
-  id_media_lineas          Int?
-  id_color_cabello         Int                       @default(1)
-  id_color_ojos            Int                       @default(1)
-  aplicaciones_por_talento AplicacionRolPorTalento[]
-  audiciones_talentos      AudicionTalento[]
-  casting                  CastingPorRoles[]
-  compensaciones           CompensacionesPorRoles?
-  filmaciones              FilmacionPorRoles[]
-  filtros_demograficos     FiltrosDemoPorRoles?
-  habilidades              HabilidadesPorRoles?
-  nsfw                     NSFWPorRoles?
-  requisitos               RequisitosPorRoles?
-  color_cabello            CatalogoColorCabello      @relation(fields: [id_color_cabello], references: [id])
-  color_ojos               CatalogoColorOjos         @relation(fields: [id_color_ojos], references: [id])
-  proyecto                 Proyecto                  @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
-  tipo_rol                 CatalogoTiposRoles        @relation(fields: [id_tipo_rol], references: [id])
-  foto_referencia          Media?                    @relation("media_foto_referencia", fields: [id_media_foto_referencia], references: [id], map: "media_foto_referencia")
-  lineas                   Media?                    @relation("media_lineas", fields: [id_media_lineas], references: [id], map: "media_lineas")
-  selftape                 SelftapePorRoles?
-  tipo_trabajos            TipoTrabajoPorRoles[]
+  id                        Int                       @id @default(autoincrement())
+  nombre                    String
+  id_tipo_rol               Int
+  descripcion               String?
+  id_media_foto_referencia  Int?
+  id_media_lineas           Int?
+  detalles_adicionales      String?
+  estatus                   String                    @default("SIN_FINALIZAR")
+  id_proyecto               Int
+  id_color_ojos             Int                       @default(1)
+  id_color_cabello          Int                       @default(1)
+  proyecto                  Proyecto                  @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
+  tipo_trabajos             TipoTrabajoPorRoles[]
+  compensaciones            CompensacionesPorRoles?
+  filtros_demograficos      FiltrosDemoPorRoles?
+  habilidades               HabilidadesPorRoles?
+  requisitos                RequisitosPorRoles?
+  nsfw                      NSFWPorRoles?
+  casting                   CastingPorRoles[]
+  filmaciones               FilmacionPorRoles[]
+  selftape                  SelftapePorRoles?
+  tipo_rol                  CatalogoTiposRoles        @relation(fields: [id_tipo_rol], references: [id])
+  aplicaciones_por_talento  AplicacionRolPorTalento[]
+  lineas                    Media?                    @relation("media_lineas", map: "media_lineas", fields: [id_media_lineas], references: [id])
+  foto_referencia           Media?                    @relation("media_foto_referencia", map: "media_foto_referencia", fields: [id_media_foto_referencia], references: [id])
+  audiciones_talentos       AudicionTalento[]
+  color_ojos                CatalogoColorOjos         @relation(fields: [id_color_ojos], references: [id])
+  color_cabello             CatalogoColorCabello      @relation(fields: [id_color_cabello], references: [id])
+  intervalos_bloque_horario IntervaloBloqueHorario[]
 }
 
 model TipoTrabajoPorRoles {
   id              Int                 @id @default(autoincrement())
   id_rol          Int
-  id_tipo_trabajo Int
   rol             Roles               @relation(fields: [id_rol], references: [id], onDelete: Cascade)
+  id_tipo_trabajo Int
   tipo_trabajo    CatalogoTipoTrabajo @relation(fields: [id_tipo_trabajo], references: [id])
 }
 
 model SelftapePorRoles {
   id              Int     @id @default(autoincrement())
   id_rol          Int     @unique
+  rol             Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   pedir_selftape  Boolean
   indicaciones    String  @db.VarChar(512)
   id_media_lineas Int?
   lineas          Media?  @relation(fields: [id_media_lineas], references: [id])
-  rol             Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTiposRoles {
   id   Int     @id @default(autoincrement())
-  tipo String
-  en   String
   es   String
+  en   String
+  tipo String
   rol  Roles[]
 }
 
 model CatalogosCompNoMones {
   id                                     Int                        @id
-  en                                     String
   es                                     String
+  en                                     String
   compensaciones_no_monetarias_por_roles CompNoMonetariasPorRoles[]
 }
 
@@ -592,7 +617,7 @@ model HabilidadesPorRoles {
   id                        Int                        @id @default(autoincrement())
   especificacion            String?
   id_rol                    Int                        @unique
-  rol                       Roles                      @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "habilidades")
+  rol                       Roles                      @relation(map: "habilidades", fields: [id_rol], references: [id], onDelete: Cascade)
   habilidades_seleccionadas HabilidadesSelecPorRoles[]
 }
 
@@ -600,25 +625,26 @@ model HabilidadesSelecPorRoles {
   id                     Int                 @id @default(autoincrement())
   id_habilidades_por_rol Int
   id_habilidad           Int
-  habilidad              CatalogoHabilidades @relation(fields: [id_habilidad], references: [id])
   habilidad_por_rol      HabilidadesPorRoles @relation(fields: [id_habilidades_por_rol], references: [id], onDelete: Cascade)
+  habilidad              CatalogoHabilidades @relation(fields: [id_habilidad], references: [id])
 }
 
 model CatalogoHabilidades {
   id                                  Int                              @id @default(autoincrement())
-  en                                  String
   es                                  String
+  en                                  String
+  habilidades_seleccionadas_por_roles HabilidadesSelecPorRoles[]
   habilidades_especificas             CatalogoHabilidadesEspecificas[]
   HabilidadesPorTalentos              HabilidadesPorTalentos[]
-  habilidades_seleccionadas_por_roles HabilidadesSelecPorRoles[]
 }
 
 model CatalogoHabilidadesEspecificas {
-  id                     Int                      @id @default(autoincrement())
-  id_habilidad           Int
-  en                     String
-  es                     String
-  habilidad              CatalogoHabilidades      @relation(fields: [id_habilidad], references: [id])
+  id           Int                 @id @default(autoincrement())
+  es           String
+  en           String
+  id_habilidad Int
+  habilidad    CatalogoHabilidades @relation(fields: [id_habilidad], references: [id])
+
   HabilidadesPorTalentos HabilidadesPorTalentos[]
 }
 
@@ -626,22 +652,22 @@ model NSFWPorRoles {
   id                 Int                         @id @default(autoincrement())
   descripcion        String?
   id_rol             Int                         @unique
-  rol                Roles                       @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "nsfw")
+  rol                Roles                       @relation(map: "nsfw", fields: [id_rol], references: [id], onDelete: Cascade)
   nsfw_seleccionados NSFWSeleccionadosPorRoles[]
 }
 
 model NSFWSeleccionadosPorRoles {
-  id              Int          @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   id_nsfw         Int
   id_nsfw_por_rol Int
-  nsfw            CatalogoNSFW @relation(fields: [id_nsfw], references: [id])
-  nsfw_por_rol    NSFWPorRoles @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
+  nsfw_por_rol    NSFWPorRoles  @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
+  nsfw            CatalogoNSFW? @relation(fields: [id_nsfw], references: [id])
 }
 
 model CatalogoNSFW {
   id                        Int                         @id
-  en                        String
   es                        String
+  en                        String
   NSFWSeleccionadosPorRoles NSFWSeleccionadosPorRoles[]
 }
 
@@ -649,8 +675,8 @@ model CatalogoTipoUsosHorario {
   id             Int                  @id
   es             String
   en             String
-  agenda_horario HorarioAgenda[]
   requisitos_rol RequisitosPorRoles[]
+  agenda_horario HorarioAgenda[]
 }
 
 model FiltrosDemoPorRoles {
@@ -660,11 +686,11 @@ model FiltrosDemoPorRoles {
   rango_edad_fin      Int
   rango_edad_en_meses Boolean
   id_pais             Int
-  animal              AnimalPorRoles?
+  rol                 Roles                       @relation(map: "filtros", fields: [id_rol], references: [id], onDelete: Cascade)
   aparencias_etnicas  AparenciasEtnicasPorRoles[]
-  pais                CatalogoPaises              @relation(fields: [id_pais], references: [id])
-  rol                 Roles                       @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "filtros")
+  animal              AnimalPorRoles?
   generos             GenerosPorRoles[]
+  pais                CatalogoPaises              @relation(fields: [id_pais], references: [id])
 }
 
 model AnimalPorRoles {
@@ -673,22 +699,22 @@ model AnimalPorRoles {
   descripcion            String
   tamanio                String
   id_filtro_demo_por_rol Int                 @unique
-  animal                 CatalogoTipoMascota @relation(fields: [id_animal], references: [id])
   filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+  animal                 CatalogoTipoMascota @relation(fields: [id_animal], references: [id])
 }
 
 model AparenciasEtnicasPorRoles {
   id                     Int                       @id @default(autoincrement())
   id_aparencia_etnica    Int
   id_filtro_demo_por_rol Int
-  aparencia_etnica       CatalogoAparenciasEtnicas @relation(fields: [id_aparencia_etnica], references: [id])
   filtros_demograficos   FiltrosDemoPorRoles       @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
+  aparencia_etnica       CatalogoAparenciasEtnicas @relation(fields: [id_aparencia_etnica], references: [id])
 }
 
 model CatalogoAparenciasEtnicas {
   id                              Int                            @id
-  en                              String
-  es                              String
+  en String
+  es String
   aparencias_etnicas_por_roles    AparenciasEtnicasPorRoles[]
   filtros_apariencia_por_talentos FiltrosAparenciasPorTalentos[]
 }
@@ -703,19 +729,19 @@ model GenerosPorRoles {
 
 model CatalogoGeneros {
   id                                             Int                                          @id
-  en                                             String
   es                                             String
-  filtros_aparencias_por_talento                 FiltrosAparenciasPorTalentos[]
-  generos_interesados_en_interpetrar_por_talento GenerosInteresadosEnInterpretarPorTalentos[]
+  en                                             String
   genero_por_roles                               GenerosPorRoles[]
+  generos_interesados_en_interpetrar_por_talento GenerosInteresadosEnInterpretarPorTalentos[]
+  filtros_aparencias_por_talento                 FiltrosAparenciasPorTalentos[]
 }
 
 model CatalogoPaises {
   id                           Int                            @id
-  en                           String
   es                           String
-  FiltrosAparenciasPorTalentos FiltrosAparenciasPorTalentos[]
+  en                           String
   FiltrosDemoPorRoles          FiltrosDemoPorRoles[]
+  FiltrosAparenciasPorTalentos FiltrosAparenciasPorTalentos[]
 }
 
 model CompensacionesPorRoles {
@@ -723,14 +749,16 @@ model CompensacionesPorRoles {
   id_rol                                  Int                        @unique
   datos_adicionales                       String
   suma_total_compensaciones_no_monetarias Decimal?
+  sueldo                                  SueldosPorRoles?
   compensaciones_no_monetarias            CompNoMonetariasPorRoles[]
   rol                                     Roles                      @relation(fields: [id_rol], references: [id], onDelete: Cascade)
-  sueldo                                  SueldosPorRoles?
 }
 
 model CompNoMonetariasPorRoles {
   id                       Int                    @id @default(autoincrement())
   id_compensacion          Int
+  // se agrega el campo de descripcion en caso de que
+  // se selecicone otro que no este en el catalogo
   descripcion_compensacion String
   id_comp_por_rol          Int
   compensaciones_por_rol   CompensacionesPorRoles @relation(fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
@@ -748,25 +776,25 @@ model SueldosPorRoles {
 model Media {
   id                        Int                         @id @default(autoincrement())
   nombre                    String
-  clave                     String
-  identificador             String
-  referencia                String
-  type                      String
+  type                      String // type 
   url                       String
-  public                    Boolean                     @default(true)
-  banners                   Banners[]
-  cazatalentos              Cazatalentos[]
-  CreditoTalento            CreditoTalento[]
-  InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
-  InfoBasicaRepresentante   InfoBasicaRepresentante[]
+  clave                     String // clave para el s3
+  referencia                String // Se utiliza para saber si es parte de un conjunto
+  identificador             String // Se utiliza para identificar ese elemento dentro de un conjunto
+  public Boolean @default(true) // se utiliza para saber si el recurso es publico o no
   MediaPorTalentos          MediaPorTalentos[]
-  archivo_proyecto          Proyecto[]                  @relation("media_archivo")
-  foto_portada_proyecto     Proyecto[]                  @relation("media_foto_portada")
+  InfoBasicaPorTalentos     InfoBasicaPorTalentos[]
+  CreditoTalento            CreditoTalento[]
+  cazatalentos              Cazatalentos[]
   representante             Representante[]
   RepresentantesPorTalentos RepresentantesPorTalentos[]
-  foto_referencia_roles     Roles[]                     @relation("media_foto_referencia")
-  lineas_roles              Roles[]                     @relation("media_lineas")
+  archivo_proyecto          Proyecto[]                  @relation("media_archivo", map: "media_archivo")
+  foto_portada_proyecto     Proyecto[]                  @relation("media_foto_portada", map: "media_foto_portada")
+  lineas_roles              Roles[]                     @relation("media_lineas", map: "media_lineas")
+  foto_referencia_roles     Roles[]                     @relation("media_foto_referencia", map: "media_foto_referencia")
   lineas_selftape           SelftapePorRoles[]
+  banners                   Banners[]
+  InfoBasicaRepresentante   InfoBasicaRepresentante[]
   ValidacionRepresentante   ValidacionRepresentante[]
 }
 
@@ -775,58 +803,58 @@ model MediaPorTalentos {
   id_talento Int
   id_media   Int
   talento    Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-  media      Media    @relation(fields: [id_media], references: [id], onDelete: Cascade, map: "media_por_talento")
+  media      Media    @relation(map: "media_por_talento", fields: [id_media], references: [id], onDelete: Cascade)
 }
 
 model RequisitosPorRoles {
   id                     Int                        @id @default(autoincrement())
   presentacion_solicitud DateTime
   informacion            String
+  id_uso_horario         Int
   id_rol                 Int                        @unique
   id_idioma              Int
   id_estado_republica    Int
-  id_uso_horario         Int
-  medios_multimedia      MediosMultimediaPorRoles[]
-  estado_republica       CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
+  rol                    Roles                      @relation(map: "requisitos", fields: [id_rol], references: [id], onDelete: Cascade)
   idioma                 CatalogoIdiomas            @relation(fields: [id_idioma], references: [id])
+  estado_republica       CatalogoEstadosRepublica   @relation(fields: [id_estado_republica], references: [id])
+  medios_multimedia      MediosMultimediaPorRoles[]
   uso_horario            CatalogoTipoUsosHorario    @relation(fields: [id_uso_horario], references: [id])
-  rol                    Roles                      @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "requisitos")
 }
 
 model CatalogoIdiomas {
   id                 Int                  @id @default(autoincrement())
-  es                 String
-  en                 String
+  es             String
+  en String
   RequisitosPorRoles RequisitosPorRoles[]
 }
 
 model CatalogoEstadosRepublica {
   id                                Int                               @id @default(autoincrement())
-  en                                String
   es                                String
-  AplicacionRolPorTalento           AplicacionRolPorTalento[]
+  en                                String
+  info_basica_por_talento           InfoBasicaPorTalentos[]
+  requisitos_por_roles              RequisitosPorRoles[]
   casting_por_roles                 CastingPorRoles[]
   filmacion_por_roles               FilmacionPorRoles[]
-  info_basica_por_talento           InfoBasicaPorTalentos[]
-  InfoBasicaRepresentante           InfoBasicaRepresentante[]
   locaciones_preferencias           LocacionesPrerenciasPorTalentos[]
-  localizaciones_por_horario_agenda LocalizacionesPorHorarioAgenda[]
   proyecto                          Proyecto[]
-  requisitos_por_roles              RequisitosPorRoles[]
+  localizaciones_por_horario_agenda LocalizacionesPorHorarioAgenda[]
+  InfoBasicaRepresentante           InfoBasicaRepresentante[]
+  AplicacionRolPorTalento AplicacionRolPorTalento[]
 }
 
 model MediosMultimediaPorRoles {
   id                      Int                      @id @default(autoincrement())
   id_requisitos_por_roles Int
   id_medio_multimedia     Int
-  medio_multimedia        CatalogoMediosMultimedia @relation(fields: [id_medio_multimedia], references: [id])
   requisitos_por_rol      RequisitosPorRoles       @relation(fields: [id_requisitos_por_roles], references: [id])
+  medio_multimedia        CatalogoMediosMultimedia @relation(fields: [id_medio_multimedia], references: [id])
 }
 
 model CatalogoMediosMultimedia {
   id                Int                        @id @default(autoincrement())
-  en                String
   es                String
+  en                String
   medios_multimedia MediosMultimediaPorRoles[]
 }
 
@@ -837,7 +865,7 @@ model CastingPorRoles {
   id_rol              Int
   id_estado_republica Int
   estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
-  rol                 Roles                    @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "casting")
+  rol                 Roles                    @relation(map: "casting", fields: [id_rol], references: [id], onDelete: Cascade)
 }
 
 model FilmacionPorRoles {
@@ -847,7 +875,7 @@ model FilmacionPorRoles {
   id_rol              Int
   id_estado_republica Int
   estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
-  rol                 Roles                    @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "filmacion")
+  rol                 Roles                    @relation(map: "filmacion", fields: [id_rol], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTipoVehiculos {
@@ -884,8 +912,8 @@ model CatalogoTipoVestuarioEspecifico {
   id_tipo_vestuario Int
   es                String
   en                String
-  tipo_vestuario    CatalogoTipoVestuario @relation(fields: [id_tipo_vestuario], references: [id], onDelete: Cascade)
   vestuario_talento VestuarioTalento[]
+  tipo_vestuario    CatalogoTipoVestuario @relation(fields: [id_tipo_vestuario], references: [id], onDelete: Cascade)
 }
 
 model CatalogoTipoProps {
@@ -917,19 +945,19 @@ model FiltrosAparenciasPorTalentos {
   disposicion_afeitar_o_crecer_vello_facial Boolean
   id_color_ojos                             Int
   id_pais                                   Int                                          @default(1)
-  apariencia_etnica                         CatalogoAparenciasEtnicas                    @relation(fields: [id_apariencia_etnica], references: [id])
-  color_cabello                             CatalogoColorCabello                         @relation(fields: [id_color_cabello], references: [id])
   color_ojos                                CatalogoColorOjos                            @relation(fields: [id_color_ojos], references: [id])
+  vello_facial                              CatalogoVelloFacial                          @relation(fields: [id_vello_facial], references: [id])
   estilo_cabello                            CatalogoEstiloCabello                        @relation(fields: [id_estilo_cabello], references: [id])
+  color_cabello                             CatalogoColorCabello                         @relation(fields: [id_color_cabello], references: [id])
+  apariencia_etnica                         CatalogoAparenciasEtnicas                    @relation(fields: [id_apariencia_etnica], references: [id])
   genero                                    CatalogoGeneros                              @relation(fields: [id_genero], references: [id])
+  generos_interesados_en_interpretar        GenerosInteresadosEnInterpretarPorTalentos[]
+  tatuajes                                  TatuajesPorTalentos[]
+  piercings                                 PiercingsPorTalentos[]
+  hermanos                                  TipoHermanosPorTalento?
+  particularidades                          ParticularidadesPorTalentos[]
   nacionalidad                              CatalogoPaises                               @relation(fields: [id_pais], references: [id])
   talento                                   Talentos                                     @relation(fields: [id_talento], references: [id])
-  vello_facial                              CatalogoVelloFacial                          @relation(fields: [id_vello_facial], references: [id])
-  generos_interesados_en_interpretar        GenerosInteresadosEnInterpretarPorTalentos[]
-  particularidades                          ParticularidadesPorTalentos[]
-  piercings                                 PiercingsPorTalentos[]
-  tatuajes                                  TatuajesPorTalentos[]
-  hermanos                                  TipoHermanosPorTalento?
 }
 
 model ParticularidadesPorTalentos {
@@ -937,8 +965,8 @@ model ParticularidadesPorTalentos {
   id_filtros_apariencias_por_talentos Int
   id_particularidad                   Int
   descripcion                         String
-  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
   particularidad                      CatalogoParticularidades     @relation(fields: [id_particularidad], references: [id])
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
 }
 
 model PiercingsPorTalentos {
@@ -946,8 +974,8 @@ model PiercingsPorTalentos {
   id_filtros_apariencias_por_talentos Int
   id_tipo_piercing                    Int
   descripcion                         String
-  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
   piercing                            CatalogoTiposPiercings       @relation(fields: [id_tipo_piercing], references: [id])
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
 }
 
 model TipoHermanosPorTalento {
@@ -974,10 +1002,10 @@ model CatalogoTiposPiercings {
 model TatuajesPorTalentos {
   id                                  Int                          @id @default(autoincrement())
   id_filtros_apariencias_por_talentos Int
-  descripcion                         String
   id_tipo_tatuaje                     Int
-  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
+  descripcion                         String
   tipo_tatuaje                        CatalogoTiposTatuajes        @relation(fields: [id_tipo_tatuaje], references: [id])
+  filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
 }
 
 model GenerosInteresadosEnInterpretarPorTalentos {
@@ -992,16 +1020,16 @@ model PreferenciasPorTalentos {
   id                              Int                               @id @default(autoincrement())
   interesado_en_trabajos_de_extra Boolean
   id_talento                      Int                               @unique
+  talento                         Talentos                          @relation(fields: [id_talento], references: [id])
   nombre_agente                   String?
   contacto_agente                 String?
   meses_embarazo                  Int?
-  disponibilidades                DisponibilidadesPorTalentos[]
-  documentos                      DocumentosPorTalentos[]
+  tipos_de_trabajo                TiposDeTrabajoPorTalentos[]
   interes_en_proyectos            InteresEnProyectosPorTalentos[]
   locaciones                      LocacionesPrerenciasPorTalentos[]
+  documentos                      DocumentosPorTalentos[]
+  disponibilidades                DisponibilidadesPorTalentos[]
   otras_profesiones               OtrasProfesionesPorTalentos[]
-  talento                         Talentos                          @relation(fields: [id_talento], references: [id])
-  tipos_de_trabajo                TiposDeTrabajoPorTalentos[]
 }
 
 model OtrasProfesionesPorTalentos {
@@ -1033,8 +1061,8 @@ model LocacionesPrerenciasPorTalentos {
   id_preferencias_por_talentos Int
   es_principal                 Boolean
   id_estado_republica          Int
-  estado_republica             CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos  @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
+  estado_republica             CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
 }
 
 model InteresEnProyectosPorTalentos {
@@ -1049,31 +1077,31 @@ model TiposDeTrabajoPorTalentos {
   id                           Int                     @id @default(autoincrement())
   id_preferencias_por_talentos Int
   id_tipo_de_trabajo           Int
-  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
   tipos_de_trabajo             CatalogoTipoTrabajo     @relation(fields: [id_tipo_de_trabajo], references: [id])
+  preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
 }
 
 model ActivosPorTalentos {
   id               Int                      @id @default(autoincrement())
   id_talento       Int                      @unique
   talento          Talentos                 @relation(fields: [id_talento], references: [id])
-  equipo_deportivo EquipoDeportivoTalento[]
-  mascotas         MascotaTalento[]
-  props            PropsTalento[]
   vehiculos        VehiculoTalento[]
+  mascotas         MascotaTalento[]
   vestuario        VestuarioTalento[]
+  props            PropsTalento[]
+  equipo_deportivo EquipoDeportivoTalento[]
 }
 
 model VehiculoTalento {
-  id                   Int                   @id @default(autoincrement())
+  id                   Int                    @id @default(autoincrement())
   id_activos_talentos  Int
   id_tipo_vehiculo     Int
   marca                String
   modelo               String
   color                String
   anio                 Int
-  activos_por_talentos ActivosPorTalentos    @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
-  tipo_vehiculo        CatalogoTipoVehiculos @relation(fields: [id_tipo_vehiculo], references: [id])
+  activos_por_talentos ActivosPorTalentos     @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
+  tipo_vehiculo        CatalogoTipoVehiculos? @relation(fields: [id_tipo_vehiculo], references: [id])
 }
 
 model MascotaTalento {
@@ -1083,17 +1111,17 @@ model MascotaTalento {
   id_raza              Int?
   tamanio              String
   activos_por_talentos ActivosPorTalentos   @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
+  tipo_mascota         CatalogoTipoMascota? @relation(fields: [id_tipo_mascota], references: [id])
   raza_mascota         CatalogoRazaMascota? @relation(fields: [id_raza], references: [id])
-  tipo_mascota         CatalogoTipoMascota  @relation(fields: [id_tipo_mascota], references: [id])
 }
 
 model VestuarioTalento {
-  id                           Int                             @id @default(autoincrement())
+  id                           Int                              @id @default(autoincrement())
   id_activos_talentos          Int
-  descripcion                  String
   id_tipo_vestuario_especifico Int
-  activos_por_talentos         ActivosPorTalentos              @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
-  tipo_vestuario_especifico    CatalogoTipoVestuarioEspecifico @relation(fields: [id_tipo_vestuario_especifico], references: [id])
+  descripcion                  String
+  activos_por_talentos         ActivosPorTalentos               @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
+  tipo_vestuario_especifico    CatalogoTipoVestuarioEspecifico? @relation(fields: [id_tipo_vestuario_especifico], references: [id])
 }
 
 model PropsTalento {
@@ -1102,16 +1130,17 @@ model PropsTalento {
   id_tipo_props        Int
   descripcion          String
   activos_por_talentos ActivosPorTalentos @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
-  tipo_props           CatalogoTipoProps  @relation(fields: [id_tipo_props], references: [id])
+  tipo_props           CatalogoTipoProps? @relation(fields: [id_tipo_props], references: [id])
 }
 
 model EquipoDeportivoTalento {
-  id                       Int                         @id @default(autoincrement())
-  id_activos_talentos      Int
+  id                  Int @id @default(autoincrement())
+  id_activos_talentos Int
+
   id_tipo_equipo_deportivo Int
   descripcion              String
-  activos_por_talentos     ActivosPorTalentos          @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
-  tipo_equipo_deportivo    CatalogoTipoEquipoDeportivo @relation(fields: [id_tipo_equipo_deportivo], references: [id])
+  activos_por_talentos     ActivosPorTalentos           @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
+  tipo_equipo_deportivo    CatalogoTipoEquipoDeportivo? @relation(fields: [id_tipo_equipo_deportivo], references: [id])
 }
 
 model CatalogoTiposTatuajes {
@@ -1125,8 +1154,8 @@ model CatalogoTipoTrabajo {
   id                             Int                         @id
   es                             String
   en                             String
-  tipo_trabajo_por_roles         TipoTrabajoPorRoles[]
   tipos_de_trabajos_por_talentos TiposDeTrabajoPorTalentos[]
+  tipo_trabajo_por_roles         TipoTrabajoPorRoles[]
 }
 
 model CatalogoTipoDocumentos {
@@ -1135,6 +1164,8 @@ model CatalogoTipoDocumentos {
   en                      String
   documentos_por_talentos DocumentosPorTalentos[]
 }
+
+//Catalogos de 
 
 model CatalogoColorCabello {
   id                               Int                            @id
