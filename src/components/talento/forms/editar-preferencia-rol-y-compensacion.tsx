@@ -594,9 +594,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
 
           <MCheckboxGroup
             direction="vertical"
-            titleStyle={{
-              marginBottom: "20px",
-            }}
             title={
               textos["preferencias_rol_documentos_subtitulo"]
                 ? textos["preferencias_rol_documentos_subtitulo"]
@@ -629,6 +626,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             }}
             id="documentos-checkbox"
             labelStyle={{ marginBottom: 0 }}
+            titleStyle={{ paddingBottom: "10px" }}
+            style={{ padding: "4px" }}
             fontWeight={400}
             options={
               tipos_documentos.data
@@ -849,109 +848,10 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
               label=""
             />
 
-                    <MCheckboxGroup
-                        direction='vertical'
-                        title={textos['preferencias_rol_documentos_subtitulo'] ? textos['preferencias_rol_documentos_subtitulo'] : 'Texto No Definido'}
-                        onChange={(e, i) => {
-                            if (tipos_documentos.data) {
-                                const tipo_documento = tipos_documentos.data[i]
-                                if (tipo_documento) {
-                                    let nuevosTipos = []
-                                    if (state.documentos.map(obj => obj.id_documento).includes(tipo_documento?.id)) {
-                                        nuevosTipos = state.documentos.filter((obj) => obj.id_documento !== tipo_documento.id)
-                                    } else {
-                                        nuevosTipos = [...state.documentos, { id_documento: tipo_documento.id, descripcion: '' }]
-                                    }
-                                    onFormChange({
-                                        documentos: nuevosTipos
-                                    })
-                                }
-                            }
-                        }}
-                        id="documentos-checkbox"
-                        labelStyle={{ marginBottom: 0 }}
-                        titleStyle={{paddingBottom: '10px'}}
-                        style={{padding: '4px'}}
-                        fontWeight={400}
-                        options={(tipos_documentos.data) ? tipos_documentos.data.map(t => es_ingles ? t.en : t.es) : []}
-                        values={(tipos_documentos.data) ? tipos_documentos.data.map(v => state.documentos.map(documento => documento.id_documento).includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
-                    />
-
-                    {
-                        <MotionDiv show={state.documentos.some(documento => documento?.id_documento === 99)} animation='fade'>
-                            <FormGroup
-                                className={'form-input-md'}
-                                labelClassName={'form-input-label'}
-                                value={state.documentos.filter(documento => documento?.id_documento === 99)[0]?.descripcion}
-                                onChange={(e) => {
-                                    onFormChange({
-                                        documentos: state.documentos.map(documento => {
-                                            if (documento?.id_documento === 99) {
-                                                return {
-                                                    id_documento: 99,
-                                                    descripcion: e.target.value || ''
-                                                }
-                                            }
-                                            return documento
-                                        })
-                                    })
-                                }}
-                            />
-                        </MotionDiv>
-                    }
-
-                </MContainer>
-            </Grid>
-
-            <Grid my={4} item xs={12}>
-                <Divider />
-            </Grid>
-
-            <Grid item xs={12}>
-                <MContainer direction='vertical'>
-                    <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
-                        {textos['disponibilidad_para'] ? textos['disponibilidad_para'] : 'Texto No Definido'}
-                    </Typography>
-
-                    <MCheckboxGroup
-                        direction='horizontal'
-                        title={textos['preferencias_rol_disponibilidad_subtitulo'] ? textos['preferencias_rol_disponibilidad_subtitulo'] : 'Texto No Definido'}
-                        onChange={(e, i) => {
-                            if (tipos_disponibilidad.data) {
-                                const tipo_disponibilidad = tipos_disponibilidad.data[i]
-                                if (tipo_disponibilidad) {
-                                    let nuevosTipos = []
-                                    if (state.disponibilidad.includes(tipo_disponibilidad?.id)) {
-                                        nuevosTipos = state.disponibilidad.filter((id) => id !== tipo_disponibilidad.id)
-                                    } else {
-                                        nuevosTipos = [...state.disponibilidad, tipo_disponibilidad.id]
-                                    }
-                                    onFormChange({
-                                        disponibilidad: nuevosTipos
-                                    })
-                                }
-                            }
-                        }}
-                        id="disponibilidad-para-checkboxgroup"
-                        labelStyle={{ marginBottom: 0, width: '32%' }}
-                        options={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(t => es_ingles ? t.en : t.es) : []}
-                        values={(tipos_disponibilidad.data) ? tipos_disponibilidad.data.map(v => state.disponibilidad.includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
-                    />
-                </MContainer>
-            </Grid>
-
-            <Grid my={4} item xs={12}>
-                <Divider />
-            </Grid>
-
-            <Grid item xs={12}>
-                <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'} sx={{ marginBottom: 1 }}>
-                    {textos['preferencias_rol_otras_profesiones'] ? textos['preferencias_rol_otras_profesiones'] : 'Texto No Definido'}
-                    <MTooltip
-                        text={textos['preferencias_rol_otras_profesiones_tooltip'] ? textos['preferencias_rol_otras_profesiones_tooltip'] : 'Texto No Definido'}
-                        color='orange'
-                        placement='right'
-                    />
+            <MotionDiv show={estaEmbarazada} animation="fade">
+              <MContainer direction="horizontal">
+                <Typography>
+                  {textos["meses"] ? textos["meses"] : "Texto No Definido"}
                 </Typography>
                 <FormGroup
                   rootStyle={{ margin: 0 }}
