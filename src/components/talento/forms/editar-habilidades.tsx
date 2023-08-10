@@ -62,7 +62,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
         }
 
         return (
-          <Accordion key={i}>
+            <Accordion sx={{boxShadow: 'none', border: 'none', position: 'static'}} key={i}>
             <AccordionSummary
               style={{
                 color:
