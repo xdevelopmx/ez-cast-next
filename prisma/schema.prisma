@@ -12,9 +12,6 @@ model TalentosRepresentados {
   id_representante Int
   id_talento       Int
   hora_asignacion  DateTime
-
-  @@index([id_representante], map: "TalentosRepresentados_id_representante_fkey")
-  @@index([id_talento], map: "TalentosRepresentados_id_talento_fkey")
 }
 
 model Conversaciones {
@@ -26,8 +23,6 @@ model Conversaciones {
   emisor_perfil_url     String
   receptor_perfil_url   String
   id_proyecto           Int?
-
-  @@index([id_proyecto], map: "Conversaciones_id_proyecto_fkey")
 }
 
 model Mensaje {
@@ -41,8 +36,6 @@ model Mensaje {
   type                  String
   tipo_usuario_emisor   String
   tipo_usuario_receptor String
-
-  @@index([id_conversacion], map: "Mensaje_id_conversacion_fkey")
 }
 
 model Alertas {
@@ -67,8 +60,6 @@ model HorarioAgenda {
   proyecto          Proyecto                         @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   uso_horario       CatalogoTipoUsosHorario          @relation(fields: [id_uso_horario], references: [id])
   localizaciones    LocalizacionesPorHorarioAgenda[]
-
-  @@index([id_uso_horario], map: "HorarioAgenda_id_uso_horario_fkey")
 }
 
 model BloqueHorariosAgenda {
@@ -84,9 +75,6 @@ model BloqueHorariosAgenda {
   tipo_administracion_intervalo String
   horario_agenda                HorarioAgenda                  @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
   locacion                      LocalizacionesPorHorarioAgenda @relation(fields: [id_locacion], references: [id], onDelete: Cascade)
-
-  @@index([id_horario_agenda], map: "BloqueHorariosAgenda_id_horario_agenda_fkey")
-  @@index([id_locacion], map: "BloqueHorariosAgenda_id_locacion_fkey")
 }
 
 model IntervaloBloqueHorario {
@@ -97,10 +85,6 @@ model IntervaloBloqueHorario {
   estado            String
   tipo              String
   hora              String
-
-  @@index([id_bloque_horario], map: "IntervaloBloqueHorario_id_bloque_horario_fkey")
-  @@index([id_rol], map: "IntervaloBloqueHorario_id_rol_fkey")
-  @@index([id_talento], map: "IntervaloBloqueHorario_id_talento_fkey")
 }
 
 model LocalizacionesGuardadas {
@@ -123,9 +107,6 @@ model LocalizacionesPorHorarioAgenda {
   bloque_horario_agenda BloqueHorariosAgenda[]
   estado_republica      CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   horario_agenda        HorarioAgenda            @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
-
-  @@index([id_estado_republica], map: "LocalizacionesPorHorarioAgenda_id_estado_republica_fkey")
-  @@index([id_horario_agenda], map: "LocalizacionesPorHorarioAgenda_id_horario_agenda_fkey")
 }
 
 model FechasPorHorarioAgenda {
@@ -134,8 +115,6 @@ model FechasPorHorarioAgenda {
   fecha_fin         DateTime?
   id_horario_agenda Int
   horario_agenda    HorarioAgenda @relation(fields: [id_horario_agenda], references: [id], onDelete: Cascade)
-
-  @@index([id_horario_agenda], map: "FechasPorHorarioAgenda_id_horario_agenda_fkey")
 }
 
 model Cazatalentos {
@@ -158,8 +137,6 @@ model Cazatalentos {
   redes_sociales       RedesSocialesPorCazatalentos[]
   reportes_talentos    ReporteTalentos[]
   talentos_destacados  TalentosDestacados[]
-
-  @@index([id_foto_perfil_media], map: "Cazatalentos_id_foto_perfil_media_fkey")
 }
 
 model Representante {
@@ -183,8 +160,6 @@ model Representante {
   redes_sociales       RedesSocialesPorRepresentante[]
   foto_perfil          Media?                          @relation(fields: [id_foto_perfil_media], references: [id])
   validacion           ValidacionRepresentante?
-
-  @@index([id_foto_perfil_media], map: "Representante_id_foto_perfil_media_fkey")
 }
 
 model InfoBasicaRepresentante {
@@ -198,9 +173,6 @@ model InfoBasicaRepresentante {
   media               Media?                           @relation(fields: [id_media_cv], references: [id])
   representante       Representante                    @relation(fields: [id_representante], references: [id], onDelete: Cascade)
   union               UnionPorInfoBasicaRepresentante?
-
-  @@index([id_estado_republica], map: "InfoBasicaRepresentante_id_estado_republica_fkey")
-  @@index([id_media_cv], map: "InfoBasicaRepresentante_id_media_cv_fkey")
 }
 
 model UnionPorInfoBasicaRepresentante {
@@ -210,8 +182,6 @@ model UnionPorInfoBasicaRepresentante {
   id_info_basica_representante Int                     @unique
   info_basica_represntante     InfoBasicaRepresentante @relation(fields: [id_info_basica_representante], references: [id], onDelete: Cascade)
   union                        CatalogoUniones         @relation(fields: [id_union], references: [id])
-
-  @@index([id_union], map: "UnionPorInfoBasicaRepresentante_id_union_fkey")
 }
 
 model PermisosRepresentante {
@@ -244,8 +214,6 @@ model ValidacionRepresentante {
   id_representante        Int           @unique
   media                   Media?        @relation(fields: [id_media_copia_licencia], references: [id])
   representante           Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
-
-  @@index([id_media_copia_licencia], map: "ValidacionRepresentante_id_media_copia_licencia_fkey")
 }
 
 model DirectoresCastingValidacionRepresentante {
@@ -255,8 +223,6 @@ model DirectoresCastingValidacionRepresentante {
   apellido           String
   correo_electronico String
   telefono           String
-
-  @@index([id_validacion], map: "DirectoresCastingValidacionRepresentante_id_validacion_fkey")
 }
 
 model Talentos {
@@ -325,8 +291,6 @@ model RepresentantesPorTalentos {
   id_media_carta_responsiva Int?
   media                     Media?   @relation(fields: [id_media_carta_responsiva], references: [id])
   talento                   Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-
-  @@index([id_media_carta_responsiva], map: "RepresentantesPorTalentos_id_media_carta_responsiva_fkey")
 }
 
 model InfoBasicaPorTalentos {
@@ -342,9 +306,6 @@ model InfoBasicaPorTalentos {
   talento             Talentos                   @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   media               Media?                     @relation(fields: [id_media_cv], references: [id], map: "media_cv")
   union               UnionPorInfoBasicaTalento?
-
-  @@index([id_estado_republica], map: "InfoBasicaPorTalentos_id_estado_republica_fkey")
-  @@index([id_media_cv], map: "media_cv")
 }
 
 model CreditosPorTalentos {
@@ -367,9 +328,6 @@ model CreditoTalento {
   id_media_clip           Int?
   creditos_por_talentos   CreditosPorTalentos @relation(fields: [id_creditos_por_talento], references: [id], onDelete: Cascade)
   media                   Media?              @relation(fields: [id_media_clip], references: [id], map: "creditos_talento")
-
-  @@index([id_creditos_por_talento], map: "CreditoTalento_id_creditos_por_talento_fkey")
-  @@index([id_media_clip], map: "creditos_talento")
 }
 
 model HabilidadesPorTalentos {
@@ -380,10 +338,6 @@ model HabilidadesPorTalentos {
   habilidad_especifica    CatalogoHabilidadesEspecificas @relation(fields: [id_habilidad_especifica], references: [id], onDelete: Cascade)
   habilidad               CatalogoHabilidades            @relation(fields: [id_habilidad], references: [id], onDelete: Cascade)
   talento                 Talentos                       @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-
-  @@index([id_habilidad_especifica], map: "HabilidadesPorTalentos_id_habilidad_especifica_fkey")
-  @@index([id_habilidad], map: "HabilidadesPorTalentos_id_habilidad_fkey")
-  @@index([id_talento], map: "HabilidadesPorTalentos_id_talento_fkey")
 }
 
 model UnionPorInfoBasicaTalento {
@@ -393,8 +347,6 @@ model UnionPorInfoBasicaTalento {
   id_info_basica_por_talentos Int                   @unique
   info_basica_por_talentos    InfoBasicaPorTalentos @relation(fields: [id_info_basica_por_talentos], references: [id], onDelete: Cascade)
   union                       CatalogoUniones       @relation(fields: [id_union], references: [id])
-
-  @@index([id_union], map: "UnionPorInfoBasicaTalento_id_union_fkey")
 }
 
 model CatalogoUniones {
@@ -412,8 +364,6 @@ model RedesSocialesPorTalentos {
   url        String
   id_talento Int
   talento    Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-
-  @@index([id_talento], map: "RedesSocialesPorTalentos_id_talento_fkey")
 }
 
 model RedesSocialesPorCazatalentos {
@@ -422,8 +372,6 @@ model RedesSocialesPorCazatalentos {
   url             String
   id_cazatalentos Int
   cazatalentos    Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
-
-  @@index([id_cazatalentos], map: "RedesSocialesPorCazatalentos_id_cazatalentos_fkey")
 }
 
 model RedesSocialesPorRepresentante {
@@ -432,8 +380,6 @@ model RedesSocialesPorRepresentante {
   url              String
   id_representante Int
   representante    Representante @relation(fields: [id_representante], references: [id], onDelete: Cascade)
-
-  @@index([id_representante], map: "RedesSocialesPorRepresentante_id_representante_fkey")
 }
 
 model Administradores {
@@ -471,11 +417,6 @@ model Proyecto {
   rol                   Roles[]
   sindicato             SindicatoPorProyecto?
   tipo                  TipoProyectoPorProyecto?
-
-  @@index([id_cazatalentos], map: "Proyecto_id_cazatalentos_fkey")
-  @@index([id_estado_republica], map: "Proyecto_id_estado_republica_fkey")
-  @@index([id_archivo_media], map: "media_archivo")
-  @@index([id_foto_portada_media], map: "media_foto_portada")
 }
 
 model AplicacionRolPorTalento {
@@ -489,11 +430,6 @@ model AplicacionRolPorTalento {
   rol                  Roles                            @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   talento              Talentos                         @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   estado_republica     CatalogoEstadosRepublica         @relation(fields: [id_ubicacion], references: [id])
-
-  @@index([id_estado_aplicacion], map: "AplicacionRolPorTalento_id_estado_aplicacion_fkey")
-  @@index([id_rol], map: "AplicacionRolPorTalento_id_rol_fkey")
-  @@index([id_talento], map: "AplicacionRolPorTalento_id_talento_fkey")
-  @@index([id_ubicacion], map: "AplicacionRolPorTalento_id_ubicacion_fkey")
 }
 
 model NotasTalentos {
@@ -503,9 +439,6 @@ model NotasTalentos {
   id_cazatalentos Int
   cazatlentos     Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-
-  @@index([id_cazatalentos], map: "NotasTalentos_id_cazatalentos_fkey")
-  @@index([id_talento], map: "NotasTalentos_id_talento_fkey")
 }
 
 model TalentosDestacados {
@@ -515,8 +448,6 @@ model TalentosDestacados {
   id_cazatalentos Int
   cazatalentos    Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-
-  @@index([id_cazatalentos], map: "TalentosDestacados_id_cazatalentos_fkey")
 }
 
 model ReporteTalentos {
@@ -528,10 +459,6 @@ model ReporteTalentos {
   cazatlentos     Cazatalentos                 @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos                     @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   reporte         CatalogoTiposReportesTalento @relation(fields: [id_tipo_reporte], references: [id], onDelete: Cascade)
-
-  @@index([id_cazatalentos], map: "ReporteTalentos_id_cazatalentos_fkey")
-  @@index([id_talento], map: "ReporteTalentos_id_talento_fkey")
-  @@index([id_tipo_reporte], map: "ReporteTalentos_id_tipo_reporte_fkey")
 }
 
 model AudicionTalento {
@@ -543,9 +470,6 @@ model AudicionTalento {
   fecha_audicion DateTime
   rol            Roles    @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   talento        Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
-
-  @@index([id_rol], map: "AudicionTalento_id_rol_fkey")
-  @@index([id_talento], map: "AudicionTalento_id_talento_fkey")
 }
 
 model CatalogoTiposReportesTalento {
@@ -573,8 +497,6 @@ model Banners {
   type             String
   identificador    String
   content          Media   @relation(fields: [id_media_content], references: [id])
-
-  @@index([id_media_content], map: "Banners_id_media_content_fkey")
 }
 
 model TipoProyectoPorProyecto {
@@ -584,8 +506,6 @@ model TipoProyectoPorProyecto {
   descripcion      String
   proyecto         Proyecto              @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   tipo_proyecto    CatalogoTipoProyectos @relation(fields: [id_tipo_proyecto], references: [id])
-
-  @@index([id_tipo_proyecto], map: "TipoProyectoPorProyecto_id_tipo_proyecto_fkey")
 }
 
 model SindicatoPorProyecto {
@@ -595,8 +515,6 @@ model SindicatoPorProyecto {
   descripcion  String
   proyecto     Proyecto        @relation(fields: [id_proyecto], references: [id], onDelete: Cascade)
   sindicato    CatalogoUniones @relation(fields: [id_sindicato], references: [id])
-
-  @@index([id_sindicato], map: "SindicatoPorProyecto_id_sindicato_fkey")
 }
 
 model CatalogoTipoProyectos {
@@ -635,13 +553,6 @@ model Roles {
   lineas                   Media?                    @relation("media_lineas", fields: [id_media_lineas], references: [id], map: "media_lineas")
   selftape                 SelftapePorRoles?
   tipo_trabajos            TipoTrabajoPorRoles[]
-
-  @@index([id_color_cabello], map: "Roles_id_color_cabello_fkey")
-  @@index([id_color_ojos], map: "Roles_id_color_ojos_fkey")
-  @@index([id_proyecto], map: "Roles_id_proyecto_fkey")
-  @@index([id_tipo_rol], map: "Roles_id_tipo_rol_fkey")
-  @@index([id_media_foto_referencia], map: "media_foto_referencia")
-  @@index([id_media_lineas], map: "media_lineas")
 }
 
 model TipoTrabajoPorRoles {
@@ -650,9 +561,6 @@ model TipoTrabajoPorRoles {
   id_tipo_trabajo Int
   rol             Roles               @relation(fields: [id_rol], references: [id], onDelete: Cascade)
   tipo_trabajo    CatalogoTipoTrabajo @relation(fields: [id_tipo_trabajo], references: [id])
-
-  @@index([id_rol], map: "TipoTrabajoPorRoles_id_rol_fkey")
-  @@index([id_tipo_trabajo], map: "TipoTrabajoPorRoles_id_tipo_trabajo_fkey")
 }
 
 model SelftapePorRoles {
@@ -663,8 +571,6 @@ model SelftapePorRoles {
   id_media_lineas Int?
   lineas          Media?  @relation(fields: [id_media_lineas], references: [id])
   rol             Roles   @relation(fields: [id_rol], references: [id], onDelete: Cascade)
-
-  @@index([id_media_lineas], map: "SelftapePorRoles_id_media_lineas_fkey")
 }
 
 model CatalogoTiposRoles {
@@ -696,9 +602,6 @@ model HabilidadesSelecPorRoles {
   id_habilidad           Int
   habilidad              CatalogoHabilidades @relation(fields: [id_habilidad], references: [id])
   habilidad_por_rol      HabilidadesPorRoles @relation(fields: [id_habilidades_por_rol], references: [id], onDelete: Cascade)
-
-  @@index([id_habilidad], map: "HabilidadesSelecPorRoles_id_habilidad_fkey")
-  @@index([id_habilidades_por_rol], map: "HabilidadesSelecPorRoles_id_habilidades_por_rol_fkey")
 }
 
 model CatalogoHabilidades {
@@ -717,8 +620,6 @@ model CatalogoHabilidadesEspecificas {
   es                     String
   habilidad              CatalogoHabilidades      @relation(fields: [id_habilidad], references: [id])
   HabilidadesPorTalentos HabilidadesPorTalentos[]
-
-  @@index([id_habilidad], map: "CatalogoHabilidadesEspecificas_id_habilidad_fkey")
 }
 
 model NSFWPorRoles {
@@ -735,9 +636,6 @@ model NSFWSeleccionadosPorRoles {
   id_nsfw_por_rol Int
   nsfw            CatalogoNSFW @relation(fields: [id_nsfw], references: [id])
   nsfw_por_rol    NSFWPorRoles @relation(fields: [id_nsfw_por_rol], references: [id], onDelete: Cascade)
-
-  @@index([id_nsfw], map: "NSFWSeleccionadosPorRoles_id_nsfw_fkey")
-  @@index([id_nsfw_por_rol], map: "NSFWSeleccionadosPorRoles_id_nsfw_por_rol_fkey")
 }
 
 model CatalogoNSFW {
@@ -767,8 +665,6 @@ model FiltrosDemoPorRoles {
   pais                CatalogoPaises              @relation(fields: [id_pais], references: [id])
   rol                 Roles                       @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "filtros")
   generos             GenerosPorRoles[]
-
-  @@index([id_pais], map: "FiltrosDemoPorRoles_id_pais_fkey")
 }
 
 model AnimalPorRoles {
@@ -779,8 +675,6 @@ model AnimalPorRoles {
   id_filtro_demo_por_rol Int                 @unique
   animal                 CatalogoTipoMascota @relation(fields: [id_animal], references: [id])
   filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
-
-  @@index([id_animal], map: "AnimalPorRoles_id_animal_fkey")
 }
 
 model AparenciasEtnicasPorRoles {
@@ -789,9 +683,6 @@ model AparenciasEtnicasPorRoles {
   id_filtro_demo_por_rol Int
   aparencia_etnica       CatalogoAparenciasEtnicas @relation(fields: [id_aparencia_etnica], references: [id])
   filtros_demograficos   FiltrosDemoPorRoles       @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
-
-  @@index([id_aparencia_etnica], map: "AparenciasEtnicasPorRoles_id_aparencia_etnica_fkey")
-  @@index([id_filtro_demo_por_rol], map: "AparenciasEtnicasPorRoles_id_filtro_demo_por_rol_fkey")
 }
 
 model CatalogoAparenciasEtnicas {
@@ -808,9 +699,6 @@ model GenerosPorRoles {
   id_filtro_demo_por_rol Int
   filtros_demograficos   FiltrosDemoPorRoles @relation(fields: [id_filtro_demo_por_rol], references: [id], onDelete: Cascade)
   genero                 CatalogoGeneros     @relation(fields: [id_genero], references: [id])
-
-  @@index([id_filtro_demo_por_rol], map: "GenerosPorRoles_id_filtro_demo_por_rol_fkey")
-  @@index([id_genero], map: "GenerosPorRoles_id_genero_fkey")
 }
 
 model CatalogoGeneros {
@@ -847,9 +735,6 @@ model CompNoMonetariasPorRoles {
   id_comp_por_rol          Int
   compensaciones_por_rol   CompensacionesPorRoles @relation(fields: [id_comp_por_rol], references: [id], onDelete: Cascade)
   compensacion             CatalogosCompNoMones   @relation(fields: [id_compensacion], references: [id])
-
-  @@index([id_comp_por_rol], map: "CompNoMonetariasPorRoles_id_comp_por_rol_fkey")
-  @@index([id_compensacion], map: "CompNoMonetariasPorRoles_id_compensacion_fkey")
 }
 
 model SueldosPorRoles {
@@ -891,9 +776,6 @@ model MediaPorTalentos {
   id_media   Int
   talento    Talentos @relation(fields: [id_talento], references: [id], onDelete: Cascade)
   media      Media    @relation(fields: [id_media], references: [id], onDelete: Cascade, map: "media_por_talento")
-
-  @@index([id_talento], map: "MediaPorTalentos_id_talento_fkey")
-  @@index([id_media], map: "media_por_talento")
 }
 
 model RequisitosPorRoles {
@@ -909,10 +791,6 @@ model RequisitosPorRoles {
   idioma                 CatalogoIdiomas            @relation(fields: [id_idioma], references: [id])
   uso_horario            CatalogoTipoUsosHorario    @relation(fields: [id_uso_horario], references: [id])
   rol                    Roles                      @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "requisitos")
-
-  @@index([id_estado_republica], map: "RequisitosPorRoles_id_estado_republica_fkey")
-  @@index([id_idioma], map: "RequisitosPorRoles_id_idioma_fkey")
-  @@index([id_uso_horario], map: "RequisitosPorRoles_id_uso_horario_fkey")
 }
 
 model CatalogoIdiomas {
@@ -943,9 +821,6 @@ model MediosMultimediaPorRoles {
   id_medio_multimedia     Int
   medio_multimedia        CatalogoMediosMultimedia @relation(fields: [id_medio_multimedia], references: [id])
   requisitos_por_rol      RequisitosPorRoles       @relation(fields: [id_requisitos_por_roles], references: [id])
-
-  @@index([id_medio_multimedia], map: "MediosMultimediaPorRoles_id_medio_multimedia_fkey")
-  @@index([id_requisitos_por_roles], map: "MediosMultimediaPorRoles_id_requisitos_por_roles_fkey")
 }
 
 model CatalogoMediosMultimedia {
@@ -963,9 +838,6 @@ model CastingPorRoles {
   id_estado_republica Int
   estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   rol                 Roles                    @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "casting")
-
-  @@index([id_estado_republica], map: "CastingPorRoles_id_estado_republica_fkey")
-  @@index([id_rol], map: "casting")
 }
 
 model FilmacionPorRoles {
@@ -976,9 +848,6 @@ model FilmacionPorRoles {
   id_estado_republica Int
   estado_republica    CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   rol                 Roles                    @relation(fields: [id_rol], references: [id], onDelete: Cascade, map: "filmacion")
-
-  @@index([id_estado_republica], map: "FilmacionPorRoles_id_estado_republica_fkey")
-  @@index([id_rol], map: "filmacion")
 }
 
 model CatalogoTipoVehiculos {
@@ -1017,8 +886,6 @@ model CatalogoTipoVestuarioEspecifico {
   en                String
   tipo_vestuario    CatalogoTipoVestuario @relation(fields: [id_tipo_vestuario], references: [id], onDelete: Cascade)
   vestuario_talento VestuarioTalento[]
-
-  @@index([id_tipo_vestuario], map: "CatalogoTipoVestuarioEspecifico_id_tipo_vestuario_fkey")
 }
 
 model CatalogoTipoProps {
@@ -1063,14 +930,6 @@ model FiltrosAparenciasPorTalentos {
   piercings                                 PiercingsPorTalentos[]
   tatuajes                                  TatuajesPorTalentos[]
   hermanos                                  TipoHermanosPorTalento?
-
-  @@index([id_apariencia_etnica], map: "FiltrosAparenciasPorTalentos_id_apariencia_etnica_fkey")
-  @@index([id_color_cabello], map: "FiltrosAparenciasPorTalentos_id_color_cabello_fkey")
-  @@index([id_color_ojos], map: "FiltrosAparenciasPorTalentos_id_color_ojos_fkey")
-  @@index([id_estilo_cabello], map: "FiltrosAparenciasPorTalentos_id_estilo_cabello_fkey")
-  @@index([id_genero], map: "FiltrosAparenciasPorTalentos_id_genero_fkey")
-  @@index([id_pais], map: "FiltrosAparenciasPorTalentos_id_pais_fkey")
-  @@index([id_vello_facial], map: "FiltrosAparenciasPorTalentos_id_vello_facial_fkey")
 }
 
 model ParticularidadesPorTalentos {
@@ -1080,9 +939,6 @@ model ParticularidadesPorTalentos {
   descripcion                         String
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
   particularidad                      CatalogoParticularidades     @relation(fields: [id_particularidad], references: [id])
-
-  @@index([id_filtros_apariencias_por_talentos], map: "ParticularidadesPorTalentos_id_filtros_apariencias_por_tale_fkey")
-  @@index([id_particularidad], map: "ParticularidadesPorTalentos_id_particularidad_fkey")
 }
 
 model PiercingsPorTalentos {
@@ -1092,9 +948,6 @@ model PiercingsPorTalentos {
   descripcion                         String
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
   piercing                            CatalogoTiposPiercings       @relation(fields: [id_tipo_piercing], references: [id])
-
-  @@index([id_filtros_apariencias_por_talentos], map: "PiercingsPorTalentos_id_filtros_apariencias_por_talentos_fkey")
-  @@index([id_tipo_piercing], map: "PiercingsPorTalentos_id_tipo_piercing_fkey")
 }
 
 model TipoHermanosPorTalento {
@@ -1125,9 +978,6 @@ model TatuajesPorTalentos {
   id_tipo_tatuaje                     Int
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
   tipo_tatuaje                        CatalogoTiposTatuajes        @relation(fields: [id_tipo_tatuaje], references: [id])
-
-  @@index([id_filtros_apariencias_por_talentos], map: "TatuajesPorTalentos_id_filtros_apariencias_por_talentos_fkey")
-  @@index([id_tipo_tatuaje], map: "TatuajesPorTalentos_id_tipo_tatuaje_fkey")
 }
 
 model GenerosInteresadosEnInterpretarPorTalentos {
@@ -1136,9 +986,6 @@ model GenerosInteresadosEnInterpretarPorTalentos {
   id_genero                           Int
   filtros_apariencias                 FiltrosAparenciasPorTalentos @relation(fields: [id_filtros_apariencias_por_talentos], references: [id])
   genero                              CatalogoGeneros              @relation(fields: [id_genero], references: [id])
-
-  @@index([id_filtros_apariencias_por_talentos], map: "GenerosInteresadosEnInterpretarPorTalentos_id_filtros_apari_fkey")
-  @@index([id_genero], map: "GenerosInteresadosEnInterpretarPorTalentos_id_genero_fkey")
 }
 
 model PreferenciasPorTalentos {
@@ -1162,8 +1009,6 @@ model OtrasProfesionesPorTalentos {
   id_preferencias_por_talentos Int
   descripcion                  String
   preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
-
-  @@index([id_preferencias_por_talentos], map: "OtrasProfesionesPorTalentos_id_preferencias_por_talentos_fkey")
 }
 
 model DisponibilidadesPorTalentos {
@@ -1172,9 +1017,6 @@ model DisponibilidadesPorTalentos {
   id_disponibilidad            Int
   disponibilidad               CatalogoTipoDisponibilidad @relation(fields: [id_disponibilidad], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos    @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
-
-  @@index([id_disponibilidad], map: "DisponibilidadesPorTalentos_id_disponibilidad_fkey")
-  @@index([id_preferencias_por_talentos], map: "DisponibilidadesPorTalentos_id_preferencias_por_talentos_fkey")
 }
 
 model DocumentosPorTalentos {
@@ -1184,9 +1026,6 @@ model DocumentosPorTalentos {
   descripcion                  String
   documento                    CatalogoTipoDocumentos  @relation(fields: [id_documento], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
-
-  @@index([id_documento], map: "DocumentosPorTalentos_id_documento_fkey")
-  @@index([id_preferencias_por_talentos], map: "DocumentosPorTalentos_id_preferencias_por_talentos_fkey")
 }
 
 model LocacionesPrerenciasPorTalentos {
@@ -1196,9 +1035,6 @@ model LocacionesPrerenciasPorTalentos {
   id_estado_republica          Int
   estado_republica             CatalogoEstadosRepublica @relation(fields: [id_estado_republica], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos  @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
-
-  @@index([id_estado_republica], map: "LocacionesPrerenciasPorTalentos_id_estado_republica_fkey")
-  @@index([id_preferencias_por_talentos], map: "LocacionesPrerenciasPorTalentos_id_preferencias_por_talento_fkey")
 }
 
 model InteresEnProyectosPorTalentos {
@@ -1207,9 +1043,6 @@ model InteresEnProyectosPorTalentos {
   id_interes_en_proyecto       Int
   intereses_en_proyectos       CatalogoTipoInteresProyectos @relation(fields: [id_interes_en_proyecto], references: [id])
   preferencias_por_talentos    PreferenciasPorTalentos      @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
-
-  @@index([id_interes_en_proyecto], map: "InteresEnProyectosPorTalentos_id_interes_en_proyecto_fkey")
-  @@index([id_preferencias_por_talentos], map: "InteresEnProyectosPorTalentos_id_preferencias_por_talentos_fkey")
 }
 
 model TiposDeTrabajoPorTalentos {
@@ -1218,9 +1051,6 @@ model TiposDeTrabajoPorTalentos {
   id_tipo_de_trabajo           Int
   preferencias_por_talentos    PreferenciasPorTalentos @relation(fields: [id_preferencias_por_talentos], references: [id], onDelete: Cascade)
   tipos_de_trabajo             CatalogoTipoTrabajo     @relation(fields: [id_tipo_de_trabajo], references: [id])
-
-  @@index([id_preferencias_por_talentos], map: "TiposDeTrabajoPorTalentos_id_preferencias_por_talentos_fkey")
-  @@index([id_tipo_de_trabajo], map: "TiposDeTrabajoPorTalentos_id_tipo_de_trabajo_fkey")
 }
 
 model ActivosPorTalentos {
@@ -1244,9 +1074,6 @@ model VehiculoTalento {
   anio                 Int
   activos_por_talentos ActivosPorTalentos    @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   tipo_vehiculo        CatalogoTipoVehiculos @relation(fields: [id_tipo_vehiculo], references: [id])
-
-  @@index([id_activos_talentos], map: "VehiculoTalento_id_activos_talentos_fkey")
-  @@index([id_tipo_vehiculo], map: "VehiculoTalento_id_tipo_vehiculo_fkey")
 }
 
 model MascotaTalento {
@@ -1258,10 +1085,6 @@ model MascotaTalento {
   activos_por_talentos ActivosPorTalentos   @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   raza_mascota         CatalogoRazaMascota? @relation(fields: [id_raza], references: [id])
   tipo_mascota         CatalogoTipoMascota  @relation(fields: [id_tipo_mascota], references: [id])
-
-  @@index([id_activos_talentos], map: "MascotaTalento_id_activos_talentos_fkey")
-  @@index([id_raza], map: "MascotaTalento_id_raza_fkey")
-  @@index([id_tipo_mascota], map: "MascotaTalento_id_tipo_mascota_fkey")
 }
 
 model VestuarioTalento {
@@ -1271,9 +1094,6 @@ model VestuarioTalento {
   id_tipo_vestuario_especifico Int
   activos_por_talentos         ActivosPorTalentos              @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   tipo_vestuario_especifico    CatalogoTipoVestuarioEspecifico @relation(fields: [id_tipo_vestuario_especifico], references: [id])
-
-  @@index([id_activos_talentos], map: "VestuarioTalento_id_activos_talentos_fkey")
-  @@index([id_tipo_vestuario_especifico], map: "VestuarioTalento_id_tipo_vestuario_especifico_fkey")
 }
 
 model PropsTalento {
@@ -1283,9 +1103,6 @@ model PropsTalento {
   descripcion          String
   activos_por_talentos ActivosPorTalentos @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   tipo_props           CatalogoTipoProps  @relation(fields: [id_tipo_props], references: [id])
-
-  @@index([id_activos_talentos], map: "PropsTalento_id_activos_talentos_fkey")
-  @@index([id_tipo_props], map: "PropsTalento_id_tipo_props_fkey")
 }
 
 model EquipoDeportivoTalento {
@@ -1295,9 +1112,6 @@ model EquipoDeportivoTalento {
   descripcion              String
   activos_por_talentos     ActivosPorTalentos          @relation(fields: [id_activos_talentos], references: [id], onDelete: Cascade)
   tipo_equipo_deportivo    CatalogoTipoEquipoDeportivo @relation(fields: [id_tipo_equipo_deportivo], references: [id])
-
-  @@index([id_activos_talentos], map: "EquipoDeportivoTalento_id_activos_talentos_fkey")
-  @@index([id_tipo_equipo_deportivo], map: "EquipoDeportivoTalento_id_tipo_equipo_deportivo_fkey")
 }
 
 model CatalogoTiposTatuajes {
