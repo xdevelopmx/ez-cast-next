@@ -391,6 +391,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                         }}
                         id="documentos-checkbox"
                         labelStyle={{ marginBottom: 0 }}
+                        titleStyle={{paddingBottom: '10px'}}
+                        style={{padding: '4px'}}
                         fontWeight={400}
                         options={(tipos_documentos.data) ? tipos_documentos.data.map(t => es_ingles ? t.en : t.es) : []}
                         values={(tipos_documentos.data) ? tipos_documentos.data.map(v => state.documentos.map(documento => documento.id_documento).includes(v.id)) : [false]}//[(state) ? state.mostrar_anio_en_perfil : false]}
