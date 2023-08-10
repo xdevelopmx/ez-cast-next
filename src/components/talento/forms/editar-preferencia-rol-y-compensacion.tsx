@@ -78,8 +78,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <Alert severity="info" icon={false} sx={{ textAlign: 'center', justifyContent: 'center' }}>
+            <Grid item xs={12} style={{paddingTop:0}}>
+                <Alert severity="info" icon={false} sx={{ textAlign: 'center', justifyContent: 'center', padding: '0px 16px', }}>
                     {textos['preferencias_rol_alerta'] ? textos['preferencias_rol_alerta'] : 'Texto No Definido'}
                 </Alert>
             </Grid>
@@ -110,6 +110,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                     }}
                     id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
+                    style={{padding: '4px'}}
                     options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => es_ingles ? t.en : t.es) : []}
                     values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
@@ -268,7 +269,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({ onFormChan
                                                 borderRadius: 8,
                                                 width: 200,
                                                 textAlign: 'center',
-                                                backgroundColor: locacion.es_principal ? '#0ab2c8' : '#AAE2E9',
+                                                backgroundColor: '#0ab2c8',
                                                 padding: '5px 10px',
                                                 color: 'white'
                                             }}

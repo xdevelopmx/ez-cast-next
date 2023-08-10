@@ -67,13 +67,14 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({ onFor
                                         onFormChange({ habilidades_seleccionadas: new Map(state.habilidades_seleccionadas) });
                                     }
                                 }}
-                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: '#f2f2f2' }} /> : <Add style={{ color: '#069cb1' }} />}
+                                icon={(habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? <Remove style={{ color: '#f2f2f2', marginRight:'0px', marginLeft:'4px' }} /> : <Add style={{ color: '#069cb1', marginRight:'0px', marginLeft:'4px'  }} />}
                                 key={j}
                                 label={(ctx.lang === 'es') ? he.es : he.en}
                                 style={{
                                     margin: 4,
                                     fontWeight: 800,
                                     borderRadius: 10,
+                                    flexDirection:'row-reverse',
                                     color: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#f2f2f2' : '#069cb1',
                                     borderColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? 'none' : '#069cb1',
                                     backgroundColor: (habilidades_especificas_seleccionadas_by_id && habilidades_especificas_seleccionadas_by_id.includes(he.id)) ? '#069cb1' : 'white'
