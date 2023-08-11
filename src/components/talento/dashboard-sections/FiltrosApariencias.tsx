@@ -1,12 +1,8 @@
-import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, Link, Skeleton, TextField, Typography } from "@mui/material";
+import { Divider, Grid, Link, Skeleton, TextField, Typography } from "@mui/material";
 import { useContext, useMemo, useState } from 'react';
-import { MContainer } from "~/components/layout/MContainer";
-import Image from 'next/image';
 import { SectionTitle } from "~/components/shared";
-import { MTable } from "~/components/shared/MTable/MTable";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
-import MotionDiv from "~/components/layout/MotionDiv";
 import { MedidasDialog } from "../dialogs/MedidasDialog";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";

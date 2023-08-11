@@ -4,16 +4,14 @@ import { Alertas, Flotantes, MainLayout, Mensajes, MenuLateral, RolCompletoPrevi
 import Head from 'next/head'
 import { type User } from "next-auth";
 import { getSession } from "next-auth/react";
-import { TipoConversaciones, TipoMensajes, TipoUsuario } from '~/enums';
+import {  TipoMensajes, TipoUsuario } from '~/enums';
 import Constants from '~/constants';
 import { api, parseErrorBody } from '~/utils/api';
-import { Box, Button, ButtonGroup, Dialog, DialogContent, DialogTitle, Grid, Link, Skeleton, TextField, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Link, Skeleton, TextField, Typography } from '@mui/material'
 import Image from 'next/image'
-import { ConfirmacionDialog } from '~/components/shared/Mensajes/ConfirmacionDialog';
 import { PreviewConversation } from '~/components/shared/Mensajes/PreviewConversation';
 import { MediaMessage, Message, MessageNotificacionHorario } from '~/components/shared/Mensajes/Message';
 import { Conversaciones, Proyecto } from '@prisma/client';
-import { string } from 'zod';
 import useNotify from '~/hooks/useNotify';
 import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader';
 import { RolPreview } from '~/components/shared/RolPreview';
