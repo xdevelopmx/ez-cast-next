@@ -81,8 +81,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
 
     return (
         <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <Alert severity="info" icon={false} sx={{ textAlign: 'center', justifyContent: 'center' }}>
+            <Grid item xs={12} style={{paddingTop:'5px'}}>
+                <Alert severity="info" icon={false} sx={{ textAlign: 'center', justifyContent: 'center', padding:'0px' }}>
                     {textos['filtros_apariencia_alerta'] ? textos['filtros_apariencia_alerta'] : 'Texto No Definido'}
                 </Alert>
             </Grid>
@@ -91,7 +91,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                     <Typography fontSize={'1.2rem'} fontWeight={600} component={'p'}>
                         {textos['rango_de_edad_a_interpretar'] ? textos['rango_de_edad_a_interpretar'] : 'Texto No Definido'}
                     </Typography>
-                    <MContainer direction='horizontal' styles={{ gap: 40 }}>
+                    <MContainer direction='horizontal' styles={{ gap: 40, alignItems:'center' }}>
                         <FormGroup
                             className={'form-input-md'}
                             labelClassName={'form-input-label'}
@@ -127,12 +127,12 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 </MContainer>
             </Grid>
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '10px', marginBottom:'10px'}}>
                 <Divider />
             </Grid>
 
             <Grid item xs={12}>
-                <MContainer direction='horizontal' styles={{ gap: 40 }}>
+                <MContainer direction='horizontal' styles={{ gap: 30 }}>
                     <MSelect
                         label={textos['se_identifica_como'] ? textos['se_identifica_como'] : 'Texto No Definido'}
                         loading={is_loading}
@@ -182,7 +182,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 </MContainer>
             </Grid>
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '15px', marginBottom:'15px'}}>
                 <Divider />
             </Grid>
 
@@ -226,7 +226,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 </MContainer>
             </Grid>
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '15px', marginBottom:'15px'}}>
                 <Divider />
             </Grid>
 
@@ -408,7 +408,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
             </Grid>
 
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '15px', marginBottom:'15px'}}>
                 <Divider />
             </Grid>
 
@@ -490,7 +490,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 </MContainer>
             </Grid>
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '15px', marginBottom:'15px'}}>
                 <Divider />
             </Grid>
 
@@ -575,7 +575,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 </MContainer>
             </Grid>
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '15px', marginBottom:'15px'}}>
                 <Divider />
             </Grid>
 
@@ -641,7 +641,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                 </MContainer>
             </Grid>
 
-            <Grid my={4} item xs={12}>
+            <Grid my={4} item xs={12} style={{paddingTop:'0px', marginTop: '15px', marginBottom:'15px'}}>
                 <Divider />
             </Grid>
 

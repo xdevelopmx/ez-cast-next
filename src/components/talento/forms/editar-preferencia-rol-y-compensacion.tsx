@@ -685,7 +685,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
 
       <Grid item xs={12}>
         <MContainer direction="vertical">
-          <Typography fontSize={"1.2rem"} fontWeight={600} component={"p"}>
+          <Typography fontSize={"1.2rem"} fontWeight={600} component={"p"} style={{paddingBottom: '8px'}}>
             {textos["disponibilidad_para"]
               ? textos["disponibilidad_para"]
               : "Texto No Definido"}
@@ -721,6 +721,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             }}
             id="disponibilidad-para-checkboxgroup"
             labelStyle={{ marginBottom: 0, width: "32%" }}
+            titleStyle={{ paddingBottom: "15px", fontWeight:500 }}
+            style={{ padding: "6px" }}
             options={
               tipos_disponibilidad.data
                 ? tipos_disponibilidad.data.map((t) =>
