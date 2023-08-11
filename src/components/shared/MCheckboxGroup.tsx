@@ -111,7 +111,9 @@ export const MCheckboxGroup: FC<Props> = ({
                   : "Texto No Definido"
               }
             />
-            <Divider style={{ margin: 8 }} />
+            <Divider
+              style={{ margin: 8, borderColor: "#000", borderTopWidth: 1 }}
+            />
           </MContainer>
         </FormGroup>
       )}

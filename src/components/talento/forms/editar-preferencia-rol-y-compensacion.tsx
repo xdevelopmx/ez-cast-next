@@ -172,7 +172,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
       </Grid>
       <Grid item xs={6}>
         <MTooltip
-          sx={{ mt: 7 }}
+          sx={{ mt: 6 }}
           text={
             textos["preferencias_rol_tipo_de_trabajo_tooltip"]
               ? textos["preferencias_rol_tipo_de_trabajo_tooltip"]
@@ -685,7 +685,12 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
 
       <Grid item xs={12}>
         <MContainer direction="vertical">
-          <Typography fontSize={"1.2rem"} fontWeight={600} component={"p"} style={{paddingBottom: '8px'}}>
+          <Typography
+            fontSize={"1.2rem"}
+            fontWeight={600}
+            component={"p"}
+            style={{ paddingBottom: "8px" }}
+          >
             {textos["disponibilidad_para"]
               ? textos["disponibilidad_para"]
               : "Texto No Definido"}
@@ -721,7 +726,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             }}
             id="disponibilidad-para-checkboxgroup"
             labelStyle={{ marginBottom: 0, width: "32%" }}
-            titleStyle={{ paddingBottom: "15px", fontWeight:500 }}
+            titleStyle={{ paddingBottom: "15px", fontWeight: 500 }}
             style={{ padding: "6px" }}
             options={
               tipos_disponibilidad.data
@@ -852,27 +857,28 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
 
             <MotionDiv show={estaEmbarazada} animation="fade">
               <MContainer direction="horizontal">
-                <Typography>
-                  {textos["meses"] ? textos["meses"] : "Texto No Definido"}
-                </Typography>
-                <FormGroup
-                  rootStyle={{ margin: 0 }}
-                  type={"number"}
-                  style={{ margin: "0px 0px 0px 10px" }}
-                  className={"form-input-md"}
-                  labelClassName={"form-input-label"}
+                <MSelect
+                  loading={is_loading}
+                  id="locacion-principal-select"
+                  labelStyle={{ fontWeight: 400 }}
+                  options={Array.from({ length: 40 }).map((_, index) => ({
+                    value: `${index + 1}`,
+                    label: `Semana ${index + 1}`,
+                  }))}
+                  style={{ width: "100px !important" }}
                   value={`${state.preferencias.meses_embarazo}`}
                   onChange={(e) => {
                     onFormChange({
                       preferencias: {
                         ...state.preferencias,
                         meses_embarazo:
-                          e.currentTarget.value === ""
-                            ? 0
-                            : parseInt(e.currentTarget.value),
+                          e.target.value === "" ? 0 : parseInt(e.target.value),
                       },
                     });
                   }}
+                  label={
+                    textos["meses"] ? textos["meses"] : "Texto No Definido"
+                  }
                 />
               </MContainer>
             </MotionDiv>
