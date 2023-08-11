@@ -418,7 +418,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         {textos['tatuajes'] ? textos['tatuajes'] : 'Texto No Definido'}
                     </Typography>
                     <Typography>
-                        ¿{textos['filtros_apariencias_tatuajes_subtitulo'] ? textos['filtros_apariencias_tatuajes_subtitulo'] : 'Texto No Definido'}?
+                        {textos['filtros_apariencias_tatuajes_subtitulo'] ? textos['filtros_apariencias_tatuajes_subtitulo'] : 'Texto No Definido'}
                     </Typography>
                     <MRadioGroup
                         id="tiene-tatuajes-distintivos"
@@ -500,7 +500,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                         Piercings
                     </Typography>
                     <Typography>
-                        ¿{textos['filtros_apariencias_piercings_subtitulo'] ? textos['filtros_apariencias_piercings_subtitulo'] : 'Texto No Definido'}?
+                        {textos['filtros_apariencias_piercings_subtitulo'] ? textos['filtros_apariencias_piercings_subtitulo'] : 'Texto No Definido'}
                         
                     </Typography>
                     <MRadioGroup
@@ -551,7 +551,8 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({ onFormChange, state 
                                     notify('warning', textos['filtros_apariencias_empty_fields_piercings'] ? textos['filtros_apariencias_empty_fields_piercings'] : 'Texto No Definido')
                                 }
 
-                            }} />
+                            }}
+                             />
                             <MContainer styles={{ marginTop: 16, marginBottom: 16, gap: 10 }} direction='horizontal'>
                                 {state.piercings.map((_p, i) => {
                                     let tipo_piercing = '';

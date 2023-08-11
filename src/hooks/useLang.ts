@@ -839,10 +839,10 @@ const TEXTS_BY_PATHNAME: {
       filtros_apariencia_alerta:
         "Esto no será visible en tu perfil, pero aparecerá en las búsquedas basadas en lo que selecciones.",
       filtros_apariencias_tatuajes_subtitulo:
-        "Tienes tatuajes distintivos? Es tu oportunidad de informar a los directores de casting.",
+        "¿Tienes tatuajes distintivos? Es tu oportunidad de informar a los directores de casting.",
       filtros_apariencias_piercings_lugar: "Lugar",
       filtros_apariencias_piercings_subtitulo:
-        "Tienes algún piercing? Es tu oportunidad, hazle saber al director de casting.",
+        "¿Tienes algún piercing? Es tu oportunidad, hazle saber al director de casting.",
       filtros_apariencias_eres_gemelo_o_trillizo:
         "Eres gemelo o trillizo idéntico",
       filtros_apariencias_particularidades_subtitle:
