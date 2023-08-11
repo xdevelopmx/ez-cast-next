@@ -1,26 +1,31 @@
 import { Button, Divider } from '@mui/material';
-import type { CSSProperties, FC } from 'react'
+import { useState, type CSSProperties, type FC } from 'react'
 
 interface Props {
     id: string;
     labels: string[];
     onOptionClick: (id: string, label: string) => void;
-
     styleContainer?: CSSProperties;
     styleButton?: CSSProperties;
 }
 
 export const OptionsGroup: FC<Props> = ({ id, labels, onOptionClick, styleContainer = {}, styleButton = {} }) => {
+
+    const [seleccionado, setSeleccionado] = useState(0)
+
     return (
         <>
             <div className="form-group" style={styleContainer}>
-                {labels.filter(l => l.length > 0).map(label => {
+                {labels.filter(l => l.length > 0).map((label, index) => {
                     return <Button
                         sx={styleButton}
                         size='small'
-                        className='font-weight-bold color_a'
+                        className={`font-weight-bold color_a ${(seleccionado === index? 'seleccionado' : '')}`}
                         key={label}
-                        onClick={() => { onOptionClick(id, label) }}
+                        onClick={() => { 
+                            onOptionClick(id, label),
+                            setSeleccionado(index)
+                         }}
                         variant="text"
                     >
                         {label}

@@ -55,15 +55,15 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
     return (
         <>
             <Grid id="informacion-basica" container>
-                <Grid item xs={12} md={5} sx={{ paddingTop: 3 }}>
-                    <div style={{ position: 'relative', width: 500, aspectRatio: '500/720', maxWidth: '100%' }}>
+                <Grid item xs={12} md={5} sx={{ paddingTop: 2 }}>
+                    <div style={{ position: 'relative', width: 500, aspectRatio: '500/500', maxWidth: '100%' }}>
                         <Image fill src={(image_perfil !== '') ? image_perfil : '/assets/img/no-image.png' } style={{ objectFit: 'cover' }} alt="" />
                     </div>
                 </Grid>
-                <Grid item xs={12} md={7} sx={{ paddingTop: 8 }}>
-                    <MContainer className="ml-5" direction="vertical">
+                <Grid item xs={12} md={7} sx={{ paddingTop: 3 }}>
+                    <MContainer className="ml-3" direction="vertical">
                         <MContainer styles={{ alignItems: 'baseline' }} className={`m-1`} direction="horizontal">
-                            <p style={{ fontSize: 30, fontWeight: 900 }}>{textos['info_basica'] ? textos['info_basica'] : 'Texto No definido'}</p>
+                            <p style={{ fontSize: 32, fontWeight: 900 }}>{textos['info_basica'] ? textos['info_basica'] : 'Texto No definido'}</p>
                             <Link href={`/talento/editar-perfil?id_talento=${props.id_talento}`} variant="button">
                                 {!props.read_only &&
                                     <Button onClick={() => {
@@ -81,16 +81,16 @@ export const InfoGeneral = (props: { id_talento: number, read_only: boolean }) =
                             <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica && data.info_basica.union) ? (data.info_basica.union.id_union === 99) ? data.info_basica.union.descripcion : (ctx.lang === 'es') ? data.info_basica.union.union.es : data.info_basica.union.union.en : 'N/A'}</Typography>
                         </MContainer>
                         <MContainer className={`m-1`} direction="horizontal" styles={{ alignItems: 'center' }}>
-                            <p style={{ display: 'flex', alignItems: 'center', fontSize: '1.1rem', fontWeight: 100, margin: 0 }}><span className="badge" ><Image width={32} height={32} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>  </p>
+                            <p style={{ display: 'flex', alignItems: 'center', fontSize: '1.1rem', fontWeight: 100, margin: 0 }}><span className="badge" ><Image width={24} height={24} src="/assets/img/iconos/cart_location_blue.svg" alt="" /> </span>  </p>
                             <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (data && data.info_basica) ? (ctx.lang === 'es') ? data.info_basica.estado_republica.es : data.info_basica.estado_republica.en : 'N/A'}</Typography>
                         </MContainer>
 
                         <MContainer className={`m-1`} direction="horizontal" styles={{ alignItems: 'center' }}>
-                            <p style={{ display: 'flex', alignItems: 'center', fontSize: '1.1rem', fontWeight: 100, margin: 0 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_web_site_blue.svg" alt="" /> </span>  </p>
+                            <p style={{ display: 'flex', alignItems: 'center', fontSize: '1.1rem', fontWeight: 100, margin: 0 }}><span className="badge"><Image width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="" /> </span>  </p>
                             <Typography fontSize={'1.2rem'} fontWeight={300} variant="body1">{loading ? <Skeleton className="md-skeleton" /> : (redes_sociales['pagina_web']) ? redes_sociales['pagina_web'] : 'N/A'}</Typography>
                         </MContainer>
                         <MContainer className={`m-1`} direction='vertical' styles={{ maxHeight: 100, width: 140 }}>
-                            <p className="color_a" style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0, fontSize: '1.3rem', fontWeight: 600 }}><span className="badge"><Image width={32} height={32} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span> {textos['medidas'] ? textos['medidas'] : 'Texto No definido'} </p>
+                            <p className="color_a" style={{ display: 'flex', alignItems: 'center', margin: 0, padding: 0, fontSize: '1.3rem', fontWeight: 600 }}><span className="badge"><Image width={26} height={26} src="/assets/img/iconos/icono_regla_blue.svg" alt="" /> </span> {textos['medidas'] ? textos['medidas'] : 'Texto No definido'} </p>
                             <MContainer styles={{ height: 20 }} direction="horizontal" justify="space-between">
                                 <p className="color_a" style={{ fontSize: '1.2rem', fontWeight: 300 }}>{textos['peso'] ? textos['peso'] : 'Texto No definido'} </p>
                                 <p style={{ fontSize: '1.2rem', fontWeight: 500 }} className="ml-4">{(data && data.info_basica) ? `${data.info_basica.peso} kg` : 'N/A'}</p>

@@ -1,11 +1,11 @@
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { motion } from "framer-motion";
-
+import Image from 'next/image';
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Skeleton } from "@mui/material";
+import { Link, Skeleton } from "@mui/material";
 import {
   Activos,
   Creditos,
@@ -96,25 +96,32 @@ const DashBoardTalentosPage: NextPage<{
               )}
               {props.user && (
                 <>
-                  <div className="d-flex">
-                    <motion.img
-                      src="/assets/img/iconos/icono_head_chat.png"
-                      alt="icono"
-                    />
-                    {talento.isFetching && (
-                      <Skeleton
-                        style={{ marginLeft: 16 }}
-                        width={200}
-                        height={24}
+                  <div className="d-flex justify-content-between">
+                    <div className="d-flex">
+                      <motion.img
+                        src="/assets/img/iconos/icono_head_chat.png"
+                        alt="icono"
+                        style={{width: 40, height: 40, objectFit: 'none'}}
                       />
-                    )}
-                    {!talento.isFetching && talento.data && (
-                      <p className="h4 font-weight-bold mb-0 ml-2">
-                        <b>
-                          {talento.data.nombre} {talento.data.apellido}
-                        </b>
-                      </p>
-                    )}
+                      {talento.isFetching && (
+                        <Skeleton
+                          style={{ marginLeft: 16 }}
+                          width={200}
+                          height={24}
+                        />
+                      )}
+                      {!talento.isFetching && talento.data && (
+                        <p className="h4 font-weight-bold mb-0 ml-2">
+                          <b>
+                            {talento.data.nombre} {talento.data.apellido}
+                          </b>
+                        </p>
+                      )}
+                    </div>
+                    <div className="d-flex-column">
+                        <p className="m-0 p-0"><Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" /> Ver como Cazatalento</p>
+                        <p className="m-0 p-0"><Link href="#">Copiar link de perfil para compartir</Link></p>
+                    </div>
                   </div>
                   {props.id_talento > 0 &&
                     props.user?.tipo_usuario === TipoUsuario.REPRESENTANTE && (

@@ -181,6 +181,16 @@ a {
   width: 90%;
 }
 
+.seleccionado {
+  background-color: #069db164;
+}
+
+.d-flex-column {
+  display: flex;
+  flex-flow: column;
+  gap: 5px;
+}
+
 :root {
   --bg_color: red;
   --treehouse: #4eb106;
