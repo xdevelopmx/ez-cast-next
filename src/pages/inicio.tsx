@@ -127,6 +127,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                 style={{
                   fontWeight: "800",
                   fontSize: "25px",
+                  textTransform: "capitalize",
                 }}
               >
                 {textos["destacados"]
@@ -213,7 +214,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                 sx={{ color: "#F9B233" }}
                 fontWeight={400}
               >
-                Todavia no tienes proyectos destacados
+                Todavía no tienes proyectos destacados
               </Typography>
               <hr className="mb-5 mt-1 hr_gold" />
             </>
@@ -237,7 +238,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               ? textos["ahora_castenado_en_ezcast"]
               : "<p>Texto No definido</p>"}
           </p>
-          <hr className="hr_blue" style={{ margin: "30px 0 40px 0" }} />
+          <hr className="hr_blue" style={{ margin: "0px 0 40px 0" }} />
 
           {destacados.isLoading && (
             <Carroucel
