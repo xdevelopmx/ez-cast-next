@@ -379,7 +379,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     media: "Media",
     credito: "Crédito",
     credito_destacado: "Destacado",
-    creditos_destacados: "Destacados",
+    creditos_destacados: "Créditos destacados",
     habilidades: "Habilidades",
     habilidad: "Habilidad",
     medidas: "Medidas",

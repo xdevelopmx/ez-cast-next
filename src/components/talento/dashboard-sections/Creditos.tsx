@@ -89,7 +89,7 @@ export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
                                 rol: credito.rol,
                                 director: credito.director,
                                 anio: credito.anio,
-                                clip: (!credito.media) ? <></> : <MContainer direction="horizontal" justify='center'>
+                                clip: (!credito.media) ? <></> : <MContainer direction="horizontal" justify='center' styles={{alignItems:'center'}}>
                                 <IconButton onClick={() => {
                                     if (credito.media) {
                                         setDialog({open: true, name: credito.media.nombre, url: credito.media.url})

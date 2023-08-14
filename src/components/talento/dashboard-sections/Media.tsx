@@ -76,13 +76,13 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
             </Grid>
             <Grid item xs={12}>
                 <MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px', justifyContent: 'space-between' }}>
-                    <MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
+                    <MContainer direction='horizontal' styles={{ alignItems: 'initial' }}>
                         <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
-                        <Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>{textos['galeria_imagenes'] ? textos['galeria_imagenes'].toUpperCase() : 'Texto No definido'}</Typography>
+                        <Typography sx={{ color: '#069CB1', pl: 1, fontSize:'22px' }} fontWeight={900}>{textos['galeria_imagenes'] ? textos['galeria_imagenes'].toUpperCase() : 'Texto No definido'}</Typography>
                     </MContainer>
                     {!props.read_only &&
                         <AddButton
-                            aStyles={{ margin: 0 }}
+                            aStyles={{ margin: 0, borderRadius:'50px', width:'170px' }}
                             onClick={() => {
                                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                                 router.push('/talento/editar-perfil?step=2')
@@ -92,7 +92,7 @@ export const Media = (props: { id_talento: number, read_only: boolean }) => {
                     }
                 </MContainer>
                 {media && media.fotos.map((image, i) => {
-                    return <Image key={i} width={191} height={217} src={image.url} alt="" /> 
+                    return <Image key={i} width={191} height={240} style={{border:'1px solid #000000'}} src={image.url} alt="" /> 
                 })}
                 {!media || media.fotos.length === 0 &&
                     <Typography fontSize={'1.5rem'} sx={{ color: '#F9B233' }} fontWeight={400}>{textos['usuario_no_ha_capturado'] ? textos['usuario_no_ha_capturado'].replace('[TYPE]', `${textos['imagen']}`) : 'Texto No definido'}</Typography>

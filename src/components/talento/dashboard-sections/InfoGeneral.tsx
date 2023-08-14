@@ -488,7 +488,7 @@ export const InfoGeneral = (props: {
                                   accion: !c.media ? (
                                     <></>
                                   ) : (
-                                    <MContainer direction="horizontal">
+                                    <MContainer direction="horizontal" styles={{alignItems:'center'}}>
                                       <IconButton
                                         onClick={() => {
                                           if (c.media) {
