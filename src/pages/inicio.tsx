@@ -224,6 +224,9 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               show_only_media
               width={container_ref.current.getBoundingClientRect().width}
               height={422}
+              imageStyles={{
+                width: "100%",
+              }}
               identificador="banner-cartelera-proyectos-1"
             />
           )}

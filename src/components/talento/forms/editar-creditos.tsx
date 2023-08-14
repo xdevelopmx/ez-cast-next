@@ -18,6 +18,7 @@ interface Props {
   state: TalentoFormCreditos;
   onFormChange: (input: { [id: string]: unknown }) => void;
   resetCredits: () => void;
+  handleCreditos?: () => Promise<void>;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -35,6 +36,7 @@ export const EditarCreditosTalento: FC<Props> = ({
   onFormChange,
   state,
   resetCredits,
+  handleCreditos,
 }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -163,7 +165,13 @@ export const EditarCreditosTalento: FC<Props> = ({
                       },
                     ]),
                   });
-                  resetCredits();
+                  if (handleCreditos) {
+                    handleCreditos()
+                      .then(() => {
+                        resetCredits();
+                      })
+                      .catch((err) => console.log(err));
+                  }
                 } else {
                   notify(
                     "warning",

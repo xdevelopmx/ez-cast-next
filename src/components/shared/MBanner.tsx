@@ -1,5 +1,5 @@
 import { type SxProps, Typography, Box, Skeleton, Button } from "@mui/material";
-import { useMemo, type FC } from "react";
+import { useMemo, type FC, type CSSProperties } from "react";
 import Image from "next/image";
 import { api } from "~/utils/api";
 
@@ -9,6 +9,7 @@ interface Props {
   identificador: string;
   show_only_media: boolean;
   sx?: SxProps;
+  imageStyles?: CSSProperties;
 }
 
 export const MBanner: FC<Props> = (props) => {
@@ -35,7 +36,7 @@ export const MBanner: FC<Props> = (props) => {
           position = { top: "50%", left: 0 };
           break;
         case "right":
-          position = { top: "50%", rigth: 0 };
+          position = { top: "50%", right: 0 };
           break;
       }
       const element = banner.data.isButton ? (
@@ -48,13 +49,16 @@ export const MBanner: FC<Props> = (props) => {
           {!props.show_only_media && element}
           {banner.data.type.includes("image") && (
             <Image
-              style={{ cursor: "pointer" }}
+              src={banner.data.content.url}
               onClick={() => {
                 window.open(banner.data?.redirect_url);
               }}
-              src={banner.data.content.url}
               width={props.width}
               height={props.height}
+              style={{
+                cursor: "pointer",
+                ...(props.imageStyles ?? {}),
+              }}
               alt={props.identificador}
             />
           )}
@@ -70,7 +74,7 @@ export const MBanner: FC<Props> = (props) => {
         </Box>
       );
     }
-    return <p>Ocurrio un error al intentar cargar el banner</p>;
+    return <p>Ocurrió un error al intentar cargar el banner</p>;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [banner.data, banner.isFetching]);
 

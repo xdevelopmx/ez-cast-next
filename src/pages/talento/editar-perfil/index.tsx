@@ -1349,6 +1349,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         onFormChange={(input) => {
           dispatch({ type: "update-creditos", value: input });
         }}
+        handleCreditos={handleCreditos}
         resetCredits={() =>
           dispatch({
             type: "reset-fields-credits",
