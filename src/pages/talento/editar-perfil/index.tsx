@@ -1064,7 +1064,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           .filter((m) => m.media.type.includes("audio"))
           .map((a) => a.media);
         const videos = talento.data.media
-          .filter((m) => m.media.type.includes("video"))
+          .filter((m) => m.media.type.includes("video") && m.media.referencia.startsWith('VIDEOS-TALENTO'))
           .map((a) => a.media);
         void initMediaFiles(
           foto_perfil ? foto_perfil.media : undefined,
