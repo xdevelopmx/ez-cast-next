@@ -11,7 +11,7 @@ interface Props {
 export const Tag: FC<Props> = ({ text, styles = {}, onRemove }) => {
     return (
         <Typography sx={{
-            display: 'inline',
+            display: 'inline-block',
             backgroundColor: '#069cb1',
             borderRadius: 2,
             color: '#fff',

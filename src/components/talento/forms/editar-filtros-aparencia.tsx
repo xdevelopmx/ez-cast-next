@@ -486,7 +486,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
         <Grid container item xs={7} gap={3}>
           <Grid container item xs={12} alignItems={"center"}>
             <Grid item xs={7}>
-              <Typography>
+              <Typography paddingX={2}>
                 ¿
                 {textos["dispuesto_a_cambiar_de_color_de_cabello"]
                   ? textos["dispuesto_a_cambiar_de_color_de_cabello"]
@@ -494,7 +494,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 ?
               </Typography>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={5} sx={{display: 'flex', justifyContent: 'flex-end'}}>
               <MRadioGroup
                 id="dispuesto-cambiar-color"
                 options={[
@@ -506,7 +506,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                   margin: 0,
                   fontWeight: 800,
                   fontSize: "0.8rem",
-                  color: "#069cb1",
+                  color: "#069cb1"
                 }}
                 value={
                   state.apariencia.disposicion_cambio_color_cabello
@@ -533,7 +533,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
           </Grid>
 
           <Grid container item xs={12} alignItems={"center"}>
-            <Grid item xs={7}>
+            <Grid item xs={7} paddingX={2}>
               <Typography>
                 ¿
                 {textos["dispuesto_a_cortar_cabello"]
@@ -542,7 +542,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 ?
               </Typography>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={5} sx={{display: 'flex', justifyContent: 'flex-end'}}>
               <MRadioGroup
                 id="dispuesto-cambiar-corte"
                 options={[
@@ -581,7 +581,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
           </Grid>
 
           <Grid container item xs={12} alignItems={"center"}>
-            <Grid item xs={7}>
+            <Grid item xs={7} paddingX={2}>
               <Typography>
                 ¿
                 {textos["dispuesto_a_crecer_o_afeitar_vello_facial"]
@@ -590,7 +590,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 ?
               </Typography>
             </Grid>
-            <Grid item xs={5}>
+            <Grid item xs={5} sx={{display: 'flex', justifyContent: 'flex-end'}}>
               <MRadioGroup
                 id="dispuesto-cambiar-corte"
                 options={[

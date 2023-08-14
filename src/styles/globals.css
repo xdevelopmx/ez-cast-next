@@ -3290,6 +3290,8 @@ p.edo_pendiente {
 }
 
 .paso-stepper {
+  display: flex;
+  justify-content: space-between;
   font-weight: 900;
   margin: 32px 0 32px 0;
   color: #069cb1;

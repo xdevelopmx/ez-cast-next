@@ -77,10 +77,12 @@ export const MStepper: FC<Props> = ({
           ))}
         </Stepper>
         <h3 className="paso-stepper" style={styleH3Paso}>
-          {textos["paso"] ? textos["paso"] : "Texto No Definido"} {current_step}{" "}
-          <span style={styleSpanH3PasoTitulo}>
-            {" "}
-            {step_titles[current_step]}
+          <span>
+            {textos["paso"] ? textos["paso"] : "Texto No Definido"} {current_step}{" "}
+            <span style={styleSpanH3PasoTitulo}>
+              {" "}
+              {step_titles[current_step]}
+            </span>
           </span>
           {tooltips && tooltips[current_step]}
         </h3>

@@ -222,6 +222,13 @@ function DragNDrop(props: Props) {
                 <div style={(!props.hide_selected && props.assign_selected_files_height) ? { height: (props.max_files) ? (props.max_files * 24) : 24 } : {}}>
                     {!props.hide_selected && files.size > 0 && Array.from(files).map((value: [string, File]) => {
                         return <Tag
+                            styles={{
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                width: 'auto',
+                                maxWidth: '100%'
+                            }}
                             key={value[1].name}
                             text={value[1].name}
                             onRemove={() => { handleRemove(`${value[1].name}-${value[1].size}-${value[1].type}`) }}
