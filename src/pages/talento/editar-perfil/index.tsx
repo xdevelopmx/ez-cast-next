@@ -1316,6 +1316,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         });
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [talento.data, textos]);
 
   const editar_info_basica_talento = useMemo(() => {
@@ -1358,6 +1359,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         }
       />
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.creditos]);
 
   const editar_habilidades_talento = useMemo(() => {

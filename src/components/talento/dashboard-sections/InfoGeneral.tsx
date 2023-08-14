@@ -474,7 +474,7 @@ export const InfoGeneral = (props: {
                     </MContainer>
                     <MTable
                       backgroundColorData="#EBEBEB"
-                      alternate_colors={true}
+                      alternate_colors={false}
                       data={
                         creditos.data
                           ? creditos.data.creditos
@@ -488,7 +488,10 @@ export const InfoGeneral = (props: {
                                   accion: !c.media ? (
                                     <></>
                                   ) : (
-                                    <MContainer direction="horizontal" styles={{alignItems:'center'}}>
+                                    <MContainer
+                                      direction="horizontal"
+                                      styles={{ alignItems: "center" }}
+                                    >
                                       <IconButton
                                         onClick={() => {
                                           if (c.media) {
