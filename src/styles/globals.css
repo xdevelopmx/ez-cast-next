@@ -1265,8 +1265,8 @@ footer {
 .container_alerts_header {
   width: 100%;
   position: absolute;
-  right: 0;
-  top: 48px;
+  right: 35px;
+  top: 58px;
   max-width: 600px;
 }
 
@@ -3568,4 +3568,12 @@ p.edo_pendiente {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.borde_azul fieldset {
+  border: 2px solid #069cb1;
+}
+
+input.borde_azul {
+  border: 2px solid #069cb1!important;
 }

@@ -199,7 +199,7 @@ const RepresentanteBillboardPage: NextPage<BillboardTalentosPageProps> = ({ user
                                             </Grid>
                                             <Grid xs={4}>
                                                 {roles_billboard.data && roles_billboard.data.length > 0 &&
-                                                    <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '1.1rem', textAlign: 'center' }}>
+                                                    <Typography fontWeight={600} sx={{ color: '#069cb1', fontSize: '0.8rem', textAlign: 'center' }}>
                                                         {((pagination.page + 1) * pagination.page_size) > roles_billboard.data?.length ? roles_billboard.data?.length : (pagination.page + 1) * pagination.page_size} de {roles_billboard.data?.length} resultados totales
                                                     </Typography>
                                                 }

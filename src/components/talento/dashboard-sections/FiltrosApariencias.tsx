@@ -780,6 +780,12 @@ export const FiltrosApariencias = (props: {
                   }
                 : undefined
             }
+            titleSx={{
+              fontSize:  '26px'
+            }}
+            dividerSx={{
+              borderTop: "2px solid #069cb1",
+            }}
           />
         </Grid>
         <Grid item alignItems={"self-start"} xs={12}>

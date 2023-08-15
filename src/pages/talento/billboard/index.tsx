@@ -319,15 +319,16 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
             <br />
             <br />
             <div className="container_box_header">
-              <div className="d-flex justify-content-end align-items-start py-2">
-                <Alertas />
-              </div>
-
               <Grid container>
                 <Grid xs={12} mt={4}>
-                  <Typography fontWeight={800} sx={{ fontSize: "2rem" }}>
-                    Casting Billboard
-                  </Typography>
+                <Grid container mt={4} mb={3}>
+                    <Grid item container xs={12}>
+                      <Typography fontWeight={900} sx={{ fontSize: "2.4rem" }}>
+                      Casting Billboard
+                      </Typography>
+                    </Grid>
+                    <Alertas />
+                </Grid>
                 </Grid>
                 <Grid xs={12}>
                   <Grid container mt={4}>
@@ -340,14 +341,14 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           {textos["filtros"]}
                         </Typography>
                       </Grid>
-                      <Grid xs={4}>
+                      <Grid xs={4} style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
                         {roles_billboard.data &&
                           roles_billboard.data.length > 0 && (
                             <Typography
                               fontWeight={600}
                               sx={{
                                 color: "#069cb1",
-                                fontSize: "1.1rem",
+                                fontSize: "0.9rem",
                                 textAlign: "center",
                               }}
                             >
@@ -376,7 +377,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                       >
                         <Typography
                           fontWeight={600}
-                          sx={{ color: "#069cb1", fontSize: "1.1rem" }}
+                          sx={{ color: "#069cb1", fontSize: "0.9rem",  }}
                         >
                           {textos["PAGINADOR_ENTRIES_PER_PAGE"]?.replace(
                             "[N]",
@@ -407,7 +408,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         />
                       )}
                       <Divider
-                        sx={{ borderColor: "#069cb1", borderWidth: 1 }}
+                        sx={{ borderColor: "#069cb1", borderWidth: 2, marginTop: '6px' }}
                       />
                     </Grid>
 
@@ -512,6 +513,9 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           >
                             <Button
                               variant="text"
+                              style={{
+                                textTransform: 'none'
+                              }}
                               onClick={() => {
                                 setFormFiltros((prev) => {
                                   return {
@@ -565,7 +569,8 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             r.toString()
                           )}
                           styleRoot={{ width: "100px", padding: 0 }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.8rem"}}
+                          className="borde_azul"
                           onChange={(e) => {
                             setFormFiltros((prev) => {
                               return {
@@ -598,6 +603,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           disabled={form_filtros.autorellenar}
                           styleRoot={{ width: "76px" }}
                           style={{ width: "100%", fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_union.map((r) => r.toString())}
                           onChange={(e) => {
                             setFormFiltros((prev) => {
@@ -627,6 +633,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           id="tipos-roles-select"
                           styleRoot={{ width: "90px" }}
                           style={{ width: "100%", fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_tipo_rol.map((r) => r)}
                           onChange={(e) => {
                             setFormFiltros((prev) => {
@@ -669,7 +676,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           </Typography>
                           <FormGroup
                             placeholder="Desde Edad"
-                            className={"form-input-md"}
+                            className={"form-input-md borde_azul"}
                             type="number"
                             value={form_filtros.edad_inicio.toString()}
                             rootStyle={{ margin: 0, width: "48px" }}
@@ -689,7 +696,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           />
                           <FormGroup
                             placeholder="Hasta Edad"
-                            className={"form-input-md"}
+                            className={"form-input-md borde_azul"}
                             type="number"
                             value={form_filtros.edad_fin.toString()}
                             rootStyle={{ margin: 0, width: "48px" }}
@@ -712,6 +719,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           id="tipos-proyectos-select"
                           styleRoot={{ width: "120px" }}
                           style={{ width: "100%", fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_tipo_proyecto.map((r) =>
                             r.toString()
                           )}
@@ -748,6 +756,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           disabled={form_filtros.autorellenar}
                           styleRoot={{ width: "110px" }}
                           style={{ width: "100%", fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_genero_rol.map((r) =>
                             r.toString()
                           )}
@@ -782,6 +791,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           id="apariencias-etnicas-select"
                           styleRoot={{ width: "150px" }}
                           style={{ fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_apariencia_etnica.map((r) =>
                             r.toString()
                           )}
@@ -825,6 +835,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           id="nacionalidades-etnicas-select"
                           styleRoot={{ width: "170px" }}
                           style={{ fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_nacionalidades.map((r) =>
                             r.toString()
                           )}
@@ -866,6 +877,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           id="preferencias-pago-select"
                           styleRoot={{ width: "138px" }}
                           style={{ width: "100%", fontSize: "0.8rem" }}
+                          className="borde_azul"
                           value={form_filtros.id_preferencias_de_pago.map((r) =>
                             r.toString()
                           )}
@@ -924,6 +936,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             )}
                           {form_filtros.id_estado_republica.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["ubicacion"] ?? ""}`}
                               onRemove={() => {
                                 setFormFiltros((prev) => {
@@ -934,6 +947,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           )}
                           {form_filtros.id_union.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["union"] ?? ""}`}
                               onRemove={() => {
                                 if (form_filtros.autorellenar) {
@@ -955,6 +969,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           )}
                           {form_filtros.id_tipo_rol.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["tipo_rol"] ?? ""}`}
                               onRemove={() => {
                                 setFormFiltros((prev) => {
@@ -968,6 +983,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             form_filtros.edad_fin >=
                               form_filtros.edad_inicio && (
                               <Tag
+                                tacheDerecha
                                 text={`${textos["rango_edad"] ?? ""}`}
                                 onRemove={() => {
                                   setFormFiltros((prev) => {
@@ -978,6 +994,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             )}
                           {form_filtros.id_tipo_proyecto.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["tipo_proyecto"] ?? ""}`}
                               onRemove={() => {
                                 setFormFiltros((prev) => {
@@ -988,6 +1005,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           )}
                           {form_filtros.id_genero_rol.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["genero_rol"] ?? ""}`}
                               onRemove={() => {
                                 if (form_filtros.autorellenar) {
@@ -1009,6 +1027,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           )}
                           {form_filtros.id_apariencia_etnica.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["apariencia_etnica"] ?? ""}`}
                               onRemove={() => {
                                 setFormFiltros((prev) => {
@@ -1019,6 +1038,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           )}
                           {form_filtros.id_nacionalidades.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["nacionalidad_etnia"] ?? ""}`}
                               onRemove={() => {
                                 setFormFiltros((prev) => {
@@ -1029,6 +1049,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           )}
                           {form_filtros.id_preferencias_de_pago.length > 0 && (
                             <Tag
+                              tacheDerecha
                               text={`${textos["preferencia_pago"] ?? ""}`}
                               onRemove={() => {
                                 setFormFiltros((prev) => {
