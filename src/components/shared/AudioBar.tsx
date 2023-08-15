@@ -32,7 +32,7 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
     >
       <MContainer
         direction="horizontal"
-        styles={{ alignItems: "center", gap: 10 }}
+        styles={{ alignItems: "center" }}
       >
         <IconButton
           onClick={() => {

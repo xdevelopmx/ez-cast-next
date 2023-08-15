@@ -232,7 +232,7 @@ export const MediaBank = (props: { id_talento: number, read_only: boolean }) => 
 											<MContainer direction='horizontal' styles={{ alignItems: 'center', padding: '15px 0px', justifyContent: 'space-between' }}>
 												<MContainer direction='horizontal' styles={{ alignItems: 'center' }}>
 													<Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
-													<Typography sx={{ color: '#069CB1', pl: 1}} fontWeight={900}>{textos['galeria_imagenes']}</Typography>
+													<Typography sx={{ color: '#069CB1', pl: 1 }} fontWeight={900}>{textos['galeria_imagenes']}</Typography>
 												</MContainer>
 												{!props.read_only &&
 													<AddButton

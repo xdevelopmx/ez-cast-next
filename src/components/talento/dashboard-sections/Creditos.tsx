@@ -49,13 +49,13 @@ export const Creditos = (props: {id_talento: number, read_only: boolean}) => {
         
             <Grid id="creditos" container sx={{ mt: 10 }}>
                 <Grid item xs={12}>
-                    <SectionTitle title={textos['credito'] ? `${textos['credito']}s` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
+                    <SectionTitle titleSx={{fontSize:24}} dividerSx={{borderTop: '2px solid #069CB1'}} title={textos['credito'] ? `${textos['credito']}s` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
                         // eslint-disable-next-line @typescript-eslint/no-floating-promises
                         router.push(`/talento/editar-perfil?step=3&id_talento=${props.id_talento}`)  
                     } : undefined} />
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography my={1} fontSize={30} sx={{ color: '#069cb1' }} fontWeight={900}>
+                    <Typography my={1} fontSize={30} sx={{ color: '#069cb1', fontWeight:900 }} fontWeight={900}>
                         {(creditos.data) ? creditos.data.creditos.length : ''}
                     </Typography>
                     <MTable

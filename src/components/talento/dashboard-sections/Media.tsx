@@ -231,7 +231,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1 }}
+              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1}}
               fontWeight={900}
             >
               VIDEO <br /> REEL
@@ -248,7 +248,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                     ? `${textos["agregar"]} ${textos["video"]}`
                     : "Texto No definido"
                 }
-                aStyles={{ margin: 10 }}
+                aStyles={{ margin: 10, borderRadius: 50, width: 170  }}
                 onClick={() => {
                   // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   router.push("/talento/editar-perfil?step=2");
@@ -322,7 +322,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
         <Divider sx={{ mt: 3 }} />
       </Grid>
 
-      <Grid item xs={12}>
+      <Grid item xs={12} style={{padding:'30px 0'}}>
         <MContainer
           direction="horizontal"
           justify="space-between"
@@ -339,7 +339,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1 }}
+              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1, fontSize:'22px' }}
               fontWeight={900}
             >
               AUDIO <br /> CLIPS
@@ -356,7 +356,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                     ? `${textos["agregar"]} ${textos["audio"]}`
                     : "Texto No definido"
                 }
-                aStyles={{ marginBottom: 10 }}
+                aStyles={{ marginBottom: 10, borderRadius: 50, width: 170 }}
                 onClick={() => {
                   // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   router.push("/talento/editar-perfil?step=2");
@@ -404,10 +404,10 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1 }}
+              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1, fontSize:22 }}
               fontWeight={900}
             >
-              Selftapes
+              SELF<br/>TAPES
             </Typography>
           </MContainer>
           <MContainer
@@ -421,7 +421,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                     ? textos["grabar_selftape"]
                     : "Texto No definido"
                 }
-                aStyles={{ margin: 10 }}
+                aStyles={{ margin: 10, borderRadius: 12 }}
                 onClick={() => {
                   // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   router.push("/talento/self-tape");
