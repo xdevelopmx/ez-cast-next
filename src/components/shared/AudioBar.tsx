@@ -28,83 +28,96 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
         margin: 5,
         width: "100%",
         alignItems: "center",
+        flexWrap: "nowrap",
       }}
     >
       <MContainer
         direction="horizontal"
-        styles={{ alignItems: "center" }}
+        styles={{ alignItems: "center", width: "80%" }}
       >
-        <IconButton
-          onClick={() => {
-            if (audio_player.current) {
-              setActionSelected("PLAY");
-              void audio_player.current.play();
-            }
+        <div>
+          <IconButton
+            onClick={() => {
+              if (audio_player.current) {
+                setActionSelected("PLAY");
+                void audio_player.current.play();
+              }
+            }}
+          >
+            <Image
+              style={{
+                marginLeft: 5,
+                cursor: "pointer",
+                filter:
+                  action_selected === "PLAY"
+                    ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
+                    : "",
+              }}
+              src="/assets/img/iconos/play.svg"
+              width={20}
+              height={20}
+              alt=""
+            />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              if (audio_player.current) {
+                setActionSelected("PAUSE");
+                void audio_player.current.pause();
+              }
+            }}
+          >
+            <Image
+              style={{
+                marginLeft: 5,
+                cursor: "pointer",
+                filter:
+                  action_selected === "PAUSE"
+                    ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
+                    : "",
+              }}
+              src="/assets/img/iconos/pausa.svg"
+              width={20}
+              height={20}
+              alt=""
+            />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              if (audio_player.current) {
+                setActionSelected("STOP");
+                audio_player.current.currentTime = 0;
+                audio_player.current.pause();
+              }
+            }}
+          >
+            <Image
+              style={{
+                marginLeft: 5,
+                cursor: "pointer",
+                filter:
+                  action_selected === "STOP"
+                    ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
+                    : "",
+              }}
+              src="/assets/img/iconos/stop.svg"
+              width={20}
+              height={20}
+              alt=""
+            />
+          </IconButton>
+        </div>
+        <Typography
+          style={{
+            paddingLeft: 10,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            maxWidth: "70%",
           }}
         >
-          <Image
-            style={{
-              marginLeft: 5,
-              cursor: "pointer",
-              filter:
-                action_selected === "PLAY"
-                  ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
-                  : "",
-            }}
-            src="/assets/img/iconos/play.svg"
-            width={20}
-            height={20}
-            alt=""
-          />
-        </IconButton>
-        <IconButton
-          onClick={() => {
-            if (audio_player.current) {
-              setActionSelected("PAUSE");
-              void audio_player.current.pause();
-            }
-          }}
-        >
-          <Image
-            style={{
-              marginLeft: 5,
-              cursor: "pointer",
-              filter:
-                action_selected === "PAUSE"
-                  ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
-                  : "",
-            }}
-            src="/assets/img/iconos/pausa.svg"
-            width={20}
-            height={20}
-            alt=""
-          />
-        </IconButton>
-        <IconButton
-          onClick={() => {
-            if (audio_player.current) {
-              setActionSelected("STOP");
-              audio_player.current.currentTime = 0;
-              audio_player.current.pause();
-            }
-          }}
-        >
-          <Image
-            style={{
-              marginLeft: 5,
-              cursor: "pointer",
-              filter:
-                action_selected === "STOP"
-                  ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
-                  : "",
-            }}
-            src="/assets/img/iconos/stop.svg"
-            width={20}
-            height={20}
-            alt=""
-          />
-        </IconButton>
-        <Typography style={{ paddingLeft: 10 }}>{name}</Typography>
+          {name}
+        </Typography>
       </MContainer>
       <audio ref={audio_player}>
         <source src={url} type="audio/mpeg" />
@@ -114,9 +127,11 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
           window.open(url);
         }}
         sx={{
+          display: "block",
           color: "#069CB1",
           textDecoration: "underline",
           cursor: "pointer",
+          paddingRight: "20px",
         }}
       >
         {textos["descargar"]}

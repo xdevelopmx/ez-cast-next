@@ -121,7 +121,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
           }
           titleSx={{
             fontWeight: 900,
-            fontSize: "24px",
+            fontSize: "26px",
           }}
           dividerSx={{
             borderTop: "2px solid #069CB1",
@@ -173,6 +173,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
           spaceBetween={1}
           slidesPerView={4}
           navigation
+          loop
         >
           {media &&
             media.fotos.map((image, i) => {
@@ -231,7 +232,12 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1}}
+              sx={{
+                color: "#069CB1",
+                textAlign: "center",
+                marginTop: 1,
+                fontSize: "22px",
+              }}
               fontWeight={900}
             >
               VIDEO <br /> REEL
@@ -248,7 +254,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                     ? `${textos["agregar"]} ${textos["video"]}`
                     : "Texto No definido"
                 }
-                aStyles={{ margin: 10, borderRadius: 50, width: 170  }}
+                aStyles={{ margin: 10, borderRadius: 50, width: 170 }}
                 onClick={() => {
                   // eslint-disable-next-line @typescript-eslint/no-floating-promises
                   router.push("/talento/editar-perfil?step=2");
@@ -257,7 +263,11 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             )}
             {media && media.videos.length > 0 && (
               <>
-                <video ref={video_player} controls style={{ width: "100%" }}>
+                <video
+                  ref={video_player}
+                  controls
+                  style={{ width: "550px", maxWidth: "100%" }}
+                >
                   <source src={current_video_url} type="video/mp4" />
                   Lo sentimos tu navegador no soporta videos.
                 </video>
@@ -319,10 +329,10 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               ))}
           </MContainer>
         </MContainer>
-        <Divider sx={{ mt: 3 }} />
+        <Divider sx={{ mt: 3, borderTop: "2px solid #807D7D" }} />
       </Grid>
 
-      <Grid item xs={12} style={{padding:'30px 0'}}>
+      <Grid item xs={12} style={{ padding: "30px 0" }}>
         <MContainer
           direction="horizontal"
           justify="space-between"
@@ -339,7 +349,12 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1, fontSize:'22px' }}
+              sx={{
+                color: "#069CB1",
+                textAlign: "center",
+                marginTop: 1,
+                fontSize: "22px",
+              }}
               fontWeight={900}
             >
               AUDIO <br /> CLIPS
@@ -385,7 +400,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               ))}
           </MContainer>
         </MContainer>
-        <Divider sx={{ mt: 3 }} />
+        <Divider sx={{ mt: 3, borderTop: "2px solid #807D7D" }} />
       </Grid>
       <Grid item xs={12}>
         <MContainer
@@ -404,10 +419,17 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", textAlign: "center", marginTop: 1, fontSize:22 }}
+              sx={{
+                color: "#069CB1",
+                textAlign: "center",
+                marginTop: 1,
+                fontSize: 22,
+              }}
               fontWeight={900}
             >
-              SELF<br/>TAPES
+              SELF
+              <br />
+              TAPES
             </Typography>
           </MContainer>
           <MContainer
