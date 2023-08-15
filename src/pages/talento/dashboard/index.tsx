@@ -1,7 +1,7 @@
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import Image from 'next/image';
+import Image from "next/image";
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
@@ -101,7 +101,7 @@ const DashBoardTalentosPage: NextPage<{
                       <motion.img
                         src="/assets/img/iconos/icono_head_chat.png"
                         alt="icono"
-                        style={{width: 40, height: 40, objectFit: 'none'}}
+                        style={{ width: 40, height: 40, objectFit: "none" }}
                       />
                       {talento.isFetching && (
                         <Skeleton
@@ -119,8 +119,20 @@ const DashBoardTalentosPage: NextPage<{
                       )}
                     </div>
                     <div className="d-flex-column">
-                        <p className="m-0 p-0"><Image src="/assets/img/iconos/eye_blue.svg" width={20} height={20} alt="" /> Ver como Cazatalento</p>
-                        <p className="m-0 p-0"><Link href="#">Copiar link de perfil para compartir</Link></p>
+                      <p className="m-0 p-0">
+                        <Image
+                          src="/assets/img/iconos/eye_blue.svg"
+                          width={20}
+                          height={20}
+                          alt=""
+                        />{" "}
+                        Ver como Cazatalento
+                      </p>
+                      <p className="m-0 p-0">
+                        <Link href="#">
+                          Copiar link de perfil para compartir
+                        </Link>
+                      </p>
                     </div>
                   </div>
                   {props.id_talento > 0 &&
