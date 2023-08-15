@@ -36,6 +36,7 @@ import { AplicacionRolDialog } from "~/components/talento/dialogs/AplicacionRolD
 import { TalentoAplicacionesRepresentante } from "~/components/representante/talento/TalentoAplicacionesRepresentante";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { Buscador } from "~/components/shared/Buscador";
 const filtros_initial_state = {
   tipo_busqueda: "todos",
   id_estado_republica: [],
@@ -321,14 +322,14 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
             <div className="container_box_header">
               <Grid container>
                 <Grid xs={12} mt={4}>
-                <Grid container mt={4} mb={3}>
+                  <Grid container mt={4} mb={3}>
                     <Grid item container xs={12}>
                       <Typography fontWeight={900} sx={{ fontSize: "2.4rem" }}>
-                      Casting Billboard
+                        Casting Billboard
                       </Typography>
                     </Grid>
                     <Alertas />
-                </Grid>
+                  </Grid>
                 </Grid>
                 <Grid xs={12}>
                   <Grid container mt={4}>
@@ -341,7 +342,14 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           {textos["filtros"]}
                         </Typography>
                       </Grid>
-                      <Grid xs={4} style={{display: 'flex', alignItems: 'flex-end', justifyContent: 'center'}}>
+                      <Grid
+                        xs={4}
+                        style={{
+                          display: "flex",
+                          alignItems: "flex-end",
+                          justifyContent: "center",
+                        }}
+                      >
                         {roles_billboard.data &&
                           roles_billboard.data.length > 0 && (
                             <Typography
@@ -377,7 +385,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                       >
                         <Typography
                           fontWeight={600}
-                          sx={{ color: "#069cb1", fontSize: "0.9rem",  }}
+                          sx={{ color: "#069cb1", fontSize: "0.9rem" }}
                         >
                           {textos["PAGINADOR_ENTRIES_PER_PAGE"]?.replace(
                             "[N]",
@@ -408,7 +416,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         />
                       )}
                       <Divider
-                        sx={{ borderColor: "#069cb1", borderWidth: 2, marginTop: '6px' }}
+                        sx={{
+                          borderColor: "#069cb1",
+                          borderWidth: 2,
+                          marginTop: "6px",
+                        }}
                       />
                     </Grid>
 
@@ -472,17 +484,20 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                               label=""
                               disable_default_option
                             />
-                            <FormGroup
-                              className={"form-input-md"}
-                              type="search"
-                              rootStyle={{ margin: 0, width: "130px" }}
-                              style={{
-                                border: "none",
-                                width: "100%",
-                                fontSize: "0.8rem",
+                            <Buscador
+                              inputProps={{
+                                className:
+                                  "form-control form-control-sm text_custom form-input-md",
+                                style: {
+                                  margin: 0,
+                                  width: "130px",
+                                  paddingRight: "30px",
+                                },
                               }}
-                              onChange={(e) => {
-                                console.log(e);
+                              buttonProps={{
+                                onClick: () => {
+                                  console.log("Click");
+                                },
                               }}
                             />
                             <MCheckboxGroup
@@ -514,7 +529,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             <Button
                               variant="text"
                               style={{
-                                textTransform: 'none'
+                                textTransform: "none",
                               }}
                               onClick={() => {
                                 setFormFiltros((prev) => {
@@ -569,7 +584,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             r.toString()
                           )}
                           styleRoot={{ width: "100px", padding: 0 }}
-                          style={{ width: "100%", fontSize: "0.8rem"}}
+                          style={{ width: "100%", fontSize: "0.8rem" }}
                           className="borde_azul"
                           onChange={(e) => {
                             setFormFiltros((prev) => {

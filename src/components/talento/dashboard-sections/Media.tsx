@@ -266,7 +266,11 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                 <video
                   ref={video_player}
                   controls
-                  style={{ width: "550px", maxWidth: "100%" }}
+                  style={{
+                    width: "550px",
+                    maxWidth: "100%",
+                    aspectRatio: "16 / 9",
+                  }}
                 >
                   <source src={current_video_url} type="video/mp4" />
                   Lo sentimos tu navegador no soporta videos.
