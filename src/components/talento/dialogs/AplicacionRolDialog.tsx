@@ -206,7 +206,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                     <Grid item xs={12}>
                         <Box display={'flex'} flexDirection={'row'} gap={1}>
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>3<span style={{fontWeight: 100 }}>.-</span></Typography>
-                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? textos['nota'] : `${textos['agregar']} ${textos['una_low']} ${textos['nota_low']}`}</Typography>
+                            <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? textos['nota'] : `${textos['agregar']} ${textos['una_low']} ${textos['nota_low']}`} &nbsp;<Image src={'/assets/img/iconos/comentario.svg'} width={23} height={23} alt=''/></Typography>
                         </Box>
                         <Box padding={2}>
                             <FormGroup

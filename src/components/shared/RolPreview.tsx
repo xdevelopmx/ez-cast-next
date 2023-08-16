@@ -351,7 +351,7 @@ export const RolPreview: FC<PropsRol> = ({
                 {rol?.compensaciones &&
                 rol.compensaciones?.compensaciones_no_monetarias &&
                 rol.compensaciones.compensaciones_no_monetarias.length > 0 ? (
-                  rol.compensaciones.compensaciones_no_monetarias.map((c) => (
+                  rol.compensaciones.compensaciones_no_monetarias.map((c, i) => (
                     <Fragment key={c.id}>
                       <Typography>{c.compensacion.es}</Typography>
                       <Divider
@@ -363,6 +363,27 @@ export const RolPreview: FC<PropsRol> = ({
                         }}
                         orientation="vertical"
                       />
+                      {i === 4? 
+                        <>
+                          {popUp === true ? 
+                            <Button onClick={() => setShowPreview((v) => !v)}>
+                              <MotionImage
+                                src="/assets/img/iconos/arrow_d_blue.svg"
+                                width={20}
+                                height={20}
+                                alt=""
+                                animate={{
+                                  rotate: showPreview ? "180deg" : "0",
+                                }}
+                              />
+                            </Button>
+                            :
+                            ''
+                          }
+                        </>
+                        :
+                        ''  
+                      }
                     </Fragment>
                   ))
                 ) : (
@@ -379,7 +400,7 @@ export const RolPreview: FC<PropsRol> = ({
                     />
                   </>
                 )}
-
+                
                 <Typography>{rol.proyecto.sindicato.sindicato.es}</Typography>
                 <Divider
                   style={{
@@ -390,22 +411,6 @@ export const RolPreview: FC<PropsRol> = ({
                   }}
                   orientation="vertical"
                 />
-
-                {popUp === true ? 
-                  <Button onClick={() => setShowPreview((v) => !v)}>
-                    <MotionImage
-                      src="/assets/img/iconos/arrow_d_blue.svg"
-                      width={20}
-                      height={20}
-                      alt=""
-                      animate={{
-                        rotate: showPreview ? "180deg" : "0",
-                      }}
-                    />
-                  </Button>
-                  :
-                  ''
-                }
               </Box>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Typography>
@@ -829,8 +834,8 @@ export const RolPreview: FC<PropsRol> = ({
         <div
           style={{
             position: "relative",
-            width: 500,
-            aspectRatio: "500/720",
+            width: 1100,
+            aspectRatio: "900/720",
             maxWidth: "100%",
           }}
         >
@@ -840,6 +845,26 @@ export const RolPreview: FC<PropsRol> = ({
             style={{ objectFit: "cover" }}
             alt=""
           />
+          <button 
+            style={{
+                width: '40px',
+                fontWeight: "900",
+                borderRadius: "0.5rem",
+                color: "#069cb1",
+                textTransform: "none",
+                padding: "3px",
+                justifyContent: "center",
+                zIndex: "1",
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                display: 'flex',
+                border: 'none',
+            }} 
+            onClick={() => setDialogImage({ ...dialogImage, open: false })}
+          >
+            X
+          </button>
         </div>
       </Dialog>
     </Grid>

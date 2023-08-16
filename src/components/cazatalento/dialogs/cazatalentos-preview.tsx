@@ -3,6 +3,7 @@ import { Avatar, Box, Dialog, DialogContent, Divider, IconButton, Slide, Typogra
 import { TransitionProps } from "@mui/material/transitions";
 import { Cazatalentos, Media, RedesSocialesPorCazatalentos } from "@prisma/client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import React, { useMemo } from "react";
 import { MContainer } from "~/components/layout/MContainer";
 import { api } from "~/utils/api";
@@ -59,7 +60,7 @@ export const CazatalentosPreview = (props: {open: boolean, onClose: () => void, 
             >
                 <Close />
             </IconButton>
-            <DialogContent style={{padding: 0, width: 400, overflow: 'hidden'}}>
+            <DialogContent style={{padding: 0, width: 400, overflow: 'hidden', border: '3px solid rgb(117 117 117)', borderRadius: '3px'}}>
                 <MContainer direction='vertical' styles={{padding: 40, alignItems: 'center'}} justify='center'>
                     <Avatar sx={{ width: 156, height: 156, border: '1px solid #000000' }} alt="Foto productor" src={cazatalento && cazatalento.foto_perfil ? cazatalento.foto_perfil.url : '/assets/img/no-image.png'} />
                     <MContainer direction='horizontal' styles={{display:'flex', gap: '10px', flexFlow:'nowrap'}}>
@@ -89,9 +90,18 @@ export const CazatalentosPreview = (props: {open: boolean, onClose: () => void, 
                     </Box>
                     {cazatalento && cazatalento.redes_sociales.filter(r => r.nombre === 'pagina_web').length > 0 &&
                         cazatalento.redes_sociales.filter(r => r.nombre === 'pagina_web').map((r, i) => {
-                            return <MContainer key={i} direction='horizontal' justify='start' styles={{width: '80%', alignItems: 'end'}}>
-                                <motion.img width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="icono" />
-                                <Typography ml={2}>{r.url}</Typography>
+                            return <MContainer key={i}>
+                                <Link href={r.url}  style={{ display: 'flex', padding: '3px 0'}}>
+                                    <motion.img width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="icono" />
+                                    <Typography style={{
+                                        display: 'block',
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                        textOverflow: 'ellipsis',
+                                        maxWidth: '280px',
+                                        paddingLeft: '10px'
+                                    }}>{r.url}</Typography>
+                                </Link>
                             </MContainer>
                         })
                     }
