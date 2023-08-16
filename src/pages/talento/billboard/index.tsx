@@ -247,6 +247,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
             <RolPreview
               key={rol.id}
               rol={rol as unknown as RolCompletoPreview}
+              popUp
               action={
                 <Button
                   onClick={() => {

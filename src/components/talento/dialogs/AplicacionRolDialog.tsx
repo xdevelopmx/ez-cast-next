@@ -114,34 +114,36 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>1<span style={{fontWeight: 100 }}>.-</span></Typography>
                             <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? textos['ubicacion'] : `${textos['confirmar']} ${textos['tu_low']} ${textos['ubicacion_low']}`}</Typography>
                         </Box>
-                        {props.readonly && aplicacion.data &&
-                            <Typography>{aplicacion.data.estado_republica.es}</Typography>
-                        }
-                        {!props.readonly &&
-                            <MSelect
-                                id="ubicaciones-select"
-                                label={`${textos['ciudad']} / ${textos['estado']}:`}
-                                labelStyle={{ fontWeight: 600 }}
-                                labelClassName={'form-input-label'}
-                                options={(talento.data && talento.data.preferencias) ? talento.data.preferencias.locaciones.map(loc => {
-                                    return {value: loc.id_estado_republica.toString(), label: `${loc.estado_republica.es} - ${(loc.es_principal) ? 'Principal' : 'Adicional'}`};
-                                }) : []}
-                                value={ubicacion_selected}
-                                className={'form-input-md'}
-                                styleRoot={{marginTop: 2, marginBottom: 2}}
-                                onChange={(e) => {
-                                    setUbicacionSelected(e.target.value)
-                                }}
-                                disable_default_option
-                            />
-                        }
+                        <Box padding={2} paddingTop={0}>
+                            {props.readonly && aplicacion.data &&
+                                <Typography>{aplicacion.data.estado_republica.es}</Typography>
+                            }
+                            {!props.readonly &&
+                                <MSelect
+                                    id="ubicaciones-select"
+                                    label={`${textos['ciudad']} / ${textos['estado']}:`}
+                                    labelStyle={{ fontWeight: 600 }}
+                                    labelClassName={'form-input-label'}
+                                    options={(talento.data && talento.data.preferencias) ? talento.data.preferencias.locaciones.map(loc => {
+                                        return {value: loc.id_estado_republica.toString(), label: `${loc.estado_republica.es} - ${(loc.es_principal) ? 'Principal' : 'Adicional'}`};
+                                    }) : []}
+                                    value={ubicacion_selected}
+                                    className={'form-input-md'}
+                                    styleRoot={{marginTop: 2, marginBottom: 2}}
+                                    onChange={(e) => {
+                                        setUbicacionSelected(e.target.value)
+                                    }}
+                                    disable_default_option
+                                />
+                            }
+                        </Box>
 					</Grid>
                     <Grid item xs={12}>
                         <Box display={'flex'} flexDirection={'row'} gap={1}>
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>2<span style={{fontWeight: 100 }}>.-</span></Typography>
                             <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? 'Media' : `${textos['revisar']} media`}</Typography>
                         </Box>
-                        <Box padding={4}>
+                        <Box padding={2}>
                             <Typography variant='body2' fontSize={'1rem'} marginBottom={1}>{textos['imagenes']}</Typography>
                             <Box display={'flex'} flexDirection={'row'} gap={2}>
                                 {talento.data && talento.data.media.filter(m => m.media.type.includes('image')).length === 0 &&
@@ -161,7 +163,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                                     )
                                 })}
                             </Box>
-                            <Box my={2}>
+                            <Box  my={2}>
                                 <Typography variant='body2' fontSize={'1rem'} marginBottom={1}>Videos</Typography>
                                 <Box display={'flex'} flexDirection={'row'} gap={2}>
                                     {talento.data && talento.data.media.filter(m => m.media.type.includes('video')).length === 0 &&
@@ -206,19 +208,21 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                             <Typography variant='body2' fontSize={'1.5rem'} fontWeight={700} color={'#069cb1'}>3<span style={{fontWeight: 100 }}>.-</span></Typography>
                             <Typography variant='body2' fontSize={'1.5rem'}>{props.readonly ? textos['nota'] : `${textos['agregar']} ${textos['una_low']} ${textos['nota_low']}`}</Typography>
                         </Box>
-                        <FormGroup
-                            type={'text-area'}
-                            className={'form-input-md'}
-                            style={{ width: '80%' }}
-                            labelStyle={{ fontWeight: 600, width: '100%' }}
-                            labelClassName={'form-input-label'}
-                            value={nota}
-                            disabled={props.readonly}
-                            onChange={(e) => {
-                                setNota(e.target.value);
-                            }}
-                            label=''
-                        />
+                        <Box padding={2}>
+                            <FormGroup
+                                type={'text-area'}
+                                className={'form-input-md'}
+                                style={{ width: '80%' }}
+                                labelStyle={{ fontWeight: 600, width: '100%' }}
+                                labelClassName={'form-input-label'}
+                                value={nota}
+                                disabled={props.readonly}
+                                onChange={(e) => {
+                                    setNota(e.target.value);
+                                }}
+                                label=''
+                            />
+                        </Box>
 					</Grid>
 				</Grid>
 			</DialogContent>

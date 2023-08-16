@@ -74,6 +74,7 @@ interface PropsRol {
   action?: JSX.Element;
   no_border?: boolean;
   no_poster?: boolean;
+  popUp?: boolean;
 }
 
 const GridMotion = motion(Grid);
@@ -93,6 +94,7 @@ const containerVariants = {
 };
 
 export const RolPreview: FC<PropsRol> = ({
+  popUp = false,
   rol,
   action,
   no_border,
@@ -225,6 +227,28 @@ export const RolPreview: FC<PropsRol> = ({
             <Grid container item xs={12}>
               <Grid xs={6} item>
                 <Typography sx={{ color: "#069cb1", fontSize: ".9rem" }}>
+                  {popUp ===  true?
+                    <>
+                      {textos["inicio_de_proyecto"]}
+                      <Typography
+                        component={"span"}
+                        sx={{
+                          paddingLeft: "5px",
+                          paddingRight: "5px",
+                          color: "#069cb1",
+                          fontSize: ".9rem",
+                        }}
+                      >
+                        {(rol.filmaciones &&
+                          rol.filmaciones.length > 0 &&
+                          rol.filmaciones[0]?.fecha_inicio &&
+                          conversorFecha(rol.filmaciones[0]?.fecha_inicio)) ||
+                          textos["no_especificado"]}
+                      </Typography>
+                    </>
+                    :
+                    ""
+                  }
                   {textos["en"]}{" "}
                   {(rol.casting &&
                     rol.casting.length > 0 &&
@@ -233,8 +257,82 @@ export const RolPreview: FC<PropsRol> = ({
                 </Typography>
               </Grid>
               <Grid item xs={6}>
+                {popUp ===  true?
+                   <Typography sx={{ color: "#069cb1", fontSize: ".9rem" }}>
+                    {textos["aceptando_aplicaciones_de"]}:
+                    <Typography
+                      component={"span"}
+                      sx={{
+                        marginLeft: "5px",
+                        color: "#069cb1",
+                        fontSize: ".9rem",
+                      }}
+                    >
+                      {(rol.casting &&
+                        rol.casting.length > 0 &&
+                        rol.casting
+                          .reduce(
+                            (acumulador, current) =>
+                              (acumulador += current.estado_republica.es + ", "),
+                            ""
+                          )
+                          .slice(0, -2)) ||
+                        textos["no_especificado"]}
+                    </Typography>
+                  </Typography>
+                  :
+                  ""
+                }
               </Grid>
             </Grid>
+            {popUp === true?
+              <Grid item xs={12}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Image
+                  style={{ borderRadius: "50%", border: "2px solid #000" }}
+                  src={
+                    rol.proyecto.cazatalentos.foto_perfil
+                      ? rol.proyecto.cazatalentos.foto_perfil.url
+                      : "/assets/img/no-image.png"
+                  }
+                  width={25}
+                  height={25}
+                  alt=""
+                />
+
+                <Typography sx={{ fontSize: "0.9rem", fontWeight: 400 }}>
+                  {textos["proyecto_por"]}: {rol.proyecto.productor}
+                </Typography>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingLeft: "10px",
+                    gap: 1,
+                    cursor: "pointer",
+                  }}
+                >
+                  <Image
+                    src="/assets/img/iconos/eye_blue.svg"
+                    width={20}
+                    height={20}
+                    alt=""
+                  />
+                  <Button
+                    onClick={() => {
+                      setDialogInfoProductor({ open: true });
+                    }}
+                    style={{ textTransform: "capitalize" }}
+                  >
+                    {textos["ver"]} {textos["perfil"]}
+                  </Button>
+                </Box>
+              </Box>
+            </Grid>
+            :
+            ""
+            }
             <Grid item xs={12} mt={1}>
               <Divider sx={{ borderWidth: 1 }} />
             </Grid>
@@ -293,17 +391,21 @@ export const RolPreview: FC<PropsRol> = ({
                   orientation="vertical"
                 />
 
-                {/* <Button onClick={() => setShowPreview((v) => !v)}>
-                  <MotionImage
-                    src="/assets/img/iconos/arrow_d_blue.svg"
-                    width={20}
-                    height={20}
-                    alt=""
-                    animate={{
-                      rotate: showPreview ? "180deg" : "0",
-                    }}
-                  />
-                </Button> */}
+                {popUp === true ? 
+                  <Button onClick={() => setShowPreview((v) => !v)}>
+                    <MotionImage
+                      src="/assets/img/iconos/arrow_d_blue.svg"
+                      width={20}
+                      height={20}
+                      alt=""
+                      animate={{
+                        rotate: showPreview ? "180deg" : "0",
+                      }}
+                    />
+                  </Button>
+                  :
+                  ''
+                }
               </Box>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Typography>
