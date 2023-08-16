@@ -273,7 +273,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                 <Box p={8}>
                                     <Box display={'flex'} flexDirection={'row'} gap={2}>
                                         <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
-                                        <Typography>Self-tape</Typography>
+                                        <Typography style={{fontSize:30,fontWeight: 900}}>Self-tape</Typography>
                                     </Box>
                                     <Typography>
                                         {textos['title_text']}
@@ -284,7 +284,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                             <Button onClick={() => { router.push('/talento/media-bank') }} variant="contained" color='success' size="small" sx={{ml: 2}}>{textos['ir_media_bank']}</Button>
                                         </Alert>
                                     }
-                                    <Box sx={{backgroundColor: (recording) ? 'lightgray' : ''}} width={'85%'} height={'55vh'} border={'solid'} borderColor={'#069cb1'} position={'relative'}>
+                                    <Box sx={{backgroundColor: (recording) ? 'lightgray' : ''}} width={'85%'} height={'55vh'} border={'solid'} borderColor={'#069cb1'} position={'relative'} style={{border:"3px solid #069cb1", borderRadius:10}}>
                                         {!has_permissions.camera &&
                                             <Box display={'flex'} flexDirection={'column'} alignContent={'center'} alignItems={'center'} position={'absolute'} left={'calc(50% - 200px)'} top={'calc(50% - 60px)'} width={400} height={120}>
                                                 <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
@@ -298,9 +298,9 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                         {has_permissions.camera &&
                                            <>
                                             {can_record && !recording &&
-                                                <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={200} height={16}>
-                                                    <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
-                                                    <Button onClick={ () => { setRecording(prev => !prev) }} size="small">{textos['record_selftape']}</Button>
+                                                <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={200} height={16} >
+                                                    <Image src='/assets/img/iconos/web_cam_blue.png' style={{textAlign:"center", paddingBottom: 10}} width={52} height={39} alt=""/>
+                                                    <Button  style={{borderRadius: "50px", width: "170px", backgroundColor:"#069CB1", color:"#fff", textTransform:"none"}} onClick={ () => { setRecording(prev => !prev) }} size="small">{textos['record_selftape']}</Button>
                                                 </Box>
                                             }
                                             {!can_record &&
@@ -370,11 +370,11 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                 labelStyle={{ fontWeight: 600 }}
                                                 labelClassName={'form-input-label'}
                                                 value={lineas}
-                                                icon={{element: <Image src={'/assets/img/iconos/agenda.svg'} width={16} height={16} alt=""/>, position: 'start'}}
+                                                icon={{element: <Image src={'/assets/img/iconos/mas.svg'} width={16} height={16} alt=""/>, position: 'start'}}
                                                 onChange={(e) => {
                                                    setLineas(e.target.value)
                                                 }}
-                                                label={textos['lineas']}
+                                                label={textos['lineas_self']}
                                             />
                                         </Grid>
                                         {/*
