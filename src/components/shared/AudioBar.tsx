@@ -8,9 +8,10 @@ import useLang from "~/hooks/useLang";
 interface Props {
   name: string;
   url: string;
+  download?: boolean;
 }
 
-export const AudioBar: FC<Props> = ({ name, url }) => {
+export const AudioBar: FC<Props> = ({ name, url, download = true }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
 
@@ -33,7 +34,7 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
     >
       <MContainer
         direction="horizontal"
-        styles={{ alignItems: "center", width: "80%" }}
+        styles={{alignItems: "center", width: "80%" }}
       >
         <div>
           <IconButton
@@ -122,20 +123,35 @@ export const AudioBar: FC<Props> = ({ name, url }) => {
       <audio ref={audio_player}>
         <source src={url} type="audio/mpeg" />
       </audio>
-      <Typography
-        onClick={() => {
-          window.open(url);
-        }}
-        sx={{
-          display: "block",
-          color: "#069CB1",
-          textDecoration: "underline",
-          cursor: "pointer",
-          paddingRight: "20px",
-        }}
-      >
-        {textos["descargar"]}
-      </Typography>
+      <div>
+        {download === true ?
+          <Typography
+            onClick={() => {
+              window.open(url);
+            }}
+            sx={{
+              display: "block",
+              color: "#069CB1",
+              textDecoration: "underline",
+              cursor: "pointer",
+              paddingRight: "20px",
+            }}
+          >
+            {textos["descargar"]}
+          </Typography>
+          :
+          <Typography 
+          sx={{
+            display: "block",
+            color: "#069CB1",
+            textDecoration: "underline",
+            cursor: "pointer",
+            paddingRight: "20px",
+          }}>
+            
+          </Typography>
+        }
+      </div>
     </MContainer>
   );
 };
