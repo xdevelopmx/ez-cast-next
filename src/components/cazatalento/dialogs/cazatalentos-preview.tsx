@@ -67,7 +67,7 @@ export const CazatalentosPreview = (props: {open: boolean, onClose: () => void, 
                         <Typography fontSize={'1.5rem'}>{cazatalento?.nombre} {cazatalento?.apellido}</Typography>
                     </MContainer>
                     <Divider style={{borderColor: '#069cb1', width: '70%', borderWidth: '1px'}}/>
-                    <Typography style={{color: '#069cb1', marginTop: 16}}>
+                    <Typography style={{color: '#069cb1', marginTop: 16, fontStyle:'italic'}}>
                         {cazatalento?.posicion}
                     </Typography>
                     <Typography variant='body2' paddingLeft={2} paddingRight={2}>
