@@ -929,7 +929,8 @@ const TEXTS_BY_PATHNAME: {
   "/talento/self-tape": {
     en: {
       title_text:
-        "A self-tape is a technique used in the film industry where a person films themselves during a casting audition. Take advantage of this tool and record your auditions in seconds!",
+        "A self-tape is a technique used in the film industry where a person films themselves during a casting audition.",
+      ventaja:"Take advantage of this tool and record your auditions in seconds!",
       max_selftapes_reached:
         "Only a maximum of 6 self-tapes per user is allowed. Please delete one before attempting to record another",
       current_count_selftape:
@@ -948,7 +949,8 @@ const TEXTS_BY_PATHNAME: {
     },
     es: {
       title_text:
-        "Un self tape es una técnica utilizada en el mundo cinematográfico en la que una persona se filma a sí misma en una prueba de casting. ¡Saca ventaja de esta herramienta y graba tus audiciones en segundos!",
+        "Un self tape es una técnica utilizada en el mundo cinematográfico en la que una persona se filma a sí misma en una prueba de casting.",
+      ventaja:"¡Saca ventaja de esta herramienta y graba tus audiciones en segundos!",
       max_selftapes_reached:
         "Solo se permite maximo 6 selftapes por usuario, por favor elimina uno antes de intentar grabar otro",
       current_count_selftape:

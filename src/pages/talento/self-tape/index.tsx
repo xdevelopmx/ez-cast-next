@@ -209,7 +209,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                 title: `¿${textos['deseas_guardar']}?`, 
                 content: 
                     <Box>
-                        <Typography>({textos['guardar_dialog_subtitle']})</Typography>
+                        <Typography style={{fontWeight:800, paddingBottom:20}}>({textos['guardar_dialog_subtitle']})</Typography>
                        <video controls style={{ width: '100%' }} src={recorded_url}>
                             Lo sentimos tu navegador no soporta videos.
                         </video>
@@ -278,6 +278,9 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                     <Typography>
                                         {textos['title_text']}
                                     </Typography>
+                                    <Typography style={{fontWeight:800, fontSize:20}}>
+                                        {textos['ventaja']}
+                                    </Typography>
                                     {selftapes.data && selftapes.data.length > 0 &&
                                         <Alert variant="filled" severity={!can_record ? 'warning' : 'info'} sx={{maxWidth: '85%', height: 72, my: 2}} > 
                                             {!can_record ? textos['max_selftapes_reached'] : `${textos['current_count_selftape']?.replace('[COUNT]', `${selftapes.data?.length}`)}`}
@@ -316,7 +319,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                     </video>
 
                                                     <Box position={'relative'}>
-                                                        <Image style={{position: 'absolute', top: 16}} src='/assets/img/logo_color.svg' width={256} height={32}  alt=""/>
+                                                        <Image style={{position: 'absolute', top: 16}} src='/assets/img/logo_color.svg' width={220} height={25}  alt=""/>
                                                         <Box onClick={ () => { setRecording(prev => !prev) }} style={{position: 'absolute', top: 0, right: 0}}>
                                                             <Box sx={{cursor: 'pointer'}} display={'flex'} flexDirection={'row'} mt={2}>
                                                                 <Circle style={{ color: 'tomato', width: 16, height: 16, marginTop: 8}} />
@@ -366,8 +369,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                 type={'text-area'}
                                                 className={'form-input-md'}
                                                 rows={5}
-                                                style={{ width: '90%' }}
-                                                labelStyle={{ fontWeight: 600 }}
+                                                style={{ width: '90%'}}
+                                                labelStyle={{ fontWeight: 600}}
                                                 labelClassName={'form-input-label'}
                                                 value={lineas}
                                                 icon={{element: <Image src={'/assets/img/iconos/mas.svg'} width={16} height={16} alt=""/>, position: 'start'}}
