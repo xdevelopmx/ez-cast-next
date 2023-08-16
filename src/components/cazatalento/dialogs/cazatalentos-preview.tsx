@@ -61,10 +61,10 @@ export const CazatalentosPreview = (props: {open: boolean, onClose: () => void, 
             </IconButton>
             <DialogContent style={{padding: 0, width: 400, overflow: 'hidden'}}>
                 <MContainer direction='vertical' styles={{padding: 40, alignItems: 'center'}} justify='center'>
-                    <Avatar sx={{ width: 156, height: 156 }} alt="Foto productor" src={cazatalento && cazatalento.foto_perfil ? cazatalento.foto_perfil.url : '/assets/img/no-image.png'} />
-                    <MContainer direction='horizontal'>
+                    <Avatar sx={{ width: 156, height: 156, border: '1px solid #000000' }} alt="Foto productor" src={cazatalento && cazatalento.foto_perfil ? cazatalento.foto_perfil.url : '/assets/img/no-image.png'} />
+                    <MContainer direction='horizontal' styles={{display:'flex', gap: '10px', flexFlow:'nowrap'}}>
                         <motion.img style={{marginRight: 16}}  src="/assets/img/iconos/chair_dir_blue.svg" alt="icono" />
-                        <Typography fontSize={'2rem'}>{cazatalento?.nombre} {cazatalento?.apellido}</Typography>
+                        <Typography fontSize={'1.5rem'}>{cazatalento?.nombre} {cazatalento?.apellido}</Typography>
                     </MContainer>
                     <Divider style={{borderColor: '#069cb1', width: '70%', borderWidth: '1px'}}/>
                     <Typography style={{color: '#069cb1', marginTop: 16}}>

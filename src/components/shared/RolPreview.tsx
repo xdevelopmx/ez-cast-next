@@ -283,12 +283,12 @@ export const RolPreview: FC<PropsRol> = ({
                       ? rol.proyecto.cazatalentos.foto_perfil.url
                       : "/assets/img/no-image.png"
                   }
-                  width={30}
-                  height={30}
+                  width={25}
+                  height={25}
                   alt=""
                 />
 
-                <Typography sx={{ fontSize: "1rem" }}>
+                <Typography sx={{ fontSize: "0.9rem", fontWeight: 400 }}>
                   {textos["proyecto_por"]}: {rol.proyecto.productor}
                 </Typography>
 
