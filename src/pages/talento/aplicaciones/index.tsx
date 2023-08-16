@@ -177,7 +177,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({user, id_t
                                     <Grid item xs={12}>
                                         <Grid container item columns={12}>
                                             <Grid item md={1} textAlign={'center'}>
-                                                <Image src="/assets/img/iconos/agenda.svg" width={50} height={50} style={{ margin: '15px 0 0 0', filter: 'invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)' }} alt="" />
+                                                <Image src="/assets/img/iconos/tus-aplicaciones.png" width={40} height={30} style={{ margin: '15px 0 0 0', filter: 'invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)' }} alt="" />
                                             </Grid>
                                             <Grid item md={11}>
                                                 <Typography fontWeight={900} sx={{ color: '#000000', fontSize: '2rem', }}>{textos['tus']} {textos['aplicaciones']}</Typography>
