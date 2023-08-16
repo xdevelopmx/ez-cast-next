@@ -219,7 +219,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                 className={'form-input-label'}
                                 htmlFor={'nombre-input'}
                             >
-                                {textos['nombre']}*
+                                {textos['guardar_Como']}*
                             </label>
                             <TextField
                                 size="small"
@@ -229,7 +229,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                     params.set('nombre', e.target.value);
                                 }}
                             />
-
+                            <Typography>{textos['visible_cazatalento']}</Typography>
                         </Box>
                         <FormControlLabel control={<Switch onChange={() => { 
                             const _public = params.get('public') as boolean;
