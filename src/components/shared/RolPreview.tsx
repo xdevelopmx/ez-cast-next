@@ -56,7 +56,7 @@ const IndividualData: FC<PropsIndividualData> = ({
         <MContainer direction="horizontal">
           <Typography
             fontWeight={600}
-            sx={{ color: "#928F8F", paddingRight: 1 }}
+            sx={{ color: "#928F8F", paddingRight: 1, fontStyle:'italic' }}
           >
             {title}
           </Typography>
@@ -498,7 +498,7 @@ export const RolPreview: FC<PropsRol> = ({
                 <Typography
                   fontWeight={600}
                   component={"span"}
-                  sx={{ paddingRight: "10px" }}
+                  sx={{ paddingRight: "10px", fontStyle:'italic' }}
                 >
                   {textos["descripcion"]}:
                 </Typography>

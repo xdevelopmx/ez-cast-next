@@ -266,10 +266,11 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                   }}
                   sx={{
                     backgroundColor: "#069cb1",
-                    borderRadius: "2rem",
+                    borderRadius: "0.5rem",
                     color: "#fff",
                     textTransform: "none",
                     padding: "0px 35px",
+                    justifyContent: "end", 
 
                     "&:hover": {
                       backgroundColor: "#069cb1",

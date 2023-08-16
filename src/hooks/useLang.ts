@@ -279,7 +279,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     detalles: "Detalles",
     tu: "Tu",
     aplicacion: "Aplicación",
-    aplicaciones: "Aplicaciónes",
+    aplicaciones: "aplicaciones",
     nota: "Nota",
     una: "Una",
     aplicado: "Aplicado",
