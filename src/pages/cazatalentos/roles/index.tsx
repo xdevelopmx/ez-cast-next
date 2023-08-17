@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import React, { Fragment, useMemo, useState } from "react";
-import { Flotantes, MainLayout, MenuLateral } from "~/components";
+import { Acordeon, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { AnimatePresence, type Variants, motion } from "framer-motion";
 import UpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -1111,7 +1111,6 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   filasExpandidas={expanded_rows}
                   accordionContent={(
                     element_index: number,
-                    container_width: number
                   ) => {
                     const element = filtered_roles[element_index];
                     if (element) {
@@ -1533,522 +1532,511 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               />
                             </Grid>
 
-                            <Grid container>
-                              <AnimatePresence>
-                                {expanded_rows.includes(
-                                  `panel${element_index}`
-                                ) && (
-                                  <motion.div
-                                    style={{ width: "100%" }}
-                                    variants={variants}
-                                    initial="initial"
-                                    animate="animate"
-                                    exit="exit"
-                                  >
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
-                                          }}
-                                        >
-                                          Habilidades:
-                                        </Typography>
-                                        <MContainer direction="horizontal">
-                                          {roles.data &&
-                                          roles.data[element_index]
-                                            ?.habilidades &&
-                                          roles.data[element_index]?.habilidades
-                                            ?.habilidades_seleccionadas ? (
-                                            <>
-                                              {roles.data[
-                                                element_index
-                                              ]?.habilidades?.habilidades_seleccionadas.map(
-                                                (h, i) => {
-                                                  if (roles.data) {
-                                                    const el =
-                                                      roles.data[element_index];
-                                                    if (el) {
-                                                      return (
-                                                        <Fragment
-                                                          key={h.id_habilidad}
-                                                        >
-                                                          <Typography
-                                                            component={"span"}
-                                                            sx={{
-                                                              color: "#928F8F",
-                                                            }}
-                                                          >
-                                                            {h.habilidad.es}
-                                                          </Typography>
-                                                          {i !==
-                                                            (el.habilidades
-                                                              ?.habilidades_seleccionadas
-                                                              .length || 0) -
-                                                              1 && (
-                                                            <Divider
-                                                              style={{
-                                                                borderWidth: 1,
-                                                                height: 12,
-                                                                borderColor:
-                                                                  "#069cb1",
-                                                                margin: 8,
-                                                              }}
-                                                              orientation="vertical"
-                                                            />
-                                                          )}
-                                                        </Fragment>
-                                                      );
-                                                    }
-                                                  }
-                                                }
-                                              )}
-                                            </>
-                                          ) : (
-                                            <>
-                                              <Typography
-                                                component={"span"}
-                                                sx={{ color: "#928F8F" }}
-                                              >
-                                                No especificado
-                                              </Typography>
-                                            </>
-                                          )}
-                                        </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Divider
-                                        style={{
-                                          margin: "6px 0",
-                                        }}
-                                      />
-                                    </Grid>
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
-                                          }}
-                                        >
-                                          Desnudos situaciones sexuales:
-                                        </Typography>
-                                        <MContainer direction="horizontal">
-                                          {roles.data &&
-                                          roles.data[element_index]?.nsfw &&
-                                          roles.data[element_index]?.nsfw
-                                            ?.nsfw_seleccionados ? (
-                                            <>
-                                              {roles.data[
-                                                element_index
-                                              ]?.nsfw?.nsfw_seleccionados.map(
-                                                (n, i) => {
-                                                  if (roles.data) {
-                                                    const el =
-                                                      roles.data[element_index];
-                                                    if (el) {
-                                                      return (
-                                                        <Fragment
-                                                          key={n.id_nsfw}
-                                                        >
-                                                          <Typography
-                                                            component={"span"}
-                                                            sx={{
-                                                              color: "#928F8F",
-                                                            }}
-                                                          >
-                                                            {n.nsfw?.es}
-                                                          </Typography>
-                                                          {i !==
-                                                            (el.nsfw
-                                                              ?.nsfw_seleccionados
-                                                              .length || 0) -
-                                                              1 && (
-                                                            <Divider
-                                                              style={{
-                                                                borderWidth: 1,
-                                                                height: 12,
-                                                                borderColor:
-                                                                  "#069cb1",
-                                                                margin: 8,
-                                                              }}
-                                                              orientation="vertical"
-                                                            />
-                                                          )}
-                                                        </Fragment>
-                                                      );
-                                                    }
-                                                  }
-                                                }
-                                              )}
-                                            </>
-                                          ) : (
-                                            <>
-                                              <Typography
-                                                component={"span"}
-                                                sx={{ color: "#928F8F" }}
-                                              >
-                                                No especificado
-                                              </Typography>
-                                            </>
-                                          )}
-                                        </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Divider
-                                        style={{
-                                          margin: "6px 0",
-                                        }}
-                                      />
-                                    </Grid>
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
-                                          }}
-                                        >
-                                          Locación de casting y fechas:
-                                        </Typography>
-                                        <MContainer direction="horizontal">
-                                          {roles.data &&
-                                          roles.data[element_index]?.casting &&
-                                          (roles.data[element_index]?.casting
-                                            .length || 0) > 0 ? (
-                                            <>
-                                              {roles.data[
-                                                element_index
-                                              ]?.casting.map((c) => (
-                                                <Fragment key={c.id}>
-                                                  <Typography
-                                                    component={"span"}
-                                                    sx={{ color: "#928F8F" }}
-                                                  >
-                                                    {c.estado_republica.es}
-                                                  </Typography>
-                                                  <Divider
-                                                    style={{
-                                                      borderWidth: 1,
-                                                      height: 12,
-                                                      borderColor: "#069cb1",
-                                                      margin: 8,
-                                                    }}
-                                                    orientation="vertical"
-                                                  />
-                                                  <Typography
-                                                    component={"span"}
-                                                    sx={{ color: "#928F8F" }}
-                                                  >
-                                                    {c.fecha_inicio.toString()}
-                                                    {c.fecha_fin
-                                                      ? `a ${c.fecha_fin.toString()}`
-                                                      : ""}
-                                                  </Typography>
-                                                </Fragment>
-                                              ))}
-                                            </>
-                                          ) : (
-                                            <>
-                                              <Typography
-                                                component={"span"}
-                                                sx={{ color: "#928F8F" }}
-                                              >
-                                                No especificado
-                                              </Typography>
-                                            </>
-                                          )}
-                                        </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Divider
-                                        style={{
-                                          margin: "6px 0",
-                                        }}
-                                      />
-                                    </Grid>
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
-                                          }}
-                                        >
-                                          Locación de filmación y fechas:
-                                        </Typography>
-                                        <MContainer direction="horizontal">
-                                          {roles.data &&
-                                          roles.data[element_index]
-                                            ?.filmaciones &&
-                                          (roles.data[element_index]
-                                            ?.filmaciones.length || 0) > 0 ? (
-                                            <>
-                                              {roles.data[
-                                                element_index
-                                              ]?.filmaciones.map((c) => (
-                                                <Fragment key={c.id}>
-                                                  <Typography
-                                                    component={"span"}
-                                                    sx={{ color: "#928F8F" }}
-                                                  >
-                                                    {c.estado_republica.es}
-                                                  </Typography>
-                                                  <Divider
-                                                    style={{
-                                                      borderWidth: 1,
-                                                      height: 12,
-                                                      borderColor: "#069cb1",
-                                                      margin: 8,
-                                                    }}
-                                                    orientation="vertical"
-                                                  />
-                                                  <Typography
-                                                    component={"span"}
-                                                    sx={{ color: "#928F8F" }}
-                                                  >
-                                                    {c.fecha_inicio.toString()}
-                                                    {c.fecha_fin
-                                                      ? `a ${c.fecha_fin.toString()}`
-                                                      : ""}
-                                                  </Typography>
-                                                </Fragment>
-                                              ))}
-                                            </>
-                                          ) : (
-                                            <>
-                                              <Typography
-                                                component={"span"}
-                                                sx={{ color: "#928F8F" }}
-                                              >
-                                                No especificado
-                                              </Typography>
-                                            </>
-                                          )}
-                                        </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Divider
-                                        style={{
-                                          margin: "6px 0",
-                                        }}
-                                      />
-                                    </Grid>
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
-                                          }}
-                                        >
-                                          Presentación de solicitud:
-                                        </Typography>
+                            <Acordeon show={expanded_rows.includes(`panel${element_index}`)}>
+                              <Grid container>
+                                <AnimatePresence>
+                                  {expanded_rows.includes(
+                                    `panel${element_index}`
+                                  ) && (
+                                    <motion.div
+                                      style={{ width: "100%" }}
+                                      variants={variants}
+                                      initial="initial"
+                                      animate="animate"
+                                      exit="exit"
+                                    >
+                                      <Grid item container xs={12}>
                                         <MContainer direction="horizontal">
                                           <Typography
-                                            component={"span"}
-                                            sx={{ color: "#928F8F" }}
-                                          >
-                                            {roles.data &&
-                                            roles.data[element_index]
-                                              ?.requisitos &&
-                                            roles.data[element_index]
-                                              ?.requisitos?.estado_republica
-                                              ? roles.data[element_index]
-                                                  ?.requisitos?.estado_republica
-                                                  .es
-                                              : "No especificado"}
-                                          </Typography>
-                                          <Divider
-                                            style={{
-                                              borderWidth: 1,
-                                              height: 12,
-                                              borderColor: "#069cb1",
-                                              margin: 8,
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
                                             }}
-                                            orientation="vertical"
-                                          />
-                                          <Typography
-                                            component={"span"}
-                                            sx={{ color: "#928F8F" }}
                                           >
+                                            Habilidades:
+                                          </Typography>
+                                          <MContainer direction="horizontal">
                                             {roles.data &&
                                             roles.data[element_index]
-                                              ?.requisitos &&
-                                            roles.data[element_index]
-                                              ?.requisitos
-                                              ?.presentacion_solicitud
-                                              ? roles.data[
+                                              ?.habilidades &&
+                                            roles.data[element_index]?.habilidades
+                                              ?.habilidades_seleccionadas ? (
+                                              <>
+                                                {roles.data[
                                                   element_index
-                                                ]?.requisitos?.presentacion_solicitud.toString()
-                                              : "No especificado"}
-                                          </Typography>
-                                          <Divider
-                                            style={{
-                                              borderWidth: 1,
-                                              height: 12,
-                                              borderColor: "#069cb1",
-                                              margin: 8,
-                                            }}
-                                            orientation="vertical"
-                                          />
-                                          <Typography
-                                            component={"span"}
-                                            sx={{ color: "#928F8F" }}
-                                          >
-                                            {roles.data &&
-                                            roles.data[element_index]
-                                              ?.requisitos &&
-                                            roles.data[element_index]
-                                              ?.requisitos?.uso_horario
-                                              ? roles.data[element_index]
-                                                  ?.requisitos?.uso_horario.es
-                                              : "No especificado"}
-                                          </Typography>
-                                        </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Divider
-                                        style={{
-                                          margin: "6px 0",
-                                        }}
-                                      />
-                                    </Grid>
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
-                                          }}
-                                        >
-                                          Requisitos:
-                                        </Typography>
-                                        <MContainer direction="horizontal">
-                                          {roles.data &&
-                                          roles.data[element_index]
-                                            ?.requisitos &&
-                                          roles.data[element_index]?.requisitos
-                                            ?.medios_multimedia &&
-                                          (roles.data[element_index]?.requisitos
-                                            ?.medios_multimedia.length || 0) >
-                                            0 ? (
-                                            <>
-                                              {roles.data[
-                                                element_index
-                                              ]?.requisitos?.medios_multimedia.map(
-                                                (m, i) => {
-                                                  if (roles.data) {
-                                                    const el =
-                                                      roles.data[element_index];
-                                                    if (el) {
-                                                      return (
-                                                        <Fragment
-                                                          key={
-                                                            m.id_medio_multimedia
-                                                          }
-                                                        >
-                                                          <Typography
-                                                            component={"span"}
-                                                            sx={{
-                                                              color: "#928F8F",
-                                                            }}
+                                                ]?.habilidades?.habilidades_seleccionadas.map(
+                                                  (h, i) => {
+                                                    if (roles.data) {
+                                                      const el =
+                                                        roles.data[element_index];
+                                                      if (el) {
+                                                        return (
+                                                          <Fragment
+                                                            key={h.id_habilidad}
                                                           >
-                                                            {
-                                                              m.medio_multimedia
-                                                                .es
-                                                            }
-                                                          </Typography>
-                                                          {i !==
-                                                            (el.requisitos
-                                                              ?.medios_multimedia
-                                                              .length || 0) -
-                                                              1 && (
-                                                            <Divider
-                                                              style={{
-                                                                borderWidth: 1,
-                                                                height: 12,
-                                                                borderColor:
-                                                                  "#069cb1",
-                                                                margin: 8,
+                                                            <Typography
+                                                              component={"span"}
+                                                              sx={{
+                                                                color: "#928F8F",
                                                               }}
-                                                              orientation="vertical"
-                                                            />
-                                                          )}
-                                                        </Fragment>
-                                                      );
+                                                            >
+                                                              {h.habilidad.es}
+                                                            </Typography>
+                                                            {i !==
+                                                              (el.habilidades
+                                                                ?.habilidades_seleccionadas
+                                                                .length || 0) -
+                                                                1 && (
+                                                              <Divider
+                                                                style={{
+                                                                  borderWidth: 1,
+                                                                  height: 12,
+                                                                  borderColor:
+                                                                    "#069cb1",
+                                                                  margin: 8,
+                                                                }}
+                                                                orientation="vertical"
+                                                              />
+                                                            )}
+                                                          </Fragment>
+                                                        );
+                                                      }
                                                     }
                                                   }
-                                                }
-                                              )}
-                                            </>
-                                          ) : (
-                                            <>
-                                              <Typography
-                                                component={"span"}
-                                                sx={{ color: "#928F8F" }}
-                                              >
-                                                No especificado
-                                              </Typography>
-                                            </>
-                                          )}
+                                                )}
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Typography
+                                                  component={"span"}
+                                                  sx={{ color: "#928F8F" }}
+                                                >
+                                                  No especificado
+                                                </Typography>
+                                              </>
+                                            )}
+                                          </MContainer>
                                         </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                      <Divider
-                                        style={{
-                                          margin: "6px 0",
-                                        }}
-                                      />
-                                    </Grid>
-                                    <Grid item container xs={12}>
-                                      <MContainer direction="horizontal">
-                                        <Typography
-                                          fontWeight={600}
-                                          sx={{
-                                            color: "#928F8F",
-                                            paddingRight: 1,
-                                            fontStyle: "italic",
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <Divider
+                                          style={{
+                                            margin: "6px 0",
                                           }}
-                                        >
-                                          Archivos adicionales:
-                                        </Typography>
-                                        <MContainer
-                                          direction="horizontal"
-                                          styles={{ gap: 10 }}
-                                        >
-                                          {element.lineas && (
+                                        />
+                                      </Grid>
+                                      <Grid item container xs={12}>
+                                        <MContainer direction="horizontal">
+                                          <Typography
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
+                                            }}
+                                          >
+                                            Desnudos situaciones sexuales:
+                                          </Typography>
+                                          <MContainer direction="horizontal">
+                                            {roles.data &&
+                                            roles.data[element_index]?.nsfw &&
+                                            roles.data[element_index]?.nsfw
+                                              ?.nsfw_seleccionados ? (
+                                              <>
+                                                {roles.data[
+                                                  element_index
+                                                ]?.nsfw?.nsfw_seleccionados.map(
+                                                  (n, i) => {
+                                                    if (roles.data) {
+                                                      const el =
+                                                        roles.data[element_index];
+                                                      if (el) {
+                                                        return (
+                                                          <Fragment
+                                                            key={n.id_nsfw}
+                                                          >
+                                                            <Typography
+                                                              component={"span"}
+                                                              sx={{
+                                                                color: "#928F8F",
+                                                              }}
+                                                            >
+                                                              {n.nsfw?.es}
+                                                            </Typography>
+                                                            {i !==
+                                                              (el.nsfw
+                                                                ?.nsfw_seleccionados
+                                                                .length || 0) -
+                                                                1 && (
+                                                              <Divider
+                                                                style={{
+                                                                  borderWidth: 1,
+                                                                  height: 12,
+                                                                  borderColor:
+                                                                    "#069cb1",
+                                                                  margin: 8,
+                                                                }}
+                                                                orientation="vertical"
+                                                              />
+                                                            )}
+                                                          </Fragment>
+                                                        );
+                                                      }
+                                                    }
+                                                  }
+                                                )}
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Typography
+                                                  component={"span"}
+                                                  sx={{ color: "#928F8F" }}
+                                                >
+                                                  No especificado
+                                                </Typography>
+                                              </>
+                                            )}
+                                          </MContainer>
+                                        </MContainer>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <Divider
+                                          style={{
+                                            margin: "6px 0",
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item container xs={12}>
+                                        <MContainer direction="horizontal">
+                                          <Typography
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
+                                            }}
+                                          >
+                                            Locación de casting y fechas:
+                                          </Typography>
+                                          <MContainer direction="horizontal">
+                                            {roles.data &&
+                                            roles.data[element_index]?.casting &&
+                                            (roles.data[element_index]?.casting
+                                              .length || 0) > 0 ? (
+                                              <>
+                                                {roles.data[
+                                                  element_index
+                                                ]?.casting.map((c) => (
+                                                  <Fragment key={c.id}>
+                                                    <Typography
+                                                      component={"span"}
+                                                      sx={{ color: "#928F8F" }}
+                                                    >
+                                                      {c.estado_republica.es}
+                                                    </Typography>
+                                                    <Divider
+                                                      style={{
+                                                        borderWidth: 1,
+                                                        height: 12,
+                                                        borderColor: "#069cb1",
+                                                        margin: 8,
+                                                      }}
+                                                      orientation="vertical"
+                                                    />
+                                                    <Typography
+                                                      component={"span"}
+                                                      sx={{ color: "#928F8F" }}
+                                                    >
+                                                      {c.fecha_inicio.toString()}
+                                                      {c.fecha_fin
+                                                        ? `a ${c.fecha_fin.toString()}`
+                                                        : ""}
+                                                    </Typography>
+                                                  </Fragment>
+                                                ))}
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Typography
+                                                  component={"span"}
+                                                  sx={{ color: "#928F8F" }}
+                                                >
+                                                  No especificado
+                                                </Typography>
+                                              </>
+                                            )}
+                                          </MContainer>
+                                        </MContainer>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <Divider
+                                          style={{
+                                            margin: "6px 0",
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item container xs={12}>
+                                        <MContainer direction="horizontal">
+                                          <Typography
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
+                                            }}
+                                          >
+                                            Locación de filmación y fechas:
+                                          </Typography>
+                                          <MContainer direction="horizontal">
+                                            {roles.data &&
+                                            roles.data[element_index]
+                                              ?.filmaciones &&
+                                            (roles.data[element_index]
+                                              ?.filmaciones.length || 0) > 0 ? (
+                                              <>
+                                                {roles.data[
+                                                  element_index
+                                                ]?.filmaciones.map((c) => (
+                                                  <Fragment key={c.id}>
+                                                    <Typography
+                                                      component={"span"}
+                                                      sx={{ color: "#928F8F" }}
+                                                    >
+                                                      {c.estado_republica.es}
+                                                    </Typography>
+                                                    <Divider
+                                                      style={{
+                                                        borderWidth: 1,
+                                                        height: 12,
+                                                        borderColor: "#069cb1",
+                                                        margin: 8,
+                                                      }}
+                                                      orientation="vertical"
+                                                    />
+                                                    <Typography
+                                                      component={"span"}
+                                                      sx={{ color: "#928F8F" }}
+                                                    >
+                                                      {c.fecha_inicio.toString()}
+                                                      {c.fecha_fin
+                                                        ? `a ${c.fecha_fin.toString()}`
+                                                        : ""}
+                                                    </Typography>
+                                                  </Fragment>
+                                                ))}
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Typography
+                                                  component={"span"}
+                                                  sx={{ color: "#928F8F" }}
+                                                >
+                                                  No especificado
+                                                </Typography>
+                                              </>
+                                            )}
+                                          </MContainer>
+                                        </MContainer>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <Divider
+                                          style={{
+                                            margin: "6px 0",
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item container xs={12}>
+                                        <MContainer direction="horizontal">
+                                          <Typography
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
+                                            }}
+                                          >
+                                            Presentación de solicitud:
+                                          </Typography>
+                                          <MContainer direction="horizontal">
                                             <Typography
                                               component={"span"}
-                                              sx={{
-                                                color: "#069cb1",
-                                                textDecoration: "underline",
-                                              }}
+                                              sx={{ color: "#928F8F" }}
                                             >
-                                              {element.lineas.nombre}
+                                              {roles.data &&
+                                              roles.data[element_index]
+                                                ?.requisitos &&
+                                              roles.data[element_index]
+                                                ?.requisitos?.estado_republica
+                                                ? roles.data[element_index]
+                                                    ?.requisitos?.estado_republica
+                                                    .es
+                                                : "No especificado"}
                                             </Typography>
-                                          )}
-                                          {element.selftape &&
-                                            element.selftape.lineas && (
+                                            <Divider
+                                              style={{
+                                                borderWidth: 1,
+                                                height: 12,
+                                                borderColor: "#069cb1",
+                                                margin: 8,
+                                              }}
+                                              orientation="vertical"
+                                            />
+                                            <Typography
+                                              component={"span"}
+                                              sx={{ color: "#928F8F" }}
+                                            >
+                                              {roles.data &&
+                                              roles.data[element_index]
+                                                ?.requisitos &&
+                                              roles.data[element_index]
+                                                ?.requisitos
+                                                ?.presentacion_solicitud
+                                                ? roles.data[
+                                                    element_index
+                                                  ]?.requisitos?.presentacion_solicitud.toString()
+                                                : "No especificado"}
+                                            </Typography>
+                                            <Divider
+                                              style={{
+                                                borderWidth: 1,
+                                                height: 12,
+                                                borderColor: "#069cb1",
+                                                margin: 8,
+                                              }}
+                                              orientation="vertical"
+                                            />
+                                            <Typography
+                                              component={"span"}
+                                              sx={{ color: "#928F8F" }}
+                                            >
+                                              {roles.data &&
+                                              roles.data[element_index]
+                                                ?.requisitos &&
+                                              roles.data[element_index]
+                                                ?.requisitos?.uso_horario
+                                                ? roles.data[element_index]
+                                                    ?.requisitos?.uso_horario.es
+                                                : "No especificado"}
+                                            </Typography>
+                                          </MContainer>
+                                        </MContainer>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <Divider
+                                          style={{
+                                            margin: "6px 0",
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item container xs={12}>
+                                        <MContainer direction="horizontal">
+                                          <Typography
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
+                                            }}
+                                          >
+                                            Requisitos:
+                                          </Typography>
+                                          <MContainer direction="horizontal">
+                                            {roles.data &&
+                                            roles.data[element_index]
+                                              ?.requisitos &&
+                                            roles.data[element_index]?.requisitos
+                                              ?.medios_multimedia &&
+                                            (roles.data[element_index]?.requisitos
+                                              ?.medios_multimedia.length || 0) >
+                                              0 ? (
+                                              <>
+                                                {roles.data[
+                                                  element_index
+                                                ]?.requisitos?.medios_multimedia.map(
+                                                  (m, i) => {
+                                                    if (roles.data) {
+                                                      const el =
+                                                        roles.data[element_index];
+                                                      if (el) {
+                                                        return (
+                                                          <Fragment
+                                                            key={
+                                                              m.id_medio_multimedia
+                                                            }
+                                                          >
+                                                            <Typography
+                                                              component={"span"}
+                                                              sx={{
+                                                                color: "#928F8F",
+                                                              }}
+                                                            >
+                                                              {
+                                                                m.medio_multimedia
+                                                                  .es
+                                                              }
+                                                            </Typography>
+                                                            {i !==
+                                                              (el.requisitos
+                                                                ?.medios_multimedia
+                                                                .length || 0) -
+                                                                1 && (
+                                                              <Divider
+                                                                style={{
+                                                                  borderWidth: 1,
+                                                                  height: 12,
+                                                                  borderColor:
+                                                                    "#069cb1",
+                                                                  margin: 8,
+                                                                }}
+                                                                orientation="vertical"
+                                                              />
+                                                            )}
+                                                          </Fragment>
+                                                        );
+                                                      }
+                                                    }
+                                                  }
+                                                )}
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Typography
+                                                  component={"span"}
+                                                  sx={{ color: "#928F8F" }}
+                                                >
+                                                  No especificado
+                                                </Typography>
+                                              </>
+                                            )}
+                                          </MContainer>
+                                        </MContainer>
+                                      </Grid>
+                                      <Grid item xs={12}>
+                                        <Divider
+                                          style={{
+                                            margin: "6px 0",
+                                          }}
+                                        />
+                                      </Grid>
+                                      <Grid item container xs={12}>
+                                        <MContainer direction="horizontal">
+                                          <Typography
+                                            fontWeight={600}
+                                            sx={{
+                                              color: "#928F8F",
+                                              paddingRight: 1,
+                                              fontStyle: "italic",
+                                            }}
+                                          >
+                                            Archivos adicionales:
+                                          </Typography>
+                                          <MContainer
+                                            direction="horizontal"
+                                            styles={{ gap: 10 }}
+                                          >
+                                            {element.lineas && (
                                               <Typography
                                                 component={"span"}
                                                 sx={{
@@ -2056,27 +2044,40 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   textDecoration: "underline",
                                                 }}
                                               >
-                                                {element.selftape.lineas.nombre}
+                                                {element.lineas.nombre}
                                               </Typography>
                                             )}
-                                          {element.foto_referencia && (
-                                            <Typography
-                                              component={"span"}
-                                              sx={{
-                                                color: "#069cb1",
-                                                textDecoration: "underline",
-                                              }}
-                                            >
-                                              {element.foto_referencia.nombre}
-                                            </Typography>
-                                          )}
+                                            {element.selftape &&
+                                              element.selftape.lineas && (
+                                                <Typography
+                                                  component={"span"}
+                                                  sx={{
+                                                    color: "#069cb1",
+                                                    textDecoration: "underline",
+                                                  }}
+                                                >
+                                                  {element.selftape.lineas.nombre}
+                                                </Typography>
+                                              )}
+                                            {element.foto_referencia && (
+                                              <Typography
+                                                component={"span"}
+                                                sx={{
+                                                  color: "#069cb1",
+                                                  textDecoration: "underline",
+                                                }}
+                                              >
+                                                {element.foto_referencia.nombre}
+                                              </Typography>
+                                            )}
+                                          </MContainer>
                                         </MContainer>
-                                      </MContainer>
-                                    </Grid>
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </Grid>
+                                      </Grid>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </Grid>
+                            </Acordeon>
                           </Grid>
                         </div>
                       );
