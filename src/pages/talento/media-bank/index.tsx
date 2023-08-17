@@ -324,16 +324,14 @@ export const MediaBank = (props: {
                 </div>
                 <Box p={8}>
                   <Box display={"flex"} flexDirection={"row"} gap={2}>
-                    <Image
-                      src="/assets/img/iconos/agenda.svg"
-                      width={32}
-                      height={32}
-                      alt=""
-                    />
-                    <Typography>Media Bank</Typography>
+                    <Typography
+                      style={{fontSize: '35px', fontWeight:  800}}
+                    >
+                      Media Bank
+                    </Typography>
                   </Box>
                   <Grid id="media" container sx={{ mt: 10 }}>
-                    <Grid item xs={12}>
+                  {/*<Grid item xs={12}>
                       <SectionTitle
                         title="Media"
                         textButton={`${textos["editar"] ?? ""}`}
@@ -348,7 +346,7 @@ export const MediaBank = (props: {
                             : undefined
                         }
                       />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                       <MContainer
                         direction="horizontal"
@@ -370,7 +368,9 @@ export const MediaBank = (props: {
                           />
                           <Typography
                             sx={{ color: "#069CB1", pl: 1 }}
+                            fontSize={29}
                             fontWeight={900}
+                            textTransform={'uppercase'}
                           >
                             {textos["galeria_imagenes"]}
                           </Typography>
@@ -383,7 +383,7 @@ export const MediaBank = (props: {
                               router.push("/talento/editar-perfil?step=2");
                             }}
                             text={`${textos["agregar"] ?? ""} ${
-                              textos["imagenes"] ?? ""
+                              textos["imagenes_low"] ?? ""
                             }`}
                           />
                         )}
@@ -406,6 +406,7 @@ export const MediaBank = (props: {
                       {media &&
                         media.fotos.map((image, i) => {
                           return (
+                            i === 0 ?
                             <Image
                               onClick={() => {
                                 setDialogImage({
@@ -417,11 +418,37 @@ export const MediaBank = (props: {
                               width={191}
                               height={217}
                               src={image.url}
+                              style={{
+                                 marginRight: '10px',
+                                 width: 'auto',
+                                 objectFit: 'contain',
+                                 padding: '7px',
+                                 border: '1px solid #069CB1'
+                              }}
+                              alt=""
+                            />
+                            :
+                            <Image
+                              onClick={() => {
+                                setDialogImage({
+                                  image: image.url,
+                                  open: true,
+                                });
+                              }}
+                              key={i}
+                              width={191}
+                              height={217}
+                              src={image.url}
+                              style={{
+                                 marginRight: '10px',
+                                 width: 'auto',
+                                 objectFit: 'contain'
+                              }}
                               alt=""
                             />
                           );
                         })}
-                      <Divider sx={{ mt: 3 }} />
+                      <Divider sx={{ mt: 3, borderColor: "#807D7D" }} />
                     </Grid>
 
                     <Grid item xs={12}>
@@ -445,7 +472,8 @@ export const MediaBank = (props: {
                               color: "#069CB1",
                               textAlign: "center",
                               marginTop: 1,
-                            }}
+                            }}  
+                            fontSize={30}
                             fontWeight={900}
                           >
                             VIDEO <br /> REEL
@@ -454,97 +482,102 @@ export const MediaBank = (props: {
                         <MContainer
                           direction="vertical"
                           styles={{ width: "70%", alignItems: "flex-end" }}
-                        >
+                        >  
                           {!props.read_only && (
-                            <AddButton
-                              text={`${textos["agregar"] ?? ""} ${
-                                textos["video"] ?? ""
-                              }s`}
-                              aStyles={{ margin: 10 }}
-                              onClick={() => {
-                                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                                router.push("/talento/editar-perfil?step=2");
-                              }}
-                            />
-                          )}
-                          {media && media.videos.length > 0 && (
-                            <>
-                              <video
-                                ref={video_player}
-                                controls
-                                style={{ width: "100%" }}
-                              >
-                                <source
-                                  src={current_video_url}
-                                  type="video/mp4"
-                                />
-                                Lo sentimos tu navegador no soporta videos.
-                              </video>
-                              <MContainer
-                                styles={{ marginTop: 16 }}
-                                direction="horizontal"
-                              >
-                                <>
-                                  {media.videos.map((v, i) => {
-                                    return (
-                                      <Button
-                                        key={i}
-                                        onClick={() => {
-                                          setCurrentVideoUrl(v.url);
-                                        }}
-                                        size="small"
-                                        style={{ margin: 8 }}
-                                        variant={
-                                          v.url === current_video_url
-                                            ? "contained"
-                                            : "outlined"
-                                        }
-                                        endIcon={
-                                          <Image
-                                            style={{
-                                              marginLeft: 5,
-                                              cursor: "pointer",
-                                              filter:
-                                                v.url === current_video_url
-                                                  ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
-                                                  : "",
-                                            }}
-                                            src="/assets/img/iconos/play.svg"
-                                            width={20}
-                                            height={20}
-                                            alt=""
-                                          />
-                                        }
-                                      >
-                                        {v.nombre}
-                                      </Button>
-                                    );
-                                  })}
-                                </>
-                              </MContainer>
-                            </>
-                          )}
-                          {!media ||
-                            (media.videos.length === 0 && (
-                              <Typography
-                                fontSize={"1.5rem"}
-                                sx={{ color: "#F9B233" }}
-                                fontWeight={400}
-                              >
-                                {textos["usuario_no_ha_capturado"]
-                                  ? textos["usuario_no_ha_capturado"].replace(
-                                      "[TYPE]",
-                                      `${textos["video"] ?? ""}`
-                                    )
-                                  : "Texto No definido"}
-                              </Typography>
-                            ))}
+                              <AddButton
+                                text={`${textos["agregar"] ?? ""} ${
+                                  textos["video"] ?? ""
+                                }s`}
+                                aStyles={{ margin: '10px 0 10px 0' }}
+                                onClick={() => {
+                                  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                                  router.push("/talento/editar-perfil?step=2");
+                                }}
+                              />
+                            )}                      
+                          <MContainer
+                            direction="vertical"
+                            styles={{ width: "70%", alignItems: "center", gap: '10px' }}
+                          >
+                            {media && media.videos.length > 0 && (
+                              <>
+                                <video
+                                  ref={video_player}
+                                  controls
+                                  style={{ width: "auto", height: "350px", border: "1px solid #069CB1", padding: "5px" }}
+                                >
+                                  <source
+                                    src={current_video_url}
+                                    type="video/mp4"
+                                  />
+                                  Lo sentimos tu navegador no soporta videos.
+                                </video>
+                                <MContainer
+                                  styles={{ marginTop: 16 }}
+                                  direction="horizontal"
+                                >
+                                  <>
+                                    {media.videos.map((v, i) => {
+                                      return (
+                                        <Button
+                                          key={i}
+                                          onClick={() => {
+                                            setCurrentVideoUrl(v.url);
+                                          }}
+                                          size="small"
+                                          style={{ margin: 8 }}
+                                          variant={
+                                            v.url === current_video_url
+                                              ? "contained"
+                                              : "outlined"
+                                          }
+                                          endIcon={
+                                            <Image
+                                              style={{
+                                                marginLeft: 5,
+                                                cursor: "pointer",
+                                                filter:
+                                                  v.url === current_video_url
+                                                    ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
+                                                    : "",
+                                              }}
+                                              src="/assets/img/iconos/play.svg"
+                                              width={20}
+                                              height={20}
+                                              alt=""
+                                            />
+                                          }
+                                        >
+                                          {v.nombre}
+                                        </Button>
+                                      );
+                                    })}
+                                  </>
+                                </MContainer>
+                              </>
+                            )}
+                            {!media ||
+                              (media.videos.length === 0 && (
+                                <Typography
+                                  fontSize={"1.5rem"}
+                                  sx={{ color: "#F9B233" }}
+                                  fontWeight={400}
+                                >
+                                  {textos["usuario_no_ha_capturado"]
+                                    ? textos["usuario_no_ha_capturado"].replace(
+                                        "[TYPE]",
+                                        `${textos["video"] ?? ""}`
+                                      )
+                                    : "Texto No definido"}
+                                </Typography>
+                              ))}
+                          </MContainer>
                         </MContainer>
                       </MContainer>
-                      <Divider sx={{ mt: 3 }} />
+                      <Divider sx={{ mt: 3, borderColor: "#807D7D" }} />
                     </Grid>
 
-                    <Grid item xs={12}>
+                    <Grid item xs={12} marginTop={2}>
                       <MContainer
                         direction="horizontal"
                         justify="space-between"
@@ -566,6 +599,7 @@ export const MediaBank = (props: {
                               textAlign: "center",
                               marginTop: 1,
                             }}
+                            fontSize={30}
                             fontWeight={900}
                           >
                             AUDIO <br /> CLIPS
@@ -615,9 +649,9 @@ export const MediaBank = (props: {
                             ))}
                         </MContainer>
                       </MContainer>
-                      <Divider sx={{ mt: 3 }} />
+                      <Divider sx={{ mt: 3, borderColor: "#807D7D" }} />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} marginTop={2}>
                       <MContainer
                         direction="horizontal"
                         justify="space-between"
@@ -628,7 +662,7 @@ export const MediaBank = (props: {
                           styles={{ width: "28%", alignItems: "center" }}
                         >
                           <Image
-                            src="/assets/img/iconos/web_cam_blue.png"
+                            src="/assets/img/iconos/icono-selftape.svg"
                             width={50}
                             height={30}
                             alt=""
@@ -639,6 +673,7 @@ export const MediaBank = (props: {
                               textAlign: "center",
                               marginTop: 1,
                             }}
+                            fontSize={30}
                             fontWeight={900}
                           >
                             Selftapes
