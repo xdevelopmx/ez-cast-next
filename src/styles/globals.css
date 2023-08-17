@@ -1059,6 +1059,11 @@ footer {
   color: #fcd58d;
 }
 
+.nuevo-proyecto-btn {
+  padding-left: 2.2rem !important;
+  padding-right: 2.2rem !important;
+}
+
 /*Flow Styles*/
 .menu_container {
   width: 20%;
@@ -3577,7 +3582,7 @@ p.edo_pendiente {
 }
 
 input.borde_azul {
-  border: 2px solid #069cb1!important;
+  border: 2px solid #069cb1 !important;
 }
 
 .container_slider_destacados .swiper-button-next {
@@ -3592,8 +3597,9 @@ input.borde_azul {
   z-index: 55;
 }
 
-.container_slider_destacados .swiper-button-next:after, .container_slider_destacados .swiper-button-prev:after {
-  font-size: 12px!important;
+.container_slider_destacados .swiper-button-next:after,
+.container_slider_destacados .swiper-button-prev:after {
+  font-size: 12px !important;
   font-weight: 900;
-  color: #069cb1!important;
+  color: #069cb1 !important;
 }

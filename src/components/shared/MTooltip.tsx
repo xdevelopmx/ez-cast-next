@@ -32,7 +32,7 @@ interface Props {
 
 const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
-))(({ theme, color }) => {
+))(({ color }) => {
   return {
     [`& .${tooltipClasses.arrow}`]: {
       color: color === "blue" ? "#069cb1" : "orange",
@@ -62,6 +62,7 @@ export const MTooltip: FC<Props> = ({
     >
       <IconButton
         onClick={onClick}
+        disableRipple
         sx={sx}
         style={
           icon

@@ -297,12 +297,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
             <br />
             <div className="container_box_header">
               {!IS_ADMIN && (
-                <div className="d-flex justify-content-end align-items-start py-2">
-                  <Alertas />
-                </div>
-              )}
-              {!IS_ADMIN && (
-                <div className="d-flex">
+                <div className="d-flex" style={{ alignItems: "center" }}>
                   <Button
                     onClick={() => {
                       void router.replace(`/cazatalentos/dashboard`);
@@ -315,10 +310,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       />
                     }
                   >
-                    <p className="color_a mb-0 ml-2">
-                      <b>Regresar a vista general</b>
+                    <p
+                      className="color_a mb-0 ml-2"
+                      style={{ fontWeight: 400 }}
+                    >
+                      <>Regresar a vista general</>
                     </p>
                   </Button>
+                  {!IS_ADMIN && (
+                    <div className="d-flex justify-content-end align-items-start py-2">
+                      <Alertas />
+                    </div>
+                  )}
                 </div>
               )}
               <br />

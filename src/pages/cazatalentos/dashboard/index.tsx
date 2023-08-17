@@ -26,6 +26,7 @@ import { TipoUsuario } from "~/enums";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+import { MTooltip } from "~/components/shared/MTooltip";
 
 type DashBoardCazaTalentosPageProps = {
   user: User;
@@ -209,7 +210,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                 <div>
                   <Link
                     href="/cazatalentos/proyecto"
-                    className="btn btn-intro btn-price mb-2"
+                    className="btn btn-intro btn-price mb-2 nuevo-proyecto-btn"
                   >
                     Nuevo proyecto
                   </Link>
@@ -311,8 +312,12 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     </Typography>,
                   ]}
                   backgroundColorHeader="#069cb1"
-                  styleHeaderTableCell={{ padding: "5px !important" }}
+                  //styleHeaderTableCell={{ padding: "5px !important" }}
                   loading={proyectos.isFetching}
+                  dataStylesRow={{
+                    paddingLeft: "5px !important",
+                    paddingRight: "5px !important",
+                  }}
                   data={
                     filtered_proyectos
                       ? filtered_proyectos.map((p) => {
@@ -382,94 +387,117 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                     Constants.ESTADOS_PROYECTO.RECHAZADO,
                                   ].includes(p.estatus.toUpperCase()) && (
                                     <>
-                                      <IconButton
-                                        onClick={(e) => {
-                                          const params = new Map<
-                                            string,
-                                            unknown
-                                          >();
-                                          params.set("id", p.id);
-                                          params.set(
-                                            "state",
-                                            p.estatus.toUpperCase() ===
-                                              "ARCHIVADO"
-                                              ? "POR_VALIDAR"
-                                              : "ARCHIVADO"
-                                          );
-                                          setConfirmationDialog({
-                                            action: "STATE_CHANGE",
-                                            data: params,
-                                            opened: true,
-                                            title:
-                                              p.estatus.toUpperCase() ===
-                                              "ARCHIVADO"
-                                                ? "Desarchivar Proyecto"
-                                                : "Archivar Proyecto",
-                                            content: (
-                                              <Typography variant="body2">{`Seguro que deseas ${
+                                      <MTooltip
+                                        color="orange"
+                                        placement="top"
+                                        text="Archivar"
+                                        icon={
+                                          <IconButton
+                                            onClick={(e) => {
+                                              const params = new Map<
+                                                string,
+                                                unknown
+                                              >();
+                                              params.set("id", p.id);
+                                              params.set(
+                                                "state",
                                                 p.estatus.toUpperCase() ===
-                                                "ARCHIVADO"
-                                                  ? "desarchivar"
-                                                  : "archivar"
-                                              } este proyecto?`}</Typography>
-                                            ),
-                                          });
-                                          e.stopPropagation();
-                                        }}
-                                        color="primary"
-                                        aria-label="archivar"
-                                        component="label"
-                                      >
-                                        <Image
-                                          src={
-                                            "/assets/img/iconos/archivar_blue.svg"
-                                          }
-                                          width={16}
-                                          height={16}
-                                          alt="archivar"
-                                        />
-                                      </IconButton>
-                                      <IconButton
-                                        onClick={(e) => {
-                                          void router.push(
-                                            `/cazatalentos/proyecto?id_proyecto=${p.id}`
-                                          );
-                                          e.stopPropagation();
-                                        }}
-                                        color="primary"
-                                        aria-label="editar"
-                                        component="label"
-                                      >
-                                        <Image
-                                          src={
-                                            "/assets/img/iconos/edit_icon_blue.png"
-                                          }
-                                          width={16}
-                                          height={16}
-                                          alt="archivar"
-                                        />
-                                      </IconButton>
+                                                  "ARCHIVADO"
+                                                  ? "POR_VALIDAR"
+                                                  : "ARCHIVADO"
+                                              );
+                                              setConfirmationDialog({
+                                                action: "STATE_CHANGE",
+                                                data: params,
+                                                opened: true,
+                                                title:
+                                                  p.estatus.toUpperCase() ===
+                                                  "ARCHIVADO"
+                                                    ? "Desarchivar Proyecto"
+                                                    : "Archivar Proyecto",
+                                                content: (
+                                                  <Typography variant="body2">{`Seguro que deseas ${
+                                                    p.estatus.toUpperCase() ===
+                                                    "ARCHIVADO"
+                                                      ? "desarchivar"
+                                                      : "archivar"
+                                                  } este proyecto?`}</Typography>
+                                                ),
+                                              });
+                                              e.stopPropagation();
+                                            }}
+                                            color="primary"
+                                            aria-label="archivar"
+                                            component="label"
+                                          >
+                                            <Image
+                                              src={
+                                                "/assets/img/iconos/archivar_blue.svg"
+                                              }
+                                              width={16}
+                                              height={16}
+                                              alt="archivar"
+                                            />
+                                          </IconButton>
+                                        }
+                                      />
+                                      <MTooltip
+                                        color="orange"
+                                        placement="top"
+                                        text="Editar"
+                                        icon={
+                                          <IconButton
+                                            onClick={(e) => {
+                                              void router.push(
+                                                `/cazatalentos/proyecto?id_proyecto=${p.id}`
+                                              );
+                                              e.stopPropagation();
+                                            }}
+                                            color="primary"
+                                            aria-label="editar"
+                                            component="label"
+                                          >
+                                            <Image
+                                              src={
+                                                "/assets/img/iconos/edit_icon_blue.png"
+                                              }
+                                              width={16}
+                                              height={16}
+                                              alt="archivar"
+                                            />
+                                          </IconButton>
+                                        }
+                                      />
                                     </>
                                   )}
                                 </>
-                                <IconButton
-                                  onClick={(e) => {
-                                    void router.push(
-                                      `/cazatalentos/roles?id_proyecto=${p.id}`
-                                    );
-                                    e.stopPropagation();
-                                  }}
-                                  color="primary"
-                                  aria-label="consultar"
-                                  component="label"
-                                >
-                                  <Image
-                                    src={"/assets/img/iconos/search_blue.png"}
-                                    width={16}
-                                    height={16}
-                                    alt="archivar"
-                                  />
-                                </IconButton>
+                                <MTooltip
+                                  color="orange"
+                                  placement="top"
+                                  text="Ir a rol"
+                                  icon={
+                                    <IconButton
+                                      onClick={(e) => {
+                                        void router.push(
+                                          `/cazatalentos/roles?id_proyecto=${p.id}`
+                                        );
+                                        e.stopPropagation();
+                                      }}
+                                      color="primary"
+                                      aria-label="consultar"
+                                      component="label"
+                                    >
+                                      <Image
+                                        src={
+                                          "/assets/img/iconos/search_blue.png"
+                                        }
+                                        width={16}
+                                        height={16}
+                                        alt="archivar"
+                                      />
+                                    </IconButton>
+                                  }
+                                />
                                 <>
                                   {["ACTIVO"].includes(
                                     p.estatus.toUpperCase()

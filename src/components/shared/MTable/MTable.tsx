@@ -45,6 +45,8 @@ interface MTableProps {
     container_width: number
   ) => JSX.Element | null;
   noDataContent?: JSX.Element;
+
+  dataStylesRow?: CSSProperties;
 }
 
 export const MTable: FC<MTableProps> = ({
@@ -63,6 +65,7 @@ export const MTable: FC<MTableProps> = ({
   styleHeaderRow = {},
   styleHeaderTableCell = {},
   styleTableRow = {},
+  dataStylesRow = {},
 }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -184,7 +187,7 @@ export const MTable: FC<MTableProps> = ({
                           if (i === 0) {
                             return (
                               <TableCell
-                                style={{ padding: "0px 8px" }}
+                                style={{ padding: "0px 8px", ...dataStylesRow }}
                                 key={i}
                                 align="left"
                                 component="th"
@@ -195,7 +198,13 @@ export const MTable: FC<MTableProps> = ({
                             );
                           }
                           return (
-                            <TableCell key={i} align="left">
+                            <TableCell
+                              key={i}
+                              align="left"
+                              style={{
+                                ...dataStylesRow,
+                              }}
+                            >
                               {val[1]}
                             </TableCell>
                           );
@@ -250,7 +259,11 @@ export const MTable: FC<MTableProps> = ({
             {_data.length === 0 && (
               <>
                 {!noDataContent && (
-                  <TableRow>
+                  <TableRow
+                    style={{
+                      ...styleTableRow,
+                    }}
+                  >
                     <TableCell align="left" component="th" scope="row">
                       <Typography
                         fontSize={"1rem"}
@@ -259,7 +272,7 @@ export const MTable: FC<MTableProps> = ({
                       >
                         {textos["no_registros"]
                           ? textos["no_registros"]
-                          : "Texto No definido"}
+                          : "Texto No definido"}{" "}
                       </Typography>
                     </TableCell>
                   </TableRow>
