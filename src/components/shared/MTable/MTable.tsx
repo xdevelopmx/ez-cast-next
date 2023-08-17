@@ -23,6 +23,7 @@ import MotionDiv from "~/components/layout/MotionDiv";
 import classes from "./MTable.module.css";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import useMeasure from "react-use-measure";
 
 type MRow = { [key: string]: number | string | boolean | JSX.Element };
 
@@ -40,13 +41,11 @@ interface MTableProps {
   styleHeaderRow?: CSSProperties;
   styleHeaderTableCell?: CSSProperties;
   styleTableRow?: CSSProperties;
-  accordionContent?: (
-    element_index: number,
-    container_width: number
-  ) => JSX.Element | null;
+  accordionContent?: (element_index: number) => JSX.Element | null;
   noDataContent?: JSX.Element;
 
   dataStylesRow?: CSSProperties;
+  filasExpandidas?: string[];
 }
 
 export const MTable: FC<MTableProps> = ({
@@ -66,6 +65,8 @@ export const MTable: FC<MTableProps> = ({
   styleHeaderTableCell = {},
   styleTableRow = {},
   dataStylesRow = {},
+
+  filasExpandidas,
 }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -74,6 +75,7 @@ export const MTable: FC<MTableProps> = ({
     page_size: number;
   }>({ page: 0, page_size: 5 });
   const [expanded_rows, setExpandedRows] = useState<string[]>([]);
+  const [ref, { height }] = useMeasure();
   const _data = useMemo(() => {
     if (loading && columnsHeader) {
       return Array.from({ length: 5 }).map((n, i) => {
@@ -247,11 +249,12 @@ export const MTable: FC<MTableProps> = ({
                     )}
                     <TableRow
                       style={{
-                        ...styleTableRow /* borderWidth: 1, borderColor: 'gray', borderStyle: 'solid' */,
+                        ...styleTableRow,
                       }}
                     >
-                      {accordionContent &&
-                        accordionContent(i, accordion_content_width - 8)}
+                      <TableCell colSpan={columnsHeader?.length}>
+                        {accordionContent && accordionContent(i)}
+                      </TableCell>
                     </TableRow>
                   </>
                 );

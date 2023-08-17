@@ -63,6 +63,8 @@ function handleRolApplication(map: Map<string, number>, key: string) {
   }
 }
 
+const AnimatedImage = motion(Image);
+
 const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   user,
   id_proyecto,
@@ -297,7 +299,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
             <br />
             <div className="container_box_header">
               {!IS_ADMIN && (
-                <div className="d-flex" style={{ alignItems: "center" }}>
+                <div
+                  className="d-flex"
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <Button
                     onClick={() => {
                       void router.replace(`/cazatalentos/dashboard`);
@@ -319,7 +327,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   </Button>
                   {!IS_ADMIN && (
                     <div className="d-flex justify-content-end align-items-start py-2">
-                      <Alertas />
+                      <Alertas
+                        style={{
+                          position: "static",
+                          padding: "0 !important",
+                        }}
+                        messageProps={{
+                          style: {
+                            marginRight: "0px !important",
+                          },
+                        }}
+                      />
                     </div>
                   )}
                 </div>
@@ -327,43 +345,50 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
               <br />
               <MContainer direction="horizontal" justify="space-between">
                 <MContainer direction="horizontal">
-                  <p className="h5 font-weight-bold">
+                  <p
+                    className="h5 font-weight-bold"
+                    style={{
+                      fontSize: "1.35rem !important",
+                    }}
+                  >
                     <b>{proyecto.data?.nombre}</b>
                   </p>
                   <motion.div layout>
                     <div
                       className="ctrl_box_top"
                       style={{
-                        height: 24,
+                        display: "grid",
+                        placeContent: "center",
+                        height: 20,
                         padding: 0,
-                        paddingRight: 8,
-                        paddingLeft: 8,
+                        paddingRight: 10,
+                        paddingLeft: 10,
+                        marginTop: 3,
                       }}
+                      onClick={() =>
+                        setProyectoDetailsExpanded((prev) => !prev)
+                      }
                     >
-                      {!proyecto_details_expanded && (
-                        <IconButton
-                          onClick={() => setProyectoDetailsExpanded(true)}
-                        >
-                          <Image
-                            src={`/assets/img/iconos/arrow_d_white.svg`}
-                            height={12}
-                            width={12}
-                            alt={"agregar-rol"}
-                          />
-                        </IconButton>
-                      )}
-                      {proyecto_details_expanded && (
-                        <IconButton
-                          onClick={() => setProyectoDetailsExpanded(false)}
-                        >
-                          <Image
-                            src={`/assets/img/iconos/arrow_u_white.svg`}
-                            height={12}
-                            width={12}
-                            alt={"agregar-rol"}
-                          />
-                        </IconButton>
-                      )}
+                      <IconButton
+                        sx={{
+                          padding: 0,
+                        }}
+                      >
+                        <AnimatedImage
+                          src={`/assets/img/iconos/arrow_d_white.svg`}
+                          initial={false}
+                          animate={
+                            proyecto_details_expanded
+                              ? {
+                                  rotate: "0deg",
+                                }
+                              : { rotate: "180deg" }
+                          }
+                          height={12}
+                          width={12}
+                          alt={"agregar-rol"}
+                        />
+                      </IconButton>
                     </div>
                   </motion.div>
                 </MContainer>
@@ -1083,6 +1108,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         })
                       : []
                   }
+                  filasExpandidas={expanded_rows}
                   accordionContent={(
                     element_index: number,
                     container_width: number
@@ -1090,48 +1116,30 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     const element = filtered_roles[element_index];
                     if (element) {
                       return (
-                        <div style={{ position: "relative", width: 100 }}>
-                          <div
-                            style={{
-                              position: "absolute",
-                              width: container_width - 8,
+                        <div style={{ width: "100%" }}>
+                          <IconButton
+                            onClick={() => {
+                              setExpandedRows((prev) => {
+                                if (prev.includes(`panel${element_index}`)) {
+                                  return prev.filter(
+                                    (p) => p !== `panel${element_index}`
+                                  );
+                                }
+                                return prev.concat([`panel${element_index}`]);
+                              });
                             }}
+                            color="primary"
+                            aria-label="expandir"
+                            component="label"
                           >
-                            <IconButton
-                              onClick={() => {
-                                setExpandedRows((prev) => {
-                                  if (prev.includes(`panel${element_index}`)) {
-                                    return prev.filter(
-                                      (p) => p !== `panel${element_index}`
-                                    );
-                                  }
-                                  return prev.concat([`panel${element_index}`]);
-                                });
-                              }}
-                              style={{
-                                position: "absolute",
-                                width: 20,
-                                top: -8,
-                                right: 8,
-                              }}
-                              color="primary"
-                              aria-label="expandir"
-                              component="label"
-                            >
-                              {expanded_rows.includes(
-                                `panel${element_index}`
-                              ) ? (
-                                <DownIcon sx={{ color: "#928F8F" }} />
-                              ) : (
-                                <UpIcon sx={{ color: "#928F8F" }} />
-                              )}
-                            </IconButton>
-                          </div>
-                          <Grid
-                            container
-                            p={2}
-                            style={{ width: container_width, paddingLeft: 40 }}
-                          >
+                            {expanded_rows.includes(`panel${element_index}`) ? (
+                              <DownIcon sx={{ color: "#928F8F" }} />
+                            ) : (
+                              <UpIcon sx={{ color: "#928F8F" }} />
+                            )}
+                          </IconButton>
+
+                          <Grid container p={2}>
                             <Grid item container xs={12}>
                               <Grid item xs={7}>
                                 <MContainer
@@ -1524,6 +1532,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 }}
                               />
                             </Grid>
+
                             <Grid container>
                               <AnimatePresence>
                                 {expanded_rows.includes(

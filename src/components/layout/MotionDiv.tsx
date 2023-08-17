@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { type CSSProperties } from "react";
+import useMeasure from "react-use-measure";
 
 export default function MotionDiv(props: {
   children: JSX.Element;
@@ -13,6 +14,8 @@ export default function MotionDiv(props: {
   style?: CSSProperties;
   show: boolean;
 }) {
+  const [ref, { height }] = useMeasure();
+
   let animation: JSX.Element | null = null;
   switch (props.animation) {
     case "down-to-up": {
@@ -91,5 +94,18 @@ export default function MotionDiv(props: {
       break;
     }
   }
-  return <AnimatePresence>{props.show && animation}</AnimatePresence>;
+  return (
+    <AnimatePresence>
+      <motion.div
+        style={{
+          overflow: "hidden",
+        }}
+        animate={{
+          height: props.show ? height : 0,
+        }}
+      >
+        <div ref={ref}>{props.show && animation}</div>
+      </motion.div>
+    </AnimatePresence>
+  );
 }
