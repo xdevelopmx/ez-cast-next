@@ -7,10 +7,8 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { TipoConversaciones, TipoMensajes, TipoUsuario } from "~/enums";
-import { Troubleshoot } from "@mui/icons-material";
+import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
-import { Mensaje } from "@prisma/client";
 import dayjs from "dayjs";
 import ApiResponses from "~/utils/api-response";
 
@@ -600,6 +598,7 @@ export const RolesRouter = createTRPCRouter({
       if (input.estado_aplicacion <= 0 || input.talentos.length === 0)
         return null;
       return Promise.all(
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         await input.talentos.map(async (talento) => {
           return await ctx.prisma.aplicacionRolPorTalento.updateMany({
             where: {
@@ -2879,7 +2878,7 @@ export const RolesRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       if (input.id <= 0) return null;
       if (ctx.session) {
-        const user = ctx.session.user;
+        //const user = ctx.session.user;
 
         return await ctx.prisma.aplicacionRolPorTalento.findFirst({
           where: {
@@ -3010,7 +3009,7 @@ export const RolesRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       if (ctx.session) {
-        const user = ctx.session.user;
+        //const user = ctx.session.user;
         return await ctx.prisma.aplicacionRolPorTalento.findMany({
           where: {
             id_talento: input.id_talento,

@@ -56,7 +56,7 @@ const IndividualData: FC<PropsIndividualData> = ({
         <MContainer direction="horizontal">
           <Typography
             fontWeight={600}
-            sx={{ color: "#928F8F", paddingRight: 1, fontStyle:'italic' }}
+            sx={{ color: "#928F8F", paddingRight: 1, fontStyle: "italic" }}
           >
             {title}
           </Typography>
@@ -227,7 +227,7 @@ export const RolPreview: FC<PropsRol> = ({
             <Grid container item xs={12}>
               <Grid xs={6} item>
                 <Typography sx={{ color: "#069cb1", fontSize: ".9rem" }}>
-                  {popUp ===  true?
+                  {popUp === true ? (
                     <>
                       {textos["inicio_de_proyecto"]}
                       <Typography
@@ -246,9 +246,9 @@ export const RolPreview: FC<PropsRol> = ({
                           textos["no_especificado"]}
                       </Typography>
                     </>
-                    :
+                  ) : (
                     ""
-                  }
+                  )}
                   {textos["en"]}{" "}
                   {(rol.casting &&
                     rol.casting.length > 0 &&
@@ -257,8 +257,8 @@ export const RolPreview: FC<PropsRol> = ({
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                {popUp ===  true?
-                   <Typography sx={{ color: "#069cb1", fontSize: ".9rem" }}>
+                {popUp === true ? (
+                  <Typography sx={{ color: "#069cb1", fontSize: ".9rem" }}>
                     {textos["aceptando_aplicaciones_de"]}:
                     <Typography
                       component={"span"}
@@ -273,70 +273,71 @@ export const RolPreview: FC<PropsRol> = ({
                         rol.casting
                           .reduce(
                             (acumulador, current) =>
-                              (acumulador += current.estado_republica.es + ", "),
+                              (acumulador +=
+                                current.estado_republica.es + ", "),
                             ""
                           )
                           .slice(0, -2)) ||
                         textos["no_especificado"]}
                     </Typography>
                   </Typography>
-                  :
+                ) : (
                   ""
-                }
+                )}
               </Grid>
             </Grid>
-            {popUp === true?
+            {popUp === true ? (
               <Grid item xs={12}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Image
-                  style={{ borderRadius: "50%", border: "2px solid #000" }}
-                  src={
-                    rol.proyecto.cazatalentos.foto_perfil
-                      ? rol.proyecto.cazatalentos.foto_perfil.url
-                      : "/assets/img/no-image.png"
-                  }
-                  width={25}
-                  height={25}
-                  alt=""
-                />
-
-                <Typography sx={{ fontSize: "0.9rem", fontWeight: 400 }}>
-                  {textos["proyecto_por"]}: {rol.proyecto.productor}
-                </Typography>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    paddingLeft: "10px",
-                    gap: 1,
-                    cursor: "pointer",
-                  }}
-                >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Image
-                    src="/assets/img/iconos/eye_blue.svg"
-                    width={20}
-                    height={20}
+                    style={{ borderRadius: "50%", border: "2px solid #000" }}
+                    src={
+                      rol.proyecto.cazatalentos.foto_perfil
+                        ? rol.proyecto.cazatalentos.foto_perfil.url
+                        : "/assets/img/no-image.png"
+                    }
+                    width={25}
+                    height={25}
                     alt=""
                   />
-                  <Button
-                    onClick={() => {
-                      setDialogInfoProductor({ open: true });
+
+                  <Typography sx={{ fontSize: "0.9rem", fontWeight: 400 }}>
+                    {textos["proyecto_por"]}: {rol.proyecto.productor}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      paddingLeft: "10px",
+                      gap: 1,
+                      cursor: "pointer",
                     }}
-                    style={{ textTransform: "capitalize" }}
                   >
-                    {textos["ver"]} {textos["perfil"]}
-                  </Button>
+                    <Image
+                      src="/assets/img/iconos/eye_blue.svg"
+                      width={20}
+                      height={20}
+                      alt=""
+                    />
+                    <Button
+                      onClick={() => {
+                        setDialogInfoProductor({ open: true });
+                      }}
+                      style={{ textTransform: "capitalize" }}
+                    >
+                      {textos["ver"]} {textos["perfil"]}
+                    </Button>
+                  </Box>
                 </Box>
-              </Box>
-            </Grid>
-            :
-            ""
-            }
+              </Grid>
+            ) : (
+              ""
+            )}
             <Grid item xs={12} mt={1}>
               <Divider sx={{ borderWidth: 1 }} />
             </Grid>
-            <Grid xs={12}>
+            <Grid item xs={12}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Typography>{rol.proyecto.tipo.tipo_proyecto.es}</Typography>
                 <Divider
@@ -351,41 +352,43 @@ export const RolPreview: FC<PropsRol> = ({
                 {rol?.compensaciones &&
                 rol.compensaciones?.compensaciones_no_monetarias &&
                 rol.compensaciones.compensaciones_no_monetarias.length > 0 ? (
-                  rol.compensaciones.compensaciones_no_monetarias.map((c, i) => (
-                    <Fragment key={c.id}>
-                      <Typography>{c.compensacion.es}</Typography>
-                      <Divider
-                        style={{
-                          borderWidth: 1,
-                          height: 12,
-                          borderColor: "#069cb1",
-                          margin: 8,
-                        }}
-                        orientation="vertical"
-                      />
-                      {i === 4? 
-                        <>
-                          {popUp === true ? 
-                            <Button onClick={() => setShowPreview((v) => !v)}>
-                              <MotionImage
-                                src="/assets/img/iconos/arrow_d_blue.svg"
-                                width={20}
-                                height={20}
-                                alt=""
-                                animate={{
-                                  rotate: showPreview ? "180deg" : "0",
-                                }}
-                              />
-                            </Button>
-                            :
-                            ''
-                          }
-                        </>
-                        :
-                        ''  
-                      }
-                    </Fragment>
-                  ))
+                  rol.compensaciones.compensaciones_no_monetarias.map(
+                    (c, i) => (
+                      <Fragment key={c.id}>
+                        <Typography>{c.compensacion.es}</Typography>
+                        <Divider
+                          style={{
+                            borderWidth: 1,
+                            height: 12,
+                            borderColor: "#069cb1",
+                            margin: 8,
+                          }}
+                          orientation="vertical"
+                        />
+                        {i === 4 ? (
+                          <>
+                            {popUp === true ? (
+                              <Button onClick={() => setShowPreview((v) => !v)}>
+                                <MotionImage
+                                  src="/assets/img/iconos/arrow_d_blue.svg"
+                                  width={20}
+                                  height={20}
+                                  alt=""
+                                  animate={{
+                                    rotate: showPreview ? "180deg" : "0",
+                                  }}
+                                />
+                              </Button>
+                            ) : (
+                              ""
+                            )}
+                          </>
+                        ) : (
+                          ""
+                        )}
+                      </Fragment>
+                    )
+                  )
                 ) : (
                   <>
                     <Typography>{textos["no_especificado"]}</Typography>
@@ -400,7 +403,7 @@ export const RolPreview: FC<PropsRol> = ({
                     />
                   </>
                 )}
-                
+
                 <Typography>{rol.proyecto.sindicato.sindicato.es}</Typography>
                 <Divider
                   style={{
@@ -521,7 +524,7 @@ export const RolPreview: FC<PropsRol> = ({
                 <Typography
                   fontWeight={600}
                   component={"span"}
-                  sx={{ paddingRight: "10px", fontStyle:'italic' }}
+                  sx={{ paddingRight: "10px", fontStyle: "italic" }}
                 >
                   {textos["descripcion"]}:
                 </Typography>
@@ -845,22 +848,22 @@ export const RolPreview: FC<PropsRol> = ({
             style={{ objectFit: "cover" }}
             alt=""
           />
-          <button 
+          <button
             style={{
-                width: '40px',
-                fontWeight: "900",
-                borderRadius: "0.5rem",
-                color: "#069cb1",
-                textTransform: "none",
-                padding: "3px",
-                justifyContent: "center",
-                zIndex: "1",
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                display: 'flex',
-                border: 'none',
-            }} 
+              width: "40px",
+              fontWeight: "900",
+              borderRadius: "0.5rem",
+              color: "#069cb1",
+              textTransform: "none",
+              padding: "3px",
+              justifyContent: "center",
+              zIndex: "1",
+              position: "absolute",
+              top: 0,
+              right: 0,
+              display: "flex",
+              border: "none",
+            }}
             onClick={() => setDialogImage({ ...dialogImage, open: false })}
           >
             X
