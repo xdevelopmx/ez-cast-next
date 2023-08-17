@@ -151,6 +151,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({
             <RolPreview
               key={aplicacion.rol.id}
               rol={aplicacion.rol as unknown as RolCompletoPreview}
+              popUp
               action={
                 <Button
                   onClick={() => {

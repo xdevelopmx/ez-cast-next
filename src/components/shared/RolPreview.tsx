@@ -44,13 +44,13 @@ const Transition = React.forwardRef(function Transition(
 
 const IndividualData: FC<PropsIndividualData> = ({
   title,
-  children,
+  children, 
   stylesContainerData = {},
 }) => {
   return (
     <>
       <Grid item xs={12} mt={1}>
-        <Divider />
+        <Divider style={{ marginBottom: '10px' }} />
       </Grid>
       <Grid item container xs={12}>
         <MContainer direction="horizontal">

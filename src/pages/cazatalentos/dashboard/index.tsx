@@ -23,6 +23,9 @@ import useNotify from "~/hooks/useNotify";
 import { useRouter } from "next/router";
 import Constants from "~/constants";
 import { TipoUsuario } from "~/enums";
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 type DashBoardCazaTalentosPageProps = {
   user: User;
@@ -31,6 +34,8 @@ type DashBoardCazaTalentosPageProps = {
 const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
   user,
 }) => {
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   const { notify } = useNotify();
   const router = useRouter();
   const [tabSelected, setTabSelected] = useState<"ACTIVOS" | "ARCHIVADOS">(
@@ -157,12 +162,12 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
               </div>
               <br />
               <div className="row d-lg-flex">
-                <div className="mt-2 col-md-6">
+                <div className="mt-1 col-md-6">
                   <p
                     className="h5 font-weight-bold"
                     style={{ fontSize: "1.5rem" }}
                   >
-                    <b>Requisitos para aprobación:</b>
+                    <b>{textos["encabezado"]}</b>
                   </p>
                   <div className="container_text_scroll">
                     <div>

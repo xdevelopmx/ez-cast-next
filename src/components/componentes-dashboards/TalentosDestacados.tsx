@@ -31,21 +31,21 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
 
   return (
     <>
-      <div className="mt-2 col-md-6">
+      <div className="col-md-6">
         <p className="h4 font-weight-bold" style={{ fontSize: '1.5rem' }}>Destacados</p>
-        <div className="container_slider_destacados">
+        <div className="container_slider_destacados" style={{padding: '10px 20px'}}>
           <Carroucel slidesPerView={slidesPerView} >
             {data.map((d, i) => {
               return (
                 <MContainer key={i} direction='vertical'
-                  styles={{ padding: '16px', height: '300px' }}>
-                  <div style={{ border: '2px solid #000', height: '100%' }}>
+                  styles={{ padding: '14px', height: '300px' }}>
+                  <div style={{ border: '2px solid #adadad', height: '100%' }}>
                     <div style={{
                       position: 'relative',
                       width: '100%',
                       height: 'calc( 100% - 50px )'
                     }}>
-                      <Image fill src={d.img_profile} alt="talento" />
+                      <Image fill src={d.img_profile} style={{objectFit: 'contain', backgroundColor: '#fff'}} alt="talento" />
                     </div>
                     <div className="cart_slider"
                       style={{ backgroundColor: 'white', height: '50px', overflow: 'hidden' }}>
@@ -64,11 +64,13 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
                           variant={'body2'}>
                           {d.talento.info_basica?.union?.id_union === 99 ? d.talento.info_basica.union.descripcion : d.talento.info_basica?.union?.union.es}
                         </Typography>
-                        <div style={{ paddingRight: 8, alignItems: 'baseline' }}
-                          className="d-lg-flex cart_slider_datos">
-                          <motion.img src="/assets/img/iconos/cart_location_blue.svg" alt="icon" />
-                          <p>{d.talento.info_basica?.estado_republica.es}</p>
+                        {d.talento.info_basica?.estado_republica.es.length > 0?
+                        <div style={{ paddingRight: 8, alignItems: 'baseline' }} className="d-lg-flex cart_slider_datos">
+                          <p><motion.img src="/assets/img/iconos/cart_location_blue.svg" alt="icon" /> {d.talento.info_basica?.estado_republica.es}</p>
                         </div>
+                        :
+                        ''
+                        }
                       </MContainer>
                     </div>
                   </div>
