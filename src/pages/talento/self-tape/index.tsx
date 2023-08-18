@@ -364,6 +364,23 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                    setLineas(e.target.value)
                                                 }}
                                                 label={textos['lineas_self']}
+                                                tooltip={
+                                                    <MTooltip
+                                                        color='blue'
+                                                        placement='right-start'
+                                                        text={
+                                                            <>
+                                                                <Typography fontWeight={600}>
+                                                                    Editar líneas
+                                                                </Typography>
+                                                                <br/>
+                                                                <Typography>
+                                                                    Ut condimentum eleifend Leo nec ultricies.
+                                                                </Typography>
+                                                            </>
+                                                        }
+                                                    />
+                                                }
                                             />
                                         </Grid>
                                         {/*

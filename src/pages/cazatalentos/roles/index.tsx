@@ -343,7 +343,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                 </div>
               )}
               <br />
-              <MContainer direction="horizontal" justify="space-between">
+              <MContainer direction="horizontal" justify="space-between" styles={{alignItems:"center",}}>
                 <MContainer direction="horizontal">
                   <p
                     className="h5 font-weight-bold"
@@ -575,13 +575,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       variant="subtitle2"
                       sx={{
                         textTransform: "capitalize !important",
+                        fontSize: "1.2rem",
                       }}
                     >
                       {proyecto.data
                         ? proyecto.data?.estatus
                             .replaceAll("_", " ")
                             .toLocaleLowerCase()
-                        : "ND"}
+                        : "ND"} 
                     </Typography>
                   </MContainer>
                   <Divider
@@ -593,7 +594,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     }}
                     orientation="vertical"
                   />
-                  <Typography variant="subtitle2">
+                  <Typography variant="subtitle2" 
+                   sx={{
+                        fontSize: "1.2rem",
+                    }}>
                     {proyecto.data && proyecto.data.tipo
                       ? proyecto.data.tipo.id_tipo_proyecto === 99
                         ? proyecto.data.tipo.descripcion
@@ -609,7 +613,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     }}
                     orientation="vertical"
                   />
-                  <Typography variant="subtitle2">
+                  <Typography variant="subtitle2"
+                    sx={{
+                      fontSize: "1.2rem",
+                   }}>
                     {proyecto.data && proyecto.data.sindicato
                       ? proyecto.data.sindicato.id_sindicato === 99
                         ? proyecto.data.sindicato.descripcion
