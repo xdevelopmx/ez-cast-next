@@ -198,29 +198,32 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                         <Typography style={{fontWeight:800, paddingBottom:20}}>({textos['guardar_dialog_subtitle']})</Typography>
                        <video controls style={{ width: '100%' }} src={recorded_url}>
                             Lo sentimos tu navegador no soporta videos.
-                        </video>
+                        </video>            
                         <Box my={2}>
-                            <label
-                                style={{fontWeight: 600, width: '100%'}}
-                                className={'form-input-label'}
-                                htmlFor={'nombre-input'}
-                            >
-                                {textos['guardar_Como']}*
-                            </label>
-                            <TextField
-                                size="small"
-                                id="nombre-input"
-                                type='text'
-                                onChange={(e) => {
-                                    params.set('nombre', e.target.value);
-                                }}
-                            />
+                           <div style={{display:'flex', gap:10}}>
+                                <label
+                                    style={{fontWeight: 600,}}
+                                    className={'form-input-label'}
+                                    htmlFor={'nombre-input'}
+                                >
+                                    {textos['guardar_Como']}*
+                                </label>
+                                <TextField
+                                    size="small"
+                                    sx={{fieldset:{borderRadius:'50px!important'}}}
+                                    id="nombre-input"
+                                    type='text'
+                                    onChange={(e) => {
+                                        params.set('nombre', e.target.value);
+                                    }}
+                                />
+                                <FormControlLabel control={<Switch onChange={() => { 
+                                const _public = params.get('public') as boolean;
+                                params.set('public', !_public);
+                                }} defaultChecked />} label={textos['publico']} />
+                            </div>
                             <Typography style={{color:'#069CB1'}}>{textos['visible_cazatalento']}</Typography>
                         </Box>
-                        <FormControlLabel control={<Switch onChange={() => { 
-                            const _public = params.get('public') as boolean;
-                            params.set('public', !_public);
-                         }} defaultChecked />} label={textos['publico']} />
                     </Box>
             });
         }

@@ -98,11 +98,7 @@ const DashBoardTalentosPage: NextPage<{
                 <>
                   <div className="d-flex justify-content-between">
                     <div className="d-flex">
-                      <motion.img
-                        src="/assets/img/iconos/icono_head_chat.png"
-                        alt="icono"
-                        style={{ width: 40, height: 40, objectFit: "none" }}
-                      />
+                      
                       {talento.isFetching && (
                         <Skeleton
                           style={{ marginLeft: 16 }}
@@ -149,7 +145,7 @@ const DashBoardTalentosPage: NextPage<{
                 <OptionsGroup
                   styleContainer={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    gap: "40px",
                     marginBottom: 0,
                   }}
                   styleButton={{
