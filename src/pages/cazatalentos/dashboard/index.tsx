@@ -378,7 +378,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                             acciones: (
                               <MContainer
                                 direction="horizontal"
-                                justify="center"
+                                justify="start"
                               >
                                 <>
                                   {[
@@ -393,6 +393,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         text="Archivar"
                                         icon={
                                           <IconButton
+                                            sx={{padding: '0!important'}}
                                             onClick={(e) => {
                                               const params = new Map<
                                                 string,
@@ -447,6 +448,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         text="Editar"
                                         icon={
                                           <IconButton
+                                            sx={{padding: '0!important'}}
                                             onClick={(e) => {
                                               void router.push(
                                                 `/cazatalentos/proyecto?id_proyecto=${p.id}`
@@ -468,36 +470,72 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                           </IconButton>
                                         }
                                       />
+                                      <MTooltip
+                                        color="orange"
+                                        placement="top"
+                                        text="Ir al rol"
+                                        icon={
+                                          <IconButton
+                                            sx={{padding: '0!important'}}
+                                            onClick={(e) => {
+                                              void router.push(
+                                                `/cazatalentos/roles?id_proyecto=${p.id}`
+                                              );
+                                              e.stopPropagation();
+                                            }}
+                                            color="primary"
+                                            aria-label="consultar"
+                                            component="label"
+                                          >
+                                            <Image
+                                              src={
+                                                "/assets/img/iconos/equiz_blue.svg"
+                                              }
+                                              width={16}
+                                              height={16}
+                                              alt="archivar"
+                                            />
+                                          </IconButton>
+                                        }
+                                      />
                                     </>
                                   )}
                                 </>
-                                <MTooltip
-                                  color="orange"
-                                  placement="top"
-                                  text="Ir a rol"
-                                  icon={
-                                    <IconButton
-                                      onClick={(e) => {
-                                        void router.push(
-                                          `/cazatalentos/roles?id_proyecto=${p.id}`
-                                        );
-                                        e.stopPropagation();
-                                      }}
-                                      color="primary"
-                                      aria-label="consultar"
-                                      component="label"
-                                    >
-                                      <Image
-                                        src={
-                                          "/assets/img/iconos/search_blue.png"
-                                        }
-                                        width={16}
-                                        height={16}
-                                        alt="archivar"
-                                      />
-                                    </IconButton>
-                                  }
-                                />
+                                <>
+                                  {[
+                                    Constants.ESTADOS_PROYECTO.APROBADO,
+                                    Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION
+                                  ].includes(p.estatus.toUpperCase())&& (
+                                    <MTooltip
+                                      color="orange"
+                                      placement="top"
+                                      text="Ir al rol"
+                                      icon={
+                                        <IconButton
+                                          sx={{padding: '0!important'}}
+                                          onClick={(e) => {
+                                            void router.push(
+                                              `/cazatalentos/roles?id_proyecto=${p.id}`
+                                            );
+                                            e.stopPropagation();
+                                          }}
+                                          color="primary"
+                                          aria-label="consultar"
+                                          component="label"
+                                        >
+                                          <Image
+                                            src={
+                                              "/assets/img/iconos/search_blue.png"
+                                            }
+                                            width={16}
+                                            height={16}
+                                            alt="archivar"
+                                          />
+                                        </IconButton>
+                                      }
+                                    />
+                                  )}
+                                </>
                                 <>
                                   {["ACTIVO"].includes(
                                     p.estatus.toUpperCase()

@@ -130,27 +130,32 @@ function DragNDrop(props: Props) {
             <>
                 {props.download_url &&
                     <MContainer direction="horizontal" justify='space-between' styles={{ width: '100%' }}>
-                        <Button
-                            size='small'
-                            className='font-weight-bold color_a'
-                            onClick={() => {
-                                window.open(props.download_url)
-                            }} variant="text"
-                            sx={{ textTransform: 'capitalize', textDecoration: 'underline', '&:hover': { textDecoration: 'underline' } }}>
-                            {props.text_label_download || `${textos['descargar'] ? textos['descargar'] : 'Texto No Definido'} ${textos['archivo'] ? textos['archivo'] : 'Texto No Definido'}`}
-                        </Button>
-                        {props.onDownloadUrlRemove &&
-                            <IconButton
-                                aria-label="eliminar archivo"
-                                size='small'
-                                onClick={() => {
-                                    if (props.onDownloadUrlRemove && props.download_url) {
-                                        props.onDownloadUrlRemove(props.download_url);
-                                    }
-                                }}
-                            >
-                                <Close style={{ color: '#069cb1' }} />
-                            </IconButton>
+                        {props.text_label_download?.length !== 0  &&
+                            <div>
+                                <Button
+                                    size='small'
+                                    className='font-weight-bold color_a'
+                                    onClick={() => {
+                                        window.open(props.download_url)
+                                    }} variant="text"
+                                    sx={{ textTransform: 'capitalize', textDecoration: 'underline', '&:hover': { textDecoration: 'underline' } }}>
+                                    {props.text_label_download || `${textos['descargar'] ? textos['descargar'] : 'Texto No Definido'} ${textos['archivo'] ? textos['archivo'] : 'Texto No Definido'}`}
+                                </Button>
+                                {props.onDownloadUrlRemove &&
+                                    <IconButton
+                                        aria-label="eliminar archivo"
+                                        size='small'
+                                        onClick={() => {
+                                            if (props.onDownloadUrlRemove && props.download_url) {
+                                                props.onDownloadUrlRemove(props.download_url);
+                                            }
+                                        }}
+                                    >
+                                        <Close style={{ color: '#069cb1' }} />
+                                    </IconButton>
+                                }
+                            </div>
+
                         }
                     </MContainer>
                 }

@@ -1409,8 +1409,9 @@ footer {
 }
 
 .container_list_proyects .nav-tabs .nav-link {
-  border: 1px solid var(--txt_grey_v2);
+  border: 2px solid var(--txt_grey_v2);
   color: var(--txt_grey_v2);
+  font-weight: 900;
 }
 
 .container_list_proyects .nav-link.active,

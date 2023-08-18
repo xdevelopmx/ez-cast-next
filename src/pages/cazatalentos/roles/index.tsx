@@ -1116,30 +1116,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     if (element) {
                       return (
                         <div style={{ width: "100%" }}>
-                          <IconButton
-                            onClick={() => {
-                              setExpandedRows((prev) => {
-                                if (prev.includes(`panel${element_index}`)) {
-                                  return prev.filter(
-                                    (p) => p !== `panel${element_index}`
-                                  );
-                                }
-                                return prev.concat([`panel${element_index}`]);
-                              });
-                            }}
-                            color="primary"
-                            aria-label="expandir"
-                            component="label"
-                          >
-                            {expanded_rows.includes(`panel${element_index}`) ? (
-                              <DownIcon sx={{ color: "#928F8F" }} />
-                            ) : (
-                              <UpIcon sx={{ color: "#928F8F" }} />
-                            )}
-                          </IconButton>
 
                           <Grid container p={2}>
-                            <Grid item container xs={12}>
+                            <Grid item container xs={11}>
                               <Grid item xs={7}>
                                 <MContainer
                                   direction="horizontal"
@@ -1524,6 +1503,31 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     : "No especificado"}
                                 </Typography>
                               </Grid>
+                            </Grid>
+                            <Grid item container justifyContent={'flex-end'} xs={1}>
+                              <div>
+                                <IconButton
+                                  onClick={() => {
+                                    setExpandedRows((prev) => {
+                                      if (prev.includes(`panel${element_index}`)) {
+                                        return prev.filter(
+                                          (p) => p !== `panel${element_index}`
+                                        );
+                                      }
+                                      return prev.concat([`panel${element_index}`]);
+                                    });
+                                  }}
+                                  color="primary"
+                                  aria-label="expandir"
+                                  component="label"
+                                >
+                                  {expanded_rows.includes(`panel${element_index}`) ? (
+                                    <UpIcon sx={{ color: "#928F8F" }} />
+                                  ) : (
+                                    <DownIcon sx={{ color: "#928F8F" }} />
+                                  )}
+                              </IconButton>
+                              </div>
                             </Grid>
                             <Grid item xs={12}>
                               <Divider

@@ -5,6 +5,7 @@ import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { FileManager } from '~/utils/file-manager';
 import Image from 'next/image'
+import { MTooltip } from '~/components/shared/MTooltip';
 
 interface Props {
     state: ProyectoForm;
@@ -25,8 +26,25 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                 <DragNDrop
                     id='id-drag-n-drop-archivo'
                     noIconLabel={true}
-                    label={<Typography fontWeight={600}>Agregar una foto de portada para tu proyecto</Typography>}
-                    text_label_download='Descargar foto'
+                    label={
+                    <Typography fontWeight={600}>
+                        Agregar una foto de portada para tu proyecto 
+                        <MTooltip
+                            color='blue'
+                            text={
+                                <>
+                                    <Typography fontWeight={600}>
+                                        Titulo ToolTip
+                                    </Typography>
+                                    <Typography>
+                                        Texto Tooltip
+                                    </Typography>
+                                </>
+                            }
+                            placement='right'
+                        />
+                    </Typography>}
+                    text_label_download=''
                     max_file_size={5120}
                     download_url={state.files.foto_portada?.url}
                     files={(state.files.foto_portada) ? [state.files.foto_portada] : []}
