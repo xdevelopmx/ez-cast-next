@@ -184,7 +184,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             {conversaciones.isFetched && conversaciones.data &&
                                                 conversaciones.data.map((c, i) => {
                                                     const mensaje = c.mensajes[0];
-                                                    return <Box style={{backgroundColor: (selected_conversacion && selected_conversacion.id === c.id) ? '#e2e2e2' : ''}} onClick={() => {setSelectedConversacion(c)}}>
+                                                    return <Box key={i} style={{backgroundColor: (selected_conversacion && selected_conversacion.id === c.id) ? '#e2e2e2' : ''}} onClick={() => {setSelectedConversacion(c)}}>
                                                         <PreviewConversation 
                                                             loading={false}
                                                             profile_url={(parseInt(user.id) === c.id_receptor) ? c.emisor?.profile_url : c.receptor?.profile_url}
@@ -211,7 +211,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 alignItems: 'center'
                                             }}>
                                                 <Image style={{ marginRight: '10px' }}
-                                                    src="/assets/img/iconos/icono_head_chat.png" width={20} height={20} alt="icono" />
+                                                    src="/assets/img/iconos/chair_dir_blue.svg" width={20} height={20} alt="icono" />
                                                 <Typography fontWeight={600} mr={4}>
                                                    {selected_conversacion ? es_emisor ? selected_conversacion.receptor?.nombre : selected_conversacion.emisor?.nombre : ''}
                                                 </Typography>
@@ -265,7 +265,8 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 const params = JSON.parse(m.mensaje) as {message: string};
                                                                 // si el mensaje es un link entonces lo mostramos como mensaje con media
                                                                 if (Constants.PATTERNS.URL.test(params.message)) {
-                                                                    return <MediaMessage   
+                                                                    return <MediaMessage
+                                                                        fecha={'5/7/2023, 1:11 p. m.'}
                                                                         key={i}
                                                                         nombre={`${m.emisor?.nombre}`}
                                                                         mensaje={params.message}
@@ -275,6 +276,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 }
                                                                 return (
                                                                     <Message
+                                                                        fecha={'5/7/2023, 1:11 p. m.'}
                                                                         key={i}
                                                                         nombre={`${m.emisor?.nombre}`}
                                                                         mensaje={params.message}
@@ -316,7 +318,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             </Box>
                                             {mensajes.isInitialLoading && mensajes.isFetching &&
                                                 Array.from({ length: 5 }).map((_, i) => (
-                                                    <Grid container xs={12} sx={{
+                                                    <Grid key={i} container xs={12} sx={{
                                                         padding: '10px 20px',
                                                         borderBottom: '2px solid #B4B5B6',
                                                     }}>
@@ -390,7 +392,10 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                         }}
                                                         sx={{
                                                             width: '100%',
-
+                                                            '& div': {
+                                                                border: '2px solid #069cb1',
+                                                                borderRadius: '5px'
+                                                            },
                                                         }}
                                                         InputProps={{
                                                             style: { paddingRight: '50px' }

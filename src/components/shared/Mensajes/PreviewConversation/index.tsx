@@ -24,7 +24,7 @@ export const PreviewConversation = (props: {
             borderBottom: '2px solid #B4B5B6',
             height: '100px'
         }}>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
                 <Box sx={{
                     position: 'relative',
                     width: '60px',
@@ -38,7 +38,9 @@ export const PreviewConversation = (props: {
 
                             {!props.visto && <Circle style={{ position: 'absolute', color: '#069cb1', width: 16, height: 16, top: '50%', right: '100%' }} />}
                             <Image style={{
-                                borderRadius: '100%'
+                                borderRadius: '100%',
+                                padding: '4px',
+                                objectFit: 'cover'
                             }} src={`${props.profile_url}`} width={64} height={64} alt="" />
                         
                         </Box>
@@ -46,14 +48,14 @@ export const PreviewConversation = (props: {
                     }
                 </Box>
             </Grid>
-            <Grid item container xs={9}>
+            <Grid item container xs={10}>
                 <Grid item xs={12}>
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center'
                     }}>
                         <Box sx={{
-                            width: '60%',
+                            width: '57%',
 
                         }}>
                             {props.loading &&
@@ -66,14 +68,14 @@ export const PreviewConversation = (props: {
                             }
                         </Box>
                         <Box sx={{
-                            width: '40%',
+                            width: '43%',
                             ...estilos_ellipsis
                         }}>
                             {props.loading &&
                                 <Skeleton width={150}/>
                             }
                             {!props.loading &&
-                                <Typography sx={{ color: '#888585', ...estilos_ellipsis }}>
+                                <Typography sx={{ color: '#888585', fontSize: '14px', textAlign: 'end', ...estilos_ellipsis}}>
                                     {props.hora}
                                 </Typography>
                             }

@@ -28,15 +28,17 @@ type Props = {
     nombre: string;
     mensaje: string;
     imagen: string;
+    fecha?: string;
 }
 
-export const Message = ({ imagen, mensaje, esMensajePropio, nombre }: Props) => {
+export const Message = ({ imagen, mensaje, esMensajePropio, nombre, fecha }: Props) => {
     return (
         <Box 
             sx={{
                 display: 'flex',
                 alignItems: 'flex-start',
-                margin: '25px 0px',
+                margin: '35px 0px',
+                position: 'relative',
                 flexDirection: esMensajePropio ? 'row-reverse' : 'row'
             }}
         >
@@ -60,6 +62,18 @@ export const Message = ({ imagen, mensaje, esMensajePropio, nombre }: Props) => 
                 borderRadius: '10px',
                 ...esMensajePropio ? estilos_mensaje_propio : estilos_mensaje_no_propio
             }}>
+                <div 
+                    style={{
+                        position: 'absolute',
+                        width: 'calc(100% - 120px)',
+                        textAlign: 'center',
+                        top: '-20px',
+                        color: '#000',
+                        fontSize: '13px'
+                    }}
+                >
+                    {fecha}
+                </div>
                 <Typography sx={{
                     color: esMensajePropio ? '#fff' : '#069cb1',
                     //fontWeight: 600,
@@ -75,7 +89,7 @@ export const Message = ({ imagen, mensaje, esMensajePropio, nombre }: Props) => 
     )
 }
 
-export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre }: Props) => {
+export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre, fecha }: Props) => {
 
     const blob = api.mensajes.getBlobMensaje.useQuery(mensaje, {
         refetchOnWindowFocus: false
@@ -104,6 +118,10 @@ export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre }: Props
                     borderRadius: '100%'
                 }} fill alt="" />
             </Box>
+            
+            <div>
+                {fecha}
+            </div>
 
             <Box sx={{
                 width: 'calc( 100% - 80px )',
