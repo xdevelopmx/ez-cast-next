@@ -908,7 +908,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               >
                                 <Image
                                   src={
-                                    "/assets/img/iconos/icono_claqueta_blue.svg"
+                                    "/assets/img/iconos/icono_star_blue.svg"
                                   }
                                   width={16}
                                   height={16}
@@ -1513,6 +1513,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     sx={{
                                       paddingRight: 1,
                                       fontStyle: "italic",
+                                      color:"#000000!important"
                                     }}
                                   >
                                     Descripción:

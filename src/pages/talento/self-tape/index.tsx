@@ -1,33 +1,19 @@
-import { Alert, Box, Button, ButtonGroup, Divider, FormControlLabel, Grid, IconButton, Skeleton, Slider, Switch, SxProps, TablePagination, TextField, Theme, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Divider, FormControlLabel, Grid, IconButton, Skeleton, Slider, Switch, TablePagination, TextField, Theme, Typography, type SxProps } from '@mui/material';
 import Head from "next/head";
 import Image from 'next/image';
-import Link from "next/link";
 import { Alertas, FormGroup, MRadioGroup, MainLayout, MenuLateral, RolCompletoPreview } from "~/components";
-
 import { LegacyRef, RefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import DualDatePicker from "~/components/shared/DualDatePicker/DualDatePicker";
 import { api, parseErrorBody } from "~/utils/api";
 import { AnimatePresence } from "framer-motion";
-import MotionDiv from "~/components/layout/MotionDiv";
 import { useRouter } from "next/router";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import useNotify from "~/hooks/useNotify";
 import { MTooltip } from "~/components/shared/MTooltip";
-import { expandDates } from "~/utils/dates";
-import dayjs from "dayjs";
 import { TipoUsuario } from "~/enums";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps, NextPage } from "next";
 import Constants from "~/constants";
 import { User } from "next-auth";
-import { RolPreviewLoader } from "~/components/shared/RolPreviewLoader";
-import { RolPreview } from "~/components/shared/RolPreview";
-import { MedidasDialog } from "~/components/talento/dialogs/MedidasDialog";
-import { AplicacionRolDialog } from "~/components/talento/dialogs/AplicacionRolDialog";
-import { TalentoAplicacionesRepresentante } from "~/components/representante/talento/TalentoAplicacionesRepresentante";
-import { blob } from "aws-sdk/clients/codecommit";
 import { Circle } from "@mui/icons-material";
 import { FileManager } from "~/utils/file-manager";
 import AppContext from "~/context/app";
@@ -229,7 +215,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                     params.set('nombre', e.target.value);
                                 }}
                             />
-                            <Typography>{textos['visible_cazatalento']}</Typography>
+                            <Typography style={{color:'#069CB1'}}>{textos['visible_cazatalento']}</Typography>
                         </Box>
                         <FormControlLabel control={<Switch onChange={() => { 
                             const _public = params.get('public') as boolean;
@@ -272,7 +258,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                 </div>
                                 <Box p={8}>
                                     <Box display={'flex'} flexDirection={'row'} gap={2}>
-                                        <Image src='/assets/img/iconos/agenda.svg' width={32} height={32} alt=""/>
+                                        <Image src='/assets/img/iconos/icono-selftape.svg' width={32} height={32} alt=""/>
                                         <Typography style={{fontSize:30,fontWeight: 900}}>Self-tape</Typography>
                                     </Box>
                                     <Typography>
@@ -301,7 +287,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                         {has_permissions.camera &&
                                            <>
                                             {can_record && !recording &&
-                                                <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={200} height={16} >
+                                                <Box position={'absolute'} left={'calc(50% - 100px)'} top={'calc(50% - 8px)'} width={200} height={16} sx={{textAlign:"center"}}>
                                                     <Image src='/assets/img/iconos/web_cam_blue.png' style={{textAlign:"center", paddingBottom: 10}} width={52} height={39} alt=""/>
                                                     <Button  style={{borderRadius: "50px", width: "170px", backgroundColor:"#069CB1", color:"#fff", textTransform:"none"}} onClick={ () => { setRecording(prev => !prev) }} size="small">{textos['record_selftape']}</Button>
                                                 </Box>
@@ -328,7 +314,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                         </Box>
                                                         <Box sx={{position: 'relative', top: 56, width: '90%'}} ref={textBoxRef} maxHeight={150} overflow={'hidden'} p={4}>
                                                             {formated_lineas.map((l, i) => {
-                                                                return <p  className={`selected-text-${i}`} style={{fontSize: '1.3rem', padding: 0, margin: 0, backgroundColor: (highlighted_text === i) ? 'rgba(6, 156, 177, 0.5)' : '', color: 'white'}}>{l} [{i}]</p>
+                                                                return <p  className={`selected-text-${i}`} style={{fontSize: '1.3rem', textAlign:'center', padding: 0, margin: 0, backgroundColor: (highlighted_text === i) ? 'rgba(6, 156, 177, 0.5)' : '', color: 'white'}}>{l} [{i}]</p>
                                                             })}
                                                         </Box>
                                                         <Box display={'flex'} flexDirection={'column'} sx={{position: 'absolute', top: 32, right: 0}} p={4}>
@@ -340,11 +326,11 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                                     
                                                                 }}
                                                             >
-                                                                <Image src={`/assets/img/iconos/arrow_u_blue.svg`} width={40} height={40} alt=""/>
+                                                                <Image src={`/assets/img/iconos/arrow_u_white.svg`} width={20} height={20} alt=""/>
                                                             </IconButton>
                                                             <IconButton 
                                                                 sx={{
-                                                                    marginTop: 4
+                                                                    marginTop: 1
                                                                 }}
                                                                 onClick={(e) => { 
                                                                     if (formated_lineas.length > (highlighted_text + 1)) {
@@ -352,7 +338,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                                     }
                                                                 }}
                                                             >
-                                                                <Image src={`/assets/img/iconos/arrow_d_blue.svg`} width={40} height={40} alt=""/>
+                                                                <Image src={`/assets/img/iconos/arrow_d_white.svg`} width={20} height={20} alt=""/>
                                                             </IconButton>
                                                         </Box>
                                                     </Box>
@@ -373,7 +359,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                 labelStyle={{ fontWeight: 600}}
                                                 labelClassName={'form-input-label'}
                                                 value={lineas}
-                                                icon={{element: <Image src={'/assets/img/iconos/mas.svg'} width={16} height={16} alt=""/>, position: 'start'}}
+                                                icon={{element: <Image src={'/assets/img/iconos/mas_azul.svg'} width={16} height={16} alt=""/>, position: 'start'}}
                                                 onChange={(e) => {
                                                    setLineas(e.target.value)
                                                 }}
