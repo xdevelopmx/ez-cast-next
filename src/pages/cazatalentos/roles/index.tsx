@@ -1551,7 +1551,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
@@ -1633,7 +1633,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
@@ -1714,7 +1714,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
@@ -1783,7 +1783,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
@@ -1853,7 +1853,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
@@ -1936,7 +1936,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
@@ -2026,7 +2026,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           <Typography
                                             fontWeight={600}
                                             sx={{
-                                              color: "#928F8F",
+                                              color: "#000000",
                                               paddingRight: 1,
                                               fontStyle: "italic",
                                             }}
