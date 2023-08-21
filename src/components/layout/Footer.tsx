@@ -34,15 +34,17 @@ export const Footer = () => {
         </div>
         <div className="col-md-3 text-right align-self-end">
           <p className="m-0">© Talent Corner, 2023</p>
-          <a
-            href="#"
-            className="footer_link"
-            style={{
-              display: "block !important",
-            }}
-          >
-            Política de privacidad
-          </a>
+          <div>
+            <a
+              href="#"
+              className="footer_link"
+              style={{
+                display: "block !important",
+              }}
+            >
+              Política de privacidad
+            </a>
+          </div>
           <a href="#" className="footer_link d-inline-block">
             Términos y condiciones
           </a>

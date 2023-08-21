@@ -5,8 +5,7 @@ import { useState } from "react";
 import { Header, Pagepiling } from "~/components";
 
 const Home: NextPage = () => {
-
-  const [pagina, setPagina] = useState(0)
+  const [pagina, setPagina] = useState(0);
 
   return (
     <>
@@ -17,7 +16,7 @@ const Home: NextPage = () => {
       </Head>
 
       <Header tieneFondoBlanco={pagina !== 0} disabletieneFondoBlanco />
-      <Pagepiling onCambiarPagina={pagina => setPagina(pagina)} />
+      <Pagepiling onCambiarPagina={(pagina) => setPagina(pagina)} />
     </>
   );
 };

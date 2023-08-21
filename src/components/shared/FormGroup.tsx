@@ -1,6 +1,7 @@
 import { Box, Skeleton, TextField, Typography } from "@mui/material";
 import type {
   ChangeEventHandler,
+  ComponentProps,
   CSSProperties,
   FC,
   HTMLInputTypeAttribute,
@@ -8,6 +9,8 @@ import type {
 } from "react";
 import { MContainer } from "../layout/MContainer";
 import MotionDiv from "../layout/MotionDiv";
+
+type PropsTextArea = ComponentProps<typeof TextField>;
 
 interface Props {
   label?: string;
@@ -36,6 +39,8 @@ interface Props {
   disabled?: boolean;
   tooltip?: ReactNode;
   placeholder?: string;
+
+  propsTextArea?: PropsTextArea;
 }
 
 export const FormGroup: FC<Props> = ({
@@ -59,6 +64,7 @@ export const FormGroup: FC<Props> = ({
   style,
   textBlueLabel,
   tooltip,
+  propsTextArea,
 }) => {
   let input: JSX.Element = (
     <input
@@ -100,6 +106,7 @@ export const FormGroup: FC<Props> = ({
         onChange={onChange}
         multiline
         rows={rows ? rows : 3}
+        {...propsTextArea}
       />
     );
   }
