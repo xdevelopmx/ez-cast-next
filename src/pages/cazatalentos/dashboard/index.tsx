@@ -337,17 +337,22 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                   break;
                               }
                               return (
-                                <MContainer direction="horizontal">
+                                <MContainer
+                                  direction="horizontal"
+                                  styles={{ alignItems: "center" }}
+                                >
                                   <CircleIcon
                                     style={{
                                       color: color,
                                       width: 12,
                                       height: 12,
-                                      marginTop: 6,
                                       marginRight: 4,
                                     }}
                                   />
-                                  <Typography variant="subtitle2">
+                                  <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontSize: "1.2rem" }}
+                                  >
                                     {p.nombre}
                                   </Typography>
                                 </MContainer>
@@ -356,25 +361,113 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                             estado: (() => {
                               switch (p.estatus.toUpperCase()) {
                                 case Constants.ESTADOS_PROYECTO.POR_VALIDAR:
-                                  return "Pendiente";
+                                  return (
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        fontSize: "1.2rem",
+                                        padding: "0px 11px",
+                                      }}
+                                    >
+                                      Pendiente
+                                    </Typography>
+                                  );
                                 case Constants.ESTADOS_PROYECTO.ARCHIVADO:
-                                  return "Archivado";
+                                  return (
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        fontSize: "1.2rem",
+                                        padding: "0px 11px",
+                                      }}
+                                    >
+                                      Archivado
+                                    </Typography>
+                                  );
                                 case Constants.ESTADOS_PROYECTO
                                   .ENVIADO_A_APROBACION:
-                                  return "Enviado a aprobacion";
+                                  return (
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        fontSize: "1.2rem",
+                                        padding: "0px 11px",
+                                      }}
+                                    >
+                                      Enviado a aprobación
+                                    </Typography>
+                                  );
                                 case Constants.ESTADOS_PROYECTO.RECHAZADO:
-                                  return "Inactivo";
+                                  return (
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        fontSize: "1.2rem",
+                                        padding: "0px 11px",
+                                      }}
+                                    >
+                                      Inactivo
+                                    </Typography>
+                                  );
                                 case Constants.ESTADOS_PROYECTO.APROBADO:
-                                  return "Activo";
+                                  return (
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        fontSize: "1.2rem",
+                                        padding: "0px 11px",
+                                      }}
+                                    >
+                                      Activo
+                                    </Typography>
+                                  );
                               }
-                              return p.estatus;
+                              return (
+                                <Typography
+                                  variant="subtitle2"
+                                  sx={{
+                                    fontSize: "1.2rem",
+                                    padding: "0px 11px",
+                                  }}
+                                >
+                                  {p.estatus}
+                                </Typography>
+                              );
                             })(),
-                            tipo: p.tipo
-                              ? p.tipo.id_tipo_proyecto === 99
-                                ? p.tipo.descripcion
-                                : p.tipo.tipo_proyecto.es
-                              : "ND",
-                            fecha: p.created.toLocaleDateString("es-mx"),
+                            tipo: p.tipo ? (
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontSize: "1.2rem",
+                                  padding: "0px 11px",
+                                }}
+                              >
+                                {p.tipo.id_tipo_proyecto === 99
+                                  ? p.tipo.descripcion
+                                  : p.tipo.tipo_proyecto.es}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontSize: "1.2rem",
+                                  padding: "0px 11px",
+                                }}
+                              >
+                                ND
+                              </Typography>
+                            ),
+                            fecha: (
+                              <Typography
+                                variant="subtitle2"
+                                sx={{
+                                  fontSize: "1.2rem",
+                                  padding: "0px 11px",
+                                }}
+                              >
+                                {p.created.toLocaleDateString("es-mx")}
+                              </Typography>
+                            ),
                             acciones: (
                               <MContainer
                                 direction="horizontal"
@@ -393,7 +486,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         text="Archivar"
                                         icon={
                                           <IconButton
-                                            sx={{padding: '0!important'}}
+                                            sx={{ padding: "0!important" }}
                                             onClick={(e) => {
                                               const params = new Map<
                                                 string,
@@ -448,7 +541,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         text="Editar"
                                         icon={
                                           <IconButton
-                                            sx={{padding: '0!important'}}
+                                            sx={{ padding: "0!important" }}
                                             onClick={(e) => {
                                               void router.push(
                                                 `/cazatalentos/proyecto?id_proyecto=${p.id}`
@@ -476,7 +569,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         text="Borrar"
                                         icon={
                                           <IconButton
-                                            sx={{padding: '0!important'}}
+                                            sx={{ padding: "0!important" }}
                                             onClick={(e) => {
                                               void router.push(
                                                 `/cazatalentos/roles?id_proyecto=${p.id}`
@@ -504,15 +597,16 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                 <>
                                   {[
                                     Constants.ESTADOS_PROYECTO.APROBADO,
-                                    Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION
-                                  ].includes(p.estatus.toUpperCase())&& (
+                                    Constants.ESTADOS_PROYECTO
+                                      .ENVIADO_A_APROBACION,
+                                  ].includes(p.estatus.toUpperCase()) && (
                                     <MTooltip
                                       color="orange"
                                       placement="top"
                                       text="Ir al rol"
                                       icon={
                                         <IconButton
-                                          sx={{padding: '0!important'}}
+                                          sx={{ padding: "0!important" }}
                                           onClick={(e) => {
                                             void router.push(
                                               `/cazatalentos/roles?id_proyecto=${p.id}`

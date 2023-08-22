@@ -386,6 +386,7 @@ footer {
   border: 1px solid currentColor;
   transition: 0.5s ease;
   color: #fff !important;
+  background-color: transparent;
 }
 
 .link_bottom:hover {
@@ -2180,8 +2181,8 @@ body .tooltip > .tooltip-inner,
   max-width: 400px;
 }
 
-.fw-600 { 
-   font-weight: 600;
+.fw-600 {
+  font-weight: 600;
 }
 
 .container_slider_intro {
