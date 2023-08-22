@@ -1427,186 +1427,197 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         menuSiempreBlanco={true}
       >
         <div
-          className={"RootContainer"}
           style={{
             minHeight: [1].includes(state.step_active)
               ? "calc(100vh - 76px)"
               : "100%",
+            padding: '50px 0 50px'
           }}
         >
-          <MStepper
-            onStepChange={(step: number) => {
-              dispatch({ type: "update-form", value: { step_active: step } });
-            }}
-            onFinish={() => {
-              saveFiltrosApariencias.mutate({
-                id_talento: id_talento,
-                ...state.filtros_apariencia,
-                hermanos: {
-                  id_tipo_hermanos: state.filtros_apariencia.hermanos
-                    ? state.filtros_apariencia.hermanos.id_tipo_hermanos
-                    : 0,
-                  descripcion:
-                    state.filtros_apariencia.hermanos &&
-                    state.filtros_apariencia.hermanos.id_tipo_hermanos === 99
-                      ? state.filtros_apariencia.hermanos.descripcion
-                      : state.filtros_apariencia.tipo_hermano_selected,
-                },
-              });
-            }}
-            current_step={state.step_active}
-            onStepSave={(step: number) => {
-              switch (step) {
-                case 1: {
-                  void handleInfoGral();
-                  break;
-                }
+          <div style={{
+            width: '70%',
+            margin: '0 auto',
+            backgroundColor: 'white',
+            border: '2px',
+            borderStyle: 'solid',
+            borderColor: '#4ab7c6',
+            padding: '48px 96px',
+            borderRadius: '8px'
+          }}>
+            <MStepper
+              onStepChange={(step: number) => {
+                dispatch({ type: "update-form", value: { step_active: step } });
+              }}
+              onFinish={() => {
+                saveFiltrosApariencias.mutate({
+                  id_talento: id_talento,
+                  ...state.filtros_apariencia,
+                  hermanos: {
+                    id_tipo_hermanos: state.filtros_apariencia.hermanos
+                      ? state.filtros_apariencia.hermanos.id_tipo_hermanos
+                      : 0,
+                    descripcion:
+                      state.filtros_apariencia.hermanos &&
+                      state.filtros_apariencia.hermanos.id_tipo_hermanos === 99
+                        ? state.filtros_apariencia.hermanos.descripcion
+                        : state.filtros_apariencia.tipo_hermano_selected,
+                  },
+                });
+              }}
+              current_step={state.step_active}
+              onStepSave={(step: number) => {
+                switch (step) {
+                  case 1: {
+                    void handleInfoGral();
+                    break;
+                  }
 
-                case 2: {
-                  void handleMedia();
-                  break;
-                }
+                  case 2: {
+                    void handleMedia();
+                    break;
+                  }
 
-                case 3: {
-                  void handleCreditos();
-                  break;
-                }
+                  case 3: {
+                    void handleCreditos();
+                    break;
+                  }
 
-                case 4: {
-                  const ids: {
-                    id_habilidad_especifica: number;
-                    id_habilidad: number;
-                  }[] = [];
-                  state.habilidades.habilidades_seleccionadas.forEach(
-                    (value, key) => {
-                      value.forEach((id) => {
-                        ids.push({
-                          id_habilidad_especifica: id,
-                          id_habilidad: key,
+                  case 4: {
+                    const ids: {
+                      id_habilidad_especifica: number;
+                      id_habilidad: number;
+                    }[] = [];
+                    state.habilidades.habilidades_seleccionadas.forEach(
+                      (value, key) => {
+                        value.forEach((id) => {
+                          ids.push({
+                            id_habilidad_especifica: id,
+                            id_habilidad: key,
+                          });
                         });
-                      });
+                      }
+                    );
+                    saveHabilidades.mutate({
+                      id_talento: id_talento,
+                      ids_habilidades: ids,
+                    });
+                    break;
+                  }
+
+                  case 5: {
+                    saveActivos.mutate({
+                      id_talento: id_talento,
+                      vehiculos: state.activos.vehiculos
+                        ? state.activos.vehiculos
+                        : [],
+                      mascotas: state.activos.mascotas
+                        ? state.activos.mascotas
+                        : [],
+                      vestuarios: state.activos.vestuarios
+                        ? state.activos.vestuarios
+                        : [],
+                      props: state.activos.props ? state.activos.props : [],
+                      equipos_deportivos: state.activos.equipos_deportivos
+                        ? state.activos.equipos_deportivos
+                        : [],
+                    });
+                    break;
+                  }
+                  case 6: {
+                    savePreferencias.mutate({
+                      id_talento: id_talento,
+                      preferencias: state.preferencias.preferencias,
+                      tipos_trabajo: state.preferencias.tipo_trabajo,
+                      interes_en_proyectos:
+                        state.preferencias.interes_en_proyectos,
+                      locaciones: state.preferencias.locaciones,
+                      documentos: state.preferencias.documentos,
+                      disponibilidad: state.preferencias.disponibilidad,
+                      otras_profesiones: state.preferencias.otras_profesiones,
+                    });
+                    break;
+                  }
+                }
+              }}
+              step_titles={{
+                1: textos["info_basica"]
+                  ? textos["info_basica"]
+                  : "Texto No Definido",
+                2: textos["media"] ? textos["media"] : "Texto No Definido",
+                3: `${
+                  textos["credito"] ? textos["credito"] : "Texto No Definido"
+                }s`,
+                4: textos["habilidades"]
+                  ? textos["habilidades"]
+                  : "Texto No Definido",
+                5: textos["activos"] ? textos["activos"] : "Texto No Definido",
+                6: textos["step6_title"]
+                  ? textos["step6_title"]
+                  : "Texto No Definido",
+                7: textos["step7_title"]
+                  ? textos["step7_title"]
+                  : "Texto No Definido",
+              }}
+              tooltips={{
+                4: (
+                  <MTooltip
+                    text={
+                      textos["habilidades_tooltip"]
+                        ? textos["habilidades_tooltip"]
+                        : "Texto No Definido"
                     }
-                  );
-                  saveHabilidades.mutate({
-                    id_talento: id_talento,
-                    ids_habilidades: ids,
-                  });
-                  break;
-                }
+                    color="orange"
+                    placement="right"
+                  />
+                ),
+                5: (
+                  <MTooltip
+                    text={
+                      <>
+                        <Typography fontSize={14} fontWeight={600}>
+                          {textos["activos_title_tooltip_title"]
+                            ? textos["activos_title_tooltip_title"]
+                            : "Texto No Definido"}
+                        </Typography>
+                        <Typography fontSize={14} fontWeight={400}>
+                          {textos["activos_title_tooltip_body"]
+                            ? textos["activos_title_tooltip_body"]
+                            : "Texto No Definido"}
+                        </Typography>
+                      </>
+                    }
+                    color="blue"
+                    placement="right"
+                  />
+                ),
+                6: (
+                  <MTooltip
+                    text={
+                      textos["preferencias_rol_tooltip"]
+                        ? textos["preferencias_rol_tooltip"]
+                        : "Texto No Definido"
+                    }
+                    color="blue"
+                    placement="top"
+                  />
+                ),
+              }}
+            >
+              {editar_info_basica_talento}
 
-                case 5: {
-                  saveActivos.mutate({
-                    id_talento: id_talento,
-                    vehiculos: state.activos.vehiculos
-                      ? state.activos.vehiculos
-                      : [],
-                    mascotas: state.activos.mascotas
-                      ? state.activos.mascotas
-                      : [],
-                    vestuarios: state.activos.vestuarios
-                      ? state.activos.vestuarios
-                      : [],
-                    props: state.activos.props ? state.activos.props : [],
-                    equipos_deportivos: state.activos.equipos_deportivos
-                      ? state.activos.equipos_deportivos
-                      : [],
-                  });
-                  break;
-                }
-                case 6: {
-                  savePreferencias.mutate({
-                    id_talento: id_talento,
-                    preferencias: state.preferencias.preferencias,
-                    tipos_trabajo: state.preferencias.tipo_trabajo,
-                    interes_en_proyectos:
-                      state.preferencias.interes_en_proyectos,
-                    locaciones: state.preferencias.locaciones,
-                    documentos: state.preferencias.documentos,
-                    disponibilidad: state.preferencias.disponibilidad,
-                    otras_profesiones: state.preferencias.otras_profesiones,
-                  });
-                  break;
-                }
-              }
-            }}
-            step_titles={{
-              1: textos["info_basica"]
-                ? textos["info_basica"]
-                : "Texto No Definido",
-              2: textos["media"] ? textos["media"] : "Texto No Definido",
-              3: `${
-                textos["credito"] ? textos["credito"] : "Texto No Definido"
-              }s`,
-              4: textos["habilidades"]
-                ? textos["habilidades"]
-                : "Texto No Definido",
-              5: textos["activos"] ? textos["activos"] : "Texto No Definido",
-              6: textos["step6_title"]
-                ? textos["step6_title"]
-                : "Texto No Definido",
-              7: textos["step7_title"]
-                ? textos["step7_title"]
-                : "Texto No Definido",
-            }}
-            tooltips={{
-              4: (
-                <MTooltip
-                  text={
-                    textos["habilidades_tooltip"]
-                      ? textos["habilidades_tooltip"]
-                      : "Texto No Definido"
-                  }
-                  color="orange"
-                  placement="right"
-                />
-              ),
-              5: (
-                <MTooltip
-                  text={
-                    <>
-                      <Typography fontSize={14} fontWeight={600}>
-                        {textos["activos_title_tooltip_title"]
-                          ? textos["activos_title_tooltip_title"]
-                          : "Texto No Definido"}
-                      </Typography>
-                      <Typography fontSize={14} fontWeight={400}>
-                        {textos["activos_title_tooltip_body"]
-                          ? textos["activos_title_tooltip_body"]
-                          : "Texto No Definido"}
-                      </Typography>
-                    </>
-                  }
-                  color="blue"
-                  placement="right"
-                />
-              ),
-              6: (
-                <MTooltip
-                  text={
-                    textos["preferencias_rol_tooltip"]
-                      ? textos["preferencias_rol_tooltip"]
-                      : "Texto No Definido"
-                  }
-                  color="blue"
-                  placement="top"
-                />
-              ),
-            }}
-          >
-            {editar_info_basica_talento}
+              {editar_media_talento}
 
-            {editar_media_talento}
+              {editar_creditos_talento}
 
-            {editar_creditos_talento}
+              {editar_habilidades_talento}
 
-            {editar_habilidades_talento}
+              {editar_activos_talento}
 
-            {editar_activos_talento}
+              {editar_preferencias_rol_y_compensacion_talento}
 
-            {editar_preferencias_rol_y_compensacion_talento}
-
-            {editar_filtros_apariencias_talento}
-          </MStepper>
+              {editar_filtros_apariencias_talento}
+            </MStepper>
+          </div>
         </div>
       </MainLayout>
     </>

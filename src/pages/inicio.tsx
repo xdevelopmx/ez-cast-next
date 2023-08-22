@@ -105,7 +105,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               </div>
               <div className="d-flex align-items-center">
                 <Link href={redirect} style={{ textDecoration: "none" }}>
-                  <p className="mb-0 color_a mr-2">
+                  <p className="mb-0 color_a mr-2 fw-600">
                     {textos["continuar_a_ezcast"]
                       ? textos["continuar_a_ezcast"]
                       : "<p>Texto No definido</p>"}
@@ -308,7 +308,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
           <hr className="hr_blue" style={{ margin: "20px 0 20px 0" }} />
           <div className="d-flex justify-content-end align-items-center">
             <Link href={redirect} style={{ textDecoration: "none" }}>
-              <p className="mb-0 color_a mr-2">
+              <p className="mb-0 color_a mr-2 fw-600">
                 {textos["continuar_a_ezcast"]
                   ? textos["continuar_a_ezcast"]
                   : "<p>Texto No definido</p>"}

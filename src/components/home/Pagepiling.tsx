@@ -10,7 +10,7 @@ import useTimeout from '~/hooks/useDelay';
 const estilos: CSSProperties = {
     position: 'absolute',
     width: '100%',
-    height: '100vh',
+    height: 'auto',
 }
 
 interface Props {

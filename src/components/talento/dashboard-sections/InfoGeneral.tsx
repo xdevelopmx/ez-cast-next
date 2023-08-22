@@ -84,13 +84,14 @@ export const InfoGeneral = (props: {
   return (
     <>
       <Grid id="informacion-basica" container>
-        <Grid item xs={12} md={5} sx={{ paddingTop: 2 }}>
+        <Grid item xs={12} md={4} sx={{ paddingTop: 2 }}>
           <div
             style={{
               position: "relative",
-              width: 500,
+              width: 350,
               aspectRatio: "500/500",
               maxWidth: "100%",
+              border: '1px solid #e3e3e3'
             }}
           >
             <Image
@@ -103,7 +104,7 @@ export const InfoGeneral = (props: {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={7} sx={{ paddingTop: 3 }}>
+        <Grid item xs={12} md={8} sx={{ paddingTop: 3 }}>
           <MContainer className="ml-3" direction="vertical">
             <MContainer
               styles={{ alignItems: "baseline" }}
