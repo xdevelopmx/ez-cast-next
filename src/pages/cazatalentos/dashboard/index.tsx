@@ -473,7 +473,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       <MTooltip
                                         color="orange"
                                         placement="top"
-                                        text="Ir al rol"
+                                        text="Borrar"
                                         icon={
                                           <IconButton
                                             sx={{padding: '0!important'}}
