@@ -20,7 +20,7 @@ export const OptionsGroup: FC<Props> = ({ id, labels, onOptionClick, styleContai
                     return <Button
                         sx={styleButton}
                         size='small'
-                        className={`font-weight-bold color_a ${(seleccionado === index? 'seleccionado' : '')}`}
+                        className={`font-weight-bold color_a fs-20px hover-bg-blue ${(seleccionado === index? 'seleccionado' : '')}`}
                         key={label}
                         onClick={() => { 
                             onOptionClick(id, label),
@@ -32,7 +32,7 @@ export const OptionsGroup: FC<Props> = ({ id, labels, onOptionClick, styleContai
                     </Button>;
                 })}
             </div>
-            <Divider style={{ borderWidth: 1, backgroundColor: 'var(--color_a) !important' }} />
+            <Divider style={{ borderWidth: 2, backgroundColor: 'rgb(0 206 235)' }} />
         </>
     )
 }

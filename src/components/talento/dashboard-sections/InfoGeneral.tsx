@@ -84,13 +84,14 @@ export const InfoGeneral = (props: {
   return (
     <>
       <Grid id="informacion-basica" container>
-        <Grid item xs={12} md={5} sx={{ paddingTop: 2 }}>
+        <Grid item xs={12} md={4} sx={{ paddingTop: 2 }}>
           <div
             style={{
               position: "relative",
-              width: 500,
+              width: 350,
               aspectRatio: "500/500",
               maxWidth: "100%",
+              border: "1px solid #e3e3e3",
             }}
           >
             <Image
@@ -103,14 +104,14 @@ export const InfoGeneral = (props: {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={7} sx={{ paddingTop: 3 }}>
+        <Grid item xs={12} md={8} sx={{ paddingTop: 3 }}>
           <MContainer className="ml-3" direction="vertical">
             <MContainer
-              styles={{ alignItems: "baseline" }}
+              styles={{ alignItems: "center" }}
               className={`m-1`}
               direction="horizontal"
             >
-              <p style={{ fontSize: 32, fontWeight: 900 }}>
+              <p style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>
                 {textos["info_basica"]
                   ? textos["info_basica"]
                   : "Texto No definido"}
@@ -166,7 +167,7 @@ export const InfoGeneral = (props: {
                   margin: 0,
                 }}
               >
-                <span className="badge">
+                <span className="badge" style={{ paddingLeft: 0 }}>
                   <Image
                     width={24}
                     height={24}
@@ -204,7 +205,7 @@ export const InfoGeneral = (props: {
                   margin: 0,
                 }}
               >
-                <span className="badge">
+                <span className="badge" style={{ paddingLeft: 0 }}>
                   <Image
                     width={24}
                     height={24}
@@ -239,7 +240,7 @@ export const InfoGeneral = (props: {
                   fontWeight: 600,
                 }}
               >
-                <span className="badge">
+                <span className="badge" style={{ paddingLeft: 0 }}>
                   <Image
                     width={26}
                     height={26}
@@ -285,7 +286,7 @@ export const InfoGeneral = (props: {
                   className="ml-4"
                 >
                   {data && data.info_basica
-                    ? `${data.info_basica.altura} m`
+                    ? `${(data.info_basica.altura / 100).toFixed(2)} m`
                     : "N/A"}
                 </p>
               </MContainer>

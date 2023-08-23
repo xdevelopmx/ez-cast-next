@@ -8,11 +8,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 
+type Props = React.ComponentProps<typeof DialogActions>;
+
 type ConfirmationDialogProps = {
   title: string;
   content: JSX.Element | null;
   onOptionSelected: (confirmed: boolean) => void;
   opened: boolean;
+  propsDialogActions?: Props;
 };
 
 export default function ConfirmationDialog(props: ConfirmationDialogProps) {
@@ -33,7 +36,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
             {props.content}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions {...props.propsDialogActions}>
           <Button onClick={() => props.onOptionSelected(false)}>
             {textos["cancelar"] ?? "Cancelar"}
           </Button>

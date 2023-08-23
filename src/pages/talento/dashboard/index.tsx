@@ -1,6 +1,5 @@
 import { type GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
@@ -100,7 +99,6 @@ const DashBoardTalentosPage: NextPage<{
                 <>
                   <div className="d-flex justify-content-between">
                     <div className="d-flex">
-                      
                       {talento.isFetching && (
                         <Skeleton
                           style={{ marginLeft: 16 }}
