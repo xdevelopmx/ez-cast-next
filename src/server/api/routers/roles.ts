@@ -2110,7 +2110,7 @@ export const RolesRouter = createTRPCRouter({
         rol.habilidades &&
         rol.habilidades.habilidades_seleccionadas.length > 0
       ) {
-        const deleted_habilidades = await ctx.prisma.habilidadesPorRoles.delete(
+        const deleted_habilidades = await ctx.prisma.habilidadesPorRoles.deleteMany(
           { where: { id_rol: rol.id } }
         );
         if (!deleted_habilidades) {

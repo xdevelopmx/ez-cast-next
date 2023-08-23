@@ -608,6 +608,7 @@ export const TalentosRouter = createTRPCRouter({
 			}).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			console.log(input);
 			if (input.id_talento <= 0) return null;
 			const saved_files: { id_cv: number | null, id_carta_responsiva: number | null } = { id_cv: null, id_carta_responsiva: null };
 			
@@ -670,11 +671,27 @@ export const TalentosRouter = createTRPCRouter({
 					}
 				}
 
-				const representante = await ctx.prisma.representantesPorTalentos.findFirst({
+				let representante = await ctx.prisma.representantesPorTalentos.findFirst({
 					where: {
 						id_talento: input.id_talento
 					}
 				})
+
+				if (!representante) {
+					representante = await ctx.prisma.representantesPorTalentos.create({
+						data: {
+							nombre: '',
+							telefono: '',
+							agencia: '',
+							email: '',
+							id_media_carta_responsiva: null,
+							id_talento: input.id_talento
+						}
+					})
+				}
+
+
+				console.log(representante);
 
 				if (representante) {
 					if (input.carta_responsiva) {
@@ -906,6 +923,7 @@ export const TalentosRouter = createTRPCRouter({
 			})).nullish()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			console.log(input)
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
 			const getResponse = ApiResponses('TalentosRouter_saveInfoGral', lang);
 			if (input.id_talento <= 0) return null;
@@ -1967,7 +1985,59 @@ export const TalentosRouter = createTRPCRouter({
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
 			const getResponse = ApiResponses('TalentosRouter_saveFiltrosApariencias', lang);
 			if (input.id_talento <= 0) return null;
-			
+			if (input.apariencia.rango_inicial_edad <= 0 || input.apariencia.rango_final_edad < input.apariencia.rango_inicial_edad) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_age_range')
+				});
+			}
+			if (input.apariencia.id_genero <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_genre')
+				});
+			}
+			if (input.apariencia.id_pais <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_nacionality')
+				});
+			}
+			if (input.apariencia.id_apariencia_etnica <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_apariencia_etnica')
+				});
+			}
+
+			if (input.apariencia.id_color_ojos <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_eye_color')
+				});
+			}
+
+			if (input.apariencia.id_estilo_cabello <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_hair_style')
+				});
+			}
+
+			if (input.apariencia.id_vello_facial <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_facial_hair')
+				});
+			}
+
+			if (input.apariencia.id_color_cabello <= 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_invalid_hair_color')
+				});
+			}
+
 			const filtros = await ctx.prisma.filtrosAparenciasPorTalentos.upsert({
 				where: { id_talento: input.id_talento },
 				update: { ...input.apariencia },

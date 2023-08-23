@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Link, Skeleton } from "@mui/material";
+import { Button, Link, Skeleton } from "@mui/material";
 import {
   Activos,
   Creditos,
@@ -26,6 +26,7 @@ import { TalentoDashBoardRepresentanteSection } from "~/components/representante
 import { prisma } from "~/server/db";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import useNotify from "~/hooks/useNotify";
 
 const DashBoardTalentosPage: NextPage<{
   user?: User;
@@ -34,6 +35,7 @@ const DashBoardTalentosPage: NextPage<{
   scroll_section: string;
   can_edit: boolean;
 }> = (props) => {
+  const { notify } = useNotify();
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
   const scrollToSection = (sectionId: string) => {
@@ -114,22 +116,28 @@ const DashBoardTalentosPage: NextPage<{
                         </p>
                       )}
                     </div>
-                    <div className="d-flex-column">
-                      <p className="m-0 p-0">
-                        <Image
-                          src="/assets/img/iconos/eye_blue.svg"
-                          width={20}
-                          height={20}
-                          alt=""
-                        />{" "}
-                        Ver como Cazatalento
-                      </p>
-                      <p className="m-0 p-0">
-                        <Link href="#">
-                          Copiar link de perfil para compartir
-                        </Link>
-                      </p>
-                    </div>
+                    {props.user && props.user.tipo_usuario && [TipoUsuario.TALENTO, TipoUsuario.ADMIN].includes(props.user.tipo_usuario) &&
+                      <div className="d-flex-column">
+                        <p className="m-0 p-0">
+                          <Image
+                            src="/assets/img/iconos/eye_blue.svg"
+                            width={20}
+                            height={20}
+                            alt=""
+                          />{" "}
+                          Ver como Cazatalento
+                        </p>
+                        <p className="m-0 p-0">
+                          <Button sx={{textTransform: 'capitalize', textDecoration: 'underline'}} onClick={() => {
+                              navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${props.id_talento}`);
+                              notify('success', 'Se copio el link');
+                          }}>
+                            Copiar link de perfil para compartir
+                          </Button>
+                          
+                        </p>
+                      </div>
+                    }
                   </div>
                   {props.id_talento > 0 &&
                     props.user?.tipo_usuario === TipoUsuario.REPRESENTANTE && (
@@ -253,6 +261,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             rep.representante.permisos?.puede_editar_perfil_representante
           );
         }
+      }
+
+      if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
+        can_edit = false;
       }
 
       return {

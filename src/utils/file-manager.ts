@@ -275,30 +275,33 @@ export const FileManager = {
           }
           if (response[file.name]) {
             try {
-              const result_save = (await (
-                await fetch(
-                  `${
-                    process.env.NEXT_PUBLIC_APP_URL
-                      ? process.env.NEXT_PUBLIC_APP_URL
-                      : ""
-                  }/api/s3/upload`,
-                  {
-                    method: "POST",
-                    //body: JSON.stringify({path: file.path, name: file.name, type: file.type, action: 'putObject'})
-                    body: JSON.stringify({
-                      body: file.base64,
-                      url: response[file.name]?.presigned_url,
-                      type: file.file.type,
-                    }),
-                  }
-                )
-              ).json()) as { url: string | null };
-              console.log("RESULT_SAVE", result_save);
-              response[file.name] = {
-                presigned_url: null,
-                error: null,
-                url: result_save.url,
-              };
+              const _res = await fetch(
+                `${
+                  process.env.NEXT_PUBLIC_APP_URL
+                    ? process.env.NEXT_PUBLIC_APP_URL
+                    : ""
+                }/api/s3/upload`,
+                {
+                  method: "POST",
+                  //body: JSON.stringify({path: file.path, name: file.name, type: file.type, action: 'putObject'})
+                  body: JSON.stringify({
+                    body: file.base64,
+                    url: response[file.name]?.presigned_url,
+                    type: file.file.type,
+                  }),
+                }
+              );
+              if (_res.ok) {
+                const result_save = (await _res.json()) as { url: string | null };
+                console.log("RESULT_SAVE", result_save);
+                response[file.name] = {
+                  presigned_url: null,
+                  error: null,
+                  url: result_save.url,
+                };
+              } else {
+                throw Error(_res.statusText);
+              }
             } catch (e) {
               const error = e as Error;
               response[file.name] = {

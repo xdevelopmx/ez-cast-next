@@ -489,7 +489,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                           >
                                             <Image
                                               src={
-                                                "/assets/img/iconos/equiz_blue.svg"
+                                                "/assets/img/iconos/search_blue.png"
                                               }
                                               width={16}
                                               height={16}
@@ -499,6 +499,46 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         }
                                       />
                                     </>
+                                  )}
+                                </>
+                                <>
+                                  {[Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.RECHAZADO, Constants.ESTADOS_PROYECTO.POR_VALIDAR].includes(
+                                    p.estatus.toUpperCase()
+                                  ) && (
+                                    <IconButton
+                                      onClick={(e) => {
+                                        const params = new Map<
+                                          string,
+                                          unknown
+                                        >();
+                                        params.set("id", p.id);
+                                        setConfirmationDialog({
+                                          action: "DELETE",
+                                          data: params,
+                                          opened: true,
+                                          title: "Eliminar Proyecto",
+                                          content: (
+                                            <Typography variant="body2">
+                                              Seguro que deseas eliminar este
+                                              proyecto?
+                                            </Typography>
+                                          ),
+                                        });
+                                        e.stopPropagation();
+                                      }}
+                                      color="primary"
+                                      aria-label="eliminar"
+                                      component="label"
+                                    >
+                                      <Image
+                                        src={
+                                          "/assets/img/iconos/equiz_blue.svg"
+                                        }
+                                        width={16}
+                                        height={16}
+                                        alt="archivar"
+                                      />
+                                    </IconButton>
                                   )}
                                 </>
                                 <>
@@ -534,46 +574,6 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         </IconButton>
                                       }
                                     />
-                                  )}
-                                </>
-                                <>
-                                  {["ACTIVO"].includes(
-                                    p.estatus.toUpperCase()
-                                  ) && (
-                                    <IconButton
-                                      onClick={(e) => {
-                                        const params = new Map<
-                                          string,
-                                          unknown
-                                        >();
-                                        params.set("id", p.id);
-                                        setConfirmationDialog({
-                                          action: "DELETE",
-                                          data: params,
-                                          opened: true,
-                                          title: "Eliminar Proyecto",
-                                          content: (
-                                            <Typography variant="body2">
-                                              Seguro que deseas eliminar este
-                                              proyecto?
-                                            </Typography>
-                                          ),
-                                        });
-                                        e.stopPropagation();
-                                      }}
-                                      color="primary"
-                                      aria-label="eliminar"
-                                      component="label"
-                                    >
-                                      <Image
-                                        src={
-                                          "/assets/img/iconos/trash_blue.png"
-                                        }
-                                        width={16}
-                                        height={16}
-                                        alt="archivar"
-                                      />
-                                    </IconButton>
                                   )}
                                 </>
                               </MContainer>

@@ -403,6 +403,12 @@ export const ProyectosRouter = createTRPCRouter({
 		.mutation(async ({ input, ctx }) => {
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
 			const getResponse = ApiResponses('ProyectosRouter_updateProyecto', lang);
+			if (input.sindicato.id_sindicato === 99 && input.sindicato.descripcion.length === 0) {
+				throw new TRPCError({
+					code: 'PRECONDITION_FAILED',
+					message: getResponse('error_sindicato_invalido')
+				});
+			}
 			if (input.proyecto.id_estado_republica <= 0) {
 				throw new TRPCError({
 					code: 'PRECONDITION_FAILED',

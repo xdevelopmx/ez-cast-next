@@ -784,7 +784,14 @@ export default function ApiResponses(route: string, lang: string) {
                 error_save_hermanos: 'An error occurred while trying to save the type of siblings for talents.',
                 error_delete_hermanos: 'An error occurred while trying to delete the type of sibling for talents.',
                 error_delete_particularidades: 'An error occurred while trying to delete particularities for talents.',
-                error_save_particularidades: 'An error occurred while trying to save particularities for talents.'
+                error_save_particularidades: 'An error occurred while trying to save particularities for talents.',
+                error_invalid_age_range: 'Select a valid age range.',
+                error_invalid_genre: 'Choose a valid gender.',
+                error_invalid_nacionality: 'Choose a valid nationality.',
+                error_invalid_eye_color: 'Choose a valid eye color.',
+                error_invalid_hair_style: 'Choose a valid hair style.',
+                error_invalid_facial_hair: 'Choose a valid facial hair type.',
+                error_invalid_hair_color: 'Choose a valid hair color.'
             },
             es: {
                 error_save_intereses_en_interpretar: 'Ocurrio un error al tratar de guardar los intereses en generos por interpretar por talentos.',
@@ -796,7 +803,14 @@ export default function ApiResponses(route: string, lang: string) {
                 error_save_hermanos: 'Ocurrio un error al tratar de guardar el tipo de hermanos por talentos.',
                 error_delete_hermanos: 'Ocurrio un error al tratar de eliminar el tipo de hermano por talentos.',
                 error_delete_particularidades: 'Ocurrio un error al tratar de eliminar las particularidades por talentos.',
-                error_save_particularidades: 'Ocurrio un error al tratar de guardar las particularidades por talentos.'
+                error_save_particularidades: 'Ocurrio un error al tratar de guardar las particularidades por talentos.',
+                error_invalid_age_range: 'Elige un rango de edad valido.',
+                error_invalid_genre: 'Elige un genero valido.',
+                error_invalid_nacionality: 'Elige una nacionalidad valida.',
+                error_invalid_eye_color: 'Elige un color de ojos valido.',
+                error_invalid_hair_style: 'Elige un estilo de cabello valida.',
+                error_invalid_facial_hair: 'Elige un tipo de vello facial valida.',
+                error_invalid_hair_color: 'Elige un color de cabello valido.',
             }
         },
     }

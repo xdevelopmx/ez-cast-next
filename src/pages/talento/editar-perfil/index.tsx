@@ -3,7 +3,7 @@ import Head from "next/head";
 
 import { MainLayout } from "~/components";
 import { MStepper } from "~/components/shared/MStepper";
-import { useContext, useEffect, useMemo, useReducer } from "react";
+import { useContext, useEffect, useMemo, useReducer, useState } from "react";
 import {
   EditarActivosTalento,
   EditarCreditosTalento,
@@ -28,6 +28,7 @@ import Constants from "~/constants";
 import { prisma } from "~/server/db";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 export type TalentoFormInfoGral = {
   nombre: string;
@@ -450,6 +451,7 @@ type EditarTalentoPageProps = {
 const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   id_talento,
 }) => {
+  const [save_type, setSaveType] = useState<'save_and_finish_later' | 'save'>('save');
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
   const router = useRouter();
@@ -471,6 +473,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 
   const saveInfoGralMedia = api.talentos.saveInfoGralMedia.useMutation({
     onSuccess(input) {
+      console.log(input);
       saveInfoGral.mutate({
         id_talento: id_talento,
         ...state.info_gral,
@@ -490,8 +493,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveInfoGral = api.talentos.saveInfoGral.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_info_gral"] ?? "éxito"}`);
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      talento.refetch();
+      if (save_type === 'save_and_finish_later') {
+        router.back();
+      } else {
+        void talento.refetch();
+      }
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -501,8 +507,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveMedios = api.talentos.saveMedios.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_medios"] ?? "éxito"}`);
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      talento.refetch();
+      if (save_type === 'save_and_finish_later') {
+        router.back();
+      } else {
+        void talento.refetch();
+      }
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -512,8 +521,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveCreditos = api.talentos.saveCreditos.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_creditos"] ?? "éxito"}`);
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      talento.refetch();
+      if (save_type === 'save_and_finish_later') {
+        router.back();
+      } else {
+        void talento.refetch();
+      }
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -523,8 +535,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveHabilidades = api.talentos.saveHabilidades.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_habilidades"] ?? "éxito"}`);
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      talento.refetch();
+      if (save_type === 'save_and_finish_later') {
+        router.back();
+      } else {
+        void talento.refetch();
+      }
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -534,8 +549,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveActivos = api.talentos.saveActivos.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_activos"] ?? "éxito"}`);
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      talento.refetch();
+      if (save_type === 'save_and_finish_later') {
+        router.back();
+      } else {
+        void talento.refetch();
+      }
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -545,8 +563,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const savePreferencias = api.talentos.savePreferencias.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_preferencias"] ?? "éxito"}`);
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      talento.refetch();
+      if (save_type === 'save_and_finish_later') {
+        router.back();
+      } else {
+        void talento.refetch();
+      }
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -557,8 +578,11 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     api.talentos.saveFiltrosApariencias.useMutation({
       onSuccess(_) {
         notify("success", `${textos["success_save_filtros"] ?? "éxito"}`);
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        talento.refetch();
+        if (save_type === 'save_and_finish_later') {
+          router.back();
+        } else {
+          void talento.refetch();
+        }
       },
       onError: (error) => {
         notify("error", parseErrorBody(error.message));
@@ -1410,6 +1434,81 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     );
   }, [state.filtros_apariencia]);
 
+  const handleStepChange = (step: number) => {
+    switch (step) {
+      case 1: {
+        void handleInfoGral();
+        break;
+      }
+
+      case 2: {
+        void handleMedia();
+        break;
+      }
+
+      case 3: {
+        void handleCreditos();
+        break;
+      }
+
+      case 4: {
+        const ids: {
+          id_habilidad_especifica: number;
+          id_habilidad: number;
+        }[] = [];
+        state.habilidades.habilidades_seleccionadas.forEach(
+          (value, key) => {
+            value.forEach((id) => {
+              ids.push({
+                id_habilidad_especifica: id,
+                id_habilidad: key,
+              });
+            });
+          }
+        );
+        saveHabilidades.mutate({
+          id_talento: id_talento,
+          ids_habilidades: ids,
+        });
+        break;
+      }
+
+      case 5: {
+        saveActivos.mutate({
+          id_talento: id_talento,
+          vehiculos: state.activos.vehiculos
+            ? state.activos.vehiculos
+            : [],
+          mascotas: state.activos.mascotas
+            ? state.activos.mascotas
+            : [],
+          vestuarios: state.activos.vestuarios
+            ? state.activos.vestuarios
+            : [],
+          props: state.activos.props ? state.activos.props : [],
+          equipos_deportivos: state.activos.equipos_deportivos
+            ? state.activos.equipos_deportivos
+            : [],
+        });
+        break;
+      }
+      case 6: {
+        savePreferencias.mutate({
+          id_talento: id_talento,
+          preferencias: state.preferencias.preferencias,
+          tipos_trabajo: state.preferencias.tipo_trabajo,
+          interes_en_proyectos:
+            state.preferencias.interes_en_proyectos,
+          locaciones: state.preferencias.locaciones,
+          documentos: state.preferencias.documentos,
+          disponibilidad: state.preferencias.disponibilidad,
+          otras_profesiones: state.preferencias.otras_profesiones,
+        });
+        break;
+      }
+    }
+  }
+
   return (
     <>
       <Head>
@@ -1436,9 +1535,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         >
           <MStepper
             onStepChange={(step: number) => {
+              setSaveType('save');
+              handleStepChange(state.step_active);
               dispatch({ type: "update-form", value: { step_active: step } });
             }}
             onFinish={() => {
+              setSaveType('save_and_finish_later');
               saveFiltrosApariencias.mutate({
                 id_talento: id_talento,
                 ...state.filtros_apariencia,
@@ -1456,78 +1558,8 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
             }}
             current_step={state.step_active}
             onStepSave={(step: number) => {
-              switch (step) {
-                case 1: {
-                  void handleInfoGral();
-                  break;
-                }
-
-                case 2: {
-                  void handleMedia();
-                  break;
-                }
-
-                case 3: {
-                  void handleCreditos();
-                  break;
-                }
-
-                case 4: {
-                  const ids: {
-                    id_habilidad_especifica: number;
-                    id_habilidad: number;
-                  }[] = [];
-                  state.habilidades.habilidades_seleccionadas.forEach(
-                    (value, key) => {
-                      value.forEach((id) => {
-                        ids.push({
-                          id_habilidad_especifica: id,
-                          id_habilidad: key,
-                        });
-                      });
-                    }
-                  );
-                  saveHabilidades.mutate({
-                    id_talento: id_talento,
-                    ids_habilidades: ids,
-                  });
-                  break;
-                }
-
-                case 5: {
-                  saveActivos.mutate({
-                    id_talento: id_talento,
-                    vehiculos: state.activos.vehiculos
-                      ? state.activos.vehiculos
-                      : [],
-                    mascotas: state.activos.mascotas
-                      ? state.activos.mascotas
-                      : [],
-                    vestuarios: state.activos.vestuarios
-                      ? state.activos.vestuarios
-                      : [],
-                    props: state.activos.props ? state.activos.props : [],
-                    equipos_deportivos: state.activos.equipos_deportivos
-                      ? state.activos.equipos_deportivos
-                      : [],
-                  });
-                  break;
-                }
-                case 6: {
-                  savePreferencias.mutate({
-                    id_talento: id_talento,
-                    preferencias: state.preferencias.preferencias,
-                    tipos_trabajo: state.preferencias.tipo_trabajo,
-                    interes_en_proyectos:
-                      state.preferencias.interes_en_proyectos,
-                    locaciones: state.preferencias.locaciones,
-                    documentos: state.preferencias.documentos,
-                    disponibilidad: state.preferencias.disponibilidad,
-                    otras_profesiones: state.preferencias.otras_profesiones,
-                  });
-                  break;
-                }
-              }
+              setSaveType('save_and_finish_later');
+              handleStepChange(step);
             }}
             step_titles={{
               1: textos["info_basica"]
@@ -1609,6 +1641,10 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           </MStepper>
         </div>
       </MainLayout>
+      <ResourceAlert busy={
+        saveInfoGralMedia.isLoading || saveInfoGral.isLoading || saveMedios.isLoading || saveCreditos.isLoading || 
+        saveHabilidades.isLoading || saveActivos.isLoading || saveFiltrosApariencias.isLoading || savePreferencias.isLoading
+      }/>
     </>
   );
 };

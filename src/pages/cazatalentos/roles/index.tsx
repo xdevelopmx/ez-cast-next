@@ -469,7 +469,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             </MContainer>
                           </>
                         )}
-                      {!IS_ADMIN && (
+                      {!IS_ADMIN && proyecto.data && [Constants.ESTADOS_PROYECTO.RECHAZADO, Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.POR_VALIDAR].includes(proyecto.data.estatus) && (
                         <>
                           <MContainer
                             direction="horizontal"
@@ -2197,6 +2197,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           user: session.user,
           id_proyecto: parseInt(id_proyecto as string),
+          can_edit: true
         },
       };
     }

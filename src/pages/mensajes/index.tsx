@@ -190,7 +190,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                             profile_url={(parseInt(user.id) === c.id_receptor) ? c.emisor?.profile_url : c.receptor?.profile_url}
                                                             nombre={(parseInt(user.id) === c.id_receptor) ? c.emisor?.nombre : c.receptor?.nombre}
                                                             hora={(mensaje) ? mensaje.hora_envio.toLocaleTimeString('es-mx', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true}) : 'ND'}
-                                                            visto={(mensaje) ? mensaje.visto : true}
+                                                            visto={(mensaje && parseInt(user.id) === mensaje.id_receptor && user.tipo_usuario === mensaje.tipo_usuario_receptor) ? mensaje.visto : true}
                                                             mensaje={c.latest_message}
                                                             nombre_proyecto={(c.proyecto) ? c.proyecto.nombre : ''}
                                                             key={i} 

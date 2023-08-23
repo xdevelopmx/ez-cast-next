@@ -386,13 +386,28 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         sx={{ display: "flex", justifyContent: "flex-end" }}
                       >
                         <Typography
+                           fontWeight={600}
+                           sx={{ color: "#069cb1", fontSize: "0.9rem" }}
+                        >
+                          Ver 
+                          <Typography onChange={(ev) => {setPagination(prev => {
+                            return {
+                              ...prev,
+                              page_size: parseInt(ev.target.value)
+                            }
+                          })}} component={'select'} sx={{ marginLeft: 2, marginRight: 2, backgroundColor: '#fff', borderRadius: '1rem', padding: '0px 8px' }}>{pagination.page_size}
+                            <option selected={pagination.page_size === 2} value={2}>2</option>
+                            <option selected={pagination.page_size === 4} value={4}>4</option>
+                            <option selected={pagination.page_size === 8} value={8}>8</option>
+                            <option selected={pagination.page_size === 16} value={16}>16</option>
+                          </Typography> 
+                          
+                        </Typography>
+                        <Typography
                           fontWeight={600}
                           sx={{ color: "#069cb1", fontSize: "0.9rem" }}
                         >
-                          {textos["PAGINADOR_ENTRIES_PER_PAGE"]?.replace(
-                            "[N]",
-                            `${pagination.page_size}`
-                          )}
+                          {' resultados por página '}
                           {roles_billboard.data &&
                             roles_billboard.data.length > 0 && (
                               <Typography

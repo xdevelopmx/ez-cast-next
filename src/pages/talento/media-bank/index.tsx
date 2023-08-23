@@ -34,6 +34,7 @@ import { Delete, Edit, Share } from "@mui/icons-material";
 import { type Media } from "@prisma/client";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -50,6 +51,7 @@ export const MediaBank = (props: {
 }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
+  const [busy, setBusy] = useState(false);
   const [dialogImage, setDialogImage] = useState<{
     open: boolean;
     image: string;
@@ -935,11 +937,9 @@ export const MediaBank = (props: {
               <Button
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={async () => {
-                  if (
-                    (media && media.selftapes.length <= 5 && !selftape.id) ||
-                    selftape.id
-                  ) {
+                  if ((media && media.selftapes.length <= 5 && !selftape.id) || selftape.id) {
                     if (selftape.video) {
+                      setBusy(true);
                       const date = new Date();
                       const name = `selftape-${date
                         .toLocaleDateString("es-mx")
@@ -988,12 +988,13 @@ export const MediaBank = (props: {
                                         ]?.replace("[N]", name) ?? ""
                                       }`
                                     : textos["un_video_no_se_pudo_subir"] ?? ""
-                                }`
+                                } - [${e[1].error}]`
                               );
                             }
                           });
                         });
                       }
+                      setBusy(false);
                     } else {
                       notify(
                         "warning",
@@ -1028,6 +1029,7 @@ export const MediaBank = (props: {
             content={confirmation_dialog.content}
           />
         </AnimatePresence>
+        <ResourceAlert busy={busy || saveSelftapeMedia.isLoading}/>
       </MainLayout>
     </>
   );

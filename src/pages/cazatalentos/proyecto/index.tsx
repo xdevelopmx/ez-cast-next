@@ -246,7 +246,8 @@ const Proyecto: NextPage = () => {
                         url: (state.files.archivo.url) ? state.files.archivo.url : '',
                         clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${state.files.archivo.name}-${time}`,
                         referencia: `ARCHIVO-PROYECTO-${data.id}`,
-                        identificador: `archivo-proyecto-${data.id}`
+                        identificador: `archivo-proyecto-${data.id}`,
+                        public: true
                     }
                 }
             }
@@ -261,7 +262,8 @@ const Proyecto: NextPage = () => {
                         url: (state.files.foto_portada.url) ? state.files.foto_portada.url : '',
                         clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${state.files.foto_portada.name}-${time}`,
                         referencia: `FOTO-PORTADA-PROYECTO-${data.id}`,
-                        identificador: `foto-portada-proyecto-${data.id}`
+                        identificador: `foto-portada-proyecto-${data.id}`,
+                        public: true
                     }
                 }
             }
@@ -280,7 +282,8 @@ const Proyecto: NextPage = () => {
                                     url: url,
                                     clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/archivo/${e[0]}`,
                                     referencia: `ARCHIVO-PROYECTO-${data.id}`,
-                                    identificador: `archivo-proyecto-${data.id}`
+                                    identificador: `archivo-proyecto-${data.id}`,
+                                    public: true
                                 }
                             }
                             if (e[0] === `${state.files.foto_portada?.file.name}-${time}`) {
@@ -292,7 +295,8 @@ const Proyecto: NextPage = () => {
                                     url: url,
                                     clave: `cazatalentos/${data.id_cazatalentos}/proyectos/${data.id}/foto-portada/${e[0]}`,
                                     referencia: `FOTO-PORTADA-PROYECTO-${data.id}`,
-                                    identificador: `foto-portada-proyecto-${data.id}`
+                                    identificador: `foto-portada-proyecto-${data.id}`,
+                                    public: true
                                 }
                             }
                         }

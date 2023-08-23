@@ -18,6 +18,7 @@ import { Circle } from "@mui/icons-material";
 import { FileManager } from "~/utils/file-manager";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { ResourceAlert } from '~/components/shared/ResourceAlert';
 
 type SelftapeTalentoPageProps = {
     user: User,
@@ -38,6 +39,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
     const selftapes = api.talentos.getSelftapesByIdTalento.useQuery({id: id_talento}, {
         refetchOnWindowFocus: false
     });
+
+    const [busy, setBusy] = useState(false);
 
     const { notify } = useNotify();
 
@@ -443,6 +446,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                         if (confirmed) {
                             switch (confirmation_dialog.action) {
                                 case 'PREVIEW': {
+                                    setBusy(true);
                                     const id = confirmation_dialog.data.get('id');
                                     const input_name = (confirmation_dialog.data.has('nombre')) ? confirmation_dialog.data.get('nombre') as string : '';
                                     const is_public = (confirmation_dialog.data.has('public')) ? confirmation_dialog.data.get('public') as boolean : true;
@@ -478,11 +482,12 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                                                     })
                                                 } else {
                                                     const msg = (name) ? textos['error_didnt_upload_with_name']?.replace('[N1]', name) : textos['error_didnt_upload'];
-                                                    notify('error', `${msg}`);
+                                                    notify('error', `${msg} - ${e[1].error}`);
                                                 }
                                             })
                                         });
                                     }
+                                    setBusy(false);
                                     break;
                                 }
                             }
@@ -492,6 +497,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({user, id_talen
                     title={confirmation_dialog.title}
                     content={confirmation_dialog.content}
                 />
+                <ResourceAlert busy={busy || saveSelftapeMedia.isLoading}/>
             </MainLayout>
         </>
 

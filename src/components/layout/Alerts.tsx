@@ -1,11 +1,12 @@
 import { Alert, AlertTitle } from "@mui/material";
-import { type FC } from "react";
+import { useContext, type FC } from "react";
 import useAlerts from "~/hooks/useAlerts";
 import MotionDiv from "./MotionDiv";
+import AppContext from "~/context/app";
 
 export const Alerts: FC = () => {
   const { alerts } = useAlerts();
-
+  const ctx = useContext(AppContext);
   return (
     <div
       style={{
@@ -48,7 +49,7 @@ export const Alerts: FC = () => {
               icon={null}
             >
               <AlertTitle>
-                {v[1].severity === "success" ? "Éxito" : "Ocurrió un problema"}
+                {v[1].severity === "success" ? ctx.lang === 'es' ? "Éxito" : 'Success' : ctx.lang === 'es' ? "Ocurrió un problema" : `There's been a problem`}
               </AlertTitle>
               {v[1].message}
             </Alert>

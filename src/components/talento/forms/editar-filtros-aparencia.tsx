@@ -710,12 +710,12 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 styles={{ marginBottom: 16, alignItems: "center", gap: 20 }}
               >
                 <Typography minWidth={150}>
-                  {textos["filtos_apariencias_piercings_subtitutlo"]
-                    ? textos["filtos_apariencias_piercings_subtitutlo"]
+                  {textos["visibilidad"]
+                    ? textos["visibilidad"]
                     : "Texto No Definido"}
                 </Typography>
                 <MSelect
-                  id="filtos_apariencias_piercings_subtitutlo-tatuaje"
+                  id="filtos_apariencias_subtitutlo-tatuaje"
                   options={
                     tipos_tatuajes.data
                       ? tipos_tatuajes.data.map((t) => {

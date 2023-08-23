@@ -49,7 +49,7 @@ export default createPresignedUrl;
 export const config = {
 	api: {
 		bodyParser: {
-			sizeLimit: "8mb", // Set desired value here
+			sizeLimit: "50mb", // Set desired value here
 		},
 	},
 };
