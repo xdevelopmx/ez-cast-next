@@ -271,7 +271,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                     color: "#fff",
                     textTransform: "none",
                     padding: "0px 35px",
-                    justifyContent: "end", 
+                    justifyContent: "end",
 
                     "&:hover": {
                       backgroundColor: "#069cb1",
