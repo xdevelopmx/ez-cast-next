@@ -2596,6 +2596,11 @@ export const RolesRouter = createTRPCRouter({
         });
         if (talento) {
           const roles = await ctx.prisma.roles.findMany({
+            where: {
+              proyecto: {
+                estatus: Constants.ESTADOS_PROYECTO.APROBADO
+              }
+            },
             include: {
               compensaciones: {
                 include: {

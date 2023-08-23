@@ -52,6 +52,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
   const textos = useLang(ctx.lang);
   const { count, setStartCountDown, startCountDown } = useCountDown(5);
 
+  console.log(startCountDown);
+
   const router = useRouter();
 
     const selftapes = api.talentos.getSelftapesByIdTalento.useQuery({id: id_talento}, {
@@ -78,12 +80,16 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
   const [recording, setRecording] = useState(false);
 
   const _navigator = typeof window !== "undefined" ? navigator : null;
+  
+  const microphone_permisson = "microphone" as PermissionName;
 
+  const camera_permisson = "camera" as PermissionName;
+  
   useEffect(() => {
     if (_navigator) {
       //@ts-ignore
       _navigator.permissions
-        .query({ name: "microphone" })
+        .query({ name: microphone_permisson })
         .then((permissionObj) => {
           setPermissions((prev) => ({
             ...prev,
@@ -102,7 +108,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
 
       //@ts-ignore
       _navigator.permissions
-        .query({ name: "camera" })
+        .query({ name: camera_permisson })
         .then((permissionObj) => {
           setPermissions((prev) => ({
             ...prev,
@@ -307,7 +313,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
   }, [recorded_url]);
 
   useEffect(() => {
-    if (!startCountDown) {
+    if (startCountDown !== null && !startCountDown) {
       setRecording(true);
     }
   }, [startCountDown]);

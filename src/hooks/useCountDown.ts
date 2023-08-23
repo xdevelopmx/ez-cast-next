@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export const useCountDown = (initialCount: number) => {
   const [count, setCount] = useState<number>(initialCount);
-  const [startCountDown, setStartCountDown] = useState(false);
+  const [startCountDown, setStartCountDown] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (startCountDown) {
