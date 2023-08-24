@@ -168,12 +168,12 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     className="h5 font-weight-bold"
                     style={{ fontSize: "1.5rem" }}
                   >
-                    <b>{textos["encabezado"]}</b>
+                    <b>{textos["encabezado"]?? ""}</b>
                   </p>
                   <div className="container_text_scroll">
                     <div>
                       <ol>
-                        <li>Deberás crear roles específicos.</li>
+                        <li>{textos["requisito_uno"] ?? ""}</li>
                         <li>Presentar un resumen que describa tu proyecto.</li>
                         <li>
                           Incluir detalles de mis personajes incluyendo rasgos
