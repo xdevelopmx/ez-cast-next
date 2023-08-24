@@ -129,7 +129,8 @@ export const RolPreview: FC<PropsRol> = ({
                 position: "relative",
                 width: "100%",
                 aspectRatio: "16/12",
-                marginTop: "25px",
+                marginTop: "10px",
+                marginBottom: "50px",
               }}
             >
               <Image
@@ -837,7 +838,7 @@ export const RolPreview: FC<PropsRol> = ({
         <div
           style={{
             position: "relative",
-            width: 1100,
+            width: 800,
             aspectRatio: "900/720",
             maxWidth: "100%",
           }}

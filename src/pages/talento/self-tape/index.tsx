@@ -549,13 +549,6 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                             </video>
 
                             <Box position={"relative"}>
-                              <Image
-                                style={{ position: "absolute", top: 16 }}
-                                src="/assets/img/logo_color.svg"
-                                width={220}
-                                height={25}
-                                alt=""
-                              />
                               <Box
                                 onClick={() => {
                                   setRecording((prev) => !prev);

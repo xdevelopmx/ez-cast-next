@@ -146,7 +146,7 @@ export const Habilidades = (props: {
             })}
           </>
         </MotionDiv>
-        <MotionDiv show={!loading} animation={"fade"}>
+        <MotionDiv show={!loading} animation={"fade"} style={{paddingBottom:20}}>
           <>
             {habilidades_map &&
               Array.from(habilidades_map).map((entry, i) => {

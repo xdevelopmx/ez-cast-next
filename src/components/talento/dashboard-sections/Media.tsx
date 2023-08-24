@@ -417,7 +417,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             styles={{ width: "28%", alignItems: "center" }}
           >
             <Image
-              src="/assets/img/iconos/web_cam_blue.png"
+              src="/assets/img/iconos/icono-selftape.svg"
               width={50}
               height={30}
               alt=""

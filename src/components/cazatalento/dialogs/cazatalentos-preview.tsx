@@ -63,11 +63,11 @@ export const CazatalentosPreview = (props: {open: boolean, onClose: () => void, 
             <DialogContent style={{padding: 0, width: 400, overflow: 'hidden', border: '3px solid rgb(117 117 117)', borderRadius: '3px'}}>
                 <MContainer direction='vertical' styles={{padding: 40, alignItems: 'center'}} justify='center'>
                     <Avatar sx={{ width: 156, height: 156, border: '1px solid #000000' }} alt="Foto productor" src={cazatalento && cazatalento.foto_perfil ? cazatalento.foto_perfil.url : '/assets/img/no-image.png'} />
-                    <MContainer direction='horizontal' styles={{display:'flex', gap: '10px', flexFlow:'nowrap'}}>
+                    <MContainer direction='horizontal' styles={{display:'flex', gap: '8px', flexFlow:'nowrap', padding:'5px 0'}}>
                         <motion.img style={{marginRight: 16}}  src="/assets/img/iconos/chair_dir_blue.svg" alt="icono" />
-                        <Typography fontSize={'1.5rem'}>{cazatalento?.nombre} {cazatalento?.apellido}</Typography>
+                        <Typography fontSize={'1.2rem'}>{cazatalento?.nombre} {cazatalento?.apellido}</Typography>
                     </MContainer>
-                    <Divider style={{borderColor: '#069cb1', width: '70%', borderWidth: '1px'}}/>
+                    <Divider style={{borderColor: '#069cb1', width: '85%', borderWidth: '1px'}}/>
                     <Typography style={{color: '#069cb1', marginTop: 16, fontStyle:'italic'}}>
                         {cazatalento?.posicion}
                     </Typography>
