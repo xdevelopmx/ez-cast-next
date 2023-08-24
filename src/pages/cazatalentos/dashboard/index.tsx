@@ -99,16 +99,14 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
       return (
         <div className="box_message_blue">
           <p className="h3" style={{ fontWeight: 600 }}>
-            No has creado ningún proyecto
+          {textos["no_creado"]?? ""}
           </p>
           <p>
-            Al crear un proyecto, aquí tendrás una vista general de tus
-            proyectos activos e inactivos.
+          {textos["al_crear"]?? ""}
             <br />
-            Recuerda crear todos tus roles y leer los requisitos de aprobación
-            antes de terminar y mandarlos.
+            {textos["recuerda_crear"]?? ""}
             <br />
-            ¡Comienza ahora mismo!
+            {textos["comienza"]?? ""}
           </p>
         </div>
       );
@@ -117,11 +115,10 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
       return (
         <div className="box_message_blue">
           <p className="h3" style={{ fontWeight: 600 }}>
-            No tienes ningún proyecto archivado
+          {textos["no_tienes_proyectos"]?? ""}
           </p>
           <p>
-            Aqui apareceran todos los proyectos que hayas colocado como
-            archivados
+          {textos["aqui_apareceran"]?? ""}
             <br />
           </p>
         </div>
@@ -132,7 +129,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
   return (
     <>
       <Head>
-        <title>DashBoard ~ Cazatalentos | Talent Corner</title>
+        <title>DashBoard ~ {textos["cazatalentos"]?? ""} | Talent Corner</title>
         <meta name="description" content="Talent Corner" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -158,7 +155,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     fontSize: "1.7rem",
                   }}
                 >
-                  <b>Bienvenido, {user.name}</b>
+                  <b>{textos["bienvenido"]?? ""}, {user.name}</b>
                 </p>
               </div>
               <br />
@@ -168,32 +165,26 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     className="h5 font-weight-bold"
                     style={{ fontSize: "1.5rem" }}
                   >
-                    <b>{textos["encabezado"]}</b>
+                    <b>{textos["encabezado"]?? ""}</b>
                   </p>
                   <div className="container_text_scroll">
                     <div>
                       <ol>
-                        <li>Deberás crear roles específicos.</li>
-                        <li>Presentar un resumen que describa tu proyecto.</li>
+                        <li>{textos["requisito_uno"] ?? ""}</li>
+                        <li>{textos["requisito_dos"]?? ""}</li>
                         <li>
-                          Incluir detalles de mis personajes incluyendo rasgos
-                          físicos, personalidad y desarrollo en escena.
+                        {textos["requisito_tres"]?? ""}
                         </li>
                         <li>
-                          Si tu proyecto incluye a un menor de edad, la
-                          descripción del personaje deberá incluir el número de
-                          horas en set y detalles inherentes al personaje
+                        {textos["requisito_cuatro"]?? ""}
                         </li>
-                        <li>Deberás crear roles específicos.</li>
-                        <li>Presentar un resumen que describa tu proyecto.</li>
+                        <li>{textos["requisito_cinco"]?? ""}</li>
+                        <li>{textos["requisito_seis"]?? ""}</li>
                         <li>
-                          Incluir detalles de mis personajes incluyendo rasgos
-                          físicos, personalidad y desarrollo en escena.
+                        {textos["requisito_siete"]?? ""}
                         </li>
                         <li>
-                          Si tu proyecto incluye a un menor de edad, la
-                          descripción del personaje deberá incluir el número de
-                          horas en set y detalles inherentes al personaje
+                        {textos["requisito_ocho"]?? ""}
                         </li>
                       </ol>
                     </div>
@@ -205,14 +196,14 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
             <div className="row title_list_proyects">
               <div className="col d-lg-flex mt-5">
                 <div>
-                  <p className="font-weight-bold h2 mr-3 mb-2">Proyectos</p>
+                  <p className="font-weight-bold h2 mr-3 mb-2">{textos["proyectos"]?? ""}</p>
                 </div>
                 <div>
                   <Link
                     href="/cazatalentos/proyecto"
                     className="btn btn-intro btn-price mb-2 nuevo-proyecto-btn"
                   >
-                    Nuevo proyecto
+                    {textos["nuevo_proyecto"]?? ""}
                   </Link>
                 </div>
               </div>
@@ -240,7 +231,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                         aria-controls="activos"
                         aria-selected="true"
                       >
-                        Activos
+                        {textos["activos"]?? ""}
                       </a>
                     </li>
                     <li className="nav-item">
@@ -258,7 +249,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                         aria-controls="archivados"
                         aria-selected="false"
                       >
-                        Archivados
+                        {textos["archivados"]?? ""}
                       </a>
                     </li>
                   </ul>
@@ -272,7 +263,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Nombre
+                      {textos["nombre"]?? ""}
                     </Typography>,
                     <Typography
                       key={3}
@@ -281,7 +272,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Estado
+                      {textos["estado"]?? ""}
                     </Typography>,
                     <Typography
                       key={4}
@@ -290,7 +281,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Tipo
+                      {textos["tipo"]?? ""}
                     </Typography>,
                     <Typography
                       key={4}
@@ -299,7 +290,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Fecha
+                      {textos["fecha"]?? ""}
                     </Typography>,
                     <Typography
                       key={4}
@@ -308,7 +299,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Acciones
+                      {textos["acciones"]?? ""}
                     </Typography>,
                   ]}
                   backgroundColorHeader="#069cb1"
@@ -369,7 +360,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Pendiente
+                                      {textos["pendiente"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO.ARCHIVADO:
@@ -381,7 +372,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Archivado
+                                      {textos["archivado"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO

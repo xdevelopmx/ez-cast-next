@@ -58,9 +58,9 @@ export const Alertas = () => {
 
   const alert_elements = useMemo(() => {
     if (alertas.data) {
-      return alertas.data.map(a => {
+      return alertas.data.map((a, i) => {
         return (
-          <div style={{backgroundColor: (a.visto) ? 'lightgray' : '#4ab7c6'}}>
+          <div key={i} style={{backgroundColor: (a.visto) ? 'lightgray' : '#4ab7c6'}}>
             {!a.visto && <Circle style={{ position: 'absolute', color: 'tomato', width: 16, height: 16, marginRight: 4, top: 'calc(50% - 8px)', left: 8 }} />}
             <div style={{padding: 8, marginLeft: 32, width: '85%'}}>
               <div dangerouslySetInnerHTML={{ __html: a.mensaje }} />
@@ -110,18 +110,18 @@ export const Alertas = () => {
 						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
 						top: -64,
 						borderRadius: 4,
-						zIndex: 99,
+						zIndex: (show_alertas? 99 : 0),
 						backgroundColor: '#dff8fc',
 
 					}}
-					initial={{ opacity: 0, scale: 0 }}
-					animate={(show_alertas) ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
-					exit={{ opacity: 0, scale: 0 }}
+					initial={{ opacity: 0, y: -100 }}
+					animate={(show_alertas) ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 }}
+					exit={{ opacity: 0, y: -100 }}
 					transition={{
 						ease: "linear",
 						duration: 0.4,
 						opacity: { duration: 0.4 },
-						scale: { duration: 0.4 }
+						y: { duration: 0.4 }
 					}}
 				>
 					<IconButton

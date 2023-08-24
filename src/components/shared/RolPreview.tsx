@@ -129,7 +129,8 @@ export const RolPreview: FC<PropsRol> = ({
                 position: "relative",
                 width: "100%",
                 aspectRatio: "16/12",
-                marginTop: "25px",
+                marginTop: "10px",
+                marginBottom: "50px",
               }}
             >
               <Image
@@ -155,7 +156,7 @@ export const RolPreview: FC<PropsRol> = ({
         )}
         <Grid container item xs={no_poster ? 12 : 8} sx={{ padding: "20px" }}>
           <Grid container item xs={12}>
-            <Grid item xs={9}>
+            <Grid item xs={8}>
               <MContainer direction="horizontal">
                 <Typography
                   fontWeight={900}
@@ -184,7 +185,7 @@ export const RolPreview: FC<PropsRol> = ({
                 </Alert>
               )}
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={2}>
               {action}
             </Grid>
             <Grid item xs={12}>
@@ -337,7 +338,7 @@ export const RolPreview: FC<PropsRol> = ({
             <Grid item xs={12} mt={1}>
               <Divider sx={{ borderWidth: 1 }} />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={(popUp === true ? 11 : 12)}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <Typography>{rol.proyecto.tipo.tipo_proyecto.es}</Typography>
                 <Divider
@@ -365,27 +366,6 @@ export const RolPreview: FC<PropsRol> = ({
                           }}
                           orientation="vertical"
                         />
-                        {i === 4 ? (
-                          <>
-                            {popUp === true ? (
-                              <Button onClick={() => setShowPreview((v) => !v)}>
-                                <MotionImage
-                                  src="/assets/img/iconos/arrow_d_blue.svg"
-                                  width={20}
-                                  height={20}
-                                  alt=""
-                                  animate={{
-                                    rotate: showPreview ? "180deg" : "0",
-                                  }}
-                                />
-                              </Button>
-                            ) : (
-                              ""
-                            )}
-                          </>
-                        ) : (
-                          ""
-                        )}
                       </Fragment>
                     )
                   )
@@ -530,6 +510,23 @@ export const RolPreview: FC<PropsRol> = ({
                 </Typography>
                 {rol?.descripcion ?? textos["no_especificado"]}
               </Typography>
+            </Grid>
+            <Grid item xs={(popUp === true ? 1 : 12)}>
+              {popUp === true ? (
+                <Button onClick={() => setShowPreview((v) => !v)}>
+                  <MotionImage
+                    src="/assets/img/iconos/arrow_d_blue.svg"
+                    width={20}
+                    height={20}
+                    alt=""
+                    animate={{
+                      rotate: showPreview ? "180deg" : "0",
+                    }}
+                  />
+                </Button>
+              ) : (
+                ""
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -837,7 +834,7 @@ export const RolPreview: FC<PropsRol> = ({
         <div
           style={{
             position: "relative",
-            width: 1100,
+            width: 800,
             aspectRatio: "900/720",
             maxWidth: "100%",
           }}

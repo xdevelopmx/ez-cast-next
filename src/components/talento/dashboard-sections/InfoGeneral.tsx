@@ -454,12 +454,12 @@ export const InfoGeneral = (props: {
                         marginBottom: 16,
                       }}
                     >
-                      {/* <Image
+                      <Image
                         src="/assets/img/iconos/icon_estrella_dorada.svg"
                         width={20}
                         height={20}
                         alt="estrella"
-                      /> */}
+                      /> 
                       <Typography
                         sx={{
                           color: "#069CB1",

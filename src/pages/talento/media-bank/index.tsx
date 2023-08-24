@@ -506,7 +506,7 @@ export const MediaBank = (props: {
                                 <video
                                   ref={video_player}
                                   controls
-                                  style={{ width: "auto", height: "350px", border: "1px solid #069CB1", padding: "5px" }}
+                                  style={{ width: "auto", height: "350px", padding: "5px", aspectRatio:'4/3' }}
                                 >
                                   <source
                                     src={current_video_url}
