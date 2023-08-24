@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    cazatalentos : "Headhunter",
     agencia_publicidad: "Advertising agency",
     casa_productora: "Production House",
     productor: "Producer",
@@ -254,6 +255,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    cazatalentos : "Cazatalentos",
     agencia_publicidad: "Agencia de publicidad",
     casa_productora: "Casa Productora",
     productor: "Productor",
@@ -1004,6 +1006,8 @@ const TEXTS_BY_PATHNAME: {
   },
   "/cazatalentos/dashboard": {
     en: {
+      no_creado :"You have not created any project",
+      al_crear : "When creating a project, here you will have an overview of your active and inactive projects.",
       encabezado: "Requirements for approval:",
       destacados: "Featured",
       requisito_uno: "You will need to create specific roles.",
@@ -1027,6 +1031,8 @@ const TEXTS_BY_PATHNAME: {
         "Here will appear all the projects that you have placed as archived",
     },
     es: {
+      no_creado : "No has creado ningún proyecto",
+      al_crear : "Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.",
       encabezado: "Requisitos para aprobación:",
       destacados: "Destacados",
       requisito_uno: "Deberás crear roles específicos.",

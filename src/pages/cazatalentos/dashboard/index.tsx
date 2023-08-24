@@ -99,7 +99,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
       return (
         <div className="box_message_blue">
           <p className="h3" style={{ fontWeight: 600 }}>
-            No has creado ningún proyecto
+          {textos["no_creado"]?? ""}
           </p>
           <p>
             Al crear un proyecto, aquí tendrás una vista general de tus
@@ -117,11 +117,10 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
       return (
         <div className="box_message_blue">
           <p className="h3" style={{ fontWeight: 600 }}>
-            No tienes ningún proyecto archivado
+          {textos["no_tienes_proyectos"]?? ""}
           </p>
           <p>
-            Aqui apareceran todos los proyectos que hayas colocado como
-            archivados
+          {textos["aqui_apareceran"]?? ""}
             <br />
           </p>
         </div>
@@ -132,7 +131,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
   return (
     <>
       <Head>
-        <title>DashBoard ~ Cazatalentos | Talent Corner</title>
+        <title>DashBoard ~ {textos["cazatalentos"]?? ""} | Talent Corner</title>
         <meta name="description" content="Talent Corner" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -158,7 +157,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     fontSize: "1.7rem",
                   }}
                 >
-                  <b>Bienvenido, {user.name}</b>
+                  <b>{textos["bienvenido"]?? ""}, {user.name}</b>
                 </p>
               </div>
               <br />
@@ -174,26 +173,20 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     <div>
                       <ol>
                         <li>{textos["requisito_uno"] ?? ""}</li>
-                        <li>Presentar un resumen que describa tu proyecto.</li>
+                        <li>{textos["requisito_dos"]?? ""}</li>
                         <li>
-                          Incluir detalles de mis personajes incluyendo rasgos
-                          físicos, personalidad y desarrollo en escena.
+                        {textos["requisito_tres"]?? ""}
                         </li>
                         <li>
-                          Si tu proyecto incluye a un menor de edad, la
-                          descripción del personaje deberá incluir el número de
-                          horas en set y detalles inherentes al personaje
+                        {textos["requisito_cuatro"]?? ""}
                         </li>
-                        <li>Deberás crear roles específicos.</li>
-                        <li>Presentar un resumen que describa tu proyecto.</li>
+                        <li>{textos["requisito_cinco"]?? ""}</li>
+                        <li>{textos["requisito_seis"]?? ""}</li>
                         <li>
-                          Incluir detalles de mis personajes incluyendo rasgos
-                          físicos, personalidad y desarrollo en escena.
+                        {textos["requisito_siete"]?? ""}
                         </li>
                         <li>
-                          Si tu proyecto incluye a un menor de edad, la
-                          descripción del personaje deberá incluir el número de
-                          horas en set y detalles inherentes al personaje
+                        {textos["requisito_ocho"]?? ""}
                         </li>
                       </ol>
                     </div>
