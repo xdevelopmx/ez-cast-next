@@ -148,7 +148,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
               if (video_player.current) {
                 video_player.current.srcObject = stream;
                 media_recorder.current = new MediaRecorder(stream, {
-                  mimeType: "video/webm;codecs=vp9,opus",
+                  mimeType: 'video/mp4',
+                  //mimeType: "video/webm;codecs=vp9,opus",
                 });
 
                 media_recorder.current.ondataavailable = (ev) => {
@@ -159,7 +160,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                 media_recorder.current.onstop = () => {
                   // create local object URL from the recorded video blobs
                   const video_local = URL.createObjectURL(
-                    new Blob(blob, { type: "video/webm" })
+                    //new Blob(blob, { type: "video/webm" })
+                    new Blob(blob, { type: "video/mp4" })
                   );
                   setRecordedUrl(video_local);
                   stream.getTracks().forEach(function (track) {
@@ -797,10 +799,12 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                                     const id = confirmation_dialog.data.get('id');
                                     const input_name = (confirmation_dialog.data.has('nombre')) ? confirmation_dialog.data.get('nombre') as string : '';
                                     const is_public = (confirmation_dialog.data.has('public')) ? confirmation_dialog.data.get('public') as boolean : true;
-                                    const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/webm');
+                                    //const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/webm');
+                                    const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/mp4');
                                     const link = document.createElement('a');
                                     link.href = recorded_url;
-                                    link.setAttribute('download', `selftape.webm`);
+                                    link.setAttribute('download', `selftape.mp4`);
+                                    //link.setAttribute('download', `selftape.webm`);
                                     document.body.appendChild(link);
                                     link.click();
                                     if (link && link.parentNode) {
@@ -819,7 +823,8 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                                                         id_talento: id_talento,
                                                         selftape: {
                                                             nombre: (input_name.length > 0) ? input_name : name,
-                                                            type: 'video/webm',
+                                                            //type: 'video/webm',
+                                                            type: 'video/mp4',
                                                             url: (url) ? url : '',
                                                             clave: `talentos/${id_talento}/videos/${name}`,
                                                             referencia: `VIDEOS-SELFTAPE-TALENTO-${id_talento}`,
