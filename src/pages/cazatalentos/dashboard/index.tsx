@@ -102,13 +102,11 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
           {textos["no_creado"]?? ""}
           </p>
           <p>
-            Al crear un proyecto, aquí tendrás una vista general de tus
-            proyectos activos e inactivos.
+          {textos["al_crear"]?? ""}
             <br />
-            Recuerda crear todos tus roles y leer los requisitos de aprobación
-            antes de terminar y mandarlos.
+            {textos["recuerda_crear"]?? ""}
             <br />
-            ¡Comienza ahora mismo!
+            {textos["comienza"]?? ""}
           </p>
         </div>
       );
@@ -198,14 +196,14 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
             <div className="row title_list_proyects">
               <div className="col d-lg-flex mt-5">
                 <div>
-                  <p className="font-weight-bold h2 mr-3 mb-2">Proyectos</p>
+                  <p className="font-weight-bold h2 mr-3 mb-2">{textos["proyectos"]?? ""}</p>
                 </div>
                 <div>
                   <Link
                     href="/cazatalentos/proyecto"
                     className="btn btn-intro btn-price mb-2 nuevo-proyecto-btn"
                   >
-                    Nuevo proyecto
+                    {textos["nuevo_proyecto"]?? ""}
                   </Link>
                 </div>
               </div>
@@ -233,7 +231,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                         aria-controls="activos"
                         aria-selected="true"
                       >
-                        Activos
+                        {textos["activos"]?? ""}
                       </a>
                     </li>
                     <li className="nav-item">
@@ -251,7 +249,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                         aria-controls="archivados"
                         aria-selected="false"
                       >
-                        Archivados
+                        {textos["archivados"]?? ""}
                       </a>
                     </li>
                   </ul>
@@ -265,7 +263,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Nombre
+                      {textos["nombre"]?? ""}
                     </Typography>,
                     <Typography
                       key={3}
@@ -274,7 +272,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Estado
+                      {textos["estado"]?? ""}
                     </Typography>,
                     <Typography
                       key={4}
@@ -283,7 +281,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Tipo
+                      {textos["tipo"]?? ""}
                     </Typography>,
                     <Typography
                       key={4}
@@ -292,7 +290,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Fecha
+                      {textos["fecha"]?? ""}
                     </Typography>,
                     <Typography
                       key={4}
@@ -301,7 +299,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      Acciones
+                      {textos["acciones"]?? ""}
                     </Typography>,
                   ]}
                   backgroundColorHeader="#069cb1"
@@ -362,7 +360,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Pendiente
+                                      {textos["pendiente"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO.ARCHIVADO:
@@ -374,7 +372,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Archivado
+                                      {textos["archivado"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO

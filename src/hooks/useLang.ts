@@ -1008,6 +1008,8 @@ const TEXTS_BY_PATHNAME: {
     en: {
       no_creado :"You have not created any project",
       al_crear : "When creating a project, here you will have an overview of your active and inactive projects.",
+      recuerda_crear :"Remember to create all your roles and read the approval requirements before finishing and sending them.",
+      comienza : "Start right now!",
       encabezado: "Requirements for approval:",
       destacados: "Featured",
       requisito_uno: "You will need to create specific roles.",
@@ -1033,6 +1035,8 @@ const TEXTS_BY_PATHNAME: {
     es: {
       no_creado : "No has creado ningún proyecto",
       al_crear : "Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.",
+      comienza : "¡Comienza ahora mismo!",
+      recuerda_crear : "Recuerda crear todos tus roles y leer los requisitos de aprobación antes de terminar y mandarlos.",
       encabezado: "Requisitos para aprobación:",
       destacados: "Destacados",
       requisito_uno: "Deberás crear roles específicos.",
