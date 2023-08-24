@@ -422,9 +422,9 @@ const NuevoHorarioAgendaVirtual = () => {
 											<MotionDiv show={tipoFechas === 'ESTABLECIDAS'} animation="fade">
 												<Grid container sx={{ mt: 2 }}>
 													
-													{Array.from(fechas_audicion_por_roles).map((e) => {
+													{Array.from(fechas_audicion_por_roles).map((e, i) => {
 														return (
-															<Grid item xs={3} mx={2} my={2}>
+															<Grid key={i} item xs={3} mx={2} my={2}>
 																<Card sx={{padding: 2}}>
 																	<SectionTitle dividerSx={{margin: 2}} title={e[0]} />
 																	{
