@@ -969,7 +969,8 @@ export const MediaBank = (props: {
                                       : name,
                                   type: selftape.video
                                     ? selftape.video.file.type
-                                    : "video/webm",
+                                    //: "video/webm",
+                                    : 'video/mp4',
                                   url: url ? url : "",
                                   clave: `talentos/${props.id_talento}/videos/${name}`,
                                   referencia: `VIDEOS-SELFTAPE-TALENTO-${props.id_talento}`,
