@@ -1384,10 +1384,11 @@ footer {
 
 .container_text_scroll {
   padding: 10px 5px;
-  max-height: 300px;
+  max-height: 323px;
   overflow-y: auto;
   border-top: 5px solid var(--color_a);
   border-bottom: 5px solid var(--color_a);
+  margin-top: -3px;
 }
 
 .container_text_scroll ol li {
