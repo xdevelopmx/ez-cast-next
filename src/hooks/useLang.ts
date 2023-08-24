@@ -621,6 +621,7 @@ const TEXTS_BY_PATHNAME: {
   },
   "/login": {
     en: {
+      login : "Log In",
       no_tienes_cuenta: "You do not have an account?",
       registrate: "Sign up here",
       mail: "User / Email",
@@ -632,7 +633,7 @@ const TEXTS_BY_PATHNAME: {
       necesitas_ayuda: "Need help?",
       accede_a: "Access our",
       tutoriales: "tutorials and frequently asked questions",
-      descripción_cazatalentos:
+      descripcion_cazatalentos:
         'Profile for the person who seeks to "hunt" a person who meets the requirements and the talent that he needs.',
       descripcion_talento:
         "Profile for the person looking to appear on screen and film projects.",
@@ -643,6 +644,7 @@ const TEXTS_BY_PATHNAME: {
       error_form: "Please correct the form before proceeding with the login.",
     },
     es: {
+      login : "Iniciar Sesión",
       no_tienes_cuenta: "No tienes cuenta?",
       registrate: "Registrate aquí",
       mail: "Usuario / Email",
@@ -654,7 +656,7 @@ const TEXTS_BY_PATHNAME: {
       necesitas_ayuda: "Necesitas ayuda?",
       accede_a: "Accede a nuestros",
       tutoriales: "tutoriales y preguntas frecuentes.",
-      descripción_cazatalentos:
+      descripcion_cazatalentos:
         "Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que éste necesita.",
       descripcion_talento:
         "Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.",

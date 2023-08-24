@@ -85,9 +85,9 @@ const LoginPage: NextPage = () => {
                 EZ-CAST
               </h1>
               <p className="text-muted">
-                No tienes cuenta?{" "}
+              {textos["no_tienes_cuenta"]?? ""}{" "}
                 <Link href="/registro" className="color_a">
-                  Registrate aquí
+                {textos["registrate"]?? ""}
                 </Link>
               </p>
               <div className="d-lg-flex align-items-center justify-content-center box_input">
@@ -104,8 +104,7 @@ const LoginPage: NextPage = () => {
                     }}
                     htmlFor="user"
                   >
-                    Usuario / Email
-                  </label>
+                    {textos["mail"]?? ""}                  </label>
                   <FormGroup
                     error={state.errors.user}
                     show_error_message
@@ -154,7 +153,7 @@ const LoginPage: NextPage = () => {
                     }}
                     htmlFor="user"
                   >
-                    Contraseña
+                    {textos["password"]?? ""}
                   </label>
                   <FormGroup
                     type="password"
@@ -193,12 +192,12 @@ const LoginPage: NextPage = () => {
                 </MContainer>
               </div>
               <p className="text-muted">
-                Olvido su contraseña?{" "}
+              {textos["fgtpswd"]?? ""}{" "}
                 <Link href="/restablecer-contrasena" className="color_a">
-                  Restablecer
+                {textos["restablecer"]?? ""}
                 </Link>
               </p>
-              <p>Ingresar como</p>
+              <p>{textos["ingresar_como"]?? ""}</p>
 
               <div className="d-flex align-items-center justify-content-center text-center flex-wrap">
                 <div>
@@ -223,7 +222,7 @@ const LoginPage: NextPage = () => {
                           : "#000",
                     }}
                   >
-                    Cazatalentos
+                    {textos["cazatalentos"]?? ""}
                   </span>
                   <MTooltip
                     color="orange"
@@ -233,9 +232,7 @@ const LoginPage: NextPage = () => {
                     text={
                       <>
                         <Typography fontSize={14}>
-                          Perfil para la persona que busca “cazar” a una persona
-                          que cumpla con los requerimientos y el talento que
-                          éste necesita.
+                        {textos["descripcion_cazatalentos"]?? ""}
                         </Typography>
                       </>
                     }
@@ -261,7 +258,7 @@ const LoginPage: NextPage = () => {
                           : "#000",
                     }}
                   >
-                    Talento
+                    {textos["talento"]?? ""}
                   </span>
                   <MTooltip
                     sx={{
@@ -271,8 +268,7 @@ const LoginPage: NextPage = () => {
                     text={
                       <>
                         <Typography fontSize={14}>
-                          Perfil para la persona que busca aparecer en pantalla
-                          y proyectos de filmación.
+                        {textos["descripcion_talento"]?? ""}
                         </Typography>
                       </>
                     }
@@ -301,7 +297,7 @@ const LoginPage: NextPage = () => {
                           : "#000",
                     }}
                   >
-                    Representante
+                    {textos["representante"]?? ""}
                   </span>
                   <MTooltip
                     color="orange"
@@ -311,9 +307,7 @@ const LoginPage: NextPage = () => {
                     text={
                       <>
                         <Typography fontSize={14}>
-                          Perfil para la persona que busca facilitar la conexión
-                          con sus talentos y encontrar más oportunidades para
-                          los mismos.
+                        {textos["descripcion_representante"]?? ""}
                         </Typography>
                       </>
                     }
@@ -360,12 +354,12 @@ const LoginPage: NextPage = () => {
                     }
                   }}
                 >
-                  Log In
+                  {textos["login"]?? ""}
                 </button>
               </div>
 
               <div className="text-center mt-3">
-                <p>O accede con</p>
+                <p>{textos["accede_con"]?? ""}</p>
               </div>
               <div className="d-lg-flex justify-content-center">
                 <a
@@ -398,11 +392,11 @@ const LoginPage: NextPage = () => {
             </div>
             <p className="text-white mt-2">
               <a href="./ayuda-ezcast" className="text-white">
-                <u>Necesitas ayuda?</u>
+                <u>{textos["necesitas_ayuda"]?? ""}</u>
               </a>
-              &nbsp; Accede a nuestros &nbsp;
+              &nbsp; {textos["accede_a"]?? ""} &nbsp;
               <a href="./ayuda-ezcast" className="text-white">
-                <u>tutoriales y preguntas frecuentes.</u>
+                <u>{textos["tutoriales"]?? ""}</u>
               </a>
             </p>
           </div>
