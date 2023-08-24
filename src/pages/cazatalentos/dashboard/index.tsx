@@ -385,7 +385,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Enviado a aprobación
+                                      {textos["enviado_aprobacion"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO.RECHAZADO:
@@ -397,7 +397,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Inactivo
+                                      {textos["inactivo"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO.APROBADO:
@@ -409,7 +409,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px 11px",
                                       }}
                                     >
-                                      Activo
+                                      {textos["activo"]?? ""}
                                     </Typography>
                                   );
                               }
@@ -603,8 +603,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                           title: "Eliminar Proyecto",
                                           content: (
                                             <Typography variant="body2">
-                                              Seguro que deseas eliminar este
-                                              proyecto?
+                                              {textos["seguro"]?? ""}
                                             </Typography>
                                           ),
                                         });

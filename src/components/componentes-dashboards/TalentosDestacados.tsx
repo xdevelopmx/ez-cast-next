@@ -6,6 +6,9 @@ import { MContainer } from '../layout/MContainer';
 import { Typography } from '@mui/material';
 import { Carroucel } from '../shared/Carroucel';
 import Image from 'next/image';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 type Props = {
   slidesPerView?: number;
@@ -15,7 +18,8 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
   const talentos = api.talentos.getAllTalentosDestacados.useQuery();
 
   console.log(talentos.data);
-
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   const data = useMemo(() => {
     if (talentos.data) {
       return talentos.data.map(t => {
@@ -32,7 +36,7 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
   return (
     <>
       <div className="col-md-6">
-        <p className="h4 font-weight-bold" style={{ fontSize: '1.5rem' }}>Destacados</p>
+        <p className="h4 font-weight-bold" style={{ fontSize: '1.5rem' }}>{textos["destacados"]?? ""}</p>
         <div className="container_slider_destacados" style={{padding: '10px 20px'}}>
           <Carroucel slidesPerView={slidesPerView} >
             {data.map((d, i) => {

@@ -1006,6 +1006,9 @@ const TEXTS_BY_PATHNAME: {
   },
   "/cazatalentos/dashboard": {
     en: {
+      seguro : "Are you sure you want to delete this project?",
+      inactivo : "Inactive",
+      enviado_aprobacion : "Sent for approval",
       no_creado :"You have not created any project",
       al_crear : "When creating a project, here you will have an overview of your active and inactive projects.",
       recuerda_crear :"Remember to create all your roles and read the approval requirements before finishing and sending them.",
@@ -1033,6 +1036,9 @@ const TEXTS_BY_PATHNAME: {
         "Here will appear all the projects that you have placed as archived",
     },
     es: {
+      seguro : "Seguro que deseas eliminar este proyecto?",
+      inactivo : "Inactivo",
+      enviado_aprobacion : "Enviado a aprobación",
       no_creado : "No has creado ningún proyecto",
       al_crear : "Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.",
       comienza : "¡Comienza ahora mismo!",
