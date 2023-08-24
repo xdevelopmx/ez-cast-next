@@ -186,7 +186,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 				<>
 					<div className="intro_container text-center ezcast_container pb-3">
 						<motion.img src="assets/img/iconos/EZ_Claqueta_N_S.svg" className="logo_head_registro" alt="" />
-						<p className="h1 text-uppercase text-white m-0" style={{fontSize:45, fontWeight:700}}>Registro EZ-CAST</p>
+						<p className="h1 text-uppercase text-white m-0" style={{fontSize:45, fontWeight:700}}>{textos["Titulo"]?? ""}</p>
 					</div>
 					<div className="intro_container">
 						<Link href="/login" className="text-dark">
@@ -202,7 +202,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 								<path className="st0"
 									d="M12.9,3.8H4l1.7-1.7c0.4-0.4,0.4-1,0-1.4c-0.4-0.4-1-0.4-1.4,0L0.9,4.1c-0.4,0.4-0.4,1,0,1.4l3.4,3.4 c0.4,0.4,1,0.4,1.4,0c0.4-0.4,0.4-1,0-1.4L4,5.8h8.9c1.5,0,3.2,0.4,3.2,3.8c0,3.8-2.6,3.8-3.4,3.8H3c-0.6,0-1,0.4-1,1s0.4,1,1,1h9.7 c3.5,0,5.4-2.1,5.4-5.8C18.1,5.9,16.3,3.8,12.9,3.8z" />
 							</svg>
-							&nbsp;&nbsp;{is_representante ? 'REGRESAR' : 'REGRESAR A INFORMACIÓN EZ-CAST'}
+							&nbsp;&nbsp;{is_representante ? (textos["rt"]?? "") : (textos["return"]?? "")}
 						</Link>
 						<Box sx={{ width: '100%' }}>
 							<br />
@@ -258,8 +258,8 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 									}}
 									current_step={state.step_active}
 									step_titles={{
-										1: (is_representante) ? 'Crea el perfil de tu talento' : 'Crea tu perfil',
-										2: 'Tipo de membresía',
+										1: (is_representante) ? 'Crea el perfil de tu talento' : (textos["crea_perfil"]?? ""),
+										2: (textos["tipo_membresia"]?? ""),
 										...(() => {
 											return (steps.length === 4
 												? ({

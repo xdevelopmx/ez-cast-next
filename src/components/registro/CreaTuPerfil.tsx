@@ -3,6 +3,9 @@ import { motion } from 'framer-motion'
 import { FormGroup } from '../shared'
 import { type PerfilForm } from '~/pages/registro';
 import Constants from '~/constants';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: PerfilForm,
@@ -11,7 +14,8 @@ interface Props {
 
 export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
    console.log('state', state);
-
+   const ctx = useContext(AppContext);
+   const textos = useLang(ctx.lang);
     return (
         <>
             <div className="row ml-lg-5 mt-lg-4 jc-c">
@@ -26,7 +30,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, nombre: (!e.target.value || e.target.value.length < 2) ? 'El nombre es demasiado corto' : undefined}
                             }) 
                         }} 
-                        label='Nombre*' 
+                        label={textos["nombref"]?? ""} 
                     />
                 </div>
                 <div className="col-md-3 offset-md-2">
@@ -40,7 +44,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, apellido: (!e.target.value || e.target.value.length < 2) ? 'El apellido es demasiado corto' : undefined}
                             }) 
                         }} 
-                        label='Apellidos*' 
+                        label={textos["apellidosf"]?? ""} 
                     />
                 </div>
             </div>
@@ -56,7 +60,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, usuario: (!e.target.value || e.target.value.length < 2) ? 'El usuario es demasiado corto' : undefined}
                             })
                         }} 
-                        label='Usuario*' 
+                        label={textos["usuario"]?? ""} 
                     />
                 </div>
                 <div className="col-md-3 offset-md-2">
@@ -70,7 +74,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, email: (!Constants.PATTERNS.EMAIL.test(e.target.value)) ? 'El email es invalido' : undefined}
                             }) 
                         }} 
-                        label='Correo electrónico' 
+                        label={textos["mail"]?? ""} 
                         type="email" 
                     />
                 </div>
@@ -88,7 +92,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, contrasenia: (!e.target.value || e.target.value.length < 8) ? 'La contraseña es demasiado corto' : undefined}
                             })
                         }} 
-                        label='Contraseña' 
+                        label={textos["contra"]?? ""} 
                         type="password" 
                     />
                 </div>
@@ -103,7 +107,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                                 errors: {...state.errors, confirmacion_contrasenia: (!e.target.value || !state.contrasenia || state.contrasenia !== e.target.value) ? 'Las contraseñas no son la misma' : undefined}
                             })
                         }} 
-                        label='Confirmar Contraseña' 
+                        label={textos["confirma_contra"]?? ""} 
                         type="password" 
                     />
                 </div>
@@ -112,7 +116,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                 <div className="row ml-lg-5 jc-c">
                     <div className="col-md-4 text-center">
                         <div className="text-center">
-                            <p>O registrate con</p>
+                            <p>{textos["registrar_con"]?? ""}</p>
                         </div>
                         <div className="d-lg-flex">
                             <div className="flex_one">
