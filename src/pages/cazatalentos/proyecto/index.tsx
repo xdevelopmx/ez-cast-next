@@ -18,6 +18,9 @@ import { type Archivo } from '~/server/api/root';
 import { type Media } from '@prisma/client';
 import { getSession } from 'next-auth/react'
 import { TipoUsuario } from '~/enums'
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 export type ProyectoForm = {
     id: number,

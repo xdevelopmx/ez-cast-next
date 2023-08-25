@@ -284,7 +284,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     nuevo_proyecto: "Nuevo Proyecto",
     alertas: "Tus alertas",
     agenda_virtual: "Virtual diary",
-    mis_proyectos: "My projects",
+    mis_proyectos: "Mis proyectos",
     editar_perfil: "Edit profile",
     fecha: "Fecha",
     bienvenido: "Bienvenido",

@@ -1332,7 +1332,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         : ""
                     }
                   >
-                    Mis Proyectos
+                    {textos['mis_proyectos']}
                   </Link>
                   <Link
                     href="/cazatalentos/billboard"
@@ -1350,13 +1350,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       router.pathname.includes("agenda-virtual") ? "active" : ""
                     }
                   >
-                    Agenda Virtual
+                    {textos['agenda_virtual']}
                   </Link>
                   <Link
                     href="/mensajes"
                     className={router.pathname === "/mensajes" ? "active" : ""}
                   >
-                    Mensajes
+                    {textos['mensajes']}
                   </Link>
                   <Link
                     href="/ayuda-ezcast"
@@ -1364,7 +1364,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       router.pathname === "/ayuda-ezcast" ? "active" : ""
                     }
                   >
-                    Ayuda
+                    {textos['ayuda']}
                   </Link>
                 </div>
               )}
