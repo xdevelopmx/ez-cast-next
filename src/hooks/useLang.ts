@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    talert : "Your alerts",
     tyc : "Terms & conditions",
     pyp : "Privacy policy",
     preguntas : "Frequent questions",
@@ -260,6 +261,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    talertas : "Tus alertas",
     tyc : "Términos y condiciones",
     pyp : "Políticas de privacidad",
     preguntas : "Preguntas frecuentes",
@@ -703,8 +705,14 @@ const TEXTS_BY_PATHNAME: {
     },
   },
   "/talento/dashboard": {
-    en: {},
-    es: {},
+    en: {
+      vertd : " View as Headhunter",
+      copiartd : "Copy profile link to share"
+    },
+    es: {
+      vertd : " Ver como Cazatalento",
+      copiartd : "Copiar link de perfil para compartir"
+    },
   },
   "/talento/editar-perfil": {
     en: {

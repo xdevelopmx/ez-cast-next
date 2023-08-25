@@ -123,14 +123,14 @@ const DashBoardTalentosPage: NextPage<{
                             height={20}
                             alt=""
                           />{" "}
-                          Ver como Cazatalento
+                          {textos['vertd']}
                         </p>
                         <p className="m-0 p-0">
                           <Button sx={{textTransform: 'capitalize', textDecoration: 'underline'}} onClick={() => {
                               navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${props.id_talento}`);
                               notify('success', 'Se copio el link');
                           }}>
-                            Copiar link de perfil para compartir
+                            {textos['copiartd']}
                           </Button>
                           
                         </p>
