@@ -5,6 +5,9 @@ import MotionDiv from '~/components/layout/MotionDiv';
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { api } from '~/utils/api';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: ProyectoForm;
@@ -12,7 +15,9 @@ interface Props {
 }
 
 export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    var paso = textos['paso'] + '1';
     const tipos_sindicatos = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnWindowFocus: false
     })
@@ -25,7 +30,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
     return (
         <Grid container>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 1' subtitle='Información General'
+                <SectionTitle title={paso} subtitle={textos['info_gral']}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
@@ -43,7 +48,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                             nombre: e.target.value,
                         })
                     }}
-                    label='Nombre de proyecto*'
+                    label={textos['nombre_proyecto']}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8}>
@@ -58,7 +63,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                             id_sindicato: parseInt(e.target.value)
                         })
                     }}
-                    label='Sindicato*'
+                    label={textos['sindicato']}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8}>
@@ -80,17 +85,17 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                             text={
                                 <>
                                     <Typography fontWeight={600}>
-                                        Asegúrate de seleccionar el tipo de proyecto adecuado para ti.
+                                    {textos['ayuda_tipo']}
                                     </Typography>
                                     <br/>
                                     <Typography>
-                                        Ten en cuenta que una vez que selecciones un tipo de proyecto y crees tu proyecto, no podrás cambiarlo.Para obtener más orientación, consulte nuestra documentación de ayuda y tutoriales.
+                                    {textos['ayuda_tipo1']}
                                     </Typography>
                                 </>
                             }
                         />
                     }
-                    label='Tipo Proyecto*'
+                    label={textos['tipo_proyecto'] + '*'}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8}></Grid>

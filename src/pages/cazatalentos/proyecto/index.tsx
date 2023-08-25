@@ -436,7 +436,7 @@ const Proyecto: NextPage = () => {
         <>
 
             <Head>
-                <title>DashBoard ~ Talentos | Talent Corner</title>
+                <title>DashBoard ~ {textos['talento']} | Talent Corner</title>
                 <meta name="description" content="Talent Corner" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
@@ -455,8 +455,8 @@ const Proyecto: NextPage = () => {
                             <div className="d-flex" style={{ marginBottom: 64 }}>
                                 <motion.img style={{ width: 35 }} src="/assets/img/silla-ezcast.svg" alt="icono" />
                                 <div>
-                                    <p style={{ marginLeft: 20, fontSize: '1.7rem' }} className="color_a h4 font-weight-bold mb-0"><b>{(proyecto.data?.nombre ?? 'Nuevo proyecto')}</b></p>
-                                    <p style={{ marginLeft: 20, fontSize: '1.3rem' }} className="mb-0"><b>¡Comencemos!</b></p>
+                                    <p style={{ marginLeft: 20, fontSize: '1.7rem' }} className="color_a h4 font-weight-bold mb-0"><b>{(proyecto.data?.nombre ?? (textos['n_p']))}</b></p>
+                                    <p style={{ marginLeft: 20, fontSize: '1.3rem' }} className="mb-0"><b>{textos['comencemos']}</b></p>
                                 </div>
                             </div>
 
@@ -488,7 +488,7 @@ const Proyecto: NextPage = () => {
                                             className="btn btn-intro btn-price btn_out_line mb-2"
                                             type="button"
                                         >
-                                            <Typography>Guardar y terminar después</Typography>
+                                            <Typography>{textos['guardar_y_terminar_mas_tarde']}</Typography>
                                         </button>
                                     </div>
                                     <div>
@@ -498,7 +498,7 @@ const Proyecto: NextPage = () => {
                                             type="submit"
                                         >
                                             <Typography>
-                                                Guardar proyecto y agregar rol
+                                            {textos['save_y_add']}
                                             </Typography>
                                         </button>
                                     </div>

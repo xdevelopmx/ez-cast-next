@@ -3,6 +3,9 @@ import { type FC } from 'react'
 import { FormGroup, SectionTitle } from '~/components'
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: ProyectoForm;
@@ -10,18 +13,21 @@ interface Props {
 }
 
 export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    let paso = textos["paso"]+'2';
     return (
         <Grid mb={5} container>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 2'
-                    subtitle='Contacto de Casting'
+                <SectionTitle title={paso}
+                    subtitle={textos['contacto_casting']}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                 />
             </Grid>
             <Grid item xs={12}>
                 <div className="info_bg_a">
                     <Typography>
-                        Esta información no se compartirá con el público
+                    {textos['privacidad']}
                     </Typography>
                 </div>
             </Grid>
@@ -38,7 +44,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                             director_casting: e.target.value
                         })
                     }}
-                    label='Director de casting*'
+                    label={textos['director_de_casting']}
                 />
             </Grid>
             <Grid item xs={8} mt={8}>
@@ -55,7 +61,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                             telefono_contacto: e.target.value
                         })
                     }}
-                    label='Número de teléfono*'
+                    label={textos['numero_telefono']}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8}>
@@ -72,7 +78,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                             email_contacto: e.target.value
                         })
                     }}
-                    label='Correo electrónico*'
+                    label={textos['email']}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8} >
@@ -90,12 +96,10 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                             text={
                                 <>
                                     <Typography fontWeight={600}>
-                                        Información de Contacto
+                                    {textos['info_contacto']}
                                     </Typography>
                                     <Typography>
-                                        Asegúrate de revisar esta dirección de correo electrónico con frecuencia
-                                        durante el proceso de aprobación en caso de que tengamos alguna pregunta
-                                        sobre tu proyecto.
+                                    {textos['info_contacto1']}
                                     </Typography>
                                 </>
                             }
@@ -107,7 +111,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
                             email_contacto_confirmacion: e.target.value
                         })
                     }}
-                    label='Confirmar correo electrónico'
+                    label={textos['confirmar_correo']}
                 />
             </Grid>
         </Grid>
