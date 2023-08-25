@@ -71,14 +71,14 @@ export const Header: FC<Props> = ({
         >
           {(menuAzul || !esBlanco) && (
             <motion.img
-              src="/assets/img/logo_blanco.svg"
+              src="/assets/img/logo_blanco.png"
               className="d-inline-block align-top w-100"
               alt=""
             />
           )}
           {esBlanco && (
             <motion.img
-              src="/assets/img/logo_color.svg"
+              src="/assets/img/logo_color.png"
               className={`d-inline-block align-top w-100`}
               alt=""
             />

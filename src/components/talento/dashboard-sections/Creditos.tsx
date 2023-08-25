@@ -89,8 +89,8 @@ export const Creditos = (props: { id_talento: number; read_only: boolean }) => {
           <Typography
             my={1}
             fontSize={30}
-            sx={{ color: "#069cb1", fontWeight: 900 }}
-            fontWeight={900}
+            sx={{ color: "#069cb1", fontWeight: 800 }}
+            fontWeight={800}
           >
             {creditos.data ? creditos.data.creditos.length : ""}
           </Typography>

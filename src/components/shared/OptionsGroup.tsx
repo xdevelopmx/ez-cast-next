@@ -20,7 +20,7 @@ export const OptionsGroup: FC<Props> = ({ id, labels, onOptionClick, styleContai
                     return <Button
                         sx={styleButton}
                         size='small'
-                        className={`font-weight-bold color_a fs-20px hover-bg-blue ${(seleccionado === index? 'seleccionado' : '')}`}
+                        className={`fw-500 color_a fs-20px hover-bg-blue ${(seleccionado === index? 'seleccionado' : '')}`}
                         key={label}
                         onClick={() => { 
                             onOptionClick(id, label),

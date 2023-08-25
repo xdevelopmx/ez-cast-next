@@ -148,7 +148,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                 <Grid item xs={12} md={5} sx={{ paddingTop: 3 }}>
                   {info.isFetching && <Skeleton width={300} />}
                   {!info.isFetching && (
-                    <Typography fontWeight={900} sx={{ fontSize: "1.4rem" }}>
+                    <Typography fontWeight={800} sx={{ fontSize: "1.4rem" }}>
                       {info.data?.nombre} {info.data?.apellido}
                     </Typography>
                   )}
@@ -199,7 +199,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                       className={`m-1`}
                       direction="horizontal"
                     >
-                      <p style={{ fontSize: 30, fontWeight: 900 }}>
+                      <p style={{ fontSize: 30, fontWeight: 800 }}>
                         Información básica
                       </p>
                       <Button
@@ -406,7 +406,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
               </Grid>
               <Grid container mt={4} xs={12}>
                 <Grid xs={12}>
-                  <Typography fontWeight={900} sx={{ color: "#069cb1" }}>
+                  <Typography fontWeight={800} sx={{ color: "#069cb1" }}>
                     Acerca de
                   </Typography>
                   {info.isFetching && <Skeleton width={200} />}
@@ -418,10 +418,10 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                   <Divider />
                 </Grid>
                 <Grid xs={12} mt={4}>
-                  <Typography fontWeight={900}>
+                  <Typography fontWeight={800}>
                     Representas
                     <Typography
-                      fontWeight={900}
+                      fontWeight={800}
                       component={"span"}
                       sx={{ padding: "0px 5px", color: "#069cb1" }}
                     >
@@ -456,7 +456,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                       padding: "8px 40px",
                       marginTop: 0,
                       marginRight: 10,
-                      fontWeight: 900,
+                      fontWeight: 800,
                       textTransform: "none",
                       color: "#000",
                       backgroundColor: "#f9b233 !important",
@@ -472,7 +472,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                       padding: "8px 40px",
                       marginTop: 0,
                       marginRight: 10,
-                      fontWeight: "900 !important",
+                      fontWeight: "800 !important",
                       textTransform: "none",
                       color: "#000",
                       border: "2px solid #f9b233",

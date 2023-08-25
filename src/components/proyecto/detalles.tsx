@@ -73,7 +73,7 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                         >
                             <Grid container item xs={12}>
                                 <Grid item xs={9}>
-                                    <Typography fontWeight={900} sx={{ fontSize: '1.4rem' }}>
+                                    <Typography fontWeight={800} sx={{ fontSize: '1.4rem' }}>
                                         {proyecto.data?.nombre}
                                     </Typography>
                                 </Grid>

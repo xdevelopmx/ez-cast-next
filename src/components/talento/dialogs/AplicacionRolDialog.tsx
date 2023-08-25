@@ -97,7 +97,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
 			<DialogContent sx={{ height: 700, overflow: 'auto' }} >
 				<Grid container sx={{ mt: 0 }}>
 					<Grid item xs={12} mt={4}>
-						<Typography variant="h6" color={'#069cb1'} fontWeight={900}>
+						<Typography variant="h6" color={'#069cb1'} fontWeight={800}>
 							{props.readonly ? `${textos['detalles']} ${textos['de']} ${textos['tu_low']} ${textos['aplicacion']}` : `${textos['confirmar']} ${textos['tu_low']} ${textos['aplicacion_low']}`}
 						</Typography>
                         <Divider style={{ borderColor:  'rgba(0, 0, 0, 0.7)'}}/>

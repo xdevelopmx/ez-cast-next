@@ -10,7 +10,7 @@ interface Props {
 
 const theme = createTheme({
     typography: {
-        fontFamily: 'GillSans, Arial',
+        fontFamily: 'Gill Sans',
         fontSize: 16
     },
     palette: {
@@ -21,14 +21,68 @@ const theme = createTheme({
     components: {
         MuiCssBaseline: {
             styleOverrides: `
-            @font-face {
-                font-family: 'GillSans';
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-Light.woff2') format('woff2');
+                font-weight: 100;
                 font-style: normal;
-                font-display: swap;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-Light.woff2') format('woff2');
+                font-weight: 200;
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-Light.woff2') format('woff2');
+                font-weight: 300;
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans.woff2') format('woff2');
                 font-weight: 400;
-                src: local('GillSans'), local('GillSans'), url(/assets/fonts/GillSans.woff2) format('woff2');
-                unicodeRange: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF;
-            }
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-SemiBold.woff2') format('woff2');
+                font-weight: 500;
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-SemiBold.woff2') format('woff2');
+                font-weight: 600;
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-Bold.woff2') format('woff2');
+                font-weight: 700;
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-Bold.woff2') format('woff2');
+                font-weight: 800;
+                font-style: normal;
+              }
+              
+              @font-face {
+                font-family: 'Gill Sans';
+                src: url('../../public/assets/fonts/GillSans-UltraBold.woff2') format('woff2');
+                font-weight: 900;
+                font-style: normal;
+              }
           `,
         },
     },

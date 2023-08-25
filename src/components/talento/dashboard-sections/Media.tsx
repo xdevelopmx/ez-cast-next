@@ -120,7 +120,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               : undefined
           }
           titleSx={{
-            fontWeight: 900,
+            fontWeight: 800,
             fontSize: "26px",
           }}
           dividerSx={{
@@ -146,7 +146,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             />
             <Typography
               sx={{ color: "#069CB1", pl: 1, fontSize: "22px" }}
-              fontWeight={900}
+              fontWeight={800}
             >
               {textos["galeria_imagenes"]
                 ? textos["galeria_imagenes"].toUpperCase()
@@ -238,7 +238,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                 marginTop: 1,
                 fontSize: "22px",
               }}
-              fontWeight={900}
+              fontWeight={800}
             >
               VIDEO <br /> REEL
             </Typography>
@@ -359,7 +359,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                 marginTop: 1,
                 fontSize: "22px",
               }}
-              fontWeight={900}
+              fontWeight={800}
             >
               AUDIO <br /> CLIPS
             </Typography>
@@ -429,7 +429,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                 marginTop: 1,
                 fontSize: 22,
               }}
-              fontWeight={900}
+              fontWeight={800}
             >
               SELF
               <br />
