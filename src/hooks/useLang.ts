@@ -3,6 +3,11 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    tyc : "Terms & conditions",
+    pyp : "Privacy policy",
+    preguntas : "Frequent questions",
+    tutoriales :"Tutorials",
+    inicio : "Home",
     cazatalentos : "Headhunter",
     agencia_publicidad: "Advertising agency",
     casa_productora: "Production House",
@@ -255,6 +260,11 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    tyc : "Términos y condiciones",
+    pyp : "Políticas de privacidad",
+    preguntas : "Preguntas frecuentes",
+    tutoriales : "Tutoriales",
+    inicio : "Inicio",
     cazatalentos : "Cazatalentos",
     agencia_publicidad: "Agencia de publicidad",
     casa_productora: "Casa Productora",
@@ -552,6 +562,9 @@ const TEXTS_BY_PATHNAME: {
   },
   "/registro": {
     en: {
+      acepto_tyc : "I accept terms and conditions",
+      leer_tyc : "Read terms and conditions",
+      terminos : "Accept terms and conditions",
       rt : "GO BACK",
       Titulo: "EZ-CAST REGISTRATION",
       return: "BACK TO EZ-CAST INFORMATION",
@@ -587,6 +600,9 @@ const TEXTS_BY_PATHNAME: {
         "There are errors in the form, please correct them and try again.",
     },
     es: {
+      leer_tyc : "Leer términos y condiciones",
+      acepto_tyc : "Acepto términos y condiciones",
+      terminos : "Aceptar términos y condiciones",
       rt : "REGRESAR",
       Titulo: "REGISTRO EZ-CAST",
       return: "REGRESAR A INFORMACIÓN EZ-CAST",

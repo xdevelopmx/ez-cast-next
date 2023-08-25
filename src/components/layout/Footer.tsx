@@ -1,11 +1,18 @@
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
+
+
 export const Footer = () => {
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   return (
     <footer className="p-3 p-lg-5">
       <div className="row justify-content-between">
         <div className="col-md-4">
           <div className="row">
             <div className="col-md-6" style={{ padding: "0 0 0 30px" }}>
-              <p className="font-weight-bold">Inicio</p>
+              <p className="font-weight-bold">{textos["inicio"]?? ""}</p>
               <p style={{ margin: 0 }}>
                 <a href="./" className="footer_link">
                   EZ-Cast
@@ -18,15 +25,15 @@ export const Footer = () => {
               </p>
             </div>
             <div className="col-md-6">
-              <p className="font-weight-bold">Ayuda</p>
+              <p className="font-weight-bold">{textos["ayuda"]?? ""}</p>
               <p style={{ margin: 0 }}>
                 <a href="./intro" className="footer_link">
-                  Tutoriales
+                {textos["tutoriales"]?? ""}
                 </a>
               </p>
               <p style={{ margin: 0 }}>
                 <a href="./ayuda-ezcast" className="footer_link">
-                  Preguntas frecuentes
+                {textos["preguntas"]?? ""}
                 </a>
               </p>
             </div>
@@ -42,11 +49,11 @@ export const Footer = () => {
                 display: "block !important",
               }}
             >
-              Política de privacidad
+              {textos["pyp"]?? ""}
             </a>
           </div>
           <a href="#" className="footer_link d-inline-block">
-            Términos y condiciones
+          {textos["tyc"]?? ""}
           </a>
         </div>
       </div>

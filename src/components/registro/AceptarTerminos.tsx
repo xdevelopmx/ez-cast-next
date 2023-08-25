@@ -2,6 +2,9 @@ import { Grid, type SxProps, Typography } from '@mui/material'
 import React, { FC } from 'react'
 import { MCheckboxGroup } from '../shared'
 import { CreateUserForm } from '~/pages/registro';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 const estilos_link: SxProps = {
     textDecoration: 'underline'
@@ -13,7 +16,8 @@ interface Props {
 }
 
 export const AceptarTerminos: FC<Props> = ({state, onFormChange}) => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     return (
         <div className="row ml-lg-5 mt-lg-4 jc-c">
@@ -21,7 +25,7 @@ export const AceptarTerminos: FC<Props> = ({state, onFormChange}) => {
                 <Grid>
                     <a href='' target='_blank'>
                         <Typography sx={estilos_link}>
-                            Leer término y condiciones
+                        {textos["leer_tyc"]?? ""}
                         </Typography>
                     </a>
                 </Grid>
@@ -39,7 +43,7 @@ export const AceptarTerminos: FC<Props> = ({state, onFormChange}) => {
                         }}
                         id={'id-terminos-condiciones'}
                         //labelStyle={{ marginBottom: 0, width: '32%' }}
-                        options={['Acepto términos y condiciones']}
+                        options={[(textos["acepto_tyc"]?? "")]}
                         values={[state.terms_and_conditions_accepted]}
                     />
                 </Grid>

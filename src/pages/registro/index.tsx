@@ -264,10 +264,10 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 											return (steps.length === 4
 												? ({
 													3: 'Pago',
-													4: 'Aceptar términos y condiciones'
+													4: (textos["terminos"]?? "")
 												})
 												: ({
-													3: 'Aceptar términos y condiciones',
+													3: (textos["terminos"]?? ""),
 												}))
 										})()
 									}}
