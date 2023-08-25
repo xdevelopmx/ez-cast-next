@@ -189,7 +189,7 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
             my={2}
             fontSize={"22px"}
             sx={{ color: "#069cb1" }}
-            fontWeight={900}
+            fontWeight={800}
           >
             {textos["mascotas"] ? textos["mascotas"] : "Texto No definido"}
           </Typography>
@@ -268,7 +268,7 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
             my={2}
             fontSize={"22px"}
             sx={{ color: "#069cb1" }}
-            fontWeight={900}
+            fontWeight={800}
           >
             {" "}
             {textos["vehiculos"] ? textos["vehiculos"] : "Texto No definido"}
@@ -381,7 +381,7 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
             my={2}
             fontSize={"22px"}
             sx={{ color: "#069cb1" }}
-            fontWeight={900}
+            fontWeight={800}
           >
             {textos["vestuarios"] ? textos["vestuarios"] : "Texto No definido"}
           </Typography>
@@ -463,7 +463,7 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
             my={2}
             fontSize={"22px"}
             sx={{ color: "#069cb1" }}
-            fontWeight={900}
+            fontWeight={800}
           >
             {textos["props"] ? textos["props"] : "Texto No definido"}
           </Typography>
@@ -526,7 +526,7 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
             my={2}
             fontSize={"22px"}
             sx={{ color: "#069cb1" }}
-            fontWeight={900}
+            fontWeight={800}
           >
             {textos["equipo_deportivo"]
               ? textos["equipo_deportivo"]

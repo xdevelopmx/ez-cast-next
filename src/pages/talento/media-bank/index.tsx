@@ -371,7 +371,7 @@ export const MediaBank = (props: {
                           <Typography
                             sx={{ color: "#069CB1", pl: 1 }}
                             fontSize={29}
-                            fontWeight={900}
+                            fontWeight={800}
                             textTransform={'uppercase'}
                           >
                             {textos["galeria_imagenes"]}
@@ -476,7 +476,7 @@ export const MediaBank = (props: {
                               marginTop: 1,
                             }}  
                             fontSize={30}
-                            fontWeight={900}
+                            fontWeight={800}
                           >
                             VIDEO <br /> REEL
                           </Typography>
@@ -602,7 +602,7 @@ export const MediaBank = (props: {
                               marginTop: 1,
                             }}
                             fontSize={30}
-                            fontWeight={900}
+                            fontWeight={800}
                           >
                             AUDIO <br /> CLIPS
                           </Typography>
@@ -676,7 +676,7 @@ export const MediaBank = (props: {
                               marginTop: 1,
                             }}
                             fontSize={30}
-                            fontWeight={900}
+                            fontWeight={800}
                           >
                             Selftapes
                           </Typography>

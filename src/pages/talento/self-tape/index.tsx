@@ -361,7 +361,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                       height={32}
                       alt=""
                     />
-                    <Typography style={{ fontSize: 30, fontWeight: 900 }}>
+                    <Typography style={{ fontSize: 30, fontWeight: 800 }}>
                       Self-tape
                     </Typography>
                   </Box>
@@ -494,7 +494,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                                   aspectRatio: "1/1",
                                   borderRadius: "50%",
                                   fontSize: "3rem",
-                                  fontWeight: 900,
+                                  fontWeight: 800,
                                 }}
                               >
                                 {count}

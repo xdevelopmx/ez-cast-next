@@ -156,15 +156,15 @@ export const RolPreview: FC<PropsRol> = ({
         )}
         <Grid container item xs={no_poster ? 12 : 8} sx={{ padding: "20px" }}>
           <Grid container item xs={12}>
-            <Grid item xs={8}>
+            <Grid item xs={9}>
               <MContainer direction="horizontal">
                 <Typography
-                  fontWeight={900}
+                  fontWeight={800}
                   sx={{ fontSize: "1.4rem", marginRight: 1 }}
                 >
                   {rol.proyecto.nombre}
                 </Typography>
-                <Typography fontWeight={900} sx={{ fontSize: "1.4rem" }}>
+                <Typography fontWeight={800} sx={{ fontSize: "1.4rem" }}>
                   {" - " + rol.nombre}
                 </Typography>
               </MContainer>
@@ -185,7 +185,10 @@ export const RolPreview: FC<PropsRol> = ({
                 </Alert>
               )}
             </Grid>
-            <Grid item xs={2}>
+            <Grid item style={{
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }} xs={3}>
               {action}
             </Grid>
             <Grid item xs={12}>
@@ -848,7 +851,7 @@ export const RolPreview: FC<PropsRol> = ({
           <button
             style={{
               width: "40px",
-              fontWeight: "900",
+              fontWeight: "800",
               borderRadius: "0.5rem",
               color: "#069cb1",
               textTransform: "none",

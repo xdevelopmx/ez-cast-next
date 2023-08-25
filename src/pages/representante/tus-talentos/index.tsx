@@ -62,7 +62,7 @@ const RepresentanteTusTalentosPage = () => {
                   >
                     <Typography
                       sx={{
-                        fontWeight: 900,
+                        fontWeight: 800,
                         fontSize: "2rem",
                       }}
                     >
@@ -72,10 +72,10 @@ const RepresentanteTusTalentosPage = () => {
                 </Grid>
 
                 <Grid xs={12} mt={4}>
-                  <Typography fontWeight={900}>
+                  <Typography fontWeight={800}>
                     Representas
                     <Typography
-                      fontWeight={900}
+                      fontWeight={800}
                       component={"span"}
                       sx={{ padding: "0px 5px", color: "#069cb1" }}
                     >

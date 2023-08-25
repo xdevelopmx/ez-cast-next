@@ -234,7 +234,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({
                       </Grid>
                       <Grid item md={11}>
                         <Typography
-                          fontWeight={900}
+                          fontWeight={800}
                           sx={{ color: "#000000", fontSize: "2rem" }}
                         >
                           {textos["tus"]} {textos["aplicaciones"]}

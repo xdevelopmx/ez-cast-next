@@ -1428,7 +1428,7 @@ footer {
 .box_alerts_list .item_alerts_list p a {
   color: var(--acent_ezcast_b);
   text-decoration: underline;
-  font-weight: bolder;
+  font-weight: 700;
 }
 
 .box_alerts_list .item_alerts_list.active p span {
@@ -1471,7 +1471,7 @@ footer {
 .container_list_proyects .nav-tabs .nav-link {
   border: 2px solid var(--txt_grey_v2);
   color: var(--txt_grey_v2);
-  font-weight: 900;
+  font-weight: 800;
 }
 
 .container_list_proyects .nav-link.active,
@@ -2078,7 +2078,7 @@ table.boxBtnTable td {
 }
 
 .slideshow.slider_login {
-  min-height: 900px;
+  min-height: 800px;
 }
 
 .login_container .logo_head_cart {
@@ -3214,7 +3214,7 @@ p.edo_pendiente {
   min-width: 90px;
   border-radius: 10px;
   color: #069cb1;
-  font-weight: 900;
+  font-weight: 800;
 }
 
 .box_habilidades .body_habilidades .box_etiquetas .btn.active {
@@ -3373,7 +3373,7 @@ p.edo_pendiente {
 .paso-stepper {
   display: flex;
   justify-content: space-between;
-  font-weight: 900;
+  font-weight: 800;
   margin: 32px 0 32px 0;
   color: #069cb1;
   border-bottom: 2px solid #909295;
@@ -3674,6 +3674,14 @@ input.borde_azul {
 .container_slider_destacados .swiper-button-next:after,
 .container_slider_destacados .swiper-button-prev:after {
   font-size: 12px !important;
-  font-weight: 900;
+  font-weight: 800;
   color: #069cb1 !important;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+b, strong {
+  font-weight: 800!important;
 }

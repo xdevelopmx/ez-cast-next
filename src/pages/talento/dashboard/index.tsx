@@ -107,10 +107,8 @@ const DashBoardTalentosPage: NextPage<{
                         />
                       )}
                       {!talento.isFetching && talento.data && (
-                        <p className="h4 font-weight-bold mb-0 ml-2">
-                          <b>
+                        <p className="h3 font-weight-bold mb-0 ml-2">
                             {talento.data.nombre} {talento.data.apellido}
-                          </b>
                         </p>
                       )}
                     </div>
