@@ -111,7 +111,7 @@ export const InfoGeneral = (props: {
               className={`m-1`}
               direction="horizontal"
             >
-              <p style={{ fontSize: 32, fontWeight: 900, margin: 0 }}>
+              <p style={{ fontSize: 32, fontWeight: 800, margin: 0 }}>
                 {textos["info_basica"]
                   ? textos["info_basica"]
                   : "Texto No definido"}
