@@ -17,6 +17,9 @@ import useNotify from "~/hooks/useNotify";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { expandDates } from "~/utils/dates";
 import dayjs from "dayjs";
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 const estilos_calendario: SxProps<Theme> = {
     '& .MuiPickersCalendarHeader-label': {
@@ -52,7 +55,8 @@ const estilos_calendario: SxProps<Theme> = {
 }
 
 const AgendaVirtual = () => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const router = useRouter();
 
     const horarios = api.agenda_virtual.getAllHorarioAgendaByCazatalento.useQuery(undefined, {
@@ -139,14 +143,14 @@ const AgendaVirtual = () => {
                                                 <Image src="/assets/img/iconos/agenda.svg" width={50} height={50} style={{ margin: '15px 0 0 0', filter: 'invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)' }} alt="" />
                                             </Grid>
                                             <Grid item md={11}>
-                                                <Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>Agenda Virtual</Typography>
-                                                <Typography fontWeight={600} sx={{ color: '#000', fontSize: '`.7rem' }}>Horarios</Typography>
+                                                <Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>{textos['agenda_virtual']}</Typography>
+                                                <Typography fontWeight={600} sx={{ color: '#000', fontSize: '`.7rem' }}>{textos['horarios']}</Typography>
                                             </Grid>
 
                                         </Grid>
                                     </Grid>
                                     <div style={{ textAlign: 'right', width: '100%' }}>
-                                        <Link href="/cazatalentos/agenda-virtual/crear" className="btn btn-intro btn-price mb-2 mt-3"><Image src="/assets/img/iconos/mas.svg" width={14} height={14} style={{ filter: 'invert(1)', margin: '0 0 2px 0' }} alt="" />&nbsp;&nbsp;Nuevo horario</Link>
+                                        <Link href="/cazatalentos/agenda-virtual/crear" className="btn btn-intro btn-price mb-2 mt-3"><Image src="/assets/img/iconos/mas.svg" width={14} height={14} style={{ filter: 'invert(1)', margin: '0 0 2px 0' }} alt="" />&nbsp;&nbsp;{textos['n_horario']}</Link>
                                     </div>
                                     <Grid item xs={12}>
                                         <Grid container item xs={20} sx={{ backgroundColor: '#fff', padding: '10px 10px' }} columns={18}>
@@ -160,13 +164,13 @@ const AgendaVirtual = () => {
 
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
-                                                Pendientes
+                                            {textos['pendientes']}
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
-                                                Confirmados
+                                            {textos['confirmados']}
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
-                                                No confirmados
+                                            {textos['no_confirmados']}
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
                                             </Grid>
@@ -177,17 +181,17 @@ const AgendaVirtual = () => {
                                         <Grid container item xs={18} sx={{ backgroundColor: '#069cb1', padding: '16px 10px', margin: '0 0 16px 0' }} columns={18}>
                                             <Grid item md={4} textAlign={'center'}>
                                                 <Typography variant="subtitle1" fontWeight={800}>
-                                                    Nombre
+                                                {textos['nombre']}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={1} textAlign={'center'}>
                                                 <Typography variant="subtitle1" fontWeight={800}>
-                                                    Roles
+                                                {textos['roles']}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={3} textAlign={'center'}>
                                                 <Typography variant="subtitle1" fontWeight={800}>
-                                                    Fecha de creación
+                                                {textos['f_creacion']}
                                                 </Typography>
                                             </Grid>
                                             <Grid item md={2} textAlign={'center'}>
@@ -208,10 +212,10 @@ const AgendaVirtual = () => {
                                         {!horarios.isFetching && paginated_data.length === 0 &&
                                             <Grid container item xs={20} sx={{ backgroundColor: '#069cb185', padding: '5px 10px', margin: '4px 0' }} columns={18} justifyContent={'center'} textAlign={'center'}>
                                                 <div className="box_message_blue">
-                                                    <p className="h3" style={{ fontWeight: 600 }}>No has creado ningún horario</p>
-                                                    <p>Al crear un horario, aquí tendrás una vista general de tus horarios activos.<br />
+                                                    <p className="h3" style={{ fontWeight: 600 }}>{textos['no_c']}</p>
+                                                    <p>{textos['al_crear']}<br />
                                                         .<br />
-                                                        ¡Comienza ahora mismo!</p>
+                                                        {textos['comienza']}</p>
                                                 </div>
                                             </Grid>
                                         }

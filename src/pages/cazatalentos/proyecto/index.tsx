@@ -106,7 +106,8 @@ function reducer(state: ProyectoForm, action: { type: string, value: { [key: str
 
 
 const Proyecto: NextPage = () => {
-
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const [state, dispatch] = useReducer(reducer, initialState);
     const [redirect, setRedirect] = useState<'' | 'back' | 'roles'>('');
     const { notify } = useNotify();
