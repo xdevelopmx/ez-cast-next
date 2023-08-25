@@ -3,7 +3,12 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
-    talert : "Your alerts",
+    mtcl : "Mark all as read",
+    vt : "See all",
+    leido : "read",
+    no_leido : "unread",
+    mc : "Mark as",
+    talertas : "Your alerts",
     tyc : "Terms & conditions",
     pyp : "Privacy policy",
     preguntas : "Frequent questions",
@@ -261,6 +266,11 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    mtcl : "Marcar todas como leídas",
+    vt : "Ver todas",
+    leido : "leída",
+    no_leido : "no leída",
+    mc : "Marcar como",
     talertas : "Tus alertas",
     tyc : "Términos y condiciones",
     pyp : "Políticas de privacidad",

@@ -85,8 +85,8 @@ export const Alertas = () => {
                 'aria-labelledby': 'basic-button',
               }}
             >
-              <MenuItem onClick={() => { updateOneSeen.mutate({ id_alerta: a.id, new_state: !a.visto }) }}>Marcar como {`${(a.visto) ? 'no leido' : 'leido'}`}</MenuItem>
-              <MenuItem onClick={() => { deleteOne.mutate({ id_alerta: a.id }) }}>Eliminar</MenuItem>
+              <MenuItem onClick={() => { updateOneSeen.mutate({ id_alerta: a.id, new_state: !a.visto }) }}>{textos['mc']} {`${(a.visto) ? (textos['no_leido']) : (textos['leido'])}`}</MenuItem>
+              <MenuItem onClick={() => { deleteOne.mutate({ id_alerta: a.id }) }}>{textos['eliminar']}</MenuItem>
             </Menu>
           </div>
           
@@ -142,16 +142,16 @@ export const Alertas = () => {
               <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
               {alertas.data && alertas.data.filter(a => !a.visto).length > 0 ? <span className="count_msn active">{alertas.data.filter(a => !a.visto).length}</span> : null}
             </div>
-            <p className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
+            <p className="font-weight-bold h4 mr-5 mb-0 color_a">{textos['talertas']}</p>
           </div>
           <Box textAlign={'end'}>
             <Button>
-              Ver todas
+            {textos['vt']}
             </Button>
             <Button
               onClick={() => { markAllAsSeen.mutate({id_user: (session.data && session.data.user) ? parseInt(session.data.user.id) : 0, tipo_user: (session.data && session.data.user && session.data.user.tipo_usuario) ? session.data.user.tipo_usuario: ''})}}
             >
-              Marcar todas como leidas
+              {textos['mtcl']}
             </Button>
           </Box>
           <Grid container gap={2} justifyContent="center" maxHeight={'60vh'} overflow={'auto'}>
@@ -176,7 +176,7 @@ export const Alertas = () => {
                 <motion.img onClick={() => {setShowAlertas(show => !show)}} src="/assets/img/iconos/bell_blue.svg" alt="" />
                 {alertas.data && alertas.data.filter(a => !a.visto).length > 0 ? <span className="count_msn active">{alertas.data.filter(a => !a.visto).length}</span> : null}
               </div>
-              <p onClick={() => {setShowAlertas(show => !show)}} className="font-weight-bold h4 mr-5 mb-0 color_a">Tus alertas</p>
+              <p onClick={() => {setShowAlertas(show => !show)}} className="font-weight-bold h4 mr-5 mb-0 color_a">{textos['talertas']}</p>
             </div>
         </div>
     </>
