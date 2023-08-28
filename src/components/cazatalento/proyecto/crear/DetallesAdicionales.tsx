@@ -6,6 +6,9 @@ import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { FileManager } from '~/utils/file-manager';
 import Image from 'next/image'
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: ProyectoForm;
@@ -13,12 +16,15 @@ interface Props {
 }
 
 export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    const paso = textos["paso"] + " 4";
     return (
         <Grid mb={4} container>
             <Grid item xs={12}>
                 <SectionTitle
-                    title='Paso 4'
-                    subtitle='Detalles adicionales'
+                    title={paso}
+                    subtitle={textos["equipo_creativo"]}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                 />
             </Grid>
@@ -35,12 +41,9 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                             color='blue'
                             text={
                                 <>
-                                    <Typography fontSize={14} fontWeight={600}>¿De qué trata tu proyecto?</Typography>
+                                    <Typography fontSize={14} fontWeight={600}>{textos["dqt"]}</Typography>
                                     <Typography fontSize={14}>
-                                        Sé lo mas descriptivo posible para
-                                        que el talento se entusiasme con la
-                                        posibilidad de trabajar y unirse a tu
-                                        proyecto.
+                                    {textos["qst"]}
                                     </Typography>
                                 </>
                             }
@@ -52,7 +55,7 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                             sinopsis: e.target.value
                         })
                     }}
-                    label='Sinopsis*'
+                    label={textos["sinopsis"]}
                 />
             </Grid>
             <Grid item xs={4} mt={3} marginLeft={16}>
@@ -62,12 +65,12 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                         noIconLabel={true}
                         label={
                             <>
-                                <Typography fontWeight={600}>Agregar Archivo</Typography>
-                                <Typography fontSize={14} fontWeight={600}>(Guión, Storyboard o Contrato)</Typography>
+                                <Typography fontWeight={600}>{textos["agregar_archivo"]}</Typography>
+                                <Typography fontSize={14} fontWeight={600}>{textos["instruccion"]}</Typography>
                             </>
                         }
                         download_url={state.files.archivo?.url}
-                        text_label_download='Descargar archivo'
+                        text_label_download={textos["desc_archivo"]}
                         files={(state.files.archivo) ? [state.files.archivo] : []}
                         filetypes={['pdf', 'doc', 'docx', 'mp4']}
                         //height={100}
@@ -105,7 +108,7 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                             <Typography sx={{fontSize: '1rem'}}>PDF</Typography>
                         }
                         hasNoIconInButton={true}
-                        text_button='Subir archivo'
+                        text_button={textos["subir_archivo"]}
                         stylesButton={{
                             backgroundColor: '#069cb1',
                             color: '#fff',
@@ -128,7 +131,7 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
                             detalles_adicionales: e.target.value
                         })
                     }}
-                    label='Detalles adicionales del proyecto'
+                    label={textos["dap"]}
                 />
             </Grid>
 

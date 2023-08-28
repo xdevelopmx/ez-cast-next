@@ -17,7 +17,7 @@ interface Props {
 export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
     const ctx = useContext(AppContext);
     const textos = useLang(ctx.lang);
-    var paso = textos['paso'] + '1';
+    var paso = textos['paso'] + ' 1';
     const tipos_sindicatos = api.catalogos.getUniones.useQuery(undefined, {
         refetchOnWindowFocus: false
     })

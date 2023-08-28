@@ -4,6 +4,9 @@ import { MSelect, SectionTitle } from '~/components'
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { api } from '~/utils/api';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: ProyectoForm;
@@ -11,6 +14,9 @@ interface Props {
 }
 
 export const LocacionProyecto: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    const paso = textos['paso'] + " 5";
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
     })
@@ -18,8 +24,8 @@ export const LocacionProyecto: FC<Props> = ({ state, onFormChange }) => {
         <Grid container>
             <Grid item xs={12}>
                 <SectionTitle
-                    title='Paso 5'
-                    subtitle='Locación del proyecto'
+                    title={paso}
+                    subtitle={textos["loc_proy"]}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
 
                 />
@@ -38,12 +44,12 @@ export const LocacionProyecto: FC<Props> = ({ state, onFormChange }) => {
                     tooltip={
                         <MTooltip
                             color='orange'
-                            text='¿Dónde está tu proyecto? A menos que estés pagando por viáticos, debes elegir solo ubicaciones dentro de unadistancia de conducción razonable para que el talento se reporta al trabajo'
+                            text={textos["detp"]}
                             placement='right'
                         />
                     }
-                    label='Locación de proyecto*'
-                    inferiorBlueText='Elegir estado'
+                    label={textos["loc_proy"]+'*'}
+                    inferiorBlueText={textos["elest"]}
                 />
             </Grid>
         </Grid>

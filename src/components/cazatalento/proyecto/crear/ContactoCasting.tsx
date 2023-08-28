@@ -15,7 +15,7 @@ interface Props {
 export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
     const ctx = useContext(AppContext);
     const textos = useLang(ctx.lang);
-    let paso = textos["paso"]+'2';
+    let paso = textos["paso"]+' 2';
     return (
         <Grid mb={5} container>
             <Grid item xs={12}>

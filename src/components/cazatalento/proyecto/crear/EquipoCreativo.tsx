@@ -2,6 +2,9 @@ import { Grid } from '@mui/material';
 import { type FC } from 'react'
 import { FormGroup, SectionTitle } from '~/components'
 import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: ProyectoForm;
@@ -9,12 +12,15 @@ interface Props {
 }
 
 export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    const paso = textos["paso"]+" 3";
     return (
         <Grid mb={5} container>
             <Grid item xs={12}>
                 <SectionTitle
-                    title='Paso 3'
-                    subtitle='Equipo creativo'
+                    title={paso}
+                    subtitle={textos["equipo_creativo"]}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                 />
             </Grid>
@@ -29,7 +35,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                             productor: e.target.value
                         })
                     }}
-                    label='Productor'
+                    label={textos["productor"]}
                 />
             </Grid>
             <Grid item xs={8} mt={8}>
@@ -43,7 +49,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                             casa_productora: e.target.value
                         })
                     }}
-                    label='Casa Productora'
+                    label={textos["casa_productora"]}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8}>
@@ -57,7 +63,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                             director: e.target.value
                         })
                     }}
-                    label='Director'
+                    label={textos["director"]}
                 />
             </Grid>
             <Grid item xs={12} md={4} mt={8} >
@@ -71,7 +77,7 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
                             agencia_publicidad: e.target.value
                         })
                     }}
-                    label='Agencia de publicidad'
+                    label={textos["agencia_publicidad"]}
                 />
             </Grid>
         </Grid>

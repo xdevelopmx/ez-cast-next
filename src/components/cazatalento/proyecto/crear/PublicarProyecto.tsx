@@ -6,6 +6,9 @@ import { type ProyectoForm } from '~/pages/cazatalentos/proyecto';
 import { FileManager } from '~/utils/file-manager';
 import Image from 'next/image'
 import { MTooltip } from '~/components/shared/MTooltip';
+import useLang from "~/hooks/useLang";
+import AppContext from "~/context/app";
+import { useContext } from "react";
 
 interface Props {
     state: ProyectoForm;
@@ -13,12 +16,15 @@ interface Props {
 }
 
 export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    const paso = textos["paso"] + " 6";
     return (
         <Grid container>
             <Grid item xs={12}>
                 <SectionTitle
-                    title='Paso 6'
-                    subtitle='Publicar en Bilboard de Talentos'
+                    title={paso}
+                    subtitle={textos["pbdt"]}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                 />
             </Grid>
@@ -28,16 +34,16 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     noIconLabel={true}
                     label={
                     <Typography fontWeight={600}>
-                        Agregar una foto de portada para tu proyecto 
+                         {textos["afp"]}
                         <MTooltip
                             color='blue'
                             text={
                                 <>
                                     <Typography fontWeight={600}>
-                                        Titulo ToolTip
+                                        {textos["titool"]}
                                     </Typography>
                                     <Typography>
-                                        Texto Tooltip
+                                        {textos["textool"]}
                                     </Typography>
                                 </>
                             }
@@ -85,10 +91,10 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                         <Image src="/assets/img/iconos/cam_outline_blue.svg" width={30} height={30} alt="" />
                     }
                     textoArrastrarArchivos={
-                        <Typography sx={{ fontSize: '1rem' }}>O arrastrar al recuadro</Typography>
+                        <Typography sx={{ fontSize: '1rem' }}>{textos["aar"]}</Typography>
                     }
                     hasNoIconInButton={true}
-                    text_button='Agregar foto'
+                    text_button={textos["addph"]}
                     stylesButton={{
                         backgroundColor: '#069cb1',
                         color: '#fff',
@@ -99,12 +105,12 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
             </Grid>
             <Grid item xs={12} mt={4}>
                 <MRadioGroup
-                    label='¿Deseas compartir el proyecto en formato poster mantenerlo oculto y solo poner la casa productora?'
+                    label={textos["deseas_compartir"]}
                     labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                     style={{ gap: 0 }}
                     id="quieres-compartir"
                     options={['Compartir nombre de proyecto', 'Solo compartir casa productora']}
-                    value={state.compartir_nombre ? 'Compartir nombre de proyecto' : 'Solo compartir casa productora'}
+                    value={state.compartir_nombre ? ('Compartir nombre de proyecto') : 'Solo compartir casa productora'}
                     direction='vertical'
                     onChange={(e) => {
                         onFormChange({
