@@ -113,7 +113,7 @@ const LoginPage: NextPage = () => {
                     } m-0`}
                     labelStyle={{ fontWeight: 400 }}
                     style={{
-                      width: "190px",
+                      width: "160px",
                       fontSize: 13,
                       borderColor: "#069cb1!important",
                       background: "transparent",
@@ -165,7 +165,7 @@ const LoginPage: NextPage = () => {
                     labelStyle={{ fontWeight: 400 }}
                     value={state.password}
                     style={{
-                      width: "190px",
+                      width: "160px",
                       fontSize: 13,
                       borderColor: "#069cb1!important",
                       background: "transparent",
