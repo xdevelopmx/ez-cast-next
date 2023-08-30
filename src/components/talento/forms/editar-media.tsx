@@ -13,10 +13,11 @@ import useLang from '~/hooks/useLang';
 
 interface Props {
     state: TalentoFormMedios,
+    loading: boolean,
     onFormChange: (input: { [id: string]: (string | number | number[] | Archivo[]) }) => void;
 }
 
-export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
+export const EditarMediaTalento: FC<Props> = ({ onFormChange, state, loading }) => {
     const ctx = useContext(AppContext);
     const textos = useLang(ctx.lang);
     return (
@@ -37,39 +38,41 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state }) => {
                         <MTooltip text={textos['media_fotos_tooltip'] ? textos['media_fotos_tooltip'] : 'Texto No Definido'} sx={{width: '10px!important'}} color='orange' placement='right' />
                     </MContainer>
                     <Typography sx={{ color: '#069CB1', margin: '25px 5px 5px 0px' }}>{textos['elegir_foto_perfil'] ? textos['elegir_foto_perfil'] : 'Texto No Definido'}</Typography>
-                    <DraggableContainer
-                        width={600}
-                        direction={'horizontal'}
-                        onElementsUpdate={(elements_order: number[]) => {
-                            const fotos: Archivo[] = [];
-                            elements_order.forEach((id) => {
-                                const element = state.fotos[id];
-                                if (element) {
-                                    fotos.push(element);
+                    {!loading &&
+                        <DraggableContainer
+                            width={600}
+                            direction={'horizontal'}
+                            onElementsUpdate={(elements_order: number[]) => {
+                                const fotos: Archivo[] = [];
+                                elements_order.forEach((id) => {
+                                    const element = state.fotos[id];
+                                    if (element) {
+                                        fotos.push(element);
+                                    }
+                                });
+                                onFormChange({ fotos: fotos });
+                            }}
+                            elements={state.fotos.map((foto, i) => {
+                                return {
+                                    id: i,
+                                    content:
+
+                                        <div style={{ border: i === 0 ? '1px solid #069CB1' : 'none', padding: '10px' }}>
+                                            <Image
+                                                style={{ objectFit: 'cover' }}
+
+                                                alt={`Imagen ${foto.name}`}
+                                                key={foto.name}
+                                                width={80}
+                                                height={110}
+                                                src={foto.base64}
+                                            />
+                                        </div>
+
                                 }
-                            });
-                            onFormChange({ fotos: fotos });
-                        }}
-                        elements={state.fotos.map((foto, i) => {
-                            return {
-                                id: i,
-                                content:
-
-                                    <div style={{ border: i === 0 ? '1px solid #069CB1' : 'none', padding: '10px' }}>
-                                        <Image
-                                            style={{ objectFit: 'cover' }}
-
-                                            alt={`Imagen ${foto.name}`}
-                                            key={foto.name}
-                                            width={80}
-                                            height={110}
-                                            src={foto.base64}
-                                        />
-                                    </div>
-
-                            }
-                        })}
-                    />
+                            })}
+                        />
+                    }
                     <DragNDrop
                         id='id-drag-n-drop-fotos'
                         filetypes={['PNG', 'JPG', 'JPEG']}
