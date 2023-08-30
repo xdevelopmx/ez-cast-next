@@ -255,10 +255,12 @@ type TalentoForm = {
   preferencias: TalentoFormPreferencias;
   filtros_apariencia: FiltrosAparienciaForm;
   step_active: number;
+  next_step: number;
 };
 
 const initialState: TalentoForm = {
   step_active: 1,
+  next_step: 1,
   info_gral: {
     nombre: "",
     union: {
@@ -452,6 +454,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   id_talento,
 }) => {
   const [save_type, setSaveType] = useState<'save_and_finish_later' | 'save'>('save');
+  const [busy, setBusy] = useState(false);
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
   const router = useRouter();
@@ -496,6 +499,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       if (save_type === 'save_and_finish_later') {
         router.back();
       } else {
+        dispatch({ type: "update-form", value: { step_active: state.next_step } });
         void talento.refetch();
       }
     },
@@ -510,6 +514,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       if (save_type === 'save_and_finish_later') {
         router.back();
       } else {
+        dispatch({ type: "update-form", value: { step_active: state.next_step } });
         void talento.refetch();
       }
     },
@@ -524,6 +529,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       if (save_type === 'save_and_finish_later') {
         router.back();
       } else {
+        dispatch({ type: "update-form", value: { step_active: state.next_step } });
         void talento.refetch();
       }
     },
@@ -538,6 +544,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       if (save_type === 'save_and_finish_later') {
         router.back();
       } else {
+        dispatch({ type: "update-form", value: { step_active: state.next_step } });
         void talento.refetch();
       }
     },
@@ -552,6 +559,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       if (save_type === 'save_and_finish_later') {
         router.back();
       } else {
+        dispatch({ type: "update-form", value: { step_active: state.next_step } });
         void talento.refetch();
       }
     },
@@ -566,6 +574,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       if (save_type === 'save_and_finish_later') {
         router.back();
       } else {
+        dispatch({ type: "update-form", value: { step_active: state.next_step } });
         void talento.refetch();
       }
     },
@@ -579,7 +588,10 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       onSuccess(_) {
         notify("success", `${textos["success_save_filtros"] ?? "éxito"}`);
         if (save_type === 'save_and_finish_later') {
-          router.back();
+          const timeout = setTimeout(() => {
+            router.back();
+            clearTimeout(timeout);
+          }, 1000);
         } else {
           void talento.refetch();
         }
@@ -590,6 +602,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     });
 
   const handleInfoGral = async () => {
+    setBusy(true);
     const urls: { cv: string | null; carta: string | null } = {
       cv: null,
       carta: null,
@@ -632,6 +645,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         });
       }
     }
+    setBusy(false);
     saveInfoGralMedia.mutate({
       id_talento: id_talento,
       cv_url: state.info_gral.files.urls.cv,
@@ -781,6 +795,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     });
   };
   const handleMedia = async () => {
+    setBusy(true);
     const media: {
       fotos: NewMedia[] | null;
       videos: NewMedia[] | null;
@@ -952,7 +967,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     if (state.medios.audios.length === 0) {
       media.audios = null;
     }
-
+    setBusy(false);
     saveMedios.mutate({
       id_talento: id_talento,
       fotos: media.fotos,
@@ -962,6 +977,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   };
 
   const handleCreditos = async () => {
+    setBusy(true);
     const time = new Date().getTime();
     const creditos = await Promise.all(
       state.creditos.creditos.map(async (credito, i) => {
@@ -1014,6 +1030,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         return { ...credito };
       })
     );
+    setBusy(false);
     saveCreditos.mutate({
       id_talento: id_talento,
       mostrar_anio_en_perfil: state.creditos.mostrar_anio_en_perfil,
@@ -1546,10 +1563,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
             }}
           >
             <MStepper
+              disabled={talento.isFetching}
               onStepChange={(step: number) => {
                 setSaveType('save');
                 handleStepChange(state.step_active);
-                dispatch({ type: "update-form", value: { step_active: step } });
+                //dispatch({ type: "update-form", value: { step_active: step } });
+                dispatch({ type: "update-form", value: { next_step: step } });
               }}
               onFinish={() => {
                 setSaveType('save_and_finish_later');
@@ -1649,7 +1668,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         </div>
       </MainLayout>
       <ResourceAlert busy={
-        saveInfoGralMedia.isLoading || saveInfoGral.isLoading || saveMedios.isLoading || saveCreditos.isLoading || 
+        busy || saveInfoGralMedia.isLoading || saveInfoGral.isLoading || saveMedios.isLoading || saveCreditos.isLoading || 
         saveHabilidades.isLoading || saveActivos.isLoading || saveFiltrosApariencias.isLoading || savePreferencias.isLoading
       }/>
     </>

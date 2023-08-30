@@ -19,6 +19,7 @@ interface Props {
   current_step: number;
   step_titles: { [step: number]: string | undefined };
   onStepSave?: (step: number) => void;
+  disabled?: boolean;
   children: JSX.Element[];
   style?: CSSProperties;
   onFinish?: () => void;
@@ -35,6 +36,7 @@ interface Props {
 export const MStepper: FC<Props> = ({
   onStepSave,
   onStepChange,
+  disabled,
   current_step,
   step_titles,
   children,
@@ -71,7 +73,11 @@ export const MStepper: FC<Props> = ({
             <Step sx={stylesStep} key={`step${i}`}>
               <StepLabel
                 sx={stylesStepLabel}
-                onClick={() => onStepChange(i + 1)}
+                onClick={() => {
+                  if (!disabled) {
+                    onStepChange(i + 1);
+                  }
+                }}
               ></StepLabel>
             </Step>
           ))}
@@ -100,6 +106,7 @@ export const MStepper: FC<Props> = ({
                 <button
                   className="boton-next-step margen"
                   type="button"
+                  disabled={disabled}
                   onClick={() => {
                     onStepChange(current_step - 1);
                   }}
@@ -120,6 +127,7 @@ export const MStepper: FC<Props> = ({
                       current_step === 1 ? "ml-65" : ""
                     } boton-next-step margen`}
                     type="button"
+                    disabled={disabled}
                     onClick={() => {
                       onStepSave(current_step);
                     }}
@@ -134,6 +142,7 @@ export const MStepper: FC<Props> = ({
                 <button
                   className="boton-next-step margen"
                   type="button"
+                  disabled={disabled}
                   onClick={() => {
                     onStepChange(current_step + 1);
                   }}
