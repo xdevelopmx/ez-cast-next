@@ -109,12 +109,12 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                     style={{ gap: 0 }}
                     id="quieres-compartir"
-                    options={['Compartir nombre de proyecto', 'Solo compartir casa productora']}
-                    value={state.compartir_nombre ? ('Compartir nombre de proyecto') : 'Solo compartir casa productora'}
+                    options={[`${textos["si_compartir"]}`, `${textos["no_compartir"]}`]}
+                    value={state.compartir_nombre ? (`${textos["si_compartir"]}`) : `${textos["no_compartir"]}`}
                     direction='vertical'
                     onChange={(e) => {
                         onFormChange({
-                            compartir_nombre: (e.target.value === 'Compartir nombre de proyecto')
+                            compartir_nombre: (e.target.value === `${textos["si_compartir"]}`)
                         })
                     }}
                 />

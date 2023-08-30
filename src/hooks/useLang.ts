@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    add_rol : "Add role",
     qst : "Be as descriptive as possible so that the talent is excited about the possibility of working and joining your project.",
     dqt : "What is your project about?",
     desc_archivo : "Download file",
@@ -284,6 +285,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    add_rol : "Agregar rol",
     qst : "Sé lo mas descriptivo posible para que el talento se entusiasme con la posibilidad de trabajar y unirse a tu proyecto.",
     dqt : "¿De qué trata tu proyecto?",
     desc_archivo : "Descargar archivo",
