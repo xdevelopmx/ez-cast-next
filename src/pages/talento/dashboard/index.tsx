@@ -154,7 +154,7 @@ const DashBoardTalentosPage: NextPage<{
                   }}
                   styleButton={{
                     textTransform: "none",
-                    fontSize: "1.1rem",
+                    fontSize: "1rem",
                   }}
                   id="opciones-usuario"
                   onOptionClick={(id: string, label: string) => {

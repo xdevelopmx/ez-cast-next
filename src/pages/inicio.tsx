@@ -80,7 +80,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                 <p
                   className="color_a mb-0"
                   style={{
-                    fontSize: "30px",
+                    fontSize: "26px",
                     fontWeight: "800",
                     lineHeight: "25px",
                   }}
@@ -126,7 +126,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                 className="mb-0 ml-2 h5"
                 style={{
                   fontWeight: "800",
-                  fontSize: "25px",
+                  fontSize: "24px",
                   textTransform: "capitalize",
                 }}
               >
@@ -188,7 +188,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                       padding: "20px 0 0 0",
                       fontWeight: "800",
                       lineHeight: "1.2",
-                      fontSize: "23px",
+                      fontSize: "18px",
                     }}
                     onClick={() => {
                       setDialog({
@@ -234,7 +234,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
             className="mt-5 h5"
             style={{
               fontWeight: "800",
-              fontSize: "25px",
+              fontSize: "24px",
             }}
           >
             {textos["ahora_castenado_en_ezcast"]
@@ -296,7 +296,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                       padding: "20px 0 0 0",
                       fontWeight: "800",
                       lineHeight: "1.2",
-                      fontSize: "23px",
+                      fontSize: "18px",
                     }}
                   >
                     {proyecto.nombre}

@@ -13,13 +13,13 @@ const estilos_calendario: SxProps<Theme> = {
     fontWeight: "bold",
     margin: 0,
     borderBottom: "2px solid #069cb1",
-    fontSize: "1rem",
+    fontSize: "0.9rem",
   },
   "& .MuiDayCalendar-header": {},
   "& .MuiPickersDay-root": {
     margin: 0,
     fontWeight: "bold",
-    fontSize: "1rem",
+    fontSize: "0.9rem",
   },
   "& .MuiPickersDay-today": {
     borderRadius: 0,

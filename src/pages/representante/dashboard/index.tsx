@@ -148,7 +148,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                 <Grid item xs={12} md={5} sx={{ paddingTop: 3 }}>
                   {info.isFetching && <Skeleton width={300} />}
                   {!info.isFetching && (
-                    <Typography fontWeight={800} sx={{ fontSize: "1.4rem" }}>
+                    <Typography fontWeight={800} sx={{ fontSize: "1.27rem" }}>
                       {info.data?.nombre} {info.data?.apellido}
                     </Typography>
                   )}
@@ -208,7 +208,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                           router.push("/representante/editar-perfil?step=1");
                         }}
                         size="small"
-                        sx={{ textTransform: "none", fontSize: "1.1rem" }}
+                        sx={{ textTransform: "none", fontSize: "1rem" }}
                         className="ml-2 color_a"
                         variant="text"
                       >
@@ -238,7 +238,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           fontWeight: 100,
                           margin: 0,
                         }}
@@ -273,7 +273,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           fontWeight: 100,
                           margin: 0,
                         }}
@@ -309,7 +309,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                             borderWidth: 3,
                             width: 200,
                             textTransform: "none",
-                            fontSize: "1.1rem",
+                            fontSize: "1rem",
                             color: "#000",
                             fontWeight: 600,
                           }}

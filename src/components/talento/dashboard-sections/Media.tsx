@@ -121,7 +121,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
           }
           titleSx={{
             fontWeight: 800,
-            fontSize: "26px",
+            fontSize: "24px",
           }}
           dividerSx={{
             borderTop: "2px solid #069CB1",
@@ -145,7 +145,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               alt=""
             />
             <Typography
-              sx={{ color: "#069CB1", pl: 1, fontSize: "22px" }}
+              sx={{ color: "#069CB1", pl: 1, fontSize: "20px" }}
               fontWeight={800}
             >
               {textos["galeria_imagenes"]
@@ -236,7 +236,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                 color: "#069CB1",
                 textAlign: "center",
                 marginTop: 1,
-                fontSize: "22px",
+                fontSize: "20px",
               }}
               fontWeight={800}
             >
@@ -357,7 +357,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                 color: "#069CB1",
                 textAlign: "center",
                 marginTop: 1,
-                fontSize: "22px",
+                fontSize: "20px",
               }}
               fontWeight={800}
             >

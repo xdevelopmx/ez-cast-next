@@ -127,7 +127,7 @@ export const InfoGeneral = (props: {
                       router.push("/talento/editar-perfil?step=1");
                     }}
                     size="small"
-                    sx={{ textTransform: "none", fontSize: "1.1rem" }}
+                    sx={{ textTransform: "none", fontSize: "1rem" }}
                     className="ml-2 color_a"
                     variant="text"
                   >
@@ -162,7 +162,7 @@ export const InfoGeneral = (props: {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: 100,
                   margin: 0,
                 }}
@@ -200,7 +200,7 @@ export const InfoGeneral = (props: {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   fontWeight: 100,
                   margin: 0,
                 }}
@@ -236,7 +236,7 @@ export const InfoGeneral = (props: {
                   alignItems: "center",
                   margin: 0,
                   padding: 0,
-                  fontSize: "1.3rem",
+                  fontSize: "1.2rem",
                   fontWeight: 600,
                 }}
               >
@@ -257,12 +257,12 @@ export const InfoGeneral = (props: {
               >
                 <p
                   className="color_a"
-                  style={{ fontSize: "1.2rem", fontWeight: 300 }}
+                  style={{ fontSize: "1.1rem", fontWeight: 300 }}
                 >
                   {textos["peso"] ? textos["peso"] : "Texto No definido"}{" "}
                 </p>
                 <p
-                  style={{ fontSize: "1.2rem", fontWeight: 500 }}
+                  style={{ fontSize: "1.1rem", fontWeight: 500 }}
                   className="ml-4"
                 >
                   {data && data.info_basica
@@ -277,12 +277,12 @@ export const InfoGeneral = (props: {
               >
                 <p
                   className="color_a"
-                  style={{ fontSize: "1.2rem", fontWeight: 300 }}
+                  style={{ fontSize: "1.1rem", fontWeight: 300 }}
                 >
                   {textos["altura"] ? textos["altura"] : "Texto No definido"}{" "}
                 </p>
                 <p
-                  style={{ fontSize: "1.2rem", fontWeight: 500 }}
+                  style={{ fontSize: "1.1rem", fontWeight: 500 }}
                   className="ml-4"
                 >
                   {data && data.info_basica
@@ -306,7 +306,7 @@ export const InfoGeneral = (props: {
                     borderWidth: 3,
                     width: 200,
                     textTransform: "none",
-                    fontSize: "1.1rem",
+                    fontSize: "1rem",
                     color: "#000",
                     fontWeight: 600,
                   }}
@@ -400,7 +400,7 @@ export const InfoGeneral = (props: {
         <Grid item xs={12}>
           <MContainer direction="vertical" styles={{ marginTop: 40 }}>
             <Typography
-              sx={{ color: "#069CB1", fontSize: "22px" }}
+              sx={{ color: "#069CB1", fontSize: "20px" }}
               fontWeight={800}
             >
               {textos["acerca_de"] ? textos["acerca_de"] : "Texto No definido"}
@@ -464,7 +464,7 @@ export const InfoGeneral = (props: {
                         sx={{
                           color: "#069CB1",
                           marginLeft: 1,
-                          fontSize: "22px",
+                          fontSize: "20px",
                         }}
                         fontWeight={800}
                       >

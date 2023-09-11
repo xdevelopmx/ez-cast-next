@@ -505,7 +505,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 labelStyle={{
                   margin: 0,
                   fontWeight: 800,
-                  fontSize: "0.8rem",
+                  fontSize: "0.72rem",
                   color: "#069cb1"
                 }}
                 value={
@@ -553,7 +553,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 labelStyle={{
                   margin: 0,
                   fontWeight: 800,
-                  fontSize: "0.8rem",
+                  fontSize: "0.72rem",
                   color: "#069cb1",
                 }}
                 value={
@@ -601,7 +601,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 labelStyle={{
                   margin: 0,
                   fontWeight: 800,
-                  fontSize: "0.8rem",
+                  fontSize: "0.72rem",
                   color: "#069cb1",
                 }}
                 value={
@@ -667,7 +667,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             labelStyle={{
               marginLeft: 112,
               fontWeight: 800,
-              fontSize: "0.8rem",
+              fontSize: "0.72rem",
               color: "#069cb1",
             }}
             value={
@@ -838,7 +838,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             labelStyle={{
               marginLeft: 112,
               fontWeight: 800,
-              fontSize: "0.8rem",
+              fontSize: "0.72rem",
               color: "#069cb1",
             }}
             value={
@@ -1029,7 +1029,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
               labelStyle={{
                 marginLeft: 112,
                 fontWeight: 800,
-                fontSize: "0.8rem",
+                fontSize: "0.72rem",
                 color: "#069cb1",
               }}
               value={

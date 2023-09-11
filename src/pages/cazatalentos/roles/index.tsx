@@ -575,7 +575,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       variant="subtitle2"
                       sx={{
                         textTransform: "capitalize !important",
-                        fontSize: "1.2rem",
+                        fontSize: "1.1rem",
                       }}
                     >
                       {proyecto.data
@@ -596,7 +596,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   />
                   <Typography variant="subtitle2" 
                    sx={{
-                        fontSize: "1.2rem",
+                        fontSize: "1.1rem",
                     }}>
                     {proyecto.data && proyecto.data.tipo
                       ? proyecto.data.tipo.id_tipo_proyecto === 99
@@ -615,7 +615,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   />
                   <Typography variant="subtitle2"
                     sx={{
-                      fontSize: "1.2rem",
+                      fontSize: "1.1rem",
                    }}>
                     {proyecto.data && proyecto.data.sindicato
                       ? proyecto.data.sindicato.id_sindicato === 99

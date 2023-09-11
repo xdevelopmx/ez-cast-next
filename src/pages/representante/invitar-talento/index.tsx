@@ -82,7 +82,7 @@ const InvitarTalentoPage = () => {
                     sx={{
                       fontWeight: 600,
                       color: "#069cb1",
-                      fontSize: "1.6rem",
+                      fontSize: "1.45rem",
                     }}
                   >
                     Invitar a Talento
@@ -96,7 +96,7 @@ const InvitarTalentoPage = () => {
                     sx={{
                       fontWeight: 600,
                       color: "#069cb1",
-                      fontSize: "1.1rem",
+                      fontSize: "1rem",
                     }}
                   >
                     Información de Talento
@@ -186,7 +186,7 @@ const InvitarTalentoPage = () => {
                       sx={{
                         fontWeight: 600,
                         color: "#069cb1",
-                        fontSize: "1.1rem",
+                        fontSize: "1rem",
                       }}
                     >
                       Invitación con tu correo o Correo Talent Corner
@@ -195,7 +195,7 @@ const InvitarTalentoPage = () => {
                   <Grid item xs={12}>
                     <MRadioGroup
                       labelStyle={{
-                        fontSize: "1.1rem",
+                        fontSize: "1rem",
                         color: "#000",
                         fontWeight: 600,
                       }}

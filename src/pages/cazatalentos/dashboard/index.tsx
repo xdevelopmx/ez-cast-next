@@ -152,7 +152,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                 <p
                   className="color_a h4 font-weight-bold mb-0 ml-2"
                   style={{
-                    fontSize: "1.7rem",
+                    fontSize: "1.45rem",
                   }}
                 >
                   <b>{textos["bienvenido"]?? ""}, {user.name}</b>
@@ -163,7 +163,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                 <div className="mt-1 col-md-6">
                   <p
                     className="h5 font-weight-bold"
-                    style={{ fontSize: "1.5rem" }}
+                    style={{ fontSize: "1.36rem" }}
                   >
                     <b>{textos["encabezado"]?? ""}</b>
                   </p>
@@ -342,7 +342,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                   />
                                   <Typography
                                     variant="subtitle2"
-                                    sx={{ fontSize: "1.2rem" }}
+                                    sx={{ fontSize: "1.1rem" }}
                                   >
                                     {p.nombre}
                                   </Typography>
@@ -356,7 +356,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                     <Typography
                                       variant="subtitle2"
                                       sx={{
-                                        fontSize: "1.2rem",
+                                        fontSize: "1.1rem",
                                         padding: "0px 11px",
                                       }}
                                     >
@@ -368,7 +368,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                     <Typography
                                       variant="subtitle2"
                                       sx={{
-                                        fontSize: "1.2rem",
+                                        fontSize: "1.1rem",
                                         padding: "0px 11px",
                                       }}
                                     >
@@ -381,7 +381,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                     <Typography
                                       variant="subtitle2"
                                       sx={{
-                                        fontSize: "1.2rem",
+                                        fontSize: "1.1rem",
                                         padding: "0px 11px",
                                       }}
                                     >
@@ -393,7 +393,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                     <Typography
                                       variant="subtitle2"
                                       sx={{
-                                        fontSize: "1.2rem",
+                                        fontSize: "1.1rem",
                                         padding: "0px 11px",
                                       }}
                                     >
@@ -405,7 +405,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                     <Typography
                                       variant="subtitle2"
                                       sx={{
-                                        fontSize: "1.2rem",
+                                        fontSize: "1.1rem",
                                         padding: "0px 11px",
                                       }}
                                     >
@@ -417,7 +417,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                 <Typography
                                   variant="subtitle2"
                                   sx={{
-                                    fontSize: "1.2rem",
+                                    fontSize: "1.1rem",
                                     padding: "0px 11px",
                                   }}
                                 >
@@ -429,7 +429,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                               <Typography
                                 variant="subtitle2"
                                 sx={{
-                                  fontSize: "1.2rem",
+                                  fontSize: "1.1rem",
                                   padding: "0px 11px",
                                 }}
                               >
@@ -441,7 +441,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                               <Typography
                                 variant="subtitle2"
                                 sx={{
-                                  fontSize: "1.2rem",
+                                  fontSize: "1.1rem",
                                   padding: "0px 11px",
                                 }}
                               >
@@ -452,7 +452,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                               <Typography
                                 variant="subtitle2"
                                 sx={{
-                                  fontSize: "1.2rem",
+                                  fontSize: "1.1rem",
                                   padding: "0px 11px",
                                 }}
                               >

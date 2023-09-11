@@ -417,7 +417,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   style={{ width: 200 }}
                   labelStyle={{
                     fontWeight: 800,
-                    fontSize: "1.1rem",
+                    fontSize: "1rem",
                     textAlign: "start",
                     color: "#069cb1",
                   }}
@@ -451,7 +451,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -480,7 +480,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -506,7 +506,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   labelStyle={{
                     width: 200,
                     fontWeight: 800,
-                    fontSize: "1.1rem",
+                    fontSize: "1rem",
                     textAlign: "start",
                     color: "#069cb1",
                   }}
@@ -545,7 +545,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -593,7 +593,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -640,7 +640,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -687,7 +687,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -734,7 +734,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -781,7 +781,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -828,7 +828,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         style={{ width: 200 }}
                         labelStyle={{
                           fontWeight: 800,
-                          fontSize: "1.1rem",
+                          fontSize: "1rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -1118,7 +1118,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       textAlign: "center",
                       color: "#fff",
                       fontStyle: "italic",
-                      fontSize: "1rem",
+                      fontSize: "0.9rem",
                     }}
                   >
                     {user_info?.posicion}
@@ -1128,7 +1128,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     sx={{
                       textAlign: "center",
                       color: "#fff",
-                      fontSize: "1rem",
+                      fontSize: "0.9rem",
                     }}
                   >
                     {user_info?.biografia}
@@ -1228,7 +1228,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       href={form.redes_sociales.pagina_web}
                       target="_blank"
                     >
-                      <Typography sx={{ fontSize: "1rem", color: "#fff" }}>
+                      <Typography sx={{ fontSize: "0.9rem", color: "#fff" }}>
                         {form.redes_sociales.pagina_web}
                       </Typography>
                     </a>

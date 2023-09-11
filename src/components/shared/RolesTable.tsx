@@ -173,7 +173,7 @@ export const RolesTable = () => {
         <Grid xs={2}>
           <Typography
             fontWeight={600}
-            sx={{ color: "#069cb1", fontSize: "1.1rem" }}
+            sx={{ color: "#069cb1", fontSize: "1rem" }}
           >
             Filtros
           </Typography>
@@ -181,7 +181,7 @@ export const RolesTable = () => {
         <Grid xs={4}>
           <Typography
             fontWeight={600}
-            sx={{ color: "#069cb1", fontSize: "1.1rem", textAlign: "center" }}
+            sx={{ color: "#069cb1", fontSize: "1rem", textAlign: "center" }}
           >
             12 de 25 resultados totales
           </Typography>
@@ -189,7 +189,7 @@ export const RolesTable = () => {
         <Grid xs={6} sx={{ display: "flex", justifyContent: "flex-end" }}>
           <Typography
             fontWeight={600}
-            sx={{ color: "#069cb1", fontSize: "1.1rem" }}
+            sx={{ color: "#069cb1", fontSize: "1rem" }}
           >
             Ver 25 resultados por página
             <Typography
@@ -259,7 +259,7 @@ export const RolesTable = () => {
                 options={["Auto-rellenar basado en perfil"]}
                 labelStyle={{
                   fontWeight: "400",
-                  fontSize: "1.1rem",
+                  fontSize: "1rem",
                   margin: 0,
                 }}
                 values={autorellenar} //[(state) ? state.mostrar_anio_en_perfil : false]}

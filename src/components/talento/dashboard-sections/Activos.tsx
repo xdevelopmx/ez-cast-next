@@ -167,7 +167,7 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
             borderTop: "2px solid #069cb1",
           }}
           titleSx={{
-            fontSize: "26px",
+            fontSize: "24px",
           }}
           textButton={textos["editar"] ? textos["editar"] : "Texto No definido"}
           onClickButton={

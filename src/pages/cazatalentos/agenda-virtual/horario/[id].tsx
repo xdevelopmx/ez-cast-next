@@ -440,18 +440,18 @@ const AudicionPorId = (props: {
                     <Grid item md={11}>
                       <Typography
                         fontWeight={800}
-                        sx={{ color: "#069cb1", fontSize: "2rem" }}
+                        sx={{ color: "#069cb1", fontSize: "1.8rem" }}
                       >
                         Agenda Virtual
                       </Typography>
                       <Typography
                         fontWeight={600}
-                        sx={{ color: "#000", fontSize: "1.4rem" }}
+                        sx={{ color: "#000", fontSize: "1.27rem" }}
                       >
                         Horario para el proyecto{" "}
                         {`${horario.data?.proyecto.nombre}`}
                       </Typography>
-                      <Typography sx={{ fontSize: "1.4rem" }}>
+                      <Typography sx={{ fontSize: "1.27rem" }}>
                         Del {ordered_dates[0]} al{" "}
                         {ordered_dates[ordered_dates.length - 1]}
                       </Typography>
@@ -484,7 +484,7 @@ const AudicionPorId = (props: {
                               <Grid xs={8}>
                                 <Typography
                                   fontWeight={600}
-                                  sx={{ color: "#fff", fontSize: "1.4rem" }}
+                                  sx={{ color: "#fff", fontSize: "1.27rem" }}
                                 >
                                   Talentos reclutados
                                 </Typography>
@@ -499,7 +499,7 @@ const AudicionPorId = (props: {
                                   }}
                                 >
                                   <Typography
-                                    sx={{ color: "#fff", fontSize: "1.1rem" }}
+                                    sx={{ color: "#fff", fontSize: "1rem" }}
                                   >
                                     Vista:
                                   </Typography>
@@ -811,7 +811,7 @@ const AudicionPorId = (props: {
                             >
                               <Typography
                                 fontWeight={600}
-                                sx={{ color: "#fff", fontSize: "1.4rem" }}
+                                sx={{ color: "#fff", fontSize: "1.27rem" }}
                               >
                                 Horario
                               </Typography>

@@ -597,7 +597,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                                       key={`${i}${l}`}
                                       className={`selected-text-${i}`}
                                       style={{
-                                        fontSize: "1.3rem",
+                                        fontSize: "1.2rem",
                                         textAlign: "center",
                                         padding: 0,
                                         margin: 0,

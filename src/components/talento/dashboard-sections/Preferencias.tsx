@@ -79,7 +79,7 @@ export const Preferencias = (props: {id_talento: number, read_only: boolean}) =>
     return (
         <Grid id="preferencia-de-roles" container sx={{ mt: 10 }}>
             <Grid item xs={12}>
-                <SectionTitle titleSx={{ fontSize: "26px", }} dividerSx={{ borderTop: "2px solid #069cb1" }} title={textos['preferencias_roles'] ? `${textos['preferencias_roles']}` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
+                <SectionTitle titleSx={{ fontSize: "24px", }} dividerSx={{ borderTop: "2px solid #069cb1" }} title={textos['preferencias_roles'] ? `${textos['preferencias_roles']}` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
                     router.push(`/talento/editar-perfil?step=6&id_talento=${props.id_talento}`)  
                  } : undefined} />

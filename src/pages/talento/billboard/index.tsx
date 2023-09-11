@@ -326,7 +326,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                 <Grid xs={12} mt={4}>
                   <Grid container mt={4} mb={3}>
                     <Grid item container xs={12}>
-                      <Typography fontWeight={800} sx={{ fontSize: "2.4rem" }}>
+                      <Typography fontWeight={800} sx={{ fontSize: "22.5px" }}>
                         Casting Billboard
                       </Typography>
                     </Grid>
@@ -339,7 +339,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                       <Grid xs={2}>
                         <Typography
                           fontWeight={600}
-                          sx={{ color: "#069cb1", fontSize: "1.1rem" }}
+                          sx={{ color: "#069cb1", fontSize: "1rem" }}
                         >
                           {textos["filtros"]}
                         </Typography>
@@ -358,7 +358,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                               fontWeight={600}
                               sx={{
                                 color: "#069cb1",
-                                fontSize: "0.9rem",
+                                fontSize: "0.82rem",
                                 textAlign: "center",
                               }}
                             >
@@ -387,7 +387,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                       >
                         <Typography
                            fontWeight={600}
-                           sx={{ color: "#069cb1", fontSize: "0.9rem" }}
+                           sx={{ color: "#069cb1", fontSize: "0.82rem" }}
                         >
                           Ver 
                           <Typography onChange={(ev) => {setPagination(prev => {
@@ -405,7 +405,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         </Typography>
                         <Typography
                           fontWeight={600}
-                          sx={{ color: "#069cb1", fontSize: "0.9rem" }}
+                          sx={{ color: "#069cb1", fontSize: "0.82rem" }}
                         >
                           {' resultados por página '}
                           {roles_billboard.data &&
@@ -488,7 +488,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                                 },
                               ]}
                               styleRoot={{ width: 128 }}
-                              style={{ width: "100%", fontSize: "0.8rem" }}
+                              style={{ width: "100%", fontSize: "0.72rem" }}
                               value={form_filtros.tipo_busqueda}
                               onChange={(e) => {
                                 setFormFiltros((prev) => {
@@ -530,7 +530,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                               ]}
                               labelStyle={{
                                 fontWeight: "400",
-                                fontSize: "1.1rem",
+                                fontSize: "1rem",
                                 margin: 0,
                               }}
                               values={[form_filtros.autorellenar]}
@@ -601,7 +601,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             r.toString()
                           )}
                           styleRoot={{ width: "100px", padding: 0 }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.72rem" }}
                           className="borde_azul"
                           onChange={(e) => {
                             setFormFiltros((prev) => {
@@ -634,7 +634,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           placeholder={textos["union"]}
                           disabled={form_filtros.autorellenar}
                           styleRoot={{ width: "76px" }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_union.map((r) => r.toString())}
                           onChange={(e) => {
@@ -664,7 +664,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         <MSelect
                           id="tipos-roles-select"
                           styleRoot={{ width: "90px" }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_tipo_rol.map((r) => r)}
                           onChange={(e) => {
@@ -715,7 +715,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             style={{
                               border: "none",
                               width: "100%",
-                              fontSize: "0.8rem",
+                              fontSize: "0.72rem",
                             }}
                             onChange={(e) => {
                               setFormFiltros((prev) => {
@@ -735,7 +735,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             style={{
                               border: "none",
                               width: "100%",
-                              fontSize: "0.8rem",
+                              fontSize: "0.72rem",
                             }}
                             onChange={(e) => {
                               setFormFiltros((prev) => {
@@ -750,7 +750,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         <MSelect
                           id="tipos-proyectos-select"
                           styleRoot={{ width: "120px" }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_tipo_proyecto.map((r) =>
                             r.toString()
@@ -787,7 +787,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                           id="generos-select"
                           disabled={form_filtros.autorellenar}
                           styleRoot={{ width: "110px" }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_genero_rol.map((r) =>
                             r.toString()
@@ -822,7 +822,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         <MSelect
                           id="apariencias-etnicas-select"
                           styleRoot={{ width: "150px" }}
-                          style={{ fontSize: "0.8rem" }}
+                          style={{ fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_apariencia_etnica.map((r) =>
                             r.toString()
@@ -841,7 +841,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             });
                           }}
                           button_props={{
-                            fontSize: "2rem",
+                            fontSize: "1.8rem",
                             position: "absolute",
                             height: "100%",
                             top: 0,
@@ -866,7 +866,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         <MSelect
                           id="nacionalidades-etnicas-select"
                           styleRoot={{ width: "170px" }}
-                          style={{ fontSize: "0.8rem" }}
+                          style={{ fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_nacionalidades.map((r) =>
                             r.toString()
@@ -883,7 +883,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                             });
                           }}
                           button_props={{
-                            fontSize: "2rem",
+                            fontSize: "1.8rem",
                             position: "absolute",
                             height: "100%",
                             top: 0,
@@ -908,7 +908,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                         <MSelect
                           id="preferencias-pago-select"
                           styleRoot={{ width: "138px" }}
-                          style={{ width: "100%", fontSize: "0.8rem" }}
+                          style={{ width: "100%", fontSize: "0.72rem" }}
                           className="borde_azul"
                           value={form_filtros.id_preferencias_de_pago.map((r) =>
                             r.toString()

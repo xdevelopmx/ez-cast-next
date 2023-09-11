@@ -11,13 +11,13 @@ export const LoaderSlide = () => {
           padding: "20px 0 0 0",
           fontWeight: "800",
           lineHeight: "1.2",
-          fontSize: "23px",
+          fontSize: "18px",
         }}
         style={{ cursor: "pointer" }}
         align="center"
         variant="subtitle1"
       >
-        <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+        <Skeleton variant="text" sx={{ fontSize: "0.9rem" }} />
       </Typography>
     </MContainer>
   );

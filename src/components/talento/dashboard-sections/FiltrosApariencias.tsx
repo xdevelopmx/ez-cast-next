@@ -291,7 +291,7 @@ export const FiltrosApariencias = (props: {
               borderTop: "2px solid #069cb1",
             }}
             titleSx={{
-              fontSize: "26px",
+              fontSize: "24px",
             }}
             onClickButton={
               !props.read_only

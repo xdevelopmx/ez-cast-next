@@ -95,7 +95,7 @@ export const ModalLocacion: FC<Props> = ({
       >
         <Typography
           fontWeight={600}
-          sx={{ fontSize: "1.4rem", color: "#069cb1" }}
+          sx={{ fontSize: "1.27rem", color: "#069cb1" }}
         >
           Añadir locación
         </Typography>

@@ -63,7 +63,7 @@ const RepresentanteTusTalentosPage = () => {
                     <Typography
                       sx={{
                         fontWeight: 800,
-                        fontSize: "2rem",
+                        fontSize: "1.8rem",
                       }}
                     >
                       Tus talentos

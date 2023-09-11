@@ -160,11 +160,11 @@ export const RolPreview: FC<PropsRol> = ({
               <MContainer direction="horizontal">
                 <Typography
                   fontWeight={800}
-                  sx={{ fontSize: "1.4rem", marginRight: 1 }}
+                  sx={{ fontSize: "1.27rem", marginRight: 1 }}
                 >
                   {rol.proyecto.nombre}
                 </Typography>
-                <Typography fontWeight={800} sx={{ fontSize: "1.4rem" }}>
+                <Typography fontWeight={800} sx={{ fontSize: "1.27rem" }}>
                   {" - " + rol.nombre}
                 </Typography>
               </MContainer>
@@ -199,14 +199,14 @@ export const RolPreview: FC<PropsRol> = ({
                   height={15}
                   alt=""
                 />
-                <Typography sx={{ color: "#069cb1", fontSize: "0.9rem" }}>
+                <Typography sx={{ color: "#069cb1", fontSize: "0.82rem" }}>
                   {textos["fecha_limite_entrega_de_aplicaciones"]}:
                   <Typography
                     component={"span"}
                     sx={{
                       color: "#069cb1",
                       marginLeft: "5px",
-                      fontSize: "0.9rem",
+                      fontSize: "0.82rem",
                     }}
                   >
                     {(rol.casting &&
@@ -305,7 +305,7 @@ export const RolPreview: FC<PropsRol> = ({
                     alt=""
                   />
 
-                  <Typography sx={{ fontSize: "0.9rem", fontWeight: 400 }}>
+                  <Typography sx={{ fontSize: "0.82rem", fontWeight: 400 }}>
                     {textos["proyecto_por"]}: {rol.proyecto.productor}
                   </Typography>
 

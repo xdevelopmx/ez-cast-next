@@ -92,7 +92,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
             >
               <Typography
                 sx={{ margin: 0 }}
-                fontSize={"1.3rem"}
+                fontSize={"1.1rem"}
                 fontWeight={500}
               >
                 {ctx.lang === "es" ? habilidad.es : habilidad.en}

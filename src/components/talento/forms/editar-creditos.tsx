@@ -217,7 +217,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               onFormChange({ mostrar_anio_en_perfil: e });
             }}
             id="mostrar-anio-perfil"
-            labelStyle={{ fontWeight: "400", fontSize: "1.1rem" }}
+            labelStyle={{ fontWeight: "400", fontSize: "1rem" }}
             options={[
               textos["mostrar_anio_en_perfil"]
                 ? textos["mostrar_anio_en_perfil"]

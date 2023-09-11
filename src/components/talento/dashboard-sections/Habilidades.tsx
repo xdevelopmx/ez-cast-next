@@ -82,7 +82,7 @@ export const Habilidades = (props: {
             borderTop: "2px solid #069cb1",
           }}
           titleSx={{
-            fontSize: "26px",
+            fontSize: "24px",
           }}
           textButton={textos["editar"] ? textos["editar"] : "Texto No definido"}
           onClickButton={
@@ -157,7 +157,7 @@ export const Habilidades = (props: {
                     styles={{ marginTop: 20 }}
                   >
                     <Typography
-                      sx={{ color: "#069cb1", fontSize: "20px" }}
+                      sx={{ color: "#069cb1", fontSize: "18px" }}
                       fontWeight={600}
                     >
                       {entry[0]}

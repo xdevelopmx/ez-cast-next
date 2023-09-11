@@ -164,7 +164,7 @@ export const MSelect: FC<Props> = ({
                   "& > svg": button_props
                     ? button_props
                     : {
-                        fontSize: "2rem",
+                        fontSize: "1.8rem",
                         position: "absolute",
                         height: "100%",
                         top: 0,
@@ -214,7 +214,7 @@ export const MSelect: FC<Props> = ({
                 "& > svg": button_props
                   ? button_props
                   : {
-                      fontSize: "2rem",
+                      fontSize: "1.8rem",
                       position: "absolute",
                       height: "100%",
                       top: 0,
