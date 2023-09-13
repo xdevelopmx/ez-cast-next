@@ -11,7 +11,7 @@ interface Props {
 const theme = createTheme({
     typography: {
         fontFamily: 'Gill Sans',
-        fontSize: 16
+        fontSize: 14
     },
     palette: {
         primary: {

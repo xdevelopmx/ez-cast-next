@@ -217,7 +217,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 										maxWidth: '100%'
 									}}
 									styleH3Paso={{
-										fontSize: '1.5rem',
+										fontSize: '1.3rem',
 										color: '#000',
 									}}
 									styleSpanH3PasoTitulo={{

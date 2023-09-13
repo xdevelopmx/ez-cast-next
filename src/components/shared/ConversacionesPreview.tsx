@@ -35,7 +35,7 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
                     </Box>
                 </Grid>
                 <Grid item xs={12} sx={{
-                    height: '600px',
+                    height: '450px',
                     border: '2px solid #B4B5B6',
                     borderTop: 'none',
                     overflowY: 'scroll'

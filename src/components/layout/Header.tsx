@@ -113,7 +113,7 @@ export const Header: FC<Props> = ({
             </li>
             <li
               className={`nav-item ml-lg-3 mr-lg-3 ${
-                router.pathname === "/login" ? "" : ""
+                router.pathname === "/login" ? "active" : ""
               }`}
             >
               {/*eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}

@@ -5,7 +5,7 @@ import type { ChangeEventHandler, CSSProperties, FC } from 'react'
 interface Props {
     id: string,
     label?: string,
-    options: string[],
+    options: [],
     onChange?: ChangeEventHandler<HTMLInputElement>;
     value?: string;
     style?: CSSProperties,
@@ -36,7 +36,7 @@ export const MRadioGroup: FC<Props> = ({
                         aria-labelledby="demo-row-radio-buttons-group-label"
                         name="row-radio-buttons-group"
                     >
-                        {options.filter(o => o.length > 0).map(o => {
+                        {options.map(o => {
                             return <FormControlLabel
                                 key={o}
                                 style={elementStyle}

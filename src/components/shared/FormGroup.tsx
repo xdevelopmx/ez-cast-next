@@ -71,7 +71,7 @@ export const FormGroup: FC<Props> = ({
       placeholder={placeholder}
       disabled={disabled}
       style={{
-        fontSize: 16,
+        fontSize: 14,
         ...style,
         borderColor: error != null ? "red" : "#069cb1",
       }}

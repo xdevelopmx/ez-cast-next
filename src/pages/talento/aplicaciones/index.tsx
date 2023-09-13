@@ -124,13 +124,13 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({
             <Box display={"flex"} flexDirection={"row"} gap={2}>
               <Typography
                 variant="body2"
-                fontSize={"1.5rem"}
+                fontSize={"1.3rem"}
                 fontWeight={700}
                 color={"#069cb1"}
               >
                 {textos["status"]}:
               </Typography>
-              <Typography variant="body2" fontSize={"1.5rem"}>
+              <Typography variant="body2" fontSize={"1.3rem"}>
                 {(() => {
                   switch (aplicacion.id_estado_aplicacion) {
                     case Constants.ESTADOS_APLICACION_ROL.NO_VISTO:

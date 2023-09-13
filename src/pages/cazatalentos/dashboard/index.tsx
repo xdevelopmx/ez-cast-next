@@ -299,7 +299,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      {textos["acciones"]?? ""}
+                      
                     </Typography>,
                   ]}
                   backgroundColorHeader="#069cb1"
@@ -358,6 +358,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       sx={{
                                         fontSize: "1.1rem",
                                         padding: "0px 11px",
+                                        color: 'gray'
                                       }}
                                     >
                                       {textos["pendiente"]?? ""}
@@ -383,6 +384,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       sx={{
                                         fontSize: "1.1rem",
                                         padding: "0px 11px",
+                                        color: 'gold'
                                       }}
                                     >
                                       {textos["enviado_aprobacion"]?? ""}
@@ -407,6 +409,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       sx={{
                                         fontSize: "1.1rem",
                                         padding: "0px 11px",
+                                        color: 'green'
                                       }}
                                     >
                                       {textos["activo"]?? ""}
@@ -462,7 +465,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                             acciones: (
                               <MContainer
                                 direction="horizontal"
-                                justify="start"
+                                justify="end"
                               >
                                 <>
                                   {[
@@ -529,7 +532,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       <MTooltip
                                         color="orange"
                                         placement="top"
-                                        text="Editar"
+                                        text="Editar proyecto"
                                         icon={
                                           <IconButton
                                             sx={{ padding: "0!important" }}
@@ -557,7 +560,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       <MTooltip
                                         color="orange"
                                         placement="top"
-                                        text="Borrar"
+                                        text="Editar rol"
                                         icon={
                                           <IconButton
                                             sx={{ padding: "0!important" }}
@@ -573,7 +576,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                           >
                                             <Image
                                               src={
-                                                "/assets/img/iconos/search_blue.png"
+                                                "/assets/img/iconos/edit_icon_blue.png"
                                               }
                                               width={16}
                                               height={16}
@@ -589,39 +592,46 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                   {[Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.RECHAZADO, Constants.ESTADOS_PROYECTO.POR_VALIDAR].includes(
                                     p.estatus.toUpperCase()
                                   ) && (
-                                    <IconButton
-                                      onClick={(e) => {
-                                        const params = new Map<
-                                          string,
-                                          unknown
-                                        >();
-                                        params.set("id", p.id);
-                                        setConfirmationDialog({
-                                          action: "DELETE",
-                                          data: params,
-                                          opened: true,
-                                          title: "Eliminar Proyecto",
-                                          content: (
-                                            <Typography variant="body2">
-                                              {textos["seguro"]?? ""}
-                                            </Typography>
-                                          ),
-                                        });
-                                        e.stopPropagation();
-                                      }}
-                                      color="primary"
-                                      aria-label="eliminar"
-                                      component="label"
-                                    >
-                                      <Image
-                                        src={
-                                          "/assets/img/iconos/equiz_blue.svg"
+                                    <MTooltip
+                                        color="orange"
+                                        placement="top"
+                                        text="Borrar"
+                                        icon={
+                                          <IconButton
+                                            onClick={(e) => {
+                                              const params = new Map<
+                                                string,
+                                                unknown
+                                              >();
+                                              params.set("id", p.id);
+                                              setConfirmationDialog({
+                                                action: "DELETE",
+                                                data: params,
+                                                opened: true,
+                                                title: "Eliminar Proyecto",
+                                                content: (
+                                                  <Typography variant="body2">
+                                                    {textos["seguro"]?? ""}
+                                                  </Typography>
+                                                ),
+                                              });
+                                              e.stopPropagation();
+                                            }}
+                                            color="primary"
+                                            aria-label="eliminar"
+                                            component="label"
+                                          >
+                                            <Image
+                                              src={
+                                                "/assets/img/iconos/equiz_blue.svg"
+                                              }
+                                              width={16}
+                                              height={16}
+                                              alt="archivar"
+                                            />
+                                          </IconButton>
                                         }
-                                        width={16}
-                                        height={16}
-                                        alt="archivar"
                                       />
-                                    </IconButton>
                                   )}
                                 </>
                                 <>

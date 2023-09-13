@@ -33,7 +33,7 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     id='id-drag-n-drop-archivo'
                     noIconLabel={true}
                     label={
-                    <Typography fontWeight={600}>
+                    <Typography fontWeight={600} fontSize={'14px'}>
                          {textos["afp"]}
                         <MTooltip
                             color='blue'
@@ -106,7 +106,7 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
             <Grid item xs={12} mt={4}>
                 <MRadioGroup
                     label={textos["deseas_compartir"]}
-                    labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
+                    labelStyle={{ fontSize: '16px', color: '#000', fontWeight: 600 }}
                     style={{ gap: 0 }}
                     id="quieres-compartir"
                     options={[`${textos["si_compartir"]}`, `${textos["no_compartir"]}`]}

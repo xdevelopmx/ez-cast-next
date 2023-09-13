@@ -150,7 +150,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                             </div>
                             <div className="row d-lg-flex">
                                 <div className="mt-2 col-md-6" style={{ padding: 0 }}>
-                                    <p className="h5 font-weight-bold" style={{ fontSize: '1.5rem' }}>
+                                    <p className="h5 font-weight-bold" style={{ fontSize: '1.3rem' }}>
                                         <b>Mensajes</b>
                                     </p>
                                 </div>
@@ -165,7 +165,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={12} sx={{
-                                            height: '600px',
+                                            height: '450px',
                                             border: '2px solid #B4B5B6',
                                             borderTop: 'none',
                                             overflowY: 'scroll'

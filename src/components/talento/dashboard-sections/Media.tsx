@@ -198,7 +198,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
         {!media ||
           (media.fotos.length === 0 && (
             <Typography
-              fontSize={"1.5rem"}
+              fontSize={"1.3rem"}
               sx={{ color: "#F9B233" }}
               fontWeight={400}
             >
@@ -319,7 +319,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             {!media ||
               (media.videos.length === 0 && (
                 <Typography
-                  fontSize={"1.5rem"}
+                  fontSize={"1.3rem"}
                   sx={{ color: "#F9B233" }}
                   fontWeight={400}
                 >
@@ -390,7 +390,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             {!media ||
               (media.audios.length === 0 && (
                 <Typography
-                  fontSize={"1.5rem"}
+                  fontSize={"1.3rem"}
                   sx={{ color: "#F9B233" }}
                   fontWeight={400}
                 >
@@ -508,7 +508,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             {!media ||
               (media.selftapes.length === 0 && (
                 <Typography
-                  fontSize={"1.5rem"}
+                  fontSize={"1.3rem"}
                   sx={{ color: "#F9B233" }}
                   fontWeight={400}
                 >

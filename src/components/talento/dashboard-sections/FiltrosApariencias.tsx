@@ -794,7 +794,7 @@ export const FiltrosApariencias = (props: {
           )}
           {!medidas.isFetching && !medidas_grouped && (
             <Typography
-              fontSize={"1.5rem"}
+              fontSize={"1.3rem"}
               sx={{ color: "#F9B233" }}
               fontWeight={400}
             >

@@ -275,7 +275,7 @@ const LoginPage: NextPage = () => {
                     placement="right"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <span
                     className={`switch_span switch_login ${
                       state.tipo_usuario === TipoUsuario.REPRESENTANTE
@@ -313,7 +313,7 @@ const LoginPage: NextPage = () => {
                     }
                     placement="right"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="text-center mt-5 pl-2 pr-2">

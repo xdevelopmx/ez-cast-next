@@ -411,7 +411,7 @@ export const InfoGeneral = (props: {
               {creditos.isFetching && <Skeleton className="md-skeleton" />}
               {!creditos.isFetching && !creditos.data && (
                 <Typography
-                  fontSize={"1.5rem"}
+                  fontSize={"1.3rem"}
                   sx={{ color: "#F9B233" }}
                   fontWeight={400}
                 >
@@ -429,7 +429,7 @@ export const InfoGeneral = (props: {
                 creditos.data.creditos.filter((c) => c.destacado).length ===
                   0 && (
                   <Typography
-                    fontSize={"1.5rem"}
+                    fontSize={"1.3rem"}
                     sx={{ color: "#F9B233" }}
                     fontWeight={400}
                   >

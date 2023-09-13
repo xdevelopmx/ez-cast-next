@@ -101,7 +101,7 @@ export const Habilidades = (props: {
       <Grid item xs={12}>
         {!loading && habilidades.data?.length === 0 && (
           <Typography
-            fontSize={"1.5rem"}
+            fontSize={"1.3rem"}
             sx={{ color: "#F9B233" }}
             fontWeight={400}
           >
