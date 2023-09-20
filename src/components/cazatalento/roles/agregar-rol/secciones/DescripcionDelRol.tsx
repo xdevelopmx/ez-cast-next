@@ -46,8 +46,114 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                 />
             </Grid>
             <Grid item container xs={12} mt={4}>
-                <Grid item container xs={6}>
-                    <Grid item xs={12} mt={2} mb={5}>
+                <Grid item container xs={12}>
+                    <Grid item xs={4}>
+                        <MRadioGroup
+                            label='Desnudos/Situaciones Sexuales*'
+                            labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
+                            style={{ gap: 0 }}
+                            styleRoot={{ marginTop: 1 }}
+                            id="desnudos-situaciones-rol"
+                            options={['Desnudos/Situaciones Sexuales', 'No hay desnudos y/o situaciones sexuales']}
+                            value={state.tiene_nsfw}
+                            direction='vertical'
+                            onChange={(e) => {
+                                onFormChange({
+                                    tiene_nsfw: e.target.value
+                                })
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Box sx={{ padding: '0px 0px 0px 10px', my: 4 }}>
+                            <MCheckboxGroup
+                                disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
+                                direction='vertical'
+                                title="El rol involucra:"
+                                onChange={(e, i) => {
+                                    const nsfw = tipos_nsfw.data?.filter((_, index) => index === i)[0];
+                                    if (nsfw) {
+                                        onFormChange({
+                                            nsfw: {
+                                                ...state.nsfw, 
+                                                ids: (state.nsfw.ids.includes(nsfw.id)) ?
+                                                state.nsfw.ids.filter(n => n !== nsfw.id) :
+                                                state.nsfw.ids.concat([nsfw.id])
+                                            }
+                                        })
+                                    }
+                                    console.log('change');
+                                }}
+                                id="tipos-apariencias-rol"
+                                labelStyle={{ marginBottom: 0, width: '90%' }}
+                                options={(tipos_nsfw.data) ? tipos_nsfw.data.map(n => n.es) : []}
+                                values={(tipos_nsfw.data) ? tipos_nsfw.data.map(g => {
+                                    return state.nsfw.ids.includes(g.id);
+                                }) : [false]}
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <FormGroup
+                            disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
+                            type={'text-area'}
+                            className={'form-input-md'}
+                            style={{ width: '80%' }}
+                            labelStyle={{ fontWeight: 600, width: '100%' }}
+                            labelClassName={'form-input-label'}
+                            value={state.nsfw.descripcion}
+                            onChange={(e) => {
+                                onFormChange({
+                                    nsfw: { ...state.nsfw, descripcion: e.target.value }
+                                })
+                            }}
+                            label='Descripción:'
+                        />
+                    </Grid>
+                    <Grid item xs={4} mb={5}>
+                        <MContainer direction="vertical" styles={{gap: 2, marginBottom: 16}}>
+
+                            <MSelect
+                                id="tipo-cabello-select"
+                                loading={colores_cabello.isFetching}
+                                labelStyle={{ marginTop: 32, fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                label='Color de Cabello*'
+                                options={
+                                    (colores_cabello.data)
+                                        ? colores_cabello.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        : []
+                                }
+                                value={(state.id_color_cabello) ? state.id_color_cabello.toString() : '0'}
+                                className={'form-input-md'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        id_color_cabello: parseInt(e.target.value)
+                                    })
+                                }}
+                            />
+                            <MSelect
+                                id="tipo-ojos-select"
+                                loading={colores_ojos.isFetching}
+                                labelStyle={{ marginTop: 32, fontWeight: 600 }}
+                                labelClassName={'form-input-label'}
+                                label='Color de Ojos*'
+                                options={
+                                    (colores_ojos.data)
+                                        ? colores_ojos.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        : []
+                                }
+                                value={(state.id_color_ojos) ? state.id_color_ojos.toString() : '0'}
+                                className={'form-input-md'}
+                                onChange={(e) => {
+                                    onFormChange({
+                                        id_color_ojos: parseInt(e.target.value)
+                                    })
+                                }}
+                            />
+                        </MContainer>
+                    </Grid>
+                    <Grid item xs={8}>
                         <FormGroup
                             type={'text-area'}
                             className={'form-input-md'}
@@ -63,6 +169,8 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                             label='Descripción del rol*'
                         />
                     </Grid>
+                </Grid>
+                <Grid item container xs={12}>
                     <Grid item xs={12} mb={4}>
                         <MCheckboxGroup
                             textTooltip='Agrega las habilidades recomendadas para este rol que consideres necesarias para que el talento lleve a cabo su trabajo.'
@@ -195,108 +303,6 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                     onFormChange({ files: { ...state.files, archivo: undefined } })
                                 });
                             }}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid item container xs={6}>
-                    <Grid item xs={12}>
-                        <MContainer direction="vertical" styles={{gap: 2, marginBottom: 16}}>
-
-                            <MSelect
-                                id="tipo-cabello-select"
-                                loading={colores_cabello.isFetching}
-                                labelStyle={{ marginTop: 32, fontWeight: 600 }}
-                                labelClassName={'form-input-label'}
-                                label='Color de Cabello*'
-                                options={
-                                    (colores_cabello.data)
-                                        ? colores_cabello.data.map(s => { return { value: s.id.toString(), label: s.es } })
-                                        : []
-                                }
-                                value={(state.id_color_cabello) ? state.id_color_cabello.toString() : '0'}
-                                className={'form-input-md'}
-                                onChange={(e) => {
-                                    onFormChange({
-                                        id_color_cabello: parseInt(e.target.value)
-                                    })
-                                }}
-                            />
-                            <MSelect
-                                id="tipo-ojos-select"
-                                loading={colores_ojos.isFetching}
-                                labelStyle={{ marginTop: 32, fontWeight: 600 }}
-                                labelClassName={'form-input-label'}
-                                label='Color de Ojos*'
-                                options={
-                                    (colores_ojos.data)
-                                        ? colores_ojos.data.map(s => { return { value: s.id.toString(), label: s.es } })
-                                        : []
-                                }
-                                value={(state.id_color_ojos) ? state.id_color_ojos.toString() : '0'}
-                                className={'form-input-md'}
-                                onChange={(e) => {
-                                    onFormChange({
-                                        id_color_ojos: parseInt(e.target.value)
-                                    })
-                                }}
-                            />
-                        </MContainer>
-                        <MRadioGroup
-                            label='Desnudos/Situaciones Sexuales*'
-                            labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
-                            style={{ gap: 0 }}
-                            styleRoot={{ marginTop: 1 }}
-                            id="desnudos-situaciones-rol"
-                            options={['Desnudos/Situaciones Sexuales', 'No hay desnudos y/o situaciones sexuales']}
-                            value={state.tiene_nsfw}
-                            direction='vertical'
-                            onChange={(e) => {
-                                onFormChange({
-                                    tiene_nsfw: e.target.value
-                                })
-                            }}
-                        />
-                        <Box sx={{ padding: '0px 0px 0px 40px', my: 4 }}>
-                            <MCheckboxGroup
-                                disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
-                                direction='vertical'
-                                title="El rol involucra:"
-                                onChange={(e, i) => {
-                                    const nsfw = tipos_nsfw.data?.filter((_, index) => index === i)[0];
-                                    if (nsfw) {
-                                        onFormChange({
-                                            nsfw: {
-                                                ...state.nsfw, 
-                                                ids: (state.nsfw.ids.includes(nsfw.id)) ?
-                                                state.nsfw.ids.filter(n => n !== nsfw.id) :
-                                                state.nsfw.ids.concat([nsfw.id])
-                                            }
-                                        })
-                                    }
-                                    console.log('change');
-                                }}
-                                id="tipos-apariencias-rol"
-                                labelStyle={{ marginBottom: 0, width: '45%' }}
-                                options={(tipos_nsfw.data) ? tipos_nsfw.data.map(n => n.es) : []}
-                                values={(tipos_nsfw.data) ? tipos_nsfw.data.map(g => {
-                                    return state.nsfw.ids.includes(g.id);
-                                }) : [false]}
-                            />
-                        </Box>
-                        <FormGroup
-                            disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
-                            type={'text-area'}
-                            className={'form-input-md'}
-                            style={{ width: '80%' }}
-                            labelStyle={{ fontWeight: 600, width: '100%' }}
-                            labelClassName={'form-input-label'}
-                            value={state.nsfw.descripcion}
-                            onChange={(e) => {
-                                onFormChange({
-                                    nsfw: { ...state.nsfw, descripcion: e.target.value }
-                                })
-                            }}
-                            label='Descripción:'
                         />
                     </Grid>
                 </Grid>

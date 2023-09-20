@@ -3699,3 +3699,7 @@ b, strong {
 .MuiCheckbox-colorPrimary {
   padding: 3px!important;
 }
+
+.check {
+  margin: 0 0 0 8px;
+}

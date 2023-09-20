@@ -110,11 +110,11 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                     style={{ gap: 0 }}
                     id="quieres-compartir"
                     options={[`${textos["si_compartir"]}`, `${textos["no_compartir"]}`]}
-                    value={state.compartir_nombre ? (`${textos["si_compartir"]}`) : `${textos["no_compartir"]}`}
+                    value={state.compartir_nombre ? (`${textos["no_compartir"]}`) : `${textos["si_compartir"]}`}
                     direction='vertical'
                     onChange={(e) => {
                         onFormChange({
-                            compartir_nombre: (e.target.value === `${textos["si_compartir"]}`)
+                            compartir_nombre: (e.target.value === `${textos["no_compartir"]}`)
                         })
                     }}
                 />

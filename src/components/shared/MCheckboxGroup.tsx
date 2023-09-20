@@ -132,6 +132,7 @@ export const MCheckboxGroup: FC<Props> = ({
                   key={i}
                   control={
                     <Checkbox
+                      className="check"
                       disabled={disabled}
                       checked={value && value === true ? value : false}
                       onChange={
