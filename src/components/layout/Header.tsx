@@ -35,6 +35,8 @@ export const Header: FC<Props> = ({
 
   const isInLogin = router.pathname.includes("/login");
 
+  const isActiveEzCast = router.pathname.includes("/inicio");
+
   useEffect(() => {
     if (!menuSiempreBlanco) {
       setEsBlanco(tieneFondoBlanco);
@@ -120,10 +122,15 @@ export const Header: FC<Props> = ({
             <li
               className={`nav-item ml-lg-3 mr-lg-3 ${
                 router.pathname === "/login" ? "active" : ""
-              }`}
+              } ${isActiveEzCast ? "active" : ""}`}
             >
               {/*eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
-              <Link className={`nav-link ${estilos.azul}`} href="/login">
+              <Link
+                className={`nav-link ${estilos.azul} ${
+                  isActiveEzCast ? "active" : ""
+                }`}
+                href="/login"
+              >
                 EZ-CAST
               </Link>
             </li>
