@@ -72,14 +72,14 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                             }
                         />
                     }
-                    label='Nombre de rol*'
+                    label={`${textos['nombre_rol']}*`}
                 />
             </Grid>
             <Grid item xs={12} md={6} mt={4}>
                 <MContainer direction="vertical" styles={{gap: 8}}>
 
                     <MRadioGroup
-                        label='¿Este es un rol principal o rol extra?*'
+                        label={`¿${textos['es_rol_principal_o_extra']}?*`}
                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                         style={{ gap: 0 }}
                         id="rol-principal-o-extra"
@@ -100,7 +100,7 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                         loading={tipos_roles.isFetching}
                         options={
                             (tipos_roles.data)
-                                ? tipos_roles.data.filter(tr => tr.tipo.toLowerCase() === state.rol_principal_secundario.toLowerCase()).map(s => { return { value: s.id.toString(), label: s.es } })
+                                ? tipos_roles.data.filter(tr => tr.tipo.toLowerCase() === state.rol_principal_secundario.toLowerCase()).map(s => { return { value: s.id.toString(), label: (ctx.lang === 'es') ? s.es : s.en } })
                                 : []
                         }
                         value={`${state.id_tipo_rol}`}
@@ -110,7 +110,7 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                                 id_tipo_rol: parseInt(e.target.value)
                             })
                         }}
-                        label='Tipo de rol*'
+                        label={`${textos['tipo_rol']}*`}
                     />
                 </MContainer>
             </Grid>
@@ -123,7 +123,7 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                         })
                     }}
                     direction='vertical'
-                    title="Tipo de trabajo"
+                    title={`${textos['tipo_de_trabajo']}`}
                     onChange={(e, i) => {
                         if (tipos_trabajo.data) {
                             const tipo_trabajo = tipos_trabajo.data[i]
@@ -142,7 +142,7 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
                     }}
                     id="tipo-trabajo"
                     labelStyle={{ marginBottom: 0 }}
-                    options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => t.es) : []}
+                    options={(tipos_trabajo.data) ? tipos_trabajo.data.map(t => ctx.lang === 'es' ? t.es : t.en) : []}
                     values={(tipos_trabajo.data) ? tipos_trabajo.data.map(v => state.tipo_trabajo.includes(v.id)) : [false]}
                 />
             </Grid>

@@ -3,6 +3,42 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    guardar_e_ir_a_proyectos: 'Save and go to projects',
+    guardar_y_crear_otro_rol: 'Save and create another role',
+    indicaciones: 'Instructions',
+    pedir_selftape: 'Request a selftape',
+    opcional: 'Optional',
+    talento_debe_incluir: 'The talent should include',
+    idioma: 'Language',
+    timezone: 'Time zone',
+    informacion_casting: 'Casting information',
+    informacion_filmacion: 'Filming information',
+    foto_referencia: 'Reference photo',
+    especificaciones_habilidad: 'Skill specifications',
+    rol_involucra: 'The role involves',
+    descripcion_rol: 'Role description',
+    mascota_o_animal: 'Pet or animal',
+    apariencia_etnica_del_rol: 'Ethnic appearance of the role',
+    genero_interesado_en_interpretar: 'Gender interested in portraying',
+    genero_especificado: 'Specified gender',
+    cambiar_a: 'Change to',
+    filtros_demograficos: 'Demographic filters',
+    diario: 'Daily', 
+    mensual: 'Monthly', 
+    semanal: 'Weekly',
+    no_roles_archivados_title: "You have no archived roles.",
+    no_roles_archivados_body: "Here you will find all the roles you have marked as archived.",
+    enviar_proyecto_a_aprobacion_title: "Send project for approval",
+    enviar_proyecto_a_aprobacion_body: "Are you sure you want to send this project for approval?",
+    se_pagara_un_sueldo: 'A salary will be paid',
+    se_otorgaran_compensaciones: 'Compensations will be granted',
+    suma_compensaciones: 'Total of the compensations',
+    cuanto: 'How much',
+    select_one: 'Select one',
+    compensacion_no_monetaria_que_recibira_talento: 'What non-monetary compensation will the talent receive',
+    compensacion: 'Compensation',
+    nombre_rol: 'Role name',
+    es_rol_principal_o_extra: 'Is this role principal o extra',
     llenar_campos_obligatorios: 'Please fill in the mandatory fields',
     no_roles_creados_title: "You haven't created any role.",
     no_roles_creados_body: "When creating a role, here you will have an overview of your active and inactive roles. Remember to create all your roles and read the approval requirements before finishing and submitting them. Start right now!",
@@ -86,6 +122,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     requisitos: "Requirements",
     archivos_adicionales: "Additional files",
     desnudos_o_situaciones_sexuales: "Nudity or sexual situations",
+    no_hay_desnudos: 'There is no nudity and/or sexual situations',
     detalles: "Details",
     tu: "Your",
     tu_low: "your",
@@ -99,6 +136,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     aplicado: "Applied",
     aplicar: "Apply",
     no_especificado: "Not Specified",
+    especificado: 'Specified',
     compatibilidad_text: "Compatibility with your profile",
     fecha_limite_entrega_de_aplicaciones: "Application submission deadline",
     aceptando_aplicaciones_de: "Accepting applications from",
@@ -115,6 +153,8 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     confirmar: "Confirm",
     todos: "All",
     rango_edad: "Age Range",
+    rango_fechas: 'Date range',
+    individuales: 'Individuals',
     genero_rol: "Role Genre",
     tipo_rol: "Role Type",
     preferencia_pago: "Payment Prefference",
@@ -138,6 +178,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     seleccionar_todos: "Select All",
     registros_por_pagina: "Entries Per Page",
     o: "or",
+    a: 'to',
     pagina_anterior: "Previous Page",
     siguiente_pagina: "Next Page",
     regresar_paso: "Previous step",
@@ -305,6 +346,42 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    guardar_e_ir_a_proyectos: 'Guardar e ir a proyectos',
+    guardar_y_crear_otro_rol: 'Guardar y crear otro rol',
+    indicaciones: 'Indicaciones',
+    pedir_selftape: 'Pedir SelfTape',
+    opcional: 'Opcional',
+    talento_debe_incluir: 'El talento deberá incluir',
+    idioma: 'Idioma',
+    timezone: 'Uso horario',
+    informacion_casting: 'Información de Casting',
+    informacion_filmacion: 'Información de Filmación',
+    foto_referencia: 'Foto referencia',
+    especificaciones_habilidad: 'Especificaciones habilidad',
+    rol_involucra: 'Rol involucra',
+    descripcion_rol: 'Descripción del rol',
+    mascota_o_animal: 'Mascota o animal',
+    apariencia_etnica_del_rol: 'Apariencia étnica de rol',
+    genero_interesado_en_interpretar: 'Género interesado en interpretar',
+    genero_especificado: 'Género especificado',
+    cambiar_a: 'Cambiar a',
+    filtros_demograficos: 'Filtros demograficos',
+    diario: 'Diario', 
+    mensual: 'Mensual', 
+    semanal: 'Semanal',
+    no_roles_archivados_title: "No tienes ningún rol archivado",
+    no_roles_archivados_body: "Aquí aparecerán todos los roles que hayas colocado como archivados",
+    enviar_proyecto_a_aprobacion_title: 'Enviar proyecto a aprobación',
+    enviar_proyecto_a_aprobacion_body: '¿Seguro que deseas mandar este proyecto a aprobación?',
+    se_pagara_un_sueldo: 'Se pagará un sueldo',
+    se_otorgaran_compensaciones: 'Se otorgarán compensaciones',
+    suma_compensaciones: 'Suma de las compensaciones',
+    cuanto: 'Cuánto',
+    select_one: 'Selecciona una',
+    compensacion_no_monetaria_que_recibira_talento: 'Qué compensación no monetaria recibirá el talento',
+    compensacion: 'Compensación',
+    nombre_rol: 'Nombre de rol',
+    es_rol_principal_o_extra: 'Este es un rol principal o rol extra',
     llenar_campos_obligatorios: 'Por favor llena los campos obligatorios',
     no_roles_creados_title: "No has creado ningún rol",
     no_roles_creados_body: "Al crear un rol, aquí tendrás una vista general de tus roles activos e inactivos. Recuerda crear todos tus roles y leer los requisitos de aprobación antes de terminar y mandarlos. ¡Comienza ahora mismo!.",
@@ -361,7 +438,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     proyecto: 'Proyecto',
     nuevo_proyecto: "Nuevo Proyecto",
     alertas: "Tus alertas",
-    agenda_virtual: "Virtual diary",
+    agenda_virtual: "Agenda virtual",
     mis_proyectos: "Mis proyectos",
     editar_perfil: "Edit profile",
     fecha: "Fecha",
@@ -389,6 +466,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     requisitos: "Requisitos",
     archivos_adicionales: "Archivos adicionales",
     desnudos_o_situaciones_sexuales: "Desnudos o situaciones sexuales",
+    no_hay_desnudos: 'No hay desnudos y/o situaciones sexuales',
     detalles: "Detalles",
     tu: "Tu",
     tu_low: "tu",
@@ -402,6 +480,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     aplicado: "Aplicado",
     aplicar: "Aplicar",
     no_especificado: "No Especificado",
+    especificado: 'Especificado',
     fecha_limite_entrega_de_aplicaciones:
       "Fecha límite entrega de aplicaciones",
     compatibilidad_text: "de compatibilidad con tu perfil",
@@ -418,6 +497,8 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     confirmar: "Confirmar",
     todos: "Todos",
     rango_edad: "Rango Edad",
+    rango_fechas: 'Rango de fechas',
+    individuales: 'Individuales',
     genero_rol: "Genero Rol",
     tipo_rol: "Tipo Rol",
     preferencia_pago: "Preferencia Pago",
@@ -441,6 +522,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     seleccionar_todos: "Seleccionar Todos",
     registros_por_pagina: "Registros por pagina",
     o: "o",
+    a: 'a',
     pagina_anterior: "Página Anterior",
     siguiente_pagina: "Siguiente Página",
     regresar_paso: "Paso previo",
@@ -1202,6 +1284,22 @@ const TEXTS_BY_PATHNAME: {
 
     }
   },
+  "/cazatalentos/billboard": {
+    en: {
+
+    },
+    es: {
+
+    }
+  },
+  "/cazatalentos/agenda-virtual/horario/[id]": {
+    en: {
+
+    },
+    es: {
+
+    }
+  },
   "/cazatalentos/proyecto": {
     en: {
       ayuda_tipo1 : "Please note that once you select a project type and create your project, you will not be able to change it. For further guidance, please refer to our help documentation and tutorials.",
@@ -1319,6 +1417,10 @@ const TEXTS_BY_PATHNAME: {
     aqui_apareceran:
       "Aqui apareceran todos los proyectos que hayas colocado como archivados",},
   },
+  "/mensajes": {
+    en: {},
+    es: {},
+  },
   "/admin/login": {
     en: {},
     es: {},
@@ -1339,6 +1441,7 @@ const useLang = (lang: string) => {
   const [texts, setTexts] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
+    console.log(route.pathname);
     if (TEXTS_BY_PATHNAME[route.pathname]) {
       const by_path = TEXTS_BY_PATHNAME[route.pathname];
       if (by_path) {

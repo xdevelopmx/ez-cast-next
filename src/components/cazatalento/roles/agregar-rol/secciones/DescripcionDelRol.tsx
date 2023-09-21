@@ -5,9 +5,11 @@ import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from '~
 import { MTooltip } from '~/components/shared/MTooltip';
 import DragNDrop from '~/components/shared/DragNDrop/DragNDrop';
 import { DescripcionDelRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
-import { FC, useReducer} from 'react';
+import { FC, useContext, useReducer} from 'react';
 import { FileManager } from '~/utils/file-manager';
 import { MContainer } from '~/components/layout/MContainer';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     fetching: boolean,
@@ -16,6 +18,8 @@ interface Props {
 }
 
 export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);  
 
     const habilidades = api.catalogos.getHabilidades.useQuery({ include_subcategories: false }, {
         refetchOnWindowFocus: false,
@@ -40,7 +44,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 4' subtitle='Descripción del rol'
+                <SectionTitle title={`${textos['paso']} 4`} subtitle={`${textos['descripcion_rol']}`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
@@ -49,12 +53,12 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                 <Grid item container xs={12}>
                     <Grid item xs={4}>
                         <MRadioGroup
-                            label='Desnudos/Situaciones Sexuales*'
+                            label={`${textos['desnudos_o_situaciones_sexuales']}*`}
                             labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                             style={{ gap: 0 }}
                             styleRoot={{ marginTop: 1 }}
                             id="desnudos-situaciones-rol"
-                            options={['Desnudos/Situaciones Sexuales', 'No hay desnudos y/o situaciones sexuales']}
+                            options={[`${textos['desnudos_o_situaciones_sexuales']}`, `${textos['no_hay_desnudos']}`]}
                             value={state.tiene_nsfw}
                             direction='vertical'
                             onChange={(e) => {
@@ -67,9 +71,9 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                     <Grid item xs={4}>
                         <Box sx={{ padding: '0px 0px 0px 10px', my: 4 }}>
                             <MCheckboxGroup
-                                disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
+                                disabled={state.tiene_nsfw === `${textos['no_hay_desnudos']}`}
                                 direction='vertical'
-                                title="El rol involucra:"
+                                title={`${textos['rol_involucra']}:`}
                                 onChange={(e, i) => {
                                     const nsfw = tipos_nsfw.data?.filter((_, index) => index === i)[0];
                                     if (nsfw) {
@@ -86,7 +90,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                 }}
                                 id="tipos-apariencias-rol"
                                 labelStyle={{ marginBottom: 0, width: '90%' }}
-                                options={(tipos_nsfw.data) ? tipos_nsfw.data.map(n => n.es) : []}
+                                options={(tipos_nsfw.data) ? tipos_nsfw.data.map(n => ctx.lang === 'es' ? n.es : n.en) : []}
                                 values={(tipos_nsfw.data) ? tipos_nsfw.data.map(g => {
                                     return state.nsfw.ids.includes(g.id);
                                 }) : [false]}
@@ -95,7 +99,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                     </Grid>
                     <Grid item xs={4}>
                         <FormGroup
-                            disabled={state.tiene_nsfw === 'No hay desnudos y/o situaciones sexuales'}
+                            disabled={state.tiene_nsfw === `${textos['no_hay_desnudos']}`}
                             type={'text-area'}
                             className={'form-input-md'}
                             style={{ width: '80%' }}
@@ -107,7 +111,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                     nsfw: { ...state.nsfw, descripcion: e.target.value }
                                 })
                             }}
-                            label='Descripción:'
+                            label={`${textos['descripcion']}:`}
                         />
                     </Grid>
                     <Grid item xs={4} mb={5}>
@@ -118,10 +122,10 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                 loading={colores_cabello.isFetching}
                                 labelStyle={{ marginTop: 32, fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
-                                label='Color de Cabello*'
+                                label={`${textos['color_de_cabello']} *`}
                                 options={
                                     (colores_cabello.data)
-                                        ? colores_cabello.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        ? colores_cabello.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
                                         : []
                                 }
                                 value={(state.id_color_cabello) ? state.id_color_cabello.toString() : '0'}
@@ -137,10 +141,10 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                 loading={colores_ojos.isFetching}
                                 labelStyle={{ marginTop: 32, fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
-                                label='Color de Ojos*'
+                                label={`${textos['color_de_ojos']}*`}
                                 options={
                                     (colores_ojos.data)
-                                        ? colores_ojos.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        ? colores_ojos.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
                                         : []
                                 }
                                 value={(state.id_color_ojos) ? state.id_color_ojos.toString() : '0'}
@@ -166,7 +170,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                     descripcion: e.target.value
                                 }) 
                             }}
-                            label='Descripción del rol*'
+                            label={`${textos['descripcion_rol']}*`}
                         />
                     </Grid>
                 </Grid>
@@ -174,7 +178,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                     <Grid item xs={12} mb={4}>
                         <MCheckboxGroup
                             textTooltip='Agrega las habilidades recomendadas para este rol que consideres necesarias para que el talento lleve a cabo su trabajo.'
-                            title='Habilidades'
+                            title={`${textos['habilidades']}`}
                             onChange={(e, i) => {
                                 const habilidad = habilidades.data?.filter((_, index) => index === i)[0];
                                 if (habilidad) {
@@ -192,7 +196,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                             labelClassName={'label-black-lg'}
                             options={
                                 (habilidades.data)
-                                    ? habilidades.data.map(g => g.es)
+                                    ? habilidades.data.map(g => ctx.lang === 'es' ? g.es : g.en)
                                     : []
                             }
                             label='¿Qué compensación no monetaria recibirá el talento?'
@@ -219,20 +223,20 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                     especificacion_habilidad: e.target.value
                                 })
                             }}
-                            label='Especificaciones habilidad'
+                            label={`${textos['especificaciones_habilidad']}`}
                         />
                     </Grid>
                     <Grid item xs={12} mt={4}>
                         <DragNDrop
                             id='id-drag-n-drop-foto-referencia'
                             noIconLabel={true}
-                            label={<Typography fontWeight={600}>Foto referencia:</Typography>}
-                            text_label_download='Descargar foto'
+                            label={<Typography fontWeight={600}>{`${textos['foto_referencia']}`}:</Typography>}
+                            text_label_download={`${textos['descargar']} ${textos['foto']}`}
                             max_file_size={5120}
                             download_url={state.files.foto_referencia?.url}
                             files={(state.files.foto_referencia) ? [state.files.foto_referencia] : []}
                             filetypes={['JPG', 'PNG', 'GIF']}
-                            text_button='Agregar foto'
+                            text_button={`${textos['agregar']} ${textos['foto']}`}
                             tooltip={{ color: 'orange', placement: 'right', text: 'Te recomendamos agregar fotos para transmitir mejor lo que estás buscando.' }}
                             mainIcon={
                                 <Image
@@ -268,13 +272,13 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                         <DragNDrop
                             id='id-drag-n-drop-pdf-rol'
                             noIconLabel={true}
-                            label={<Typography fontWeight={600}>Líneas:</Typography>}
-                            text_label_download='Descargar Lineas'
+                            label={<Typography fontWeight={600}>{`${textos['lineas']}`}:</Typography>}
+                            text_label_download={`${textos['descargar']} ${textos['lineas']}`}
                             max_file_size={5120}
                             download_url={state.files.lineas?.url}
                             files={(state.files.lineas) ? [state.files.lineas] : []}
                             filetypes={['pdf', 'doc', 'docx']}
-                            text_button='Agregar PDF'
+                            text_button={`${textos['agregar']} PDF`}
                             mainIcon={
                                 <Image
                                     src={'/assets/img/iconos/ico_pdf_blue.svg'}
@@ -319,7 +323,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                                     detalles_adicionales: e.target.value
                                 })
                             }}
-                            label='Detalles adicionales'
+                            label={`${textos['detalles_adicionales']}`}
                         />
                     </Grid>
             </Grid>

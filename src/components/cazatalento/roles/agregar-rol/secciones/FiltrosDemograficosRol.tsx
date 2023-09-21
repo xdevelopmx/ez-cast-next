@@ -1,4 +1,4 @@
-import { type FC, useReducer } from 'react';
+import { type FC, useReducer, useContext, useMemo } from 'react';
 import Image from 'next/image'
 import { Box, Button, Grid, Typography } from "@mui/material"
 import { MContainer } from "~/components/layout/MContainer"
@@ -6,6 +6,8 @@ import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from "~
 import { api } from '~/utils/api';
 import { MTooltip } from '~/components/shared/MTooltip';
 import { type FiltrosDemograficosRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     fetching: boolean,
@@ -14,6 +16,8 @@ interface Props {
 }
 
 export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const generos = api.catalogos.getGeneros.useQuery(undefined, {
         refetchOnMount: false,
@@ -35,12 +39,27 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
         refetchOnWindowFocus: false,
     })
 
+    const tamanio_animal = useMemo(() => {
+        if (state.animal) {
+            switch (state.animal.tamanio) {
+                case 'Small': return (ctx.lang === 'en') ? state.animal.tamanio : 'Chico';
+                case 'Medium': return (ctx.lang === 'en') ? state.animal.tamanio : 'Mediano';
+                case 'Large': return (ctx.lang === 'en') ? state.animal.tamanio : 'Grande';
+                case 'Chico': return (ctx.lang === 'es') ? state.animal.tamanio : 'Small';
+                case 'Mediano': return (ctx.lang === 'es') ? state.animal.tamanio : 'Medium';
+                case 'Grande': return (ctx.lang === 'es') ? state.animal.tamanio : 'Large';
+            }
+            return `${textos['chico']}`;
+        } 
+        return '';
+    }, [state.animal?.tamanio, ctx.lang]);
+
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
                 <SectionTitle
-                    title='Paso 3'
-                    subtitle='Filtros demográficos'
+                    title={`${textos['paso']} 3`}
+                    subtitle={`${textos['filtros_demograficos']}`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
@@ -50,7 +69,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                 <Grid container item xs={12}>
                     <Grid item container xs={6}>
                         <Grid item xs={12}>
-                            <Typography fontWeight={600}>Rango de edad ({state.rango_edad_en_meses ? 'meses' : 'años'})*</Typography>
+                            <Typography fontWeight={600}>{`${textos['rango_edad']}`} ({state.rango_edad_en_meses ? `${textos['mes']}${ctx.lang === 'es' ? 'es' : 's'}` : `${textos['anio']}s`})*</Typography>
                             <MContainer direction="horizontal" styles={{ alignItems: 'center', gap: 30, marginTop: 5 }}>
                                 <FormGroup
                                     type="number"
@@ -100,18 +119,18 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                     alt="icon-change"
                                 />
                                 <Typography>
-                                    Cambiar a {state.rango_edad_en_meses ? 'años' : 'meses'}
+                                    {`${textos['cambiar_a']}`} {state.rango_edad_en_meses ? `${textos['anio']}s` : `${textos['mes']}${ctx.lang === 'es' ? 'es' : 's'}`}
                                 </Typography>
                             </Button>
                         </Grid>
                         <Grid item xs={12}>
                             <MRadioGroup
-                                label='Género del rol*'
+                                label={`${textos['genero_rol']}*`}
                                 labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                                 style={{ gap: 0 }}
                                 styleRoot={{ marginTop: 5 }}
                                 id="genero-del-rol"
-                                options={['No especificado', 'Género especificado']}
+                                options={[`${textos['no_especificado']}`, `${textos['genero_especificado']}`]}
                                 value={state.genero_del_rol}
                                 direction='vertical'
                                 onChange={(e) => {
@@ -122,14 +141,14 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                             />
                             <Box sx={{ padding: '0px 40px' }}>
                                 <MCheckboxGroup
-                                    disabled={state.genero_del_rol === 'No especificado'}
+                                    disabled={state.genero_del_rol === `${textos['no_especificado']}`}
                                     onAllOptionChecked={(checked) => {
                                         onFormChange({
                                             generos: (checked && generos.data) ? generos.data.map(g => g.id) : [] 
                                         })
                                     }}
                                     direction='vertical'
-                                    title="Género interesado en interpretar"
+                                    title={`${textos['genero_interesado_en_interpretar']}`}
                                     onChange={(e, i) => {
                                         const genero = generos.data?.filter((_, index) => index === i)[0];
                                         if (genero) {
@@ -143,7 +162,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                     }}
                                     id="genero-interesado-interpretar"
                                     labelStyle={{ marginBottom: 0, width: '32%' }}
-                                    options={(generos.data) ? generos.data.map(g => g.es) : []}
+                                    options={(generos.data) ? generos.data.map(g => ctx.lang === 'es' ? g.es : g.en) : []}
                                     values={(generos.data) ? generos.data.map(g => {
                                         return state.generos.includes(g.id);
                                     }) : [false]}
@@ -152,12 +171,12 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                         </Grid>
                         <Grid item xs={12}>
                             <MRadioGroup
-                                label='Apariencia étnica de rol*'
+                                label={`${textos['apariencia_etnica_del_rol']}*`}
                                 labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                                 style={{ gap: 0 }}
                                 styleRoot={{ marginTop: 5 }}
                                 id="apariencia-etnica-del-rol"
-                                options={['No especificado', 'Especificado']}
+                                options={[`${textos['no_especificado']}`, `${textos['especificado']}`]}
                                 value={state.apariencia_etnica_del_rol}
                                 direction='vertical'
                                 onChange={(e) => {
@@ -168,7 +187,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                             />
                             <Box sx={{ padding: '0px 0px 0px 40px' }}>
                                 <MCheckboxGroup
-                                    disabled={state.apariencia_etnica_del_rol === 'No especificado'}
+                                    disabled={state.apariencia_etnica_del_rol === `${textos['no_especificado']}`}
                                     onAllOptionChecked={(checked) => {
                                         onFormChange({
                                             apariencias_etnias: (checked && apariencias.data) ? apariencias.data.map(g => g.id) : [] 
@@ -188,7 +207,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                     }}
                                     id="tipos-apariencias-rol"
                                     labelStyle={{ marginBottom: 0, width: '45%' }}
-                                    options={(apariencias.data) ? apariencias.data.map(g => g.nombre) : []}
+                                    options={(apariencias.data) ? apariencias.data.map(g => ctx.lang === 'es' ? g.es : g.en) : []}
                                     values={(apariencias.data) ? apariencias.data.map(g => {
                                         return state.apariencias_etnias.includes(g.id);
                                     }) :  [false]}
@@ -201,10 +220,10 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                 loading={nacionalidades.isFetching}
                                 labelStyle={{ marginTop: 32, fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
-                                label='Etnia/Nacionalidad*'
+                                label={`${textos['nacionalidad_etnia']}*`}
                                 options={
                                     (nacionalidades.data)
-                                        ? nacionalidades.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        ? nacionalidades.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
                                         : []
                                 }
                                 value={state.id_pais.toString()}
@@ -230,7 +249,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                 }}
                                 id="mascota-o-animal-checkbox"
                                 labelStyle={{ marginBottom: 0, fontWeight: 600 }}
-                                options={['¿Mascota o Animal?']}
+                                options={[`¿${textos['mascota_o_animal']}?`]}
                                 values={/* (apariencias.data) ? apariencias.data.map(g => {
                                     return state.apariencias_interesado_en_interpretar.includes(g.id);
                                 }) : */ [state.es_mascota]}
@@ -241,7 +260,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                 loading={mascotas.isFetching}
                                 options={
                                     (mascotas.data)
-                                        ? mascotas.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                        ? mascotas.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
                                         : []
                                 }
                                 value={(state.animal) ? state.animal.id.toString() : '0'}
@@ -255,7 +274,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                         </Grid>
                         <Grid xs={12}>
                             <FormGroup
-                                disabled={!state.es_mascota}
+                                disabled={!state.es_mascota || (state.animal && state.animal.id <= 0)}
                                 className={'form-input-md'}
                                 labelStyle={{ fontWeight: 600 }}
                                 labelClassName={'form-input-label'}
@@ -266,7 +285,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                         animal: { ...state.animal, descripcion: e.target.value }
                                     })
                                 }}
-                                label='Descripción'
+                                label={`${textos['descripcion']}`}
                                 tooltip={
                                     <MTooltip
                                         color='blue'
@@ -276,18 +295,24 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                                 }
                             />
                             <MRadioGroup
-                                disabled={!state.es_mascota}
-                                label='Tamaño'
+                                disabled={!state.es_mascota || (state.animal && state.animal.id <= 0)}
+                                label={`${textos['tamanio']}`}
                                 labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                                 style={{ gap: 0 }}
                                 styleRoot={{ marginTop: 5 }}
                                 id="tamano-mascota-rol"
-                                options={['Chico', 'Mediano', 'Grande']}
-                                value={(state.animal) ? state.animal.tamanio : 'Chico'}
+                                options={[`${textos['chico']}`, `${textos['mediano']}`, `${textos['grande']}`]}
+                                value={tamanio_animal}
                                 direction='vertical'
                                 onChange={(e) => {
+                                    let tamanio = e.target.value;
+                                    switch (e.target.value) {
+                                        case 'Small': tamanio = 'Chico'; break;
+                                        case 'Medium': tamanio = 'Mediano'; break;
+                                        case 'Large': tamanio = 'Grande'; break;
+                                    } 
                                     onFormChange({
-                                        animal: { ...state.animal, tamanio: e.target.value }
+                                        animal: { ...state.animal, tamanio: tamanio }
                                     }) 
                                 }}
                             />

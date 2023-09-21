@@ -1006,7 +1006,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                             <div className="d-flex" style={{ marginBottom: 64, alignItems: 'center' }}>
                                 <motion.img style={{ width: 35 }} src="/assets/img/iconos/EZ_Rol_N.svg" alt="icono" />
                                 <div>
-                                    <p style={{ marginLeft: 20 }} className="color_a h4 font-weight-bold mb-0"><b>Agregar rol</b></p>
+                                    <p style={{ marginLeft: 20 }} className="color_a h4 font-weight-bold mb-0"><b>{`${textos['agregar']} ${textos['rol']}`}</b></p>
                                 </div>
                             </div>
                             {info_gral}
@@ -1047,7 +1047,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                                 className="btn btn-intro btn-price btn_out_line mb-2"
                                                 type="button"
                                             >
-                                                <Typography>{`${form_validate.complete ? 'Guardar e ir a proyectos' : 'Por favor llena los campos'}`} </Typography>
+                                                <Typography>{`${form_validate.complete ? `${textos['guardar_e_ir_a_proyectos']}` : 'Por favor llena los campos'}`} </Typography>
                                             </Button>
                                         }
                                     </div>
@@ -1067,7 +1067,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                                 className="btn btn-intro btn-price btn_out_line mb-2"
                                                 type="button"
                                             >
-                                                <Typography>Guardar {`${form_validate.complete ? '' : 'borrador'}`} y crear otro rol</Typography>
+                                                <Typography>{`${textos['guardar_y_crear_otro_rol']}`}</Typography>
                                             </Button>
                                         </div>
                                     }

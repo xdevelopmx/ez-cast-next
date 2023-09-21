@@ -3,8 +3,10 @@ import { Grid, Typography } from "@mui/material"
 import { FormGroup, MCheckboxGroup, SectionTitle } from "~/components/shared"
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop"
 import { SelftapeRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
-import { FC, useReducer } from 'react';
+import { FC, useContext, useReducer } from 'react';
 import { FileManager } from '~/utils/file-manager';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     fetching: boolean,
@@ -14,10 +16,13 @@ interface Props {
 
 export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
 
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 8' subtitle='Self-Tape (opcional)'
+                <SectionTitle title={`${textos['paso']} 8`} subtitle={`${textos['selftape']} (${textos['opcional']})`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
@@ -32,7 +37,7 @@ export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
                     }}
                     direction='horizontal'
                     id="pedir-self-tape"
-                    options={['Pedir Self-Tape']}
+                    options={[`${textos['pedir_selftape']}`]}
                     label=''
                     labelStyle={{ fontWeight: 400, fontSize: '1.1rem' }}
                     values={[state.pedir_selftape]}//[(state) ? state.mostrar_anio_en_perfil : false]}
@@ -51,20 +56,20 @@ export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
                             indicaciones: e.target.value
                         })
                     }}
-                    label='Indicaciones'
+                    label={`${textos['indicaciones']}`}
                 />
             </Grid>
             <Grid item xs={6} mt={2}>
                 <DragNDrop
                     id='id-drag-n-drop-foto-referencia'
                     noIconLabel={true}
-                    label={<Typography fontWeight={600}>Líneas</Typography>}
-                    text_label_download='Descargar lineas'
+                    label={<Typography fontWeight={600}>{`${textos['lineas']}`}</Typography>}
+                    text_label_download={`${textos['descargar']} ${textos['lineas']}`} 
                     max_file_size={5120}
                     download_url={state.files.lineas?.url}
                     files={(state.files.lineas) ? [state.files.lineas] : []}
                     filetypes={['DOC', 'DOCX', 'PDF']}
-                    text_button='Subir'
+                    text_button={`${textos['agregar']} PDF`}
                     mainIcon={
                         <Image
                             src={'/assets/img/iconos/ico_pdf_blue.svg'}

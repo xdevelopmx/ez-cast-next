@@ -1,6 +1,8 @@
 import { Grid } from '@mui/material'
-import React, { FC, useReducer } from 'react'
+import React, { FC, useContext, useReducer } from 'react'
 import { SectionTitle, StateNDates } from '~/components/shared'
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 import { CastingsRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
@@ -13,6 +15,9 @@ interface Props {
 
 export const InformacionCastingRol: FC<Props> = ({ state, onFormChange }) => {
 
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+
     const estados_republica = api.catalogos.getEstadosRepublica.useQuery(undefined, {
         refetchOnWindowFocus: false
     })
@@ -20,14 +25,14 @@ export const InformacionCastingRol: FC<Props> = ({ state, onFormChange }) => {
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 5' subtitle='Información de Casting'
+                <SectionTitle title={`${textos['paso']} 5`} subtitle={`${textos['informacion_casting']}`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
             </Grid>
             <Grid item xs={12} mt={4}>
                 <StateNDates
-                    title='Locación de Casting y fecha*:'
+                    title={`${textos['locacion_de_casting_y_fechas']}*:`}
 
                     valueSelect={state.id_estado_republica.toString()}
                     nameSelect='casting_select'

@@ -1,9 +1,11 @@
 import { Checkbox, FormControlLabel, Grid } from '@mui/material'
-import { type FC, useReducer } from 'react';
+import { type FC, useReducer, useContext, useMemo } from 'react';
 import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from '~/components/shared'
 import { MTooltip } from '~/components/shared/MTooltip'
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 import { type RolCompensacionForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
@@ -14,17 +16,37 @@ interface Props {
 }
 
 export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    
     const tipos_compensaciones_no_monetarias = api.catalogos.getTiposCompensacionesNoMonetarias.useQuery(undefined, {
         refetchOnMount: false,
         refetchOnWindowFocus: false,
     });
 
+    const periodo_sueldo = useMemo(() => {
+        if (state.sueldo) {
+            switch (state.sueldo.periodo_sueldo) {
+                case 'Daily': return (ctx.lang === 'en') ? state.sueldo.periodo_sueldo : 'Diario';
+                case 'Weekly': return (ctx.lang === 'en') ? state.sueldo.periodo_sueldo : 'Semanal';
+                case 'Monthly': return (ctx.lang === 'en') ? state.sueldo.periodo_sueldo : 'Mensual';
+                case 'Project': return (ctx.lang === 'en') ? state.sueldo.periodo_sueldo : 'Proyecto';
+                case 'Diario': return (ctx.lang === 'es') ? state.sueldo.periodo_sueldo : 'Daily';
+                case 'Semanal': return (ctx.lang === 'es') ? state.sueldo.periodo_sueldo : 'Weekly';
+                case 'Mensual': return (ctx.lang === 'es') ? state.sueldo.periodo_sueldo : 'Monthly';
+                case 'Proyecto': return (ctx.lang === 'es') ? state.sueldo.periodo_sueldo : 'Project';
+            }
+        } 
+        return `${textos['diario']}`;
+    }, [state.sueldo]);
+
+
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
                 <SectionTitle
-                    title='Paso 2'
-                    subtitle='Compensación'
+                    title={`${textos['paso']} 2`}
+                    subtitle={`${textos['compensacion']}`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
@@ -32,11 +54,11 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
             <Grid container item xs={12} mt={4}>
                 <Grid item xs={4}>
                     <MRadioGroup
-                        label='¿Se pagará un sueldo?'
+                        label={`¿${textos['se_pagara_un_sueldo']}?`}
                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                         style={{ gap: 0 }}
                         id="se-pagara-sueldo"
-                        options={['Sí', 'No']}
+                        options={[`${textos['si']}`, `${textos['no']}`]}
                         value={state.se_pagara_sueldo}
                         direction='vertical'
                         onChange={(e) => {
@@ -51,7 +73,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                         <FormGroup
                             //error={state.nombre.length < 2 ? 'El nombre es demasiado corto' : undefined}
                             type='number'
-                            disabled={state.se_pagara_sueldo === 'No'}
+                            disabled={state.se_pagara_sueldo === `${textos['no']}`}
                             show_error_message
                             className={'form-input-md'}
                             labelStyle={{ fontWeight: 600 }}
@@ -69,23 +91,30 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                                     }
                                 })
                             }}
-                            label='¿Cuánto?'
+                            label={`¿${textos['cuanto']}?`}
                         />
 
                         <MRadioGroup
-                            label='Selecciona una'
-                            disabled={state.se_pagara_sueldo === 'No'}
+                            label={`${textos['select_one']}`}
+                            disabled={state.se_pagara_sueldo === `${textos['no']}`}
                             labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                             style={{ gap: 0 }}
                             id="cada-cuanto-sueldo"
-                            options={['Diario', 'Mensual', 'Semanal', 'Proyecto']}
-                            value={state.sueldo?.periodo_sueldo || 'Diario'}
+                            options={[`${textos['diario']}`, `${textos['semanal']}`, `${textos['mensual']}`, `${textos['proyecto']}`]}
+                            value={periodo_sueldo}
                             direction='horizontal'
                             onChange={(e) => {
+                                let periodo_sueldo = e.target.value;
+                                switch (e.target.value) {
+                                    case 'Daily': periodo_sueldo = 'Diario'; break;
+                                    case 'Weekly': periodo_sueldo = 'Semanal'; break;
+                                    case 'Monthly': periodo_sueldo = 'Mensual'; break;
+                                    case 'Project': periodo_sueldo = 'Proyecto'; break;
+                                } 
                                 onFormChange({
                                     sueldo: {
                                         ...state.sueldo,
-                                        periodo_sueldo: e.target.value
+                                        periodo_sueldo: periodo_sueldo
                                     }
                                 })
                             }}
@@ -96,11 +125,11 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
             <Grid container item xs={12} mt={2}>
                 <Grid item xs={4}>
                     <MRadioGroup
-                        label='¿Se otorgarán compensaciones?'
+                        label={`¿${textos['se_otorgaran_compensaciones']}?`}
                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                         style={{ gap: 0 }}
                         id="se-pagara-sueldo"
-                        options={['Sí', 'No']}
+                        options={[`${textos['si']}`, `${textos['no']}`]}
                         value={state.se_otorgaran_compensaciones}
                         direction='vertical'
                         onChange={(e) => {
@@ -112,8 +141,8 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                 </Grid>
                 <Grid item xs={8}>
                     <MCheckboxGroup
-                        disabled={state.se_otorgaran_compensaciones === 'No'}
-                        title='¿Qué compensación no monetaria recibirá el talento?'
+                        disabled={state.se_otorgaran_compensaciones === `${textos['no']}`}
+                        title={`¿${textos['compensacion_no_monetaria_que_recibira_talento']}?`}
                         onChange={(e, i) => {
                             const tipo_compensacion = tipos_compensaciones_no_monetarias
                                 .data?.filter((_, index) => index === i)[0];
@@ -138,7 +167,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                         labelClassName={'label-black-lg'}
                         options={
                             (tipos_compensaciones_no_monetarias.data)
-                                ? tipos_compensaciones_no_monetarias.data.filter(e => e.id < 99).map(g => g.es)
+                                ? tipos_compensaciones_no_monetarias.data.filter(e => e.id < 99).map(g => ctx.lang === 'es' ? g.es : g.en)
                                 : []
                         }
                         label='¿Qué compensación no monetaria recibirá el talento?'
@@ -159,7 +188,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                             disabled={state.se_otorgaran_compensaciones === 'No'}
                             className={'label-black-lg'} 
                             style={{ fontWeight: '400', fontSize: '1.1rem' }}
-                            label={'Otro'} 
+                            label={`${textos['otro']}`} 
                             control={
                                 <Checkbox
                                     checked={state.compensaciones_no_monetarias.some(e => e.id_compensacion === 99)}
@@ -219,7 +248,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                             }
                         })
                     }}
-                    label='Suma de las compensaciones'
+                    label={`${textos['suma_compensaciones']}`}
                     tooltip={
                         <MTooltip
                             color='orange'
@@ -246,7 +275,7 @@ export const CompensacionRol: FC<Props> = ({ state, onFormChange }) => {
                             }
                         })
                     }}
-                    label='Datos adicionales'
+                    label={`${textos['detalles_adicionales']}`}
                 />
             </Grid>
         </Grid>

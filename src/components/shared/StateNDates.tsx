@@ -69,16 +69,16 @@ export const StateNDates: FC<Props> = ({
                         value={valueSelect}
                         className={'form-input-md'}
                         onChange={(e) => {onSelectChange(e.target.value)}}
-                        label='Ciudad/Estado:'
+                        label={`${textos['ciudad']}/${textos['estado']}:`}
                     />
                 </Box>
                 <Box sx={{ marginTop: 2 }}>
                     <MRadioGroup
-                        label='Fecha:'
+                        label={`${textos['fecha']}:`}
                         labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                         style={{ gap: 0 }}
                         id={nameRadio}
-                        options={['Rango de fechas', 'Individuales']}
+                        options={[`${textos['rango_fechas']}`, `${textos['individuales']}`]}
                         value={valueRadio}
                         direction='vertical'
                         onChange={(e) => {
@@ -88,7 +88,7 @@ export const StateNDates: FC<Props> = ({
                 </Box>
 
                 <Box sx={{ marginTop: 2 }}>
-                    <Typography fontWeight={600}>Fecha:</Typography>
+                    <Typography fontWeight={600}>{`${textos['fecha']}`}:</Typography>
                     <MContainer direction="horizontal" styles={{ justifyContent: 'space-between' }}>
                         <FormGroup
                             type="date"
@@ -102,10 +102,10 @@ export const StateNDates: FC<Props> = ({
                             }}
                             label=''
                         />
-                        <MotionDiv animation="fade" show={valueRadio === 'Rango de fechas'}>
-                            <Typography>a</Typography>
+                        <MotionDiv animation="fade" show={valueRadio === `${textos['rango_fechas']}`}>
+                            <Typography>{`${textos['a']}`}</Typography>
                         </MotionDiv>
-                        <MotionDiv animation="fade" show={valueRadio === 'Rango de fechas'}>
+                        <MotionDiv animation="fade" show={valueRadio === `${textos['rango_fechas']}`}>
                             <FormGroup
                                 type="date"
                                 className={'form-input-md'}
@@ -124,7 +124,7 @@ export const StateNDates: FC<Props> = ({
                         <Button
                             onClick={() => {
                                 switch (valueRadio) {
-                                    case 'Rango de fechas': {
+                                    case `${textos['rango_fechas']}`: {
                                         if (date2 != null && date2 !== '') {
                                             const inicio = new Date(date1);
                                             inicio.setDate(inicio.getDate() + 1);
@@ -136,7 +136,7 @@ export const StateNDates: FC<Props> = ({
                                         }
                                         break;
                                     }
-                                    case 'Individuales': {
+                                    case `${textos['individuales']}`: {
                                         if (date1 !== '') {
                                             const inicio = new Date(date1);
                                             inicio.setDate(inicio.getDate() + 1);
@@ -162,7 +162,7 @@ export const StateNDates: FC<Props> = ({
                                 outline: 'none'
                             }}
                         >
-                            Agregar fecha
+                            {`${textos['agregar']} ${textos['fecha']}`}
                         </Button>
                     </Box>
                 </Box>

@@ -1,6 +1,8 @@
 import { Grid } from '@mui/material'
-import { FC, useReducer } from 'react';
+import { FC, useContext, useReducer } from 'react';
 import { FormGroup, MCheckboxGroup, MSelect, SectionTitle } from '~/components/shared'
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 import { RequisitosRolForm } from '~/pages/cazatalentos/roles/agregar-rol';
 import { api } from '~/utils/api';
 
@@ -12,6 +14,9 @@ interface Props {
 
 
 export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
+
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const usos_horarios = api.catalogos.getUsosDeHorario.useQuery(undefined, {
         refetchOnMount: false,
@@ -36,7 +41,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
     return (
         <Grid container item xs={12} mt={8}>
             <Grid item xs={12}>
-                <SectionTitle title='Paso 7' subtitle='Requisitos'
+                <SectionTitle title={`${textos['paso']} 7`} subtitle={`${textos['requisitos']}`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                 />
@@ -54,7 +59,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                                 fecha_presentacion: e.target.value
                             })
                         }}
-                        label='Presentación de solicitud*'
+                        label={`${textos['presentacion_solicitud']}*`}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -63,7 +68,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                         loading={usos_horarios.isFetching}
                         options={
                             (usos_horarios.data)
-                                ? usos_horarios.data.map(s => { return { value: s.id.toString(), label: s.es } })
+                                ? usos_horarios.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
                                 : []
                         }
                         className={'form-input-md'}
@@ -73,7 +78,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                                 id_uso_horario: parseInt(e.target.value)
                             })
                         }}
-                        label='Uso horario*'
+                        label={`${textos['timezone']}*`}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -89,7 +94,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                                 info_trabajo: e.target.value
                             })
                         }}
-                        label='Información/notas del trabajo*'
+                        label={`${textos['informacion_trabajo_y_notas']}*`}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -98,7 +103,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                         loading={idiomas.isFetching}
                         options={
                             (idiomas.data)
-                                ? idiomas.data.map(s => { return { value: s.id.toString(), label: s.nombre } })
+                                ? idiomas.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
                                 : []
                         }
                         className={'form-input-md'}
@@ -108,7 +113,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                                 id_idioma: parseInt(e.target.value)
                             })
                         }}
-                        label='Añadir Idioma*'
+                        label={`${textos['agregar']} ${textos['idioma']}*`}
                     />
                 </Grid>
             </Grid>
@@ -116,7 +121,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
             <Grid item xs={6} mt={4}>
                 <Grid item xs={6}>
                     <MCheckboxGroup
-                        title='El talento deberá incluir*:'
+                        title={`${textos['talento_debe_incluir']}*:`}
                         onChange={(e, i) => {
                             const medio = medios_multimedia_a_incluir.data?.filter((_, index) => index === i)[0];
                             if (medio) {
@@ -130,7 +135,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                         }}
                         direction='vertical'
                         id="talento-debera-incluir-rol"
-                        options={(medios_multimedia_a_incluir.data) ? medios_multimedia_a_incluir.data.map(m => m.es) : []}
+                        options={(medios_multimedia_a_incluir.data) ? medios_multimedia_a_incluir.data.map(m => ctx.lang === 'es' ? m.es : m.en) : []}
                         label='¿Qué compensación no monetaria recibirá el talento?'
                         labelStyle={{ fontWeight: '400', fontSize: '1.1rem' }}
                         values={(medios_multimedia_a_incluir.data) ? medios_multimedia_a_incluir.data.map(m => {
@@ -152,7 +157,7 @@ export const RequisitosRol: FC<Props> = ({ state, onFormChange }) => {
                                 id_estado_donde_aceptan_solicitudes: parseInt(e.target.value)
                             })
                         }}
-                        label='Aceptando aplicaciones desde*'
+                        label={`${textos['aceptando_aplicaciones_de']} *`}
                     />
                 </Grid>
             </Grid>

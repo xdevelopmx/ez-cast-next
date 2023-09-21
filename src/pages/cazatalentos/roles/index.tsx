@@ -168,9 +168,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     if (tabSelected === "ARCHIVADOS") {
       return (
         <div className="box_message_blue">
-          <p className="h3">No tienes ningún rol archivado</p>
+          <p className="h3">{`${textos['no_roles_archivados_title']}`}</p>
           <p>
-            Aquí aparecerán todos los roles que hayas colocado como archivados
+           {`${textos['no_roles_archivados_body']}`}
             <br />
           </p>
         </div>
@@ -511,9 +511,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         action: "PROYECTO_ENVIADO_A_APROBACION",
                                         data: new Map<string, unknown>(),
                                         opened: true,
-                                        title: "Enviar proyecto a aprobación",
+                                        title: `${textos['enviar_proyecto_a_aprobacion_title']}`,
                                         content: (
-                                          <Typography variant="body2">{`¿Seguro que deseas mandar este proyecto a aprobación?`}</Typography>
+                                          <Typography variant="body2">{`${textos['enviar_proyecto_a_aprobacion_body']}`}</Typography>
                                         ),
                                       });
                                     }}
