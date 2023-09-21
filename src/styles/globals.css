@@ -3,70 +3,70 @@
   src: url("../../public/assets/fonts/TenorSans-Regular.woff2") format("woff2");
 }
 
-  /*
+/*
     font-family: "Gill Sans";
     font-family: "Gill Sans Bold";
   */
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-Light.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-Light.woff2") format("woff2");
   font-weight: 100;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-Light.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-Light.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-Light.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-Light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-SemiBold.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-SemiBold.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-SemiBold.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-SemiBold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-Bold.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-Bold.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-Bold.woff2") format("woff2");
   font-weight: 800;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Gill Sans';
-  src: url('../../public/assets/fonts/GillSans-UltraBold.woff2') format('woff2');
+  font-family: "Gill Sans";
+  src: url("../../public/assets/fonts/GillSans-UltraBold.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
 }
@@ -78,10 +78,11 @@ body {
 }
 
 h6 {
-  font-size: 1rem!important;
+  font-size: 1rem !important;
 }
 
-.h2, h2 {
+.h2,
+h2 {
   font-size: 1.6rem;
 }
 
@@ -1096,6 +1097,7 @@ footer {
   backdrop-filter: blur(5px);
   border-radius: 5px;
   padding: 30px 20px 40px;
+  max-width: 430px;
 }
 
 /* .banner_full{
@@ -1135,7 +1137,7 @@ footer {
 
 /*Flow Styles*/
 .menu_container {
-  width: 20%;
+  width: 22%;
   max-width: 400px;
   padding: 8px 15px 100px;
   position: relative;
@@ -1308,7 +1310,7 @@ footer {
 }
 
 .seccion_container {
-  padding: 0 5rem 5rem;
+  padding: 0 5.5rem 5rem;
   padding-top: 70px;
   overflow: hidden;
   /*max-width: 1225px;*/
@@ -1452,21 +1454,21 @@ footer {
 
 .container_text_scroll {
   padding: 10px 5px;
-  max-height: 323px;
+  max-height: 253px;
   overflow-y: auto;
   border-top: 5px solid var(--color_a);
   border-bottom: 5px solid var(--color_a);
-  margin-top: -3px;
+  margin: -3px 0 0 0;
 }
 
 .container_text_scroll ol li {
-  margin-bottom: 10px;
-  font-size: 19px;
+  margin-bottom: 4px;
+  font-size: 17px;
 }
 
 .container_text_scroll ol li::marker {
   font-weight: 700;
-  font-size: 22px;
+  font-size: 19px;
 }
 
 .container_slider_destacados {
@@ -3692,14 +3694,24 @@ input.borde_azul {
   font-weight: 500;
 }
 
-b, strong {
-  font-weight: 800!important;
+b,
+strong {
+  font-weight: 800 !important;
 }
 
 .MuiCheckbox-colorPrimary {
-  padding: 3px!important;
+  padding: 3px !important;
 }
 
 .check {
   margin: 0 0 0 8px;
+}
+
+.w-120 {
+  width: 120% !important;
+}
+
+.py-10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }

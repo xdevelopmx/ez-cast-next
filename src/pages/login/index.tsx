@@ -85,9 +85,9 @@ const LoginPage: NextPage = () => {
                 EZ-CAST
               </h1>
               <p className="text-muted">
-              {textos["no_tienes_cuenta"]?? ""}{" "}
+                {textos["no_tienes_cuenta"] ?? ""}{" "}
                 <Link href="/registro" className="color_a">
-                {textos["registrate"]?? ""}
+                  {textos["registrate"] ?? ""}
                 </Link>
               </p>
               <div className="d-lg-flex align-items-center justify-content-center box_input">
@@ -104,7 +104,8 @@ const LoginPage: NextPage = () => {
                     }}
                     htmlFor="user"
                   >
-                    {textos["mail"]?? ""}                  </label>
+                    {textos["mail"] ?? ""}{" "}
+                  </label>
                   <FormGroup
                     error={state.errors.user}
                     show_error_message
@@ -118,7 +119,7 @@ const LoginPage: NextPage = () => {
                       borderColor: "#069cb1!important",
                       background: "transparent",
                       borderRadius: 100,
-                      padding: "0px 5px",
+                      padding: "0px 15px",
                     }}
                     value={state.user}
                     onChange={(e) => {
@@ -153,7 +154,7 @@ const LoginPage: NextPage = () => {
                     }}
                     htmlFor="user"
                   >
-                    {textos["password"]?? ""}
+                    {textos["password"] ?? ""}
                   </label>
                   <FormGroup
                     type="password"
@@ -170,7 +171,7 @@ const LoginPage: NextPage = () => {
                       borderColor: "#069cb1!important",
                       background: "transparent",
                       borderRadius: 100,
-                      padding: "0px 5px",
+                      padding: "0px 15px",
                     }}
                     onChange={(e) => {
                       dispatch({
@@ -192,12 +193,12 @@ const LoginPage: NextPage = () => {
                 </MContainer>
               </div>
               <p className="text-muted">
-              {textos["fgtpswd"]?? ""}{" "}
+                {textos["fgtpswd"] ?? ""}{" "}
                 <Link href="/restablecer-contrasena" className="color_a">
-                {textos["restablecer"]?? ""}
+                  {textos["restablecer"] ?? ""}
                 </Link>
               </p>
-              <p>{textos["ingresar_como"]?? ""}</p>
+              <p>{textos["ingresar_como"] ?? ""}</p>
 
               <div className="d-flex align-items-center justify-content-center text-center flex-wrap">
                 <div>
@@ -222,7 +223,7 @@ const LoginPage: NextPage = () => {
                           : "#000",
                     }}
                   >
-                    {textos["cazatalentos"]?? ""}
+                    {textos["cazatalentos"] ?? ""}
                   </span>
                   <MTooltip
                     color="orange"
@@ -232,7 +233,7 @@ const LoginPage: NextPage = () => {
                     text={
                       <>
                         <Typography fontSize={14}>
-                        {textos["descripcion_cazatalentos"]?? ""}
+                          {textos["descripcion_cazatalentos"] ?? ""}
                         </Typography>
                       </>
                     }
@@ -258,7 +259,7 @@ const LoginPage: NextPage = () => {
                           : "#000",
                     }}
                   >
-                    {textos["talento"]?? ""}
+                    {textos["talento"] ?? ""}
                   </span>
                   <MTooltip
                     sx={{
@@ -268,55 +269,21 @@ const LoginPage: NextPage = () => {
                     text={
                       <>
                         <Typography fontSize={14}>
-                        {textos["descripcion_talento"]?? ""}
+                          {textos["descripcion_talento"] ?? ""}
                         </Typography>
                       </>
                     }
                     placement="right"
                   />
                 </div>
-                {/* <div>
-                  <span
-                    className={`switch_span switch_login ${
-                      state.tipo_usuario === TipoUsuario.REPRESENTANTE
-                        ? "active"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      dispatch({
-                        type: "update-form",
-                        value: { tipo_usuario: TipoUsuario.REPRESENTANTE },
-                      });
-                    }}
-                    style={{
-                      padding: "2px 10px",
-                      borderColor: "#069cb1",
-                      color:
-                        state.tipo_usuario === TipoUsuario.REPRESENTANTE
-                          ? "#fff"
-                          : "#000",
-                    }}
-                  >
-                    {textos["representante"]?? ""}
-                  </span>
-                  <MTooltip
-                    color="orange"
-                    sx={{
-                      margin: "0!important",
-                    }}
-                    text={
-                      <>
-                        <Typography fontSize={14}>
-                        {textos["descripcion_representante"]?? ""}
-                        </Typography>
-                      </>
-                    }
-                    placement="right"
-                  />
-                </div> */}
               </div>
 
-              <div className="text-center mt-5 pl-2 pr-2">
+              <div
+                className="text-center pl-2 pr-2"
+                style={{
+                  marginTop: "2rem",
+                }}
+              >
                 <button
                   className="btn btn-intro btn-confirm mt-0"
                   style={{ padding: "8px 87px" }}
@@ -354,12 +321,12 @@ const LoginPage: NextPage = () => {
                     }
                   }}
                 >
-                  {textos["login"]?? ""}
+                  {textos["login"] ?? ""}
                 </button>
               </div>
 
               <div className="text-center mt-3">
-                <p>{textos["accede_con"]?? ""}</p>
+                <p>{textos["accede_con"] ?? ""}</p>
               </div>
               <div className="d-lg-flex justify-content-center">
                 <a
@@ -392,11 +359,11 @@ const LoginPage: NextPage = () => {
             </div>
             <p className="text-white mt-2">
               <a href="./ayuda-ezcast" className="text-white">
-                <u>{textos["necesitas_ayuda"]?? ""}</u>
+                <u>{textos["necesitas_ayuda"] ?? ""}</u>
               </a>
-              &nbsp; {textos["accede_a"]?? ""} &nbsp;
+              &nbsp; {textos["accede_a"] ?? ""} &nbsp;
               <a href="./ayuda-ezcast" className="text-white">
-                <u>{textos["tutoriales"]?? ""}</u>
+                <u>{textos["tutoriales"] ?? ""}</u>
               </a>
             </p>
           </div>
