@@ -1,17 +1,18 @@
 import { Badge, Box, Divider, IconButton, SxProps, Typography } from "@mui/material";
 import { DateCalendar, LocalizationProvider, PickersDay, PickersDayProps } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { esES } from '@mui/x-date-pickers';
+import { esES, enUS } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { AnimatePresence, AnimateSharedLayout, color, motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { MContainer } from "../../layout/MContainer";
 import { ArrowLeft, ArrowRight } from "@mui/icons-material";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { MTooltip } from "../MTooltip";
 import classes from './DualDatePicker.module.css';
+import AppContext from "~/context/app";
 
 function getInitialDates() {
     const d = new Date().toLocaleDateString('es-mx').split('/');
@@ -36,6 +37,7 @@ export default function DualDatePicker(props: {
     selected_dates: {day: number, month: number, year: number, tipo_agenda: string}[],
     is_dual: boolean
 }) {
+    const ctx = useContext(AppContext);
     const [dates, setDates] = useState<(Dayjs | null | undefined)[]>(getInitialDates());
     
     const [highlightedDaysDateOne, setHighlightedDaysDateOne] = useState<{fecha: number[], tipo_agenda: string}[]>(props.selected_dates.filter(d => {
@@ -123,8 +125,8 @@ export default function DualDatePicker(props: {
 		>
 			<LocalizationProvider
                 dateAdapter={AdapterDayjs}
-                localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
-                adapterLocale={'es-mx'}
+                localeText={(ctx.lang === 'es') ? esES.components.MuiLocalizationProvider.defaultProps.localeText : enUS.components.MuiLocalizationProvider.defaultProps.localeText}
+                adapterLocale={(ctx.lang === 'es') ? 'es-mx' : 'en-us'}
             >
                 <MContainer styles={{borderColor: 'red'}} direction={props.direction}>
                     <IconButton 

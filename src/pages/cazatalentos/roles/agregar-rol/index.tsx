@@ -1022,7 +1022,7 @@ const AgregarRolPage: NextPage<{user: User}> = ({user}) => {
                                     <MContainer direction='vertical' styles={{width: '100%', alignContent: 'center'}}>
                                         <Alert  icon={false} severity='warning'>
                                     
-                                            <Typography style={{textAlign: 'center', width: 'inherit'}}>Por favor llena los campos obligatorios * </Typography>
+                                            <Typography style={{textAlign: 'center', width: 'inherit'}}>{`${textos['llenar_campos_obligatorios']}`}* </Typography>
                                         </Alert>
                                     </MContainer>
                                 }

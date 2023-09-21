@@ -36,7 +36,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
 					if (!talento.activo) {
 						return res.status(401).json({status: 'error', message: 'Tu usuario ha sido bloqueado por el administrador, por favor comunicate con soporte para saber mas.'});
 					}
-					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: talento.id.toString(), name: `${talento.nombre} ${talento.apellido}`, email: talento.email, tipo_usuario: TipoUsuario.TALENTO, profile_img: '' }});
+					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: talento.id.toString(), name: `${talento.nombre}`, lastname: `${talento.apellido}`, email: talento.email, tipo_usuario: TipoUsuario.TALENTO, profile_img: '' }});
 				}
 			}
 			break;
@@ -93,7 +93,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
 							}
 						}))
 					}
-					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: cazatalentos.id.toString(), name: `${cazatalentos.nombre} ${cazatalentos.apellido}`, email: cazatalentos.email, tipo_usuario: TipoUsuario.CAZATALENTOS, profile_img: '' }});
+					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: cazatalentos.id.toString(), name: `${cazatalentos.nombre}`, lastname: `${cazatalentos.apellido}`, email: cazatalentos.email, tipo_usuario: TipoUsuario.CAZATALENTOS, profile_img: '' }});
 				}
 			}
 			break;
@@ -111,7 +111,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
 			if (representante) {
 				const correct_pass = await bcrypt.compare(form.password, representante.contrasenia);
 				if (correct_pass) {
-					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: representante.id.toString(), name: `${representante.nombre} ${representante.apellido}`, email: representante.email, tipo_usuario: TipoUsuario.REPRESENTANTE, profile_img: '' }});
+					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: representante.id.toString(), name: `${representante.nombre}`, lastname: `${representante.apellido}`, email: representante.email, tipo_usuario: TipoUsuario.REPRESENTANTE, profile_img: '' }});
 				}
 			}
 			break;
@@ -129,7 +129,7 @@ export default async function handler(req: Request, res: NextApiResponse) {
 			if (admin) {
 				const correct_pass = await bcrypt.compare(form.password, admin.contrasenia);
 				if (correct_pass) {
-					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: admin.id.toString(), name: 'ADMIN', email: admin.email, tipo_usuario: TipoUsuario.ADMIN, profile_img: '' }});
+					return res.status(200).json({status: 'success', message: 'Login correcto', data: { id: admin.id.toString(), name: 'ADMIN', lastname: '', email: admin.email, tipo_usuario: TipoUsuario.ADMIN, profile_img: '' }});
 				}
 			}
 			break;

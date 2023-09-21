@@ -55,7 +55,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                 <MSelect
                     id="sindicato-select"
                     loading={tipos_sindicatos.isFetching}
-                    options={(tipos_sindicatos.data) ? tipos_sindicatos.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
+                    options={(tipos_sindicatos.data) ? tipos_sindicatos.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } }) : []}
                     className={'form-input-md'}
                     value={state.id_sindicato.toString()}
                     onChange={(e) => {
@@ -70,7 +70,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                 <MSelect
                     id="tipo-proyectos-select"
                     loading={tipos_proyectos.isFetching}
-                    options={(tipos_proyectos.data) ? tipos_proyectos.data.map(s => { return { value: s.id.toString(), label: s.es } }) : []}
+                    options={(tipos_proyectos.data) ? tipos_proyectos.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } }) : []}
                     value={state.id_tipo.toString()}
                     className={'form-input-md'}
                     onChange={(e) => {
@@ -111,7 +111,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                                 sindicato: e.target.value
                             })
                         }}
-                        label='Nombre Sindicato *'
+                        label={`${textos['nombre_sindicato']}*`}
                     />
                 </MotionDiv>
             </Grid>
@@ -127,7 +127,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
                                 tipo: e.target.value
                             })
                         }}
-                        label='Otro'
+                        label={`${textos['otro']}`}
                     />
                 </MotionDiv>
             </Grid>

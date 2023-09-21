@@ -1,10 +1,12 @@
 import Image from 'next/image'
 import { Box, Button, CircularProgress, Divider, Grid, Typography } from '@mui/material'
-import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment } from 'react'
+import React, { type ReactNode, type FC, type CSSProperties, useState, Fragment, useContext } from 'react'
 import { MContainer } from '../layout/MContainer'
 import { motion } from 'framer-motion';
 import { conversorFecha } from '~/utils/conversor-fecha';
 import { api } from '~/utils/api';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface PropsIndividualData {
     title: ReactNode;
@@ -52,6 +54,8 @@ const containerVariants = {
 };
 
 export const DetallesProyecto: FC<PropsProyecto> = (props) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const proyecto = api.proyectos.getById.useQuery(props.id_proyecto, {
         refetchOnWindowFocus: false
     });
@@ -80,7 +84,7 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                                 <Grid container item xs={12}>
                                     <Grid item xs={6}>
                                         <Typography sx={{ color: '#069cb1', fontSize: '.9rem' }}>
-                                            Aceptando aplicaciones de:
+                                            {`${textos['aceptando_aplicaciones_de']}`}:
                                             <Typography component={'span'} sx={{ marginLeft: '5px', color: '#069cb1', fontSize: '.9rem' }}>
                                             {proyecto.data?.estado_republica.es}
                                             </Typography>
@@ -92,7 +96,7 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                         <Image style={{ borderRadius: '50%', border: '2px solid #000' }} src={(proyecto.data && proyecto.data.cazatalentos && proyecto.data.cazatalentos.foto_perfil) ? proyecto.data.cazatalentos.foto_perfil.url : '/assets/img/no-image.png'} width={30} height={30} alt="" />
 
-                                        <Typography sx={{ fontSize: '1rem' }}>Proyecto por: </Typography>
+                                        <Typography sx={{ fontSize: '1rem' }}>{`${textos['proyecto_por']}`}: </Typography>
 
                                         <Box sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', gap: 1 }}>
                                             <Typography sx={{ color: '#069cb1', fontSize: '1rem' }}>{proyecto.data?.cazatalentos.nombre} {proyecto.data?.cazatalentos.apellido}</Typography>
@@ -119,26 +123,26 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                                     </Typography>
                                 </Grid>
                                 {proyecto.data && proyecto.data.detalles_adicionales && 
-                                    <IndividualData title={'Detalles adicionales:'}>
+                                    <IndividualData title={`${textos['detalles_adicionales']}:`}>
                                         <Typography fontWeight={400} component={'span'} sx={{ paddingRight: '10px' }}>
                                             {proyecto.data.detalles_adicionales}
                                         </Typography>
                                     </IndividualData>
                                 }
 
-                                <IndividualData title={'Director Casting:'}>
+                                <IndividualData title={`${textos['casting_director']}:`}>
                                     <Typography component={'span'} sx={{ color: '#928F8F' }}>
                                         {proyecto.data?.director_casting}
                                     </Typography>
                                 </IndividualData>
                                 {proyecto.data && proyecto.data.productor &&
-                                    <IndividualData title={'Productor:'}>
+                                    <IndividualData title={`${textos['productor']}:`}>
                                     
                                     </IndividualData>
                                 }
 
                                 {proyecto.data && proyecto.data.casa_productora &&
-                                    <IndividualData title={'Casa productora:'}>
+                                    <IndividualData title={`${textos['casa_productora']}:`}>
                                         {proyecto.data.casa_productora}
                                     </IndividualData>
                                 }
@@ -150,7 +154,7 @@ export const DetallesProyecto: FC<PropsProyecto> = (props) => {
                                 }
 
                                 {proyecto.data && proyecto.data.agencia_publicidad &&
-                                    <IndividualData title={'Agencia de publicidad:'}>
+                                    <IndividualData title={`${textos['agencia_publicidad']}:`}>
                                         {proyecto.data.agencia_publicidad}
                                     </IndividualData>
                                 } 

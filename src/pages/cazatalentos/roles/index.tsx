@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useContext, useMemo, useState } from "react";
 import { Acordeon, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { AnimatePresence, type Variants, motion } from "framer-motion";
 import UpIcon from "@mui/icons-material/KeyboardArrowUp";
@@ -32,6 +32,8 @@ import { TipoUsuario } from "~/enums";
 import { Alertas } from "~/components/componentes-dashboards/Alertas copy";
 //import useDelay from "~/hooks/useDelay";
 import estilos from "./estilos.module.css";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 const variants: Variants = {
   initial: {
@@ -71,6 +73,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   can_edit,
   onProjectChange,
 }) => {
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);  
   const [tabSelected, setTabSelected] = useState<"ACTIVOS" | "ARCHIVADOS">(
     "ACTIVOS"
   );
@@ -154,15 +158,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     if (tabSelected === "ACTIVOS") {
       return (
         <div className="box_message_blue">
-          <p className="h3">No has creado ningún rol</p>
+          <p className="h3">{`${textos['no_roles_creados_title']}`}</p>
           <p>
-            Al crear un rol, aquí tendrás una vista general de tus roles activos
-            e inactivos.
-            <br />
-            Recuerda crear todos tus roles y leer los requisitos de aprobación
-            antes de terminar y mandarlos.
-            <br />
-            ¡Comienza ahora mismo!
+            {`${textos['no_roles_creados_body']}`}
           </p>
         </div>
       );
@@ -220,7 +218,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       fontWeight={600}
       component={"p"}
     >
-      Nombre
+      {`${textos['nombre']}`}
     </Typography>,
     <Typography
       key={2}
@@ -229,7 +227,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       fontWeight={600}
       component={"p"}
     >
-      Estado
+      {`${textos['estado']}`}
     </Typography>,
     <Typography
       key={3}
@@ -238,7 +236,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       fontWeight={600}
       component={"p"}
     >
-      No Vistos
+      {`${textos['no_visto']}`}
     </Typography>,
     <Typography
       key={4}
@@ -247,7 +245,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       fontWeight={600}
       component={"p"}
     >
-      Vistos
+      {`${textos['visto']}`}
     </Typography>,
     <Typography
       key={5}
@@ -256,7 +254,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       fontWeight={600}
       component={"p"}
     >
-      Destacados
+      {`${textos['destacado']}`}
     </Typography>,
     <Typography
       key={6}
@@ -265,7 +263,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       fontWeight={600}
       component={"p"}
     >
-      Audición
+      {`${textos['audicion']}`}
     </Typography>,
     <Typography
       key={7}
@@ -322,7 +320,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       className="color_a mb-0 ml-2"
                       style={{ fontWeight: 400 }}
                     >
-                      <>Regresar a vista general</>
+                      <>{`${textos['regresar_vista_general']}`}</>
                     </p>
                   </Button>
                   {!IS_ADMIN && (
@@ -495,7 +493,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   fontWeight: 500,
                                 }}
                               >
-                                Nuevo rol
+                                {`${textos['nuevo_rol']}`}
                               </Button>
                             </Link>
                             <MContainer direction="vertical">
@@ -530,7 +528,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       color: "#000",
                                     }}
                                   >
-                                    Enviar proyecto para aprobación
+                                    {`${textos['enviar_proyecto_para_aprobacion']}`}
                                   </Button>
                                 )}
                               </>
@@ -601,7 +599,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     {proyecto.data && proyecto.data.tipo
                       ? proyecto.data.tipo.id_tipo_proyecto === 99
                         ? proyecto.data.tipo.descripcion
-                        : proyecto.data.tipo.tipo_proyecto.es
+                        : (ctx.lang === 'es') ? proyecto.data.tipo.tipo_proyecto.es : proyecto.data.tipo.tipo_proyecto.en
                       : "ND"}
                   </Typography>
                   <Divider
@@ -620,7 +618,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     {proyecto.data && proyecto.data.sindicato
                       ? proyecto.data.sindicato.id_sindicato === 99
                         ? proyecto.data.sindicato.descripcion
-                        : proyecto.data.sindicato.sindicato.es
+                        : (ctx.lang === 'es') ? proyecto.data.sindicato.sindicato.es : proyecto.data.sindicato.sindicato.en
                       : "ND"}
                   </Typography>
                 </MContainer>
@@ -633,7 +631,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      Contacto de casting
+                      {`${textos['contacto_casting']}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
@@ -657,14 +655,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      Equipo creativo
+                      {`${textos['equipo_creativo']}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
                   <Grid mt={2} item md={4}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        Productor
+                        {`${textos['productor']}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data ? proyecto.data.productor : "ND"}
@@ -684,7 +682,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item md={4}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        Casa productora
+                        {`${textos['casa_productora']}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data ? proyecto.data.casa_productora : "ND"}
@@ -694,7 +692,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item md={6}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        Agencia de Publicidad
+                        {`${textos['agencia_publicidad']}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data
@@ -707,14 +705,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      Detalles adicionales
+                      {`${textos['detalles_adicionales']}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
                   <Grid mt={2} item xs={12}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        Sinopsis
+                        {`${textos['sinopsis']}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data ? proyecto.data.sinopsis : "ND"}
@@ -724,7 +722,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item xs={12}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 100 }}>
-                        Archivos
+                        {`${textos['archivos']}`}
                       </Typography>
                       <Typography>{"ND"}</Typography>
                     </MContainer>
@@ -733,7 +731,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      Locación proyecto
+                      {`${textos['locacion_proyecto']}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
@@ -741,7 +739,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item xs={12}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        Estado
+                        {`${textos['estado']}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data
@@ -777,7 +775,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         aria-controls="activos"
                         aria-selected="true"
                       >
-                        Roles actuales
+                        {`${textos['roles_actuales']}`}
                       </a>
                     </li>
                     <li className="nav-item">
@@ -795,7 +793,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         aria-controls="archivados"
                         aria-selected="false"
                       >
-                        Roles archivados
+                        {`${textos['roles_archivados']}`}
                       </a>
                     </li>
                   </ul>
@@ -814,7 +812,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             fontWeight={600}
                             component={"p"}
                           >
-                            Acciones
+                            {`${textos['acciones']}`}
                           </Typography>
                         )
                       : table_actions
@@ -1502,7 +1500,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       color:"#000000!important"
                                     }}
                                   >
-                                    Descripción:
+                                    {`${textos['descripcion']}`}:
                                   </Typography>
                                   {roles.data
                                     ? roles.data[element_index]?.descripcion ||
@@ -1567,7 +1565,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Habilidades:
+                                            {`${textos['habilidades']}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -1649,7 +1647,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Desnudos situaciones sexuales:
+                                            {`${textos['desnudos_o_situaciones_sexuales']}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -1730,7 +1728,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Locación de casting y fechas:
+                                             {`${textos['locacion_de_casting_y_fechas']}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -1799,7 +1797,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Locación de filmación y fechas:
+                                             {`${textos['locacion_de_filmacion_y_fechas']}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -1869,7 +1867,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Presentación de solicitud:
+                                            {`${textos['presentacion_solicitud']}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             <Typography
@@ -1952,7 +1950,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Requisitos:
+                                            {`${textos['requisitos']}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -2042,7 +2040,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            Archivos adicionales:
+                                            {`${textos['archivos_adicionales']}`}:
                                           </Typography>
                                           <MContainer
                                             direction="horizontal"

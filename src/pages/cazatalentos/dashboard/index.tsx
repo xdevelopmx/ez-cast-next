@@ -438,7 +438,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                               >
                                 {p.tipo.id_tipo_proyecto === 99
                                   ? p.tipo.descripcion
-                                  : p.tipo.tipo_proyecto.es}
+                                  : ctx.lang === 'es' ? p.tipo.tipo_proyecto.es : p.tipo.tipo_proyecto.en}
                               </Typography>
                             ) : (
                               <Typography
@@ -501,15 +501,15 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                                 title:
                                                   p.estatus.toUpperCase() ===
                                                   "ARCHIVADO"
-                                                    ? "Desarchivar Proyecto"
-                                                    : "Archivar Proyecto",
+                                                    ? `${textos['desarchivar_proyecto']}`
+                                                    : `${textos['archivar_proyecto']}`,
                                                 content: (
-                                                  <Typography variant="body2">{`Seguro que deseas ${
+                                                  <Typography variant="body2">{`${
                                                     p.estatus.toUpperCase() ===
                                                     "ARCHIVADO"
-                                                      ? "desarchivar"
-                                                      : "archivar"
-                                                  } este proyecto?`}</Typography>
+                                                      ? `${textos['desarchivar_proyecto_message']}`
+                                                      : `${textos['archivar_proyecto_message']}`
+                                                  }`}</Typography>
                                                 ),
                                               });
                                               e.stopPropagation();
@@ -608,7 +608,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                                 action: "DELETE",
                                                 data: params,
                                                 opened: true,
-                                                title: "Eliminar Proyecto",
+                                                title: `${textos['eliminar']} ${textos['proyecto']}`,
                                                 content: (
                                                   <Typography variant="body2">
                                                     {textos["seguro"]?? ""}

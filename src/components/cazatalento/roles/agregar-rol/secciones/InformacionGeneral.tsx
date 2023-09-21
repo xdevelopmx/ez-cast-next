@@ -1,8 +1,10 @@
 import { Grid, Typography } from "@mui/material"
-import { type FC, useReducer, useEffect } from "react";
+import { type FC, useReducer, useEffect, useContext } from "react";
 import { MContainer } from "~/components/layout/MContainer";
 import { FormGroup, MCheckboxGroup, MRadioGroup, MSelect, SectionTitle } from "~/components/shared"
 import { MTooltip } from "~/components/shared/MTooltip"
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 import { type RolInformacionGeneralForm } from "~/pages/cazatalentos/roles/agregar-rol";
 import { api } from '~/utils/api';
 
@@ -15,6 +17,9 @@ interface Props {
 }
 
 export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange }) => {
+
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const tipos_roles = api.catalogos.getTiposRoles.useQuery(undefined, {
         refetchOnMount: false,
@@ -30,8 +35,8 @@ export const InformacionGeneralRol: FC<Props> = ({ fetching, state, onFormChange
         <Grid container item xs={12}>
             <Grid item xs={12}>
                 <SectionTitle 
-                    title='Paso 1' 
-                    subtitle='Información General'
+                    title={`${textos['paso']} 1`} 
+                    subtitle={`${textos['info_gral']}`}
                     subtitleSx={{ ml: 4, color: '#069cb1', fontWeight: 600 }}
                     dividerSx={{ backgroundColor: '#9B9B9B' }}
                     //textButton="Guardar y terminar más tarde"

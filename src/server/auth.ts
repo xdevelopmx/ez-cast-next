@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
 			},
 			async authorize(credentials, req) {
 				const INTERNAL_URL = (process.env.NEXT_PUBLIC_INTERNAL_URL) ? process.env.NEXT_PUBLIC_INTERNAL_URL : '';
-				const login = async (username: string | null, email: string | null, password: string, tipo_usuario: TipoUsuario, lang: 'es' | 'en'): Promise<{ id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null, lang: 'es' | 'en' } | null>  => {
+				const login = async (username: string | null, email: string | null, password: string, tipo_usuario: TipoUsuario, lang: 'es' | 'en'): Promise<{ id: string, name: string, lastname: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null, lang: 'es' | 'en' } | null>  => {
 					try {
 						return fetch(`${INTERNAL_URL}/api/auth/login`, {
 							method: 'POST',
@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
 								password: password,
 								tipo_usuario: tipo_usuario
 							})
-						}).then(res => res.json()).then((res: { data: { id: string, name: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null } }) => {
+						}).then(res => res.json()).then((res: { data: { id: string, name: string, lastname: string, email: string, tipo_usuario: TipoUsuario, profile_img: string | null } }) => {
 							if (res.data) {
 								return Promise.resolve({...res.data, lang: lang});
 							} else {

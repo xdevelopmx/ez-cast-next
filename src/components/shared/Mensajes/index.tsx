@@ -25,7 +25,7 @@ export const Mensajes = () => {
                 }}>
                     {
                         Array.from({ length: 10 }).map((_, i) => (
-                            <PreviewConversation key={i} />
+                            <PreviewConversation loading={false} key={i} />
                         ))
                     }
                 </Grid>

@@ -1,13 +1,17 @@
 import { Box, Grid, IconButton, Link, Typography } from "@mui/material";
 import { api } from "~/utils/api";
 import { PreviewConversation } from "./Mensajes/PreviewConversation";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Conversaciones, Proyecto } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { Close } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 export const ConversacionesPreview = (props: {width: string | number, onClose: () => void}) => {
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const conversaciones = api.mensajes.getConversaciones.useQuery();
     const router = useRouter();
     const session = useSession();
@@ -23,10 +27,10 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
                         <Box>
                             <Typography fontWeight={600}>
-                                Conversaciones
+                                {`${textos['conversaciones']}`}
                             </Typography>
                             <Link href="/mensajes">
-                                Ir a mensajes
+                                {`${textos['ir_a_mensajes']}`}
                             </Link>
                         </Box>
                         <IconButton onClick={props.onClose}>
@@ -49,7 +53,7 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
                         ))
                     }
                     {conversaciones.isFetched && conversaciones.data && conversaciones.data.length === 0 &&
-                            <Typography>No tienes ninguna conversacion aun</Typography>  
+                            <Typography>{`${textos['no_conversaciones']}`}</Typography>  
                     }
                     {conversaciones.isFetched && conversaciones.data &&
                         conversaciones.data.map((c, i) => {
