@@ -11,57 +11,61 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import AppContext, { type AppAlert } from "~/context/app";
 import { useState } from "react";
 import { CustomThemeProvider } from "~/theme";
-import { Box, CssBaseline } from "@mui/material";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider, esES } from "@mui/x-date-pickers";
-import 'dayjs/locale/es-mx';
-import { Header } from "~/components";
-
+import { CssBaseline } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import "dayjs/locale/es-mx";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session, ...pageProps },
 }) => {
-  const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map);
+  const [app_alerts, setAppAlerts] = useState<Map<string, AppAlert>>(new Map());
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
-  
-  let default_lang: 'es' | 'en' = 'es';
+
+  let default_lang: "es" | "en" = "es";
   if (typeof window !== "undefined") {
-    const lang = localStorage.getItem('CURRENT_LANG');
-    if (lang && (lang === 'es' || lang === 'en')) {
+    const lang = localStorage.getItem("CURRENT_LANG");
+    if (lang && (lang === "es" || lang === "en")) {
       default_lang = lang;
     }
   }
-  const [lang, setLang] = useState<'es' | 'en'>(default_lang);
+  const [lang, setLang] = useState<"es" | "en">(default_lang);
   return (
     <SessionProvider session={session}>
       <DndProvider backend={HTML5Backend}>
-        <AppContext.Provider value={{
-          alerts: app_alerts,
-          setAlerts: (alerts: Map<string, AppAlert>) => {
-            setAppAlerts(new Map(alerts));
-          },
-          lang: lang,
-          setLang: (lang) => {
-            setLang(lang);
-            localStorage.setItem('CURRENT_LANG', lang);
-          },
-          isLoadingData: isLoadingData,
-          setIsloadingData: setIsLoadingData,
-        }}>
+        <AppContext.Provider
+          value={{
+            alerts: app_alerts,
+            setAlerts: (alerts: Map<string, AppAlert>) => {
+              setAppAlerts(new Map(alerts));
+            },
+            lang: lang,
+            setLang: (lang) => {
+              setLang(lang);
+              localStorage.setItem("CURRENT_LANG", lang);
+            },
+            isLoadingData: isLoadingData,
+            setIsloadingData: setIsLoadingData,
+          }}
+        >
           <CustomThemeProvider>
             <CssBaseline />
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'es-mx'}>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale={"es-mx"}
+            >
               <AnimatePresence
                 mode="wait"
                 initial={true}
-                onExitComplete={() => { window.scrollTo(0, 0) }}
+                onExitComplete={() => {
+                  window.scrollTo(0, 0);
+                }}
               >
                 <Component {...pageProps} />
               </AnimatePresence>
             </LocalizationProvider>
           </CustomThemeProvider>
-
         </AppContext.Provider>
       </DndProvider>
     </SessionProvider>

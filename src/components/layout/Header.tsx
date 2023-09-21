@@ -33,6 +33,8 @@ export const Header: FC<Props> = ({
 
   const { update } = useSession();
 
+  const isInLogin = router.pathname.includes("/login");
+
   useEffect(() => {
     if (!menuSiempreBlanco) {
       setEsBlanco(tieneFondoBlanco);
@@ -55,7 +57,7 @@ export const Header: FC<Props> = ({
       <nav
         className={`navbar navbar-expand-lg ${
           esBlanco ? "navbar-light" : "navbar-dark"
-        } p-4`}
+        } p-4 ${isInLogin ? "py-10" : ""}`}
         style={
           menuAzul
             ? {
@@ -72,14 +74,18 @@ export const Header: FC<Props> = ({
           {(menuAzul || !esBlanco) && (
             <motion.img
               src="/assets/img/logo_blanco.svg"
-              className="d-inline-block align-top w-100"
+              className={`d-inline-block align-top ${
+                isInLogin ? "w-120" : "w-100"
+              } `}
               alt=""
             />
           )}
           {esBlanco && (
             <motion.img
               src="/assets/img/logo_color.png"
-              className={`d-inline-block align-top w-100`}
+              className={`d-inline-block align-top ${
+                isInLogin ? "w-120" : "w-100"
+              } `}
               alt=""
             />
           )}
