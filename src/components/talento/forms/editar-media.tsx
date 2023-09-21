@@ -40,7 +40,7 @@ export const EditarMediaTalento: FC<Props> = ({ onFormChange, state, loading }) 
                     <Typography sx={{ color: '#069CB1', margin: '25px 5px 5px 0px' }}>{textos['elegir_foto_perfil'] ? textos['elegir_foto_perfil'] : 'Texto No Definido'}</Typography>
                     {!loading &&
                         <DraggableContainer
-                            width={600}
+                            width={500}
                             direction={'horizontal'}
                             onElementsUpdate={(elements_order: number[]) => {
                                 const fotos: Archivo[] = [];

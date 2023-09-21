@@ -909,7 +909,7 @@ const TEXTS_BY_PATHNAME: {
       datos_representante: "Datos de representante o tutor legal",
       info_medidas:
         "Más adelante, puedes agregar medidas para vestuario en la vista final de tu perfil",
-      elegir_foto_perfil: "Eligir foto de perfil",
+      elegir_foto_perfil: "Elegir foto de perfil",
       info_basica_biografia_tooltip_title: "Cuentanos sobre ti",
       info_basica_biografia_tooltip_body:
         " Te recomendamos escribir un texto breve que describa tu formación profesional e intereses",

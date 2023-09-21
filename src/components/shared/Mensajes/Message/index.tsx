@@ -69,7 +69,7 @@ export const Message = ({ imagen, mensaje, esMensajePropio, nombre, fecha }: Pro
                         textAlign: 'center',
                         top: '-20px',
                         color: '#000',
-                        fontSize: '13px'
+                        fontSize: '12px'
                     }}
                 >
                     {fecha}
@@ -81,7 +81,7 @@ export const Message = ({ imagen, mensaje, esMensajePropio, nombre, fecha }: Pro
                 }}>
                     {nombre}
                 </Typography>
-                <Typography>
+                <Typography style={{fontSize: '13px'}}>
                     {mensaje}
                 </Typography>
             </Box>

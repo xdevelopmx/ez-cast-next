@@ -22,7 +22,7 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
             <Grid item xs={12}>
                 <Grid item xs={12} sx={{
                     border: '2px solid #069cb1',
-                    padding: '20px'
+                    padding: '12px'
                 }}>
                     <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
                         <Box>

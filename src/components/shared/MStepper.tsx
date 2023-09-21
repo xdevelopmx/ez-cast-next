@@ -89,8 +89,9 @@ export const MStepper: FC<Props> = ({
               {" "}
               {step_titles[current_step]}
             </span>
+            {tooltips && tooltips[current_step]}
           </span>
-          {tooltips && tooltips[current_step]}
+          <span></span>
         </h3>
 
         {children[current_step - 1]}
