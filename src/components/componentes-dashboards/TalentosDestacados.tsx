@@ -35,24 +35,28 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
 
   return (
     <>
-      <div className="col-md-6">
+      <div className="col-md-6" style={{
+        paddingLeft: '60px'
+      }}>
         <p className="h4 font-weight-bold" style={{ fontSize: '1.3rem' }}>{textos["destacados"]?? ""}</p>
         <div className="container_slider_destacados" style={{padding: '10px 20px'}}>
           <Carroucel slidesPerView={slidesPerView} >
             {data.map((d, i) => {
               return (
                 <MContainer key={i} direction='vertical'
-                  styles={{ padding: '14px', height: '300px' }}>
+                  styles={{ margin: '14px', height: '205px', background: '#fff' }}>
                   <div style={{ border: '2px solid #adadad', height: '100%' }}>
                     <div style={{
                       position: 'relative',
-                      width: '100%',
-                      height: 'calc( 100% - 50px )'
+                      width: '80%',
+                      height: 'calc( 100% - 50px )',
+                      margin: '0 auto'
                     }}>
                       <Image fill src={d.img_profile} style={{objectFit: 'contain', backgroundColor: '#fff'}} alt="talento" />
                     </div>
-                    <div className="cart_slider"
-                      style={{ backgroundColor: 'white', height: '50px', overflow: 'hidden' }}>
+                    <div className=""
+                      style={{ backgroundColor: 'white', overflow: 'hidden', margin: '-10px 0 0 0', height: '60px', zIndex: '99', position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <MContainer direction='vertical' justify='space-between' styles={{ alignItems: 'baseline', flexWrap: 'nowrap', position: 'relative' }}>
                       <Typography style={{
                         paddingLeft: 8,
                         paddingRight: 8,
@@ -60,17 +64,17 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
                         textOverflow: 'ellipsis',
                         height: '25px',
                         width: '100%',
+                        fontSize: '7px'
                       }} variant={'subtitle2'} className="color_a">
                         {d.talento.nombre} {d.talento.apellido}
                       </Typography>
-                      <MContainer direction='horizontal' justify='space-between' styles={{ alignItems: 'baseline', flexWrap: 'nowrap' }}>
-                        <Typography fontSize={'0.8rem'} style={{ paddingLeft: 8, textOverflow: 'ellipsis' }}
+                        <Typography fontSize={'0.7rem'} style={{ paddingLeft: 8, textOverflow: 'ellipsis' }}
                           variant={'body2'}>
                           {d.talento.info_basica?.union?.id_union === 99 ? d.talento.info_basica.union.descripcion : d.talento.info_basica?.union?.union.es}
                         </Typography>
                         {d.talento.info_basica?.estado_republica.es.length > 0?
-                        <div style={{ paddingRight: 8, alignItems: 'baseline' }} className="d-lg-flex cart_slider_datos">
-                          <p><motion.img src="/assets/img/iconos/cart_location_blue.svg" alt="icon" /> {d.talento.info_basica?.estado_republica.es}</p>
+                        <div style={{ paddingLeft: 8, alignItems: 'baseline' }} className="d-lg-flex cart_slider_datos">
+                          <p style={{fontSize: '0.7rem', margin: 0}}><motion.img src="/assets/img/iconos/cart_location_blue.svg" alt="icon" /> {d.talento.info_basica?.estado_republica.es}</p>
                         </div>
                         :
                         ''

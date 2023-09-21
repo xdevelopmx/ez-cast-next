@@ -357,7 +357,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       variant="subtitle2"
                                       sx={{
                                         fontSize: "1.1rem",
-                                        padding: "0px 11px",
+                                        padding: "0px",
                                         color: 'gray'
                                       }}
                                     >
@@ -370,7 +370,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       variant="subtitle2"
                                       sx={{
                                         fontSize: "1.1rem",
-                                        padding: "0px 11px",
+                                        padding: "0px",
                                       }}
                                     >
                                       {textos["archivado"]?? ""}
@@ -383,7 +383,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       variant="subtitle2"
                                       sx={{
                                         fontSize: "1.1rem",
-                                        padding: "0px 11px",
+                                        padding: "0px",
                                         color: 'gold'
                                       }}
                                     >
@@ -396,7 +396,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       variant="subtitle2"
                                       sx={{
                                         fontSize: "1.1rem",
-                                        padding: "0px 11px",
+                                        padding: "0px",
                                       }}
                                     >
                                       {textos["inactivo"]?? ""}
@@ -408,7 +408,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       variant="subtitle2"
                                       sx={{
                                         fontSize: "1.1rem",
-                                        padding: "0px 11px",
+                                        padding: "0px",
                                         color: 'green'
                                       }}
                                     >
@@ -421,7 +421,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                   variant="subtitle2"
                                   sx={{
                                     fontSize: "1.1rem",
-                                    padding: "0px 11px",
+                                    padding: "0px",
                                   }}
                                 >
                                   {p.estatus}
@@ -433,7 +433,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                 variant="subtitle2"
                                 sx={{
                                   fontSize: "1.1rem",
-                                  padding: "0px 11px",
+                                  padding: "0px",
                                 }}
                               >
                                 {p.tipo.id_tipo_proyecto === 99
@@ -445,7 +445,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                 variant="subtitle2"
                                 sx={{
                                   fontSize: "1.1rem",
-                                  padding: "0px 11px",
+                                  padding: "0px",
                                 }}
                               >
                                 ND
@@ -456,7 +456,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                 variant="subtitle2"
                                 sx={{
                                   fontSize: "1.1rem",
-                                  padding: "0px 11px",
+                                  padding: "0px",
                                 }}
                               >
                                 {p.created.toLocaleDateString("es-mx")}
