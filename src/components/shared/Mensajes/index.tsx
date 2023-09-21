@@ -48,7 +48,7 @@ export const Mensajes = () => {
                     </Box>
                 </Grid>
                 <Grid item xs={12} sx={{
-                    height: '500px',
+                    height: '400px',
                     border: '2px solid #B4B5B6',
                     borderTop: 'none',
                     borderLeft: 'none',

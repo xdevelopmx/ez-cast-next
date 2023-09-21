@@ -380,7 +380,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={'link-input-label'}> Vimeo<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Vimeo<Image className='mx-2' width={16} height={16} src="/assets/img/iconos/icon_vimeo_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.vimeo : ''}
@@ -392,7 +392,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={'link-input-label'}> Instagram<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Instagram<Image className='mx-2' width={16} height={16} src="/assets/img/iconos/icon_insta_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.instagram : ''}
@@ -404,7 +404,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={'link-input-label'}> Youtube<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Youtube<Image className='mx-2' width={16} height={16} src="/assets/img/iconos/icon_youtube_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.youtube : ''}
@@ -416,7 +416,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={'link-input-label'}> Twitter<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Twitter<Image className='mx-2' width={16} height={16} src="/assets/img/iconos/icon_Twitwe_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.twitter : ''}
@@ -428,7 +428,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={'link-input-label'}> IMDB<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> IMDB<Image className='mx-2' width={16} height={16} src="/assets/img/iconos/icon_imbd_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.imdb : ''}
@@ -440,7 +440,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({ onFormChange, state, talent
             </Grid>
             <Grid item xs={4} md={2}>
                 <MContainer className=' mb-4' styles={{ maxWidth: 150, gap: 10 }} direction='vertical'>
-                    <span className={'link-input-label'}> Linkedin<Image className='mx-2' width={20} height={20} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
+                    <span className={'link-input-label'}> Linkedin<Image className='mx-2' width={16} height={16} src="/assets/img/iconos/icon_linkedin_blue.svg" alt="" /> </span>
                     <FormGroup
                         className={'form-input-sm'}
                         value={(state && state.redes_sociales) ? state.redes_sociales.linkedin : ''}

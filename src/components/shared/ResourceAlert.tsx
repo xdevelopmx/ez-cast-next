@@ -1,4 +1,5 @@
 import { Backdrop } from "@mui/material";
+import Image from "next/image";
 
 export const ResourceAlert = (props: { busy: boolean }) => {
   return (
@@ -6,7 +7,9 @@ export const ResourceAlert = (props: { busy: boolean }) => {
       sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 9999 }}
       open={props.busy}
     >
-      <span className="loader"></span>
+      <span className="loader">
+        <Image src="/favicon.ico" width={70} height={70} alt=""/>
+      </span>
     </Backdrop>
   );
 };

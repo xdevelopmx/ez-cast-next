@@ -141,14 +141,14 @@ export default function DualDatePicker(props: {
                                 setDates(prev => { return [dayjs(n_date), dayjs(n_date_two)]});
                             } 
                         }}
-                        style={{width: '4%', color: '#4ab7c6', height: 56, marginTop: 'auto', marginBottom: 'auto'}}
+                        style={{width: '4%', color: '#4ab7c6', height: 50, marginTop: 'auto', marginBottom: 'auto'}}
                      >
                         <ArrowBackIosNewIcon/>
                     </IconButton>
                     <Box sx={{
                         width: (props.is_dual) ? '40%' : '90%',
-                        paddingLeft: 8,
-                        paddingRight: 8
+                        paddingLeft: 2,
+                        paddingRight: 2
                     }}>
                         <div id="dualpicker">
                             <DateCalendar

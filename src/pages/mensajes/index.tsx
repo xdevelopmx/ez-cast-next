@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { type GetServerSideProps, type NextPage } from "next";
-import { Alertas, Flotantes, MainLayout, Mensajes, MenuLateral, RolCompletoPreview } from '~/components';
+import { Alertas, FlotantesSinMensajes, MainLayout, MenuLateral, RolCompletoPreview } from '~/components';
 import Head from 'next/head'
 import { type User } from "next-auth";
 import { getSession } from "next-auth/react";
@@ -158,7 +158,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                     <Grid item xs={12} md={5.5}>
                                         <Grid item xs={12} sx={{
                                             border: '2px solid #069cb1',
-                                            padding: '20px'
+                                            padding: '16px'
                                         }}>
                                             <Typography fontWeight={600}>
                                                 Conversaciones
@@ -168,7 +168,8 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             height: '450px',
                                             border: '2px solid #B4B5B6',
                                             borderTop: 'none',
-                                            overflowY: 'scroll'
+                                            overflowY: 'scroll',
+                                            
                                         }}>
                                             {conversaciones.isInitialLoading && conversaciones.isFetching &&
                                                 Array.from({ length: 10 }).map((_, i) => (
@@ -179,7 +180,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 ))
                                             }
                                             {conversaciones.isFetched && conversaciones.data && conversaciones.data.length === 0 &&
-                                                 <Typography>No tienes ninguna conversacion aun</Typography>  
+                                                 <Typography style={{padding: '10px 20px 0px 20px',}}>No tienes ninguna conversacion aun</Typography>  
                                             }
                                             {conversaciones.isFetched && conversaciones.data &&
                                                 conversaciones.data.map((c, i) => {
@@ -203,16 +204,16 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                     <Grid item xs={12} md={6.5}>
                                         <Grid item xs={12} sx={{
                                             border: '2px solid #069cb1',
-                                            padding: '20px',
+                                            padding: '16px',
                                             borderLeft: 'none'
                                         }}>
                                             <Box sx={{
                                                 display: 'flex',
                                                 alignItems: 'center'
                                             }}>
-                                                <Image style={{ marginRight: '10px' }}
-                                                    src="/assets/img/iconos/chair_dir_blue.svg" width={20} height={20} alt="icono" />
                                                 <Typography fontWeight={600} mr={4}>
+                                                    <Image style={{ marginRight: '10px' }}
+                                                    src="/assets/img/iconos/chair_dir_blue.svg" width={20} height={20} alt="icono" />
                                                    {selected_conversacion ? es_emisor ? selected_conversacion.receptor?.nombre : selected_conversacion.emisor?.nombre : ''}
                                                 </Typography>
                                                 {selected_conversacion && user.tipo_usuario === TipoUsuario.CAZATALENTOS && selected_conversacion.tipo_usuario_receptor === TipoUsuario.TALENTO &&
@@ -247,13 +248,13 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                         </Grid>
                                         <Grid item xs={12}
                                             sx={{
-                                                height: '500px',
+                                                height: '350px',
                                                 border: '2px solid #B4B5B6',
                                                 borderTop: 'none',
                                                 borderLeft: 'none',
                                                 borderBottom: '2px solid #069cb1',
                                                 overflowY: 'scroll',
-                                                padding: '20px 40px 0px 40px',
+                                                padding: '10px 20px 0px 20px',
                                                 backgroundColor: '#F2F2F2',
                                             }}
                                         >
@@ -452,17 +453,17 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                 </div>
             </MainLayout>
             <Dialog  maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} open={project_dialog_opened} onClose={() => setProjectDialogOpened(false)}>
-                    <DialogTitle align='left' style={{color: '#069cb1'}}>{'Detalles del proyecto'}</DialogTitle>
-                    <DialogContent style={{padding: 0, width: 850, overflow: 'hidden'}}>
-                        <Box px={4}>
-                            {proyecto_prewiew}
-                        </Box>
-                    </DialogContent>
-                    <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                        <Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setProjectDialogOpened(false)}>Cerrar</Button>
+                <DialogTitle align='left' style={{color: '#069cb1'}}>{'Detalles del proyecto'}</DialogTitle>
+                <DialogContent style={{padding: 0, width: 850, overflow: 'hidden'}}>
+                    <Box px={4}>
+                        {proyecto_prewiew}
                     </Box>
-                </Dialog>
-            <Flotantes />
+                </DialogContent>
+                <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                    <Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setProjectDialogOpened(false)}>Cerrar</Button>
+                </Box>
+            </Dialog>
+            <FlotantesSinMensajes />
         </>
     )
 }
