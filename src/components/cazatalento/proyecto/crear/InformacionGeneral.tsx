@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import { type FC } from "react";
+import { type CSSProperties, type FC } from "react";
 import { FormGroup, MSelect, SectionTitle } from "~/components";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { MTooltip } from "~/components/shared/MTooltip";
@@ -8,6 +8,8 @@ import { api } from "~/utils/api";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+
+const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
 
 interface Props {
   state: ProyectoForm;
@@ -44,7 +46,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
           dividerSx={{ backgroundColor: "#9B9B9B" }}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           error={
             state.errors.nombre && state.nombre != null
@@ -53,7 +55,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
           }
           show_error_message
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
+          labelStyle={estilosBold}
           labelClassName={"form-input-label"}
           value={state.nombre ? state.nombre : ""}
           onChange={(e) => {
@@ -64,7 +66,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
           label={textos["nombre_proyecto"]}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <MSelect
           id="sindicato-select"
           loading={tipos_sindicatos.isFetching}
@@ -86,9 +88,10 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
             });
           }}
           label={textos["sindicato"]}
+          labelStyle={estilosBold}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <MSelect
           id="tipo-proyectos-select"
           loading={tipos_proyectos.isFetching}
@@ -125,10 +128,11 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
             />
           }
           label={textos["tipo_proyecto"] + "*"}
+          labelStyle={estilosBold}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}></Grid>
-      <Grid item xs={12} md={4} mt={8} justifyContent="end">
+      <Grid item xs={12} md={4} mt={4}></Grid>
+      <Grid item xs={12} md={4} mt={4} justifyContent="end">
         <MotionDiv show={state.id_sindicato === 99} animation="fade">
           <FormGroup
             className={"form-input-md"}
@@ -144,7 +148,7 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
           />
         </MotionDiv>
       </Grid>
-      <Grid item xs={12} md={4} mt={8} justifyContent="end">
+      <Grid item xs={12} md={4} mt={4} justifyContent="end">
         <MotionDiv show={state.id_tipo === 99} animation="fade">
           <FormGroup
             className={"form-input-md"}

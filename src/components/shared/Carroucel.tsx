@@ -49,7 +49,11 @@ export const Carroucel: FC<Props> = ({
           aria-label="delete"
           size="large"
         >
-          <ArrowBackIosNewIcon fontSize="inherit" />
+          <ArrowBackIosNewIcon
+            sx={{
+              fontSize: 24,
+            }}
+          />
         </IconButton>
       )}
       <Swiper
@@ -83,7 +87,11 @@ export const Carroucel: FC<Props> = ({
           aria-label="delete"
           size="large"
         >
-          <ArrowForwardIosIcon fontSize="inherit" />
+          <ArrowForwardIosIcon
+            sx={{
+              fontSize: 24,
+            }}
+          />
         </IconButton>
       )}
     </div>

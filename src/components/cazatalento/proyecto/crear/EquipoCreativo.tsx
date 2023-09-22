@@ -1,10 +1,13 @@
 import { Grid } from "@mui/material";
-import { type FC } from "react";
+import { type CSSProperties, type FC } from "react";
 import { FormGroup, SectionTitle } from "~/components";
 import { type ProyectoForm } from "~/pages/cazatalentos/proyecto";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+
+//const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
+const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
 
 interface Props {
   state: ProyectoForm;
@@ -32,10 +35,9 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
           }}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
           labelClassName={"form-input-label"}
           value={state.productor}
           onChange={(e) => {
@@ -44,12 +46,13 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
             });
           }}
           label={textos["productor"]}
+          labelStyle={estilosNormal}
         />
       </Grid>
-      <Grid item xs={8} mt={8}>
+      <Grid item xs={8} mt={4}>
         <FormGroup
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
+          labelStyle={estilosNormal}
           labelClassName={"form-input-label"}
           value={state.casa_productora}
           onChange={(e) => {
@@ -60,10 +63,10 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
           label={textos["casa_productora"]}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
+          labelStyle={estilosNormal}
           labelClassName={"form-input-label"}
           value={state.director}
           onChange={(e) => {
@@ -74,10 +77,10 @@ export const EquipoCreativo: FC<Props> = ({ state, onFormChange }) => {
           label={textos["director"]}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
+          labelStyle={estilosNormal}
           labelClassName={"form-input-label"}
           value={state.agencia_publicidad}
           onChange={(e) => {

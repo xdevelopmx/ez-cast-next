@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import { type FC } from "react";
+import { type CSSProperties, type FC } from "react";
 import { MSelect, SectionTitle } from "~/components";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { type ProyectoForm } from "~/pages/cazatalentos/proyecto";
@@ -7,6 +7,9 @@ import { api } from "~/utils/api";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+
+const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
+//const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
 
 interface Props {
   state: ProyectoForm;
@@ -40,7 +43,7 @@ export const LocacionProyecto: FC<Props> = ({ state, onFormChange }) => {
           }}
         />
       </Grid>
-      <Grid item xs={4} my={8}>
+      <Grid item xs={4} my={4}>
         <MSelect
           id="sindicato-select"
           options={
@@ -62,6 +65,7 @@ export const LocacionProyecto: FC<Props> = ({ state, onFormChange }) => {
           }
           label={textos["loc_proy"] + "*"}
           inferiorBlueText={textos["elest"]}
+          labelStyle={estilosBold}
         />
       </Grid>
     </Grid>

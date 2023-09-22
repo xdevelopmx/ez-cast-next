@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import { type FC } from "react";
+import { type CSSProperties, type FC } from "react";
 import { MRadioGroup, SectionTitle } from "~/components";
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop";
 import { type ProyectoForm } from "~/pages/cazatalentos/proyecto";
@@ -9,6 +9,9 @@ import { MTooltip } from "~/components/shared/MTooltip";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+
+const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
+const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
 
 interface Props {
   state: ProyectoForm;
@@ -41,7 +44,7 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
           id="id-drag-n-drop-archivo"
           noIconLabel={true}
           label={
-            <Typography fontWeight={600} fontSize={"14px"}>
+            <Typography fontWeight={600} fontSize={"1.1rem"}>
               {textos["afp"]}
               <MTooltip
                 color="blue"
