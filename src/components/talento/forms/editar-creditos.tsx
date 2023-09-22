@@ -165,13 +165,7 @@ export const EditarCreditosTalento: FC<Props> = ({
                       },
                     ]),
                   });
-                  if (handleCreditos) {
-                    handleCreditos()
-                      .then(() => {
-                        resetCredits();
-                      })
-                      .catch((err) => console.log(err));
-                  }
+                  
                 } else {
                   notify(
                     "warning",

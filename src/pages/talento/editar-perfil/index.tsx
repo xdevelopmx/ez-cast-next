@@ -593,6 +593,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
             clearTimeout(timeout);
           }, 1000);
         } else {
+          dispatch({ type: "update-form", value: { step_active: state.next_step } });
           void talento.refetch();
         }
       },
@@ -1542,6 +1543,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         break;
       }
     }
+    setSaveType(undefined);
   }
 
   useEffect(() => {
@@ -1593,14 +1595,17 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
             <MStepper
               disabled={talento.isFetching}
               onStepChange={(step: number) => {
+                console.log('step', step);
                 setSaveType('save');
                 dispatch({ type: "update-form", value: { next_step: step } });
               }}
               onFinish={() => {
+                console.log('entro aqui');
                 setSaveType('save_and_finish');
               }}
               current_step={state.step_active}
               onStepSave={(step: number) => {
+                console.log('entro aqui');
                 setSaveType('save_and_finish_later');
                 //handleStepChange(step);
               }}

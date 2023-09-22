@@ -232,6 +232,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       let talento_id = id_talento ? parseInt(id_talento as string) : 0;
       if (session.user.tipo_usuario === TipoUsuario.TALENTO) {
         talento_id = parseInt(session.user.id);
+        const talento_info = await prisma.infoBasicaPorTalentos.findFirst({
+          where: {
+            id_talento: talento_id
+          }
+        });
+        if (!talento_info) {
+          // si no tiene info basica lo mandamos a el form de editar talento
+          return {
+            redirect: {
+              destination: `/talento/editar-perfil`,
+              permanent: true,
+            },
+          };
+        }
       }
       let can_edit = true;
       const rep = await prisma.talentosRepresentados.findFirst({
