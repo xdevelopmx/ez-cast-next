@@ -34,6 +34,7 @@ import { Alertas } from "~/components/componentes-dashboards/Alertas copy";
 import estilos from "./estilos.module.css";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { MTooltip } from "~/components/shared/MTooltip";
 
 const variants: Variants = {
   initial: {
@@ -993,49 +994,56 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <>
-                                  <IconButton
-                                    onClick={(e) => {
-                                      const params = new Map<string, unknown>();
-                                      params.set("id", r.id);
-                                      params.set(
-                                        "state",
-                                        r.estatus.toUpperCase() === "ARCHIVADO"
-                                          ? "Pendiente"
-                                          : "Archivado"
-                                      );
-                                      setConfirmationDialog({
-                                        action: "STATE_CHANGE",
-                                        data: params,
-                                        opened: true,
-                                        title:
-                                          r.estatus.toUpperCase() ===
-                                          "ARCHIVADO"
-                                            ? "Desarchivar Rol"
-                                            : "Archivar Rol",
-                                        content: (
-                                          <Typography variant="body2">{`Seguro que deseas ${
-                                            r.estatus.toUpperCase() ===
-                                            "ARCHIVADO"
-                                              ? "desarchivar"
-                                              : "archivar"
-                                          } este rol?`}</Typography>
-                                        ),
-                                      });
-                                      e.stopPropagation();
-                                    }}
-                                    color="primary"
-                                    aria-label="archivar"
-                                    component="label"
-                                  >
-                                    <Image
-                                      src={
-                                        "/assets/img/iconos/archivar_blue.svg"
-                                      }
-                                      width={16}
-                                      height={16}
-                                      alt="archivar"
-                                    />
-                                  </IconButton>
+                                  <MTooltip
+                                    color="orange"
+                                    placement="top"
+                                    text="Editar proyecto"
+                                    icon={
+                                      <IconButton
+                                        onClick={(e) => {
+                                          const params = new Map<string, unknown>();
+                                          params.set("id", r.id);
+                                          params.set(
+                                            "state",
+                                            r.estatus.toUpperCase() === "ARCHIVADO"
+                                              ? "Pendiente"
+                                              : "Archivado"
+                                          );
+                                          setConfirmationDialog({
+                                            action: "STATE_CHANGE",
+                                            data: params,
+                                            opened: true,
+                                            title:
+                                              r.estatus.toUpperCase() ===
+                                              "ARCHIVADO"
+                                                ? "Desarchivar Rol"
+                                                : "Archivar Rol",
+                                            content: (
+                                              <Typography variant="body2">{`Seguro que deseas ${
+                                                r.estatus.toUpperCase() ===
+                                                "ARCHIVADO"
+                                                  ? "desarchivar"
+                                                  : "archivar"
+                                              } este rol?`}</Typography>
+                                            ),
+                                          });
+                                          e.stopPropagation();
+                                        }}
+                                        color="primary"
+                                        aria-label="archivar"
+                                        component="label"
+                                      >
+                                        <Image
+                                          src={
+                                            "/assets/img/iconos/archivar_blue.svg"
+                                          }
+                                          width={16}
+                                          height={16}
+                                          alt="archivar"
+                                        />
+                                      </IconButton>
+                                        }
+                                      />
                                   {![
                                     Constants.ESTADOS_PROYECTO.APROBADO,
                                     Constants.ESTADOS_PROYECTO
@@ -1046,60 +1054,74 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       : ""
                                   ) && (
                                     <>
-                                      <IconButton
-                                        onClick={(e) => {
-                                          void router.push(
-                                            `/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`
-                                          );
-                                          e.stopPropagation();
-                                        }}
-                                        color="primary"
-                                        aria-label="editar"
-                                        component="label"
-                                      >
-                                        <Image
-                                          src={
-                                            "/assets/img/iconos/edit_icon_blue.png"
-                                          }
-                                          width={16}
-                                          height={16}
-                                          alt="archivar"
-                                        />
-                                      </IconButton>
-                                      <IconButton
-                                        onClick={(e) => {
-                                          const params = new Map<
-                                            string,
-                                            unknown
-                                          >();
-                                          params.set("id", r.id);
-                                          setConfirmationDialog({
-                                            action: "DELETE",
-                                            data: params,
-                                            opened: true,
-                                            title: "Eliminar Rol",
-                                            content: (
-                                              <Typography variant="body2">
-                                                Seguro que deseas eliminar este
-                                                rol?
-                                              </Typography>
-                                            ),
-                                          });
-                                          e.stopPropagation();
-                                        }}
-                                        color="primary"
-                                        aria-label="eliminar"
-                                        component="label"
-                                      >
-                                        <Image
-                                          src={
-                                            "/assets/img/iconos/trash_blue.png"
-                                          }
-                                          width={16}
-                                          height={16}
-                                          alt="archivar"
-                                        />
-                                      </IconButton>
+                                      <MTooltip
+                                        color="orange"
+                                        placement="top"
+                                        text="Editar proyecto"
+                                        icon={
+                                          <IconButton
+                                            onClick={(e) => {
+                                              void router.push(
+                                                `/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`
+                                              );
+                                              e.stopPropagation();
+                                            }}
+                                            color="primary"
+                                            aria-label="editar"
+                                            component="label"
+                                          >
+                                            <Image
+                                              src={
+                                                "/assets/img/iconos/edit_icon_blue.png"
+                                              }
+                                              width={16}
+                                              height={16}
+                                              alt="archivar"
+                                            />
+                                          </IconButton>
+                                        }
+                                      />
+                                      <MTooltip
+                                        color="orange"
+                                        placement="top"
+                                        text="Editar proyecto"
+                                        icon={
+                                          <IconButton
+                                            onClick={(e) => {
+                                              const params = new Map<
+                                                string,
+                                                unknown
+                                              >();
+                                              params.set("id", r.id);
+                                              setConfirmationDialog({
+                                                action: "DELETE",
+                                                data: params,
+                                                opened: true,
+                                                title: "Eliminar Rol",
+                                                content: (
+                                                  <Typography variant="body2">
+                                                    Seguro que deseas eliminar este
+                                                    rol?
+                                                  </Typography>
+                                                ),
+                                              });
+                                              e.stopPropagation();
+                                            }}
+                                            color="primary"
+                                            aria-label="eliminar"
+                                            component="label"
+                                          >
+                                            <Image
+                                              src={
+                                                "/assets/img/iconos/trash_blue.png"
+                                              }
+                                              width={16}
+                                              height={16}
+                                              alt="archivar"
+                                            />
+                                          </IconButton>
+                                        }
+                                      />
                                     </>
                                   )}
                                 </>
