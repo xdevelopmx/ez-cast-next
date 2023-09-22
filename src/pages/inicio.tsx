@@ -94,7 +94,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                 <p
                   className="mb-5"
                   style={{
-                    fontSize: "24px",
+                    fontSize: "20px",
                     fontWeight: "600",
                   }}
                 >
@@ -105,7 +105,13 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               </div>
               <div className="d-flex align-items-center">
                 <Link href={redirect} style={{ textDecoration: "none" }}>
-                  <p className="mb-0 color_a mr-2 fw-600">
+                  <p
+                    className="mb-0 color_a mr-2"
+                    style={{
+                      fontWeight: 600,
+                      fontSize: "1.2rem",
+                    }}
+                  >
                     {textos["continuar_a_ezcast"]
                       ? textos["continuar_a_ezcast"]
                       : "<p>Texto No definido</p>"}
@@ -125,7 +131,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               <p
                 className="mb-0 ml-2 h5"
                 style={{
-                  fontWeight: "800",
+                  fontWeight: "600",
                   fontSize: "24px",
                   textTransform: "capitalize",
                 }}
@@ -165,8 +171,9 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   <div
                     style={{
                       position: "relative",
-                      width: "100%",
+                      width: "90%",
                       aspectRatio: "9/13",
+                      margin: "auto",
                     }}
                   >
                     <Image
@@ -185,7 +192,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   </div>
                   <Typography
                     sx={{
-                      padding: "20px 0 0 0",
+                      padding: "40px 0 0 0",
                       fontWeight: "800",
                       lineHeight: "1.2",
                       fontSize: "18px",
@@ -269,8 +276,9 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   <div
                     style={{
                       position: "relative",
-                      width: "100%",
+                      width: "90%",
                       aspectRatio: "9/13",
+                      margin: "auto",
                     }}
                   >
                     <Image
@@ -293,7 +301,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                     align="center"
                     variant="subtitle1"
                     sx={{
-                      padding: "20px 0 0 0",
+                      padding: "40px 0 0 0",
                       fontWeight: "800",
                       lineHeight: "1.2",
                       fontSize: "18px",

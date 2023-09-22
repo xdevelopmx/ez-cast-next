@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from "react";
 
-import { motion } from 'framer-motion'
-import { Box, Button, Grid, IconButton, Menu, MenuItem, Typography } from '@mui/material'
-import { Circle, Close } from '@mui/icons-material'
-import { api, parseErrorBody } from '~/utils/api'
-import { getSession, useSession } from 'next-auth/react'
-import { User } from 'next-auth'
-import Image from 'next/image';
-import useNotify from '~/hooks/useNotify'
-import AppContext from '~/context/app'
-import useLang from '~/hooks/useLang'
+import { motion } from "framer-motion";
+import { Box, Button, Grid, IconButton, Menu, MenuItem } from "@mui/material";
+import { Circle, Close } from "@mui/icons-material";
+import { api, parseErrorBody } from "~/utils/api";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import useNotify from "~/hooks/useNotify";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 export const Alertas = () => {
   const ctx = useContext(AppContext);
@@ -18,167 +17,261 @@ export const Alertas = () => {
   const { notify } = useNotify();
   const session = useSession();
   const [show_alertas, setShowAlertas] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<{el: null | HTMLElement, id_alerta: number} | null>(null);
+  const [anchorEl, setAnchorEl] = useState<{
+    el: null | HTMLElement;
+    id_alerta: number;
+  } | null>(null);
 
-  const alertas = api.alertas.getByUser.useQuery({id_user: (session.data && session.data.user) ? parseInt(session.data.user.id) : 0, tipo_user: (session.data && session.data.user && session.data.user.tipo_usuario) ? session.data.user.tipo_usuario: ''});
-  
+  const alertas = api.alertas.getByUser.useQuery({
+    id_user:
+      session.data && session.data.user ? parseInt(session.data.user.id) : 0,
+    tipo_user:
+      session.data && session.data.user && session.data.user.tipo_usuario
+        ? session.data.user.tipo_usuario
+        : "",
+  });
+
   useEffect(() => {
     setAnchorEl(null);
   }, [alertas.data]);
 
   const updateOneSeen = api.alertas.updateOneSeen.useMutation({
     onSuccess(data, input) {
-      notify('success', `${textos['success_update_alert']}`);
+      notify("success", `${textos["success_update_alert"]}`);
       alertas.refetch();
     },
     onError: (error) => {
-      notify('error', parseErrorBody(error.message));
-    }
+      notify("error", parseErrorBody(error.message));
+    },
   });
 
   const markAllAsSeen = api.alertas.markAllAsSeen.useMutation({
     onSuccess(data, input) {
-      notify('success', `${textos['success_update_alert']}`);
+      notify("success", `${textos["success_update_alert"]}`);
       alertas.refetch();
     },
     onError: (error) => {
-      notify('error', parseErrorBody(error.message));
-    }
+      notify("error", parseErrorBody(error.message));
+    },
   });
 
   const deleteOne = api.alertas.deleteOne.useMutation({
     onSuccess(data, input) {
-      notify('success', `${textos['success_delete_alert']}`);
+      notify("success", `${textos["success_delete_alert"]}`);
       alertas.refetch();
     },
     onError: (error) => {
-      notify('error', parseErrorBody(error.message));
-    }
-  })
+      notify("error", parseErrorBody(error.message));
+    },
+  });
 
   const alert_elements = useMemo(() => {
     if (alertas.data) {
       return alertas.data.map((a, i) => {
         return (
-          <div key={i} style={{backgroundColor: (a.visto) ? 'lightgray' : '#4ab7c6'}}>
-            {!a.visto && <Circle style={{ position: 'absolute', color: 'tomato', width: 16, height: 16, marginRight: 4, top: 'calc(50% - 8px)', left: 8 }} />}
-            <div style={{padding: 8, marginLeft: 32, width: '85%'}}>
+          <div
+            key={i}
+            style={{ backgroundColor: a.visto ? "lightgray" : "#4ab7c6" }}
+          >
+            {!a.visto && (
+              <Circle
+                style={{
+                  position: "absolute",
+                  color: "tomato",
+                  width: 16,
+                  height: 16,
+                  marginRight: 4,
+                  top: "calc(50% - 8px)",
+                  left: 8,
+                }}
+              />
+            )}
+            <div style={{ padding: 8, marginLeft: 32, width: "85%" }}>
               <div dangerouslySetInnerHTML={{ __html: a.mensaje }} />
             </div>
-            <IconButton 
-              onClick={(e) => { setAnchorEl({el: e.currentTarget, id_alerta: a.id}); }}
+            <IconButton
+              onClick={(e) => {
+                setAnchorEl({ el: e.currentTarget, id_alerta: a.id });
+              }}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 8,
                 right: 0,
-                width: '50px'
+                width: "50px",
               }}
             >
-              <Image src={`/assets/img/iconos/control_rol_edit.svg`} width={16} height={16} alt=""/>
+              <Image
+                src={`/assets/img/iconos/control_rol_edit.svg`}
+                width={16}
+                height={16}
+                alt=""
+              />
             </IconButton>
             <Menu
               id="basic-menu"
               anchorEl={anchorEl?.el}
               open={Boolean(anchorEl && anchorEl.id_alerta === a.id)}
-              onClose={() => { setAnchorEl(null) }}
+              onClose={() => {
+                setAnchorEl(null);
+              }}
               MenuListProps={{
-                'aria-labelledby': 'basic-button',
+                "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={() => { updateOneSeen.mutate({ id_alerta: a.id, new_state: !a.visto }) }}>{textos['mc']} {`${(a.visto) ? (textos['no_leido']) : (textos['leido'])}`}</MenuItem>
-              <MenuItem onClick={() => { deleteOne.mutate({ id_alerta: a.id }) }}>{textos['eliminar']}</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  updateOneSeen.mutate({
+                    id_alerta: a.id,
+                    new_state: !a.visto,
+                  });
+                }}
+              >
+                {textos["mc"]}{" "}
+                {`${a.visto ? textos["no_leido"] : textos["leido"]}`}
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  deleteOne.mutate({ id_alerta: a.id });
+                }}
+              >
+                {textos["eliminar"]}
+              </MenuItem>
             </Menu>
           </div>
-          
-        )
-      })
+        );
+      });
     }
     return [];
   }, [alertas.data, anchorEl]);
 
   return (
     <>
-    <div
-				style={{ position: 'relative', width: '100%' }}>
-				<motion.div
-					style={{
+      <div style={{ position: "relative", width: "100%" }}>
+        <motion.div
+          style={{
             padding: 32,
-            position: 'absolute',
-						width: '50%',
+            position: "absolute",
+            width: "50%",
             right: -32,
-            maxHeight: '75vh',
-						boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
-						top: -64,
-						borderRadius: 4,
-						zIndex: (show_alertas? 99 : 0),
-						backgroundColor: '#dff8fc',
-
-					}}
-					initial={{ opacity: 0, y: -100 }}
-					animate={(show_alertas) ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 }}
-					exit={{ opacity: 0, y: -100 }}
-					transition={{
-						ease: "linear",
-						duration: 0.4,
-						opacity: { duration: 0.4 },
-						y: { duration: 0.4 }
-					}}
-				>
-					<IconButton
-						style={{
-							position: 'absolute',
-							right: 0,
-							color: '#069cb1'
-						}}
-						aria-label="Cancelar edicion usuario"
-						onClick={() => {
-							setShowAlertas(show => !show)
-						}}
-					>
-						<Close />
-					</IconButton>
-					<div className="d-flex justify-content-end btn_alerts_header">
+            maxHeight: "75vh",
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+            top: -64,
+            borderRadius: 4,
+            zIndex: show_alertas ? 99 : 0,
+            backgroundColor: "#dff8fc",
+          }}
+          initial={{ opacity: 0, y: -100 }}
+          animate={
+            show_alertas ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 }
+          }
+          exit={{ opacity: 0, y: -100 }}
+          transition={{
+            ease: "linear",
+            duration: 0.4,
+            opacity: { duration: 0.4 },
+            y: { duration: 0.4 },
+          }}
+        >
+          <IconButton
+            style={{
+              position: "absolute",
+              right: 0,
+              color: "#069cb1",
+            }}
+            aria-label="Cancelar edicion usuario"
+            onClick={() => {
+              setShowAlertas((show) => !show);
+            }}
+          >
+            <Close />
+          </IconButton>
+          <div className="d-flex justify-content-end btn_alerts_header">
             <div className="box_alert_header mr-4">
               <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
-              {alertas.data && alertas.data.filter(a => !a.visto).length > 0 ? <span className="count_msn active">{alertas.data.filter(a => !a.visto).length}</span> : null}
+              {alertas.data &&
+              alertas.data.filter((a) => !a.visto).length > 0 ? (
+                <span className="count_msn active">
+                  {alertas.data.filter((a) => !a.visto).length}
+                </span>
+              ) : null}
             </div>
-            <p className="font-weight-bold h4 mr-5 mb-0 color_a">{textos['talertas']}</p>
+            <p className="font-weight-bold h4 mr-5 mb-0 color_a">
+              {textos["talertas"]}
+            </p>
           </div>
-          <Box textAlign={'end'}>
-            <Button>
-            {textos['vt']}
-            </Button>
+          <Box textAlign={"end"}>
+            <Button>{textos["vt"]}</Button>
             <Button
-              onClick={() => { markAllAsSeen.mutate({id_user: (session.data && session.data.user) ? parseInt(session.data.user.id) : 0, tipo_user: (session.data && session.data.user && session.data.user.tipo_usuario) ? session.data.user.tipo_usuario: ''})}}
+              onClick={() => {
+                markAllAsSeen.mutate({
+                  id_user:
+                    session.data && session.data.user
+                      ? parseInt(session.data.user.id)
+                      : 0,
+                  tipo_user:
+                    session.data &&
+                    session.data.user &&
+                    session.data.user.tipo_usuario
+                      ? session.data.user.tipo_usuario
+                      : "",
+                });
+              }}
             >
-              {textos['mtcl']}
+              {textos["mtcl"]}
             </Button>
           </Box>
-          <Grid container gap={2} justifyContent="center" maxHeight={'60vh'} overflow={'auto'}>
+          <Grid
+            container
+            gap={2}
+            justifyContent="center"
+            maxHeight={"60vh"}
+            overflow={"auto"}
+          >
             {alert_elements.map((r, i) => {
-              return <Grid key={i} item xs={12}>
-                <Box sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'row'
-                }}>
-                  {r}
-                </Box>
-              </Grid>
-
+              return (
+                <Grid key={i} item xs={12}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "row",
+                    }}
+                  >
+                    {r}
+                  </Box>
+                </Grid>
+              );
             })}
           </Grid>
         </motion.div>
       </div>
-        <div className="pt-4 container_alerts_header">
-            <div className="d-flex justify-content-end btn_alerts_header">
-              <div className="box_alert_header mr-4">
-                <motion.img onClick={() => {setShowAlertas(show => !show)}} src="/assets/img/iconos/bell_blue.svg" alt="" />
-                {alertas.data && alertas.data.filter(a => !a.visto).length > 0 ? <span className="count_msn active">{alertas.data.filter(a => !a.visto).length}</span> : null}
-              </div>
-              <p onClick={() => {setShowAlertas(show => !show)}} className="font-weight-bold h4 mr-5 mb-0 color_a">{textos['talertas']}</p>
-            </div>
+      <div className="pt-4 container_alerts_header">
+        <div className="d-flex justify-content-end btn_alerts_header">
+          <div className="box_alert_header mr-4">
+            <motion.img
+              onClick={() => {
+                setShowAlertas((show) => !show);
+              }}
+              src="/assets/img/iconos/bell_blue.svg"
+              alt=""
+            />
+            {alertas.data && alertas.data.filter((a) => !a.visto).length > 0 ? (
+              <span className="count_msn active">
+                {alertas.data.filter((a) => !a.visto).length}
+              </span>
+            ) : null}
+          </div>
+          <p
+            onClick={() => {
+              setShowAlertas((show) => !show);
+            }}
+            className="font-weight-bold h4 mr-5 mb-0 color_a"
+          >
+            {textos["talertas"]}
+          </p>
         </div>
+      </div>
     </>
-  )
-}
+  );
+};
