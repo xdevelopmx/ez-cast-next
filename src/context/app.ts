@@ -14,6 +14,7 @@ type AppContextType = {
 	setLang: (lang: 'es' | 'en') => void,
 	isLoadingData: boolean;
 	setIsloadingData: (value: boolean) => void;
+	previous_route: string | null,
 };
 
 const AppContext = React.createContext<AppContextType>({
@@ -25,6 +26,7 @@ const AppContext = React.createContext<AppContextType>({
 	setIsloadingData: (value: boolean) => {
 		console.log('');
 	},
+	previous_route: null,
 })
 
 export default AppContext;

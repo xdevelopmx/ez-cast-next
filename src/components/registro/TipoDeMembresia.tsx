@@ -24,7 +24,9 @@ export const TipoDeMembresia: FC<Props> = ({  onFormChange, state  }) => {
                     {!state.is_representante &&
                         <>
                             <option value={TipoUsuario.CAZATALENTOS}>Cazatalento</option>
+                            {/**
                             <option value={TipoUsuario.REPRESENTANTE}>Representante</option>
+                             */}
                         </>
                     }
                 </select>

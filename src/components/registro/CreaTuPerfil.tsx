@@ -1,4 +1,4 @@
-import { type FC } from 'react'
+import { useEffect, type FC } from 'react'
 import { motion } from 'framer-motion'
 import { FormGroup } from '../shared'
 import { type PerfilForm } from '~/pages/registro';
@@ -6,6 +6,8 @@ import Constants from '~/constants';
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+import { Button } from '@mui/material';
+import { signIn, useSession } from 'next-auth/react';
 
 interface Props {
     state: PerfilForm,
@@ -13,9 +15,22 @@ interface Props {
 }
 
 export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
-   console.log('state', state);
-   const ctx = useContext(AppContext);
-   const textos = useLang(ctx.lang);
+    console.log('state', state);
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    const sess = useSession();
+    console.log(sess.data);
+    useEffect(() => {
+        if (sess.status === 'authenticated') {
+            if (sess.data.user?.email) {
+                onFormChange({
+                    nombre: sess.data.user.name,
+                    usuario: sess.data.user.name,
+                    email: sess.data.user.email,
+                }) 
+            } 
+        }
+    }, [sess.status]);
     return (
         <>
             <div className="row ml-lg-5 mt-lg-4 jc-c">
@@ -120,14 +135,24 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         </div>
                         <div className="d-lg-flex">
                             <div className="flex_one">
-                                <a href="#" className="btn btn-intro btn-social mr-1 ml-1">
+                                <Button 
+                                    onClick={async () => {
+                                        await signIn('google');
+                                    }}
+                                    className="btn btn-intro btn-social mr-1 ml-1"
+                                >
                                     <motion.img height="16" className="mr-2" src="assets/img/iconos/google-logo.svg" alt="" />Google
-                                </a>
+                                </Button>
                             </div>
                             <div className="flex_one">
-                                <a href="#" className="btn btn-intro btn-social mr-1 ml-1">
+                                <Button 
+                                    onClick={async () => {
+                                        await signIn('facebook');
+                                    }}
+                                    className="btn btn-intro btn-social mr-1 ml-1"
+                                >
                                     <motion.img height="16" className="mr-2" src="assets/img/iconos/facebook-logo.svg" alt="" />Facebook
-                                </a>
+                                </Button>
                             </div>
                         </div>
                     </div>

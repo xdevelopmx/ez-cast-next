@@ -1,4 +1,6 @@
 import { type GetServerSidePropsContext } from "next";
+import FacebookProvider from "next-auth/providers/facebook";
+import GoogleProvider from "next-auth/providers/google";
 import {
 	getServerSession,
 	type NextAuthOptions,
@@ -20,6 +22,7 @@ declare module "next-auth" {
 		tipo_usuario?: TipoUsuario;
 		profile_img?: string | null;
 		lang: 'es' | 'en';
+		provider: 'CREDENTIALS' | 'FACEBOOK_OR_GOOGLE'
 	}
 	interface Session {
 		user?: User;
@@ -30,6 +33,7 @@ declare module "next-auth/jwt" {
 		tipo_usuario?: TipoUsuario;
 		profile_img?: string | null;
 		lang: 'es' | 'en';
+		provider: 'CREDENTIALS' | 'FACEBOOK_OR_GOOGLE'
 	}
 }
 
@@ -57,21 +61,47 @@ export const authOptions: NextAuthOptions = {
 			return true
 		},
 		jwt({ token, user, trigger, session, account, profile, isNewUser }) {
+			console.log(user);
 			if (user) {
 				token.tipo_usuario = user.tipo_usuario;
 				token.profile_img = user.profile_img;
 				token.lang = user.lang;
+				token.provider = 'CREDENTIALS';
 			}
 			if (trigger === "update" && session?.lang) {
 				// Note, that `session` can be any arbitrary object, remember to validate it!
 				token.lang = session.lang;
 			}
+			if (trigger === 'update' && session?.tipo_usuario) {
+				token.tipo_usuario = session.tipo_usuario;
+			}
+			if (trigger === 'update' && session?.profile_img) {
+				token.profile_img = session.profile_img;
+			}
+			if (trigger === 'update' && session?.id) {
+				token.id = session.id;
+			}
+			if (trigger === 'update' && session?.name) {
+				token.name = session.name;
+			}
+			if (trigger === 'update' && session?.lastname) {
+				token.lastname = session.lastname;
+			}
+			if (trigger === 'update' && session?.provider) {
+				token.provider = 'FACEBOOK_OR_GOOGLE';
+			}	
 			return token
 		},
 		session({ session, user, token }) {
+			console.log(token);
 			if (session.user) {
 				session.user.tipo_usuario = token.tipo_usuario;
-				session.user.id = (token.sub) ? token.sub : '0';
+				session.user.provider = token.provider;
+				if (session.user.provider === 'CREDENTIALS') {
+					session.user.id = (token.sub) ? token.sub : '0';
+				} else {
+					session.user.id = token.id;
+				}
 				session.user.profile_img = token.profile_img;
 				session.user.lang = token.lang;
 			}
@@ -80,6 +110,21 @@ export const authOptions: NextAuthOptions = {
 	},
 	//adapter: PrismaAdapter(prisma),
 	providers: [
+		FacebookProvider({
+			clientId: `${process.env.NEXT_PUBLIC_FB_ID}`,
+			clientSecret: `${process.env.NEXT_PUBLIC_FB_SECRET}`,
+		}),
+		GoogleProvider({
+			clientId: `${process.env.NEXT_PUBLIC_GOOGLE_ID}`,
+			clientSecret: `${process.env.NEXT_PUBLIC_GOOGLE_SECRET}`,
+			authorization: {
+				params: {
+				  prompt: "consent",
+				  access_type: "offline",
+				  response_type: "code"
+				}
+			}
+		}),
 		CredentialsProvider({
 			// The name to display on the sign in form (e.g. "Sign in with...")
 			name: "login",
@@ -135,7 +180,7 @@ export const authOptions: NextAuthOptions = {
 					}
 					const login_intent = await login( (credentials.user) ? credentials.user : '', (credentials.correo_usuario) ? credentials.correo_usuario : '', (credentials.password) ? credentials.password : '', tipo_usuario, (credentials.lang) ? credentials.lang === 'es' ? 'es' : 'en' : 'es');
 					console.log(login_intent);
-					return login_intent;
+					return {...login_intent, lang: login_intent?.lang ? login_intent.lang : 'es', id: `${login_intent?.id}`, provider: 'CREDENTIALS'};
 				} 
 				return null;
 			}

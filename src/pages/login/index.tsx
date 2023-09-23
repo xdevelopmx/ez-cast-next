@@ -1,11 +1,11 @@
-import { type NextPage } from "next";
-import { useContext, useMemo, useReducer } from "react";
-import { signIn } from "next-auth/react";
+import { GetServerSideProps, type NextPage } from "next";
+import { useContext, useEffect, useMemo, useReducer } from "react";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 
 import { motion } from "framer-motion";
 
 import { CarrucelFondo, FormGroup, MainLayout } from "~/components";
-import { Link, Typography } from "@mui/material";
+import { Button, Link, Typography } from "@mui/material";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TipoUsuario } from "~/enums";
 import useLang from "~/hooks/useLang";
@@ -46,8 +46,63 @@ const LoginPage: NextPage = () => {
     user: "",
     password: "",
     errors: {},
-    tipo_usuario: TipoUsuario.NO_DEFINIDO,
+    tipo_usuario: null,
   });
+
+  useEffect(() => {
+    if (state.tipo_usuario) {
+      sessionStorage.setItem('TIPO_USUARIO', state.tipo_usuario);
+    } else {
+      const tipo_usuario = sessionStorage.getItem('TIPO_USUARIO');
+      if (tipo_usuario) {
+        dispatch({type: 'update-form', value: {tipo_usuario: tipo_usuario}});
+      }
+    }
+  }, [state.tipo_usuario]);
+
+  const sess = useSession();
+  console.log(sess.data);
+  useEffect(() => {
+    if (ctx.previous_route && !ctx.previous_route.includes('/login')) {
+      signOut({
+        redirect: false
+      }).then();
+    } else {
+
+      if (sess.status === 'authenticated') {
+        
+        if (!sess.data.user?.tipo_usuario) {
+          if (sess.data.user?.email) {
+            const tipo_usuario = sessionStorage.getItem('TIPO_USUARIO');
+            fetch('/api/auth/get-user-by-email', {
+              method: 'POST',
+              body: JSON.stringify({
+                email: sess.data.user.email,
+                tipo_usuario: tipo_usuario
+              })
+            }).then(res => res.json()).then(res => {
+              //sessionStorage.removeItem('TIPO_USUARIO');
+              console.log(res);
+              if (res.status === 'success') {
+                notify('success', `${textos["success_login"]}`);
+                sess.update({
+                  ...res.data,
+                  provider: 'FACEBOOK_OR_GOOGLE',
+                  lang: ctx.lang
+                });
+              }
+            }).catch(err => {
+              notify('error', err.toString());
+            });
+          } else {
+            notify('error', 'Esta cuenta no tiene un correo disponible para iniciar sesion, por favor elige otro metodo');
+          }
+        } else {
+          router.push("/inicio");
+        }
+      }
+    }
+  }, [sess.status, ctx.previous_route]);
 
   const validationLogin = useMemo(() => {
     const result = {
@@ -329,10 +384,12 @@ const LoginPage: NextPage = () => {
                 <p>{textos["accede_con"] ?? ""}</p>
               </div>
               <div className="d-lg-flex justify-content-center">
-                <a
-                  href="#"
+                <Button
                   style={{ width: "120px" }}
                   className="btn btn-intro btn-social btn-social-login mr-3 ml-3"
+                  onClick={async () => {
+                    await signIn('google');
+                  }}
                 >
                   <motion.img
                     height="16"
@@ -341,11 +398,13 @@ const LoginPage: NextPage = () => {
                     alt="Google"
                   />
                   Google
-                </a>
-                <a
-                  href="#"
+                </Button>
+                <Button
                   style={{ width: "120px" }}
                   className="btn btn-intro btn-social btn-social-login mr-3 ml-3"
+                  onClick={async () => {
+                    await signIn('facebook');
+                  }}
                 >
                   <motion.img
                     height="16"
@@ -354,7 +413,7 @@ const LoginPage: NextPage = () => {
                     alt="Facebook"
                   />
                   Facebook
-                </a>
+                </Button>
               </div>
             </div>
             <p className="text-white mt-2">

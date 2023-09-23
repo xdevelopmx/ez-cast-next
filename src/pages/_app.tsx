@@ -15,6 +15,7 @@ import { CssBaseline } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import "dayjs/locale/es-mx";
+import usePreviousRoute from "~/hooks/usePreviousRoute";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -31,11 +32,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
     }
   }
   const [lang, setLang] = useState<"es" | "en">(default_lang);
+  const previous_route = usePreviousRoute();
   return (
     <SessionProvider session={session}>
       <DndProvider backend={HTML5Backend}>
         <AppContext.Provider
           value={{
+            previous_route: previous_route,
             alerts: app_alerts,
             setAlerts: (alerts: Map<string, AppAlert>) => {
               setAppAlerts(new Map(alerts));
