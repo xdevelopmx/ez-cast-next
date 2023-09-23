@@ -1,5 +1,5 @@
 import { Grid, Typography } from "@mui/material";
-import { type FC } from "react";
+import { type CSSProperties, type FC } from "react";
 import { FormGroup, SectionTitle } from "~/components";
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop";
 import { MTooltip } from "~/components/shared/MTooltip";
@@ -9,6 +9,9 @@ import Image from "next/image";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+
+const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
+const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
 
 interface Props {
   state: ProyectoForm;
@@ -36,12 +39,12 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
           }}
         />
       </Grid>
-      <Grid item xs={5} mt={8}>
+      <Grid item xs={5} mt={4}>
         <FormGroup
           type={"text-area"}
           className={"form-input-md"}
           style={{ width: "100%" }}
-          labelStyle={{ fontWeight: 600, width: "100%" }}
+          labelStyle={estilosBold}
           labelClassName={"form-input-label"}
           value={state.sinopsis}
           tooltip={
@@ -73,10 +76,21 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
             noIconLabel={true}
             label={
               <>
-                <Typography fontWeight={600}>
+                <Typography
+                  fontWeight={600}
+                  sx={{
+                    fontSize: "1.1rem",
+                  }}
+                >
                   {textos["agregar_archivo"]}
                 </Typography>
-                <Typography fontSize={14} fontWeight={600}>
+                <Typography
+                  fontSize={14}
+                  fontWeight={600}
+                  sx={{
+                    fontSize: "1.1rem",
+                  }}
+                >
                   {textos["instruccion"]}
                 </Typography>
               </>
@@ -143,12 +157,12 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
           />
         </div>
       </Grid>
-      <Grid item xs={5} mt={8}>
+      <Grid item xs={5} mt={4}>
         <FormGroup
           type={"text-area"}
           className={"form-input-md"}
           style={{ width: "100%" }}
-          labelStyle={{ fontWeight: 600, width: "100%" }}
+          labelStyle={estilosNormal}
           labelClassName={"form-input-label"}
           value={state.detalles_adicionales}
           onChange={(e) => {

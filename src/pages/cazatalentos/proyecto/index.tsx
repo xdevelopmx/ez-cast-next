@@ -582,7 +582,7 @@ const Proyecto: NextPage = () => {
               <div className="d-flex justify-content-end align-items-start py-2">
                 <Alertas />
               </div>
-              <div className="d-flex" style={{ marginBottom: 64 }}>
+              <div className="d-flex" style={{ marginBottom: 54 }}>
                 <motion.img
                   style={{ width: 45 }}
                   src="/assets/img/silla-ezcast.svg"

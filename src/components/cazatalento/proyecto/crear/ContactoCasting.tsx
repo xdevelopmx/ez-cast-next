@@ -1,11 +1,14 @@
 import { Grid, Typography } from "@mui/material";
-import { type FC } from "react";
+import { type CSSProperties, type FC } from "react";
 import { FormGroup, SectionTitle } from "~/components";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { type ProyectoForm } from "~/pages/cazatalentos/proyecto";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+
+const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
+const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
 
 interface Props {
   state: ProyectoForm;
@@ -38,7 +41,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
           <Typography>{textos["privacidad"]}</Typography>
         </div>
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           error={
             state.errors.director && state.director_casting != null
@@ -47,7 +50,6 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
           }
           show_error_message
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
           labelClassName={"form-input-label"}
           value={state.director_casting ? state.director_casting : ""}
           onChange={(e) => {
@@ -56,9 +58,10 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             });
           }}
           label={textos["director_de_casting"]}
+          labelStyle={estilosBold}
         />
       </Grid>
-      <Grid item xs={8} mt={8}>
+      <Grid item xs={8} mt={4}>
         <FormGroup
           error={
             state.errors.telefono_contacto && state.telefono_contacto != null
@@ -68,7 +71,6 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
           show_error_message
           type="number"
           className={"form-input-md"}
-          labelStyle={{ fontWeight: 600 }}
           labelClassName={"form-input-label"}
           value={state.telefono_contacto ? state.telefono_contacto : ""}
           onChange={(e) => {
@@ -77,9 +79,10 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             });
           }}
           label={textos["numero_telefono"]}
+          labelStyle={estilosBold}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           error={
             state.errors.email_contacto && state.email_contacto != null
@@ -89,7 +92,6 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
           show_error_message
           className={"form-input-md"}
           type="email"
-          labelStyle={{ fontWeight: 600 }}
           labelClassName={"form-input-label"}
           value={state.email_contacto ? state.email_contacto : ""}
           onChange={(e) => {
@@ -98,9 +100,10 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
             });
           }}
           label={textos["email"]}
+          labelStyle={estilosBold}
         />
       </Grid>
-      <Grid item xs={12} md={4} mt={8}>
+      <Grid item xs={12} md={4} mt={4}>
         <FormGroup
           error={
             state.errors.email_contacto_confirmacion &&
@@ -111,7 +114,7 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
           show_error_message
           className={"form-input-md"}
           type="email"
-          labelStyle={{ fontWeight: 600 }}
+          labelStyle={estilosNormal}
           labelClassName={"form-input-label"}
           value={
             state.email_contacto_confirmacion
