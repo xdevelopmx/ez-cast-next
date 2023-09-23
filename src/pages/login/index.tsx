@@ -388,7 +388,11 @@ const LoginPage: NextPage = () => {
                   style={{ width: "120px" }}
                   className="btn btn-intro btn-social btn-social-login mr-3 ml-3"
                   onClick={async () => {
-                    await signIn('google');
+                    if (state.tipo_usuario) {
+                      await signIn('google');
+                    } else {
+                      notify('warning', 'No haz seleccionado ningun tipo de usuario aun');
+                    }
                   }}
                 >
                   <motion.img
@@ -403,7 +407,11 @@ const LoginPage: NextPage = () => {
                   style={{ width: "120px" }}
                   className="btn btn-intro btn-social btn-social-login mr-3 ml-3"
                   onClick={async () => {
-                    await signIn('facebook');
+                    if (state.tipo_usuario) {
+                      await signIn('facebook');
+                    } else {
+                      notify('warning', 'No haz seleccionado ningun tipo de usuario aun');
+                    }
                   }}
                 >
                   <motion.img
