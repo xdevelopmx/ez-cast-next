@@ -2,8 +2,8 @@ import Image from "next/image";
 import { Grid, Typography } from "@mui/material";
 import { FormGroup, MCheckboxGroup, SectionTitle } from "~/components/shared";
 import DragNDrop from "~/components/shared/DragNDrop/DragNDrop";
-import { SelftapeRolForm } from "~/pages/cazatalentos/roles/agregar-rol";
-import { CSSProperties, FC, useContext, useReducer } from "react";
+import { type SelftapeRolForm } from "~/pages/cazatalentos/roles/agregar-rol";
+import { type CSSProperties, type FC, useContext } from "react";
 import { FileManager } from "~/utils/file-manager";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const estilosBold: CSSProperties = { fontWeight: 700, fontSize: "1rem" };
-const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
+//const estilosNormal: CSSProperties = { fontWeight: 600, fontSize: "1rem" };
 
 export const SelfTapeRol: FC<Props> = ({ state, onFormChange }) => {
   const ctx = useContext(AppContext);

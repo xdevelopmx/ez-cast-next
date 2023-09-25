@@ -126,10 +126,12 @@ export const ContactoCasting: FC<Props> = ({ state, onFormChange }) => {
               color="blue"
               text={
                 <>
-                  <Typography fontWeight={600}>
+                  <Typography fontSize={"12px"} fontWeight={800}>
                     {textos["info_contacto"]}
                   </Typography>
-                  <Typography>{textos["info_contacto1"]}</Typography>
+                  <Typography fontSize={"12px"}>
+                    {textos["info_contacto1"]}
+                  </Typography>
                 </>
               }
               placement="right"

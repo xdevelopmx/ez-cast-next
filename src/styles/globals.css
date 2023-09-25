@@ -1483,7 +1483,7 @@ footer {
 .container_list_proyects .nav-tabs .nav-link {
   border: 2px solid var(--txt_grey_v2);
   color: var(--txt_grey_v2);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .container_list_proyects .nav-link.active,

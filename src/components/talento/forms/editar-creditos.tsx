@@ -165,7 +165,6 @@ export const EditarCreditosTalento: FC<Props> = ({
                       },
                     ]),
                   });
-                  
                 } else {
                   notify(
                     "warning",

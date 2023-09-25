@@ -51,11 +51,14 @@ const LoginPage: NextPage = () => {
 
   useEffect(() => {
     if (state.tipo_usuario) {
-      sessionStorage.setItem('TIPO_USUARIO', state.tipo_usuario);
+      sessionStorage.setItem("TIPO_USUARIO", state.tipo_usuario);
     } else {
-      const tipo_usuario = sessionStorage.getItem('TIPO_USUARIO');
+      const tipo_usuario = sessionStorage.getItem("TIPO_USUARIO");
       if (tipo_usuario) {
-        dispatch({type: 'update-form', value: {tipo_usuario: tipo_usuario}});
+        dispatch({
+          type: "update-form",
+          value: { tipo_usuario: tipo_usuario },
+        });
       }
     }
   }, [state.tipo_usuario]);
@@ -63,48 +66,52 @@ const LoginPage: NextPage = () => {
   const sess = useSession();
   console.log(sess.data);
   useEffect(() => {
-    if (ctx.previous_route && !ctx.previous_route.includes('/login')) {
-      if (sess.data?.user?.provider === 'FACEBOOK_OR_GOOGLE') {
-        console.log('xd');
+    if (ctx.previous_route && !ctx.previous_route.includes("/login")) {
+      if (sess.data?.user?.provider === "FACEBOOK_OR_GOOGLE") {
+        console.log("xd");
         signOut({
-          redirect: false
+          redirect: false,
         }).then();
       }
     } else {
-
-      if (sess.status === 'authenticated') {
-       
+      if (sess.status === "authenticated") {
         if (!sess.data.user?.tipo_usuario) {
-          console.log('entro');
+          console.log("entro");
           if (sess.data.user?.email) {
-            console.log('entro');
-            const tipo_usuario = sessionStorage.getItem('TIPO_USUARIO');
-            fetch('/api/auth/get-user-by-email', {
-              method: 'POST',
+            console.log("entro");
+            const tipo_usuario = sessionStorage.getItem("TIPO_USUARIO");
+            fetch("/api/auth/get-user-by-email", {
+              method: "POST",
               body: JSON.stringify({
                 email: sess.data.user.email,
-                tipo_usuario: tipo_usuario
+                tipo_usuario: tipo_usuario,
+              }),
+            })
+              .then((res) => res.json())
+              .then((res) => {
+                //sessionStorage.removeItem('TIPO_USUARIO');
+                console.log(res);
+                if (res.status === "success") {
+                  notify("success", `${textos["success_login"]}`);
+                  sess.update({
+                    ...res.data,
+                    provider: "FACEBOOK_OR_GOOGLE",
+                    lang: ctx.lang,
+                  });
+                }
               })
-            }).then(res => res.json()).then(res => {
-              //sessionStorage.removeItem('TIPO_USUARIO');
-              console.log(res);
-              if (res.status === 'success') {
-                notify('success', `${textos["success_login"]}`);
-                sess.update({
-                  ...res.data,
-                  provider: 'FACEBOOK_OR_GOOGLE',
-                  lang: ctx.lang
-                });
-              }
-            }).catch(err => {
-              notify('error', err.toString());
-            });
+              .catch((err) => {
+                notify("error", err.toString());
+              });
           } else {
-            console.log('entro');
-            notify('error', 'Esta cuenta no tiene un correo disponible para iniciar sesion, por favor elige otro metodo');
+            console.log("entro");
+            notify(
+              "error",
+              "Esta cuenta no tiene un correo disponible para iniciar sesion, por favor elige otro metodo"
+            );
           }
         } else {
-          console.log('entro');
+          console.log("entro");
           router.push("/inicio");
         }
       }
@@ -294,7 +301,7 @@ const LoginPage: NextPage = () => {
                     }}
                     text={
                       <>
-                        <Typography fontSize={14}>
+                        <Typography fontSize={"12px"}>
                           {textos["descripcion_cazatalentos"] ?? ""}
                         </Typography>
                       </>
@@ -330,7 +337,7 @@ const LoginPage: NextPage = () => {
                     color="orange"
                     text={
                       <>
-                        <Typography fontSize={14}>
+                        <Typography fontSize={"12px"}>
                           {textos["descripcion_talento"] ?? ""}
                         </Typography>
                       </>
@@ -396,9 +403,12 @@ const LoginPage: NextPage = () => {
                   className="btn btn-intro btn-social btn-social-login mr-3 ml-3"
                   onClick={async () => {
                     if (state.tipo_usuario) {
-                      await signIn('google');
+                      await signIn("google");
                     } else {
-                      notify('warning', 'No haz seleccionado ningun tipo de usuario aun');
+                      notify(
+                        "warning",
+                        "No haz seleccionado ningun tipo de usuario aun"
+                      );
                     }
                   }}
                 >
@@ -415,9 +425,12 @@ const LoginPage: NextPage = () => {
                   className="btn btn-intro btn-social btn-social-login mr-3 ml-3"
                   onClick={async () => {
                     if (state.tipo_usuario) {
-                      await signIn('facebook');
+                      await signIn("facebook");
                     } else {
-                      notify('warning', 'No haz seleccionado ningun tipo de usuario aun');
+                      notify(
+                        "warning",
+                        "No haz seleccionado ningun tipo de usuario aun"
+                      );
                     }
                   }}
                 >

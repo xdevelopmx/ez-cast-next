@@ -149,7 +149,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
-              slidesPerView={5}
+              slidesPerView={6}
               spaceBetween={5}
             >
               {Array.from({ length: 10 }).map((_, i) => (
@@ -163,7 +163,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
-              slidesPerView={5}
+              slidesPerView={6}
               spaceBetween={30}
             >
               {destacados.data.map((proyecto) => (
@@ -268,7 +268,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#069cb1"
-              slidesPerView={5}
+              slidesPerView={6}
               spaceBetween={30}
             >
               {proyectos.data.map((proyecto, i) => (

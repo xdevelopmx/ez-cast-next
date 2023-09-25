@@ -75,7 +75,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   onProjectChange,
 }) => {
   const ctx = useContext(AppContext);
-  const textos = useLang(ctx.lang);  
+  const textos = useLang(ctx.lang);
   const [tabSelected, setTabSelected] = useState<"ACTIVOS" | "ARCHIVADOS">(
     "ACTIVOS"
   );
@@ -159,19 +159,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     if (tabSelected === "ACTIVOS") {
       return (
         <div className="box_message_blue">
-          <p className="h3">{`${textos['no_roles_creados_title']}`}</p>
-          <p>
-            {`${textos['no_roles_creados_body']}`}
-          </p>
+          <p className="h3">{`${textos["no_roles_creados_title"]}`}</p>
+          <p>{`${textos["no_roles_creados_body"]}`}</p>
         </div>
       );
     }
     if (tabSelected === "ARCHIVADOS") {
       return (
         <div className="box_message_blue">
-          <p className="h3">{`${textos['no_roles_archivados_title']}`}</p>
+          <p className="h3">{`${textos["no_roles_archivados_title"]}`}</p>
           <p>
-           {`${textos['no_roles_archivados_body']}`}
+            {`${textos["no_roles_archivados_body"]}`}
             <br />
           </p>
         </div>
@@ -214,61 +212,61 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   const table_actions = [
     <Typography
       key={1}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
     >
-      {`${textos['nombre']}`}
+      {`${textos["nombre"]}`}
     </Typography>,
     <Typography
       key={2}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
     >
-      {`${textos['estado']}`}
+      {`${textos["estado"]}`}
     </Typography>,
     <Typography
       key={3}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
     >
-      {`${textos['no_visto']}`}
+      {`${textos["no_visto"]}`}
     </Typography>,
     <Typography
       key={4}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
     >
-      {`${textos['visto']}`}
+      {`${textos["visto"]}`}
     </Typography>,
     <Typography
       key={5}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
     >
-      {`${textos['destacado']}`}
+      {`${textos["destacado"]}`}
     </Typography>,
     <Typography
       key={6}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
     >
-      {`${textos['audicion']}`}
+      {`${textos["audicion"]}`}
     </Typography>,
     <Typography
       key={7}
-      sx={{ color: "#000" }}
+      sx={{ color: "#000", textAlign: "center !important" }}
       fontSize={"1.2rem"}
       fontWeight={600}
       component={"p"}
@@ -321,7 +319,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       className="color_a mb-0 ml-2"
                       style={{ fontWeight: 400 }}
                     >
-                      <>{`${textos['regresar_vista_general']}`}</>
+                      <>{`${textos["regresar_vista_general"]}`}</>
                     </p>
                   </Button>
                   {!IS_ADMIN && (
@@ -342,15 +340,25 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                 </div>
               )}
               <br />
-              <MContainer direction="horizontal" justify="space-between" styles={{alignItems:"center",}}>
+              <MContainer
+                direction="horizontal"
+                justify="space-between"
+                styles={{ alignItems: "center" }}
+              >
                 <MContainer direction="horizontal">
                   <p
                     className="h5 font-weight-bold"
                     style={{
-                      fontSize: "1.35rem !important",
+                      fontSize: "1.5rem !important",
                     }}
                   >
-                    <b>{proyecto.data?.nombre}</b>
+                    <b
+                      style={{
+                        fontSize: "1.5rem !important",
+                      }}
+                    >
+                      {proyecto.data?.nombre}
+                    </b>
                   </p>
                   <motion.div layout>
                     <div
@@ -377,7 +385,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                           src={`/assets/img/iconos/arrow_d_white.svg`}
                           initial={false}
                           animate={
-                            proyecto_details_expanded
+                            !proyecto_details_expanded
                               ? {
                                   rotate: "0deg",
                                 }
@@ -468,85 +476,89 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             </MContainer>
                           </>
                         )}
-                      {!IS_ADMIN && proyecto.data && [Constants.ESTADOS_PROYECTO.RECHAZADO, Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.POR_VALIDAR].includes(proyecto.data.estatus) && (
-                        <>
-                          <MContainer
-                            direction="horizontal"
-                            styles={{ alignItems: "start" }}
-                          >
-                            <Link
-                              href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`}
+                      {!IS_ADMIN &&
+                        proyecto.data &&
+                        [
+                          Constants.ESTADOS_PROYECTO.RECHAZADO,
+                          Constants.ESTADOS_PROYECTO.ARCHIVADO,
+                          Constants.ESTADOS_PROYECTO.POR_VALIDAR,
+                        ].includes(proyecto.data.estatus) && (
+                          <>
+                            <MContainer
+                              direction="horizontal"
+                              styles={{ alignItems: "start" }}
                             >
-                              <Button
-                                className="btn btn-intro btn-price btn_out_line mb-2"
-                                startIcon={
-                                  <Image
-                                    src={`/assets/img/iconos/cruz_ye.svg`}
-                                    height={16}
-                                    width={16}
-                                    alt={"agregar-rol"}
-                                  />
-                                }
-                                style={{
-                                  padding: "8px 40px",
-                                  marginTop: 0,
-                                  marginRight: 10,
-                                  fontWeight: 500,
-                                }}
+                              <Link
+                                href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`}
                               >
-                                {`${textos['nuevo_rol']}`}
-                              </Button>
-                            </Link>
-                            <MContainer direction="vertical">
-                              <>
-                                {![
-                                  Constants.ESTADOS_PROYECTO.APROBADO,
-                                  Constants.ESTADOS_PROYECTO
-                                    .ENVIADO_A_APROBACION,
-                                ].includes(
-                                  proyecto.data ? proyecto.data.estatus : ""
-                                ) && (
-                                  <Button
-                                    onClick={() => {
-                                      setConfirmationDialog({
-                                        action: "PROYECTO_ENVIADO_A_APROBACION",
-                                        data: new Map<string, unknown>(),
-                                        opened: true,
-                                        title: `${textos['enviar_proyecto_a_aprobacion_title']}`,
-                                        content: (
-                                          <Typography variant="body2">{`${textos['enviar_proyecto_a_aprobacion_body']}`}</Typography>
-                                        ),
-                                      });
-                                    }}
-                                    className="btn btn-sm btn-intro btn-price mb-2"
-                                    style={{
-                                      padding: "8px 40px",
-                                      marginTop: 0,
-                                      display: "block",
-                                      height: 40,
-                                      fontWeight: 700,
-                                      textTransform: "none",
-                                      color: "#000",
-                                    }}
-                                  >
-                                    {`${textos['enviar_proyecto_para_aprobacion']}`}
-                                  </Button>
-                                )}
-                              </>
+                                <Button
+                                  className="btn btn-intro btn-price btn_out_line mb-2"
+                                  startIcon={
+                                    <Image
+                                      src={`/assets/img/iconos/cruz_ye.svg`}
+                                      height={16}
+                                      width={16}
+                                      alt={"agregar-rol"}
+                                    />
+                                  }
+                                  style={{
+                                    padding: "8px 40px",
+                                    marginTop: 0,
+                                    marginRight: 10,
+                                    fontWeight: 500,
+                                  }}
+                                >
+                                  {`${textos["nuevo_rol"]}`}
+                                </Button>
+                              </Link>
+                              <MContainer direction="vertical">
+                                <>
+                                  {![
+                                    Constants.ESTADOS_PROYECTO.APROBADO,
+                                    Constants.ESTADOS_PROYECTO
+                                      .ENVIADO_A_APROBACION,
+                                  ].includes(
+                                    proyecto.data ? proyecto.data.estatus : ""
+                                  ) && (
+                                    <Button
+                                      onClick={() => {
+                                        setConfirmationDialog({
+                                          action:
+                                            "PROYECTO_ENVIADO_A_APROBACION",
+                                          data: new Map<string, unknown>(),
+                                          opened: true,
+                                          title: `${textos["enviar_proyecto_a_aprobacion_title"]}`,
+                                          content: (
+                                            <Typography variant="body2">{`${textos["enviar_proyecto_a_aprobacion_body"]}`}</Typography>
+                                          ),
+                                        });
+                                      }}
+                                      className="btn btn-sm btn-intro btn-price mb-2"
+                                      style={{
+                                        padding: "8px 40px",
+                                        marginTop: 0,
+                                        display: "block",
+                                        height: 40,
+                                        fontWeight: 700,
+                                        textTransform: "none",
+                                        color: "#000",
+                                      }}
+                                    >
+                                      {`${textos["enviar_proyecto_para_aprobacion"]}`}
+                                    </Button>
+                                  )}
+                                </>
+                              </MContainer>
                             </MContainer>
-                          </MContainer>
-                        </>
-                      )}
+                          </>
+                        )}
                     </>
                   </MotionDiv>
                 </Box>
               </MContainer>
               <MContainer direction="vertical">
                 <MContainer direction="horizontal">
-                  <MContainer
-                    direction="horizontal"
-                    styles={{ alignItems: "center" }}
-                  >
+                  <MContainer direction="horizontal" styles={{}}>
                     <CircleIcon
                       style={{
                         color: (() => {
@@ -568,6 +580,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         width: 12,
                         height: 12,
                         marginRight: 5,
+                        marginTop: 6,
                       }}
                     />
                     <Typography
@@ -581,7 +594,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         ? proyecto.data?.estatus
                             .replaceAll("_", " ")
                             .toLocaleLowerCase()
-                        : "ND"} 
+                        : "ND"}
                     </Typography>
                   </MContainer>
                   <Divider
@@ -593,14 +606,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     }}
                     orientation="vertical"
                   />
-                  <Typography variant="subtitle2" 
-                   sx={{
-                        fontSize: "1.1rem",
-                    }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      fontSize: "1.1rem",
+                    }}
+                  >
                     {proyecto.data && proyecto.data.tipo
                       ? proyecto.data.tipo.id_tipo_proyecto === 99
                         ? proyecto.data.tipo.descripcion
-                        : (ctx.lang === 'es') ? proyecto.data.tipo.tipo_proyecto.es : proyecto.data.tipo.tipo_proyecto.en
+                        : ctx.lang === "es"
+                        ? proyecto.data.tipo.tipo_proyecto.es
+                        : proyecto.data.tipo.tipo_proyecto.en
                       : "ND"}
                   </Typography>
                   <Divider
@@ -612,14 +629,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     }}
                     orientation="vertical"
                   />
-                  <Typography variant="subtitle2"
+                  <Typography
+                    variant="subtitle2"
                     sx={{
                       fontSize: "1.1rem",
-                   }}>
+                    }}
+                  >
                     {proyecto.data && proyecto.data.sindicato
                       ? proyecto.data.sindicato.id_sindicato === 99
                         ? proyecto.data.sindicato.descripcion
-                        : (ctx.lang === 'es') ? proyecto.data.sindicato.sindicato.es : proyecto.data.sindicato.sindicato.en
+                        : ctx.lang === "es"
+                        ? proyecto.data.sindicato.sindicato.es
+                        : proyecto.data.sindicato.sindicato.en
                       : "ND"}
                   </Typography>
                 </MContainer>
@@ -632,7 +653,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      {`${textos['contacto_casting']}`}
+                      {`${textos["contacto_casting"]}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
@@ -640,9 +661,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography fontWeight={500}>
                       {proyecto.data ? proyecto.data.director_casting : "ND"}
                       &nbsp;&nbsp; &nbsp;&nbsp;
-                      <span style={{ color: "#928F8F", fontWeight: '400' }}>{proyecto.data ? proyecto.data.email_contacto : "ND"}</span>
+                      <span style={{ color: "#928F8F", fontWeight: "400" }}>
+                        {proyecto.data ? proyecto.data.email_contacto : "ND"}
+                      </span>
                       &nbsp;&nbsp; &nbsp;&nbsp;
-                      <span style={{ color: "#928F8F", fontWeight: '400' }}>{proyecto.data ? proyecto.data.telefono_contacto : "ND"}</span>
+                      <span style={{ color: "#928F8F", fontWeight: "400" }}>
+                        {proyecto.data ? proyecto.data.telefono_contacto : "ND"}
+                      </span>
                     </Typography>
                   </Grid>
 
@@ -650,14 +675,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      {`${textos['equipo_creativo']}`}
+                      {`${textos["equipo_creativo"]}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
                   <Grid mt={2} item md={4}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        {`${textos['productor']}`}
+                        {`${textos["productor"]}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data ? proyecto.data.productor : "ND"}
@@ -677,7 +702,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item md={4}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        {`${textos['casa_productora']}`}
+                        {`${textos["casa_productora"]}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data ? proyecto.data.casa_productora : "ND"}
@@ -687,7 +712,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item md={6}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        {`${textos['agencia_publicidad']}`}
+                        {`${textos["agencia_publicidad"]}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data
@@ -700,14 +725,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      {`${textos['detalles_adicionales']}`}
+                      {`${textos["detalles_adicionales"]}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
                   <Grid mt={2} item xs={12}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        {`${textos['sinopsis']}`}
+                        {`${textos["sinopsis"]}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data ? proyecto.data.sinopsis : "ND"}
@@ -717,7 +742,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item xs={12}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 100 }}>
-                        {`${textos['archivos']}`}
+                        {`${textos["archivos"]}`}
                       </Typography>
                       <Typography>{"ND"}</Typography>
                     </MContainer>
@@ -726,7 +751,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       style={{ color: "#069cb1", fontStyle: "italic" }}
                     >
-                      {`${textos['locacion_proyecto']}`}
+                      {`${textos["locacion_proyecto"]}`}
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
@@ -734,7 +759,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <Grid mt={2} item xs={12}>
                     <MContainer direction="horizontal">
                       <Typography sx={{ paddingRight: 2, fontWeight: 600 }}>
-                        {`${textos['estado']}`}
+                        {`${textos["estado"]}`}
                       </Typography>
                       <Typography sx={{ color: "#928F8F" }}>
                         {proyecto.data
@@ -770,7 +795,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         aria-controls="activos"
                         aria-selected="true"
                       >
-                        {`${textos['roles_actuales']}`}
+                        {`${textos["roles_actuales"]}`}
                       </a>
                     </li>
                     <li className="nav-item">
@@ -788,7 +813,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         aria-controls="archivados"
                         aria-selected="false"
                       >
-                        {`${textos['roles_archivados']}`}
+                        {`${textos["roles_archivados"]}`}
                       </a>
                     </li>
                   </ul>
@@ -802,12 +827,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       ? table_actions.concat(
                           <Typography
                             key={8}
-                            sx={{ color: "#000" }}
+                            sx={{
+                              color: "#000",
+                              textAlign: "center !important",
+                            }}
                             fontSize={"1.2rem"}
                             fontWeight={600}
                             component={"p"}
                           >
-                            {`${textos['acciones']}`}
+                            {`${textos["acciones"]}`}
                           </Typography>
                         )
                       : table_actions
@@ -907,9 +935,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <Image
-                                  src={
-                                    "/assets/img/iconos/icono_star_blue.svg"
-                                  }
+                                  src={"/assets/img/iconos/icono_star_blue.svg"}
                                   width={16}
                                   height={16}
                                   alt="destacados"
@@ -995,11 +1021,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     icon={
                                       <IconButton
                                         onClick={(e) => {
-                                          const params = new Map<string, unknown>();
+                                          const params = new Map<
+                                            string,
+                                            unknown
+                                          >();
                                           params.set("id", r.id);
                                           params.set(
                                             "state",
-                                            r.estatus.toUpperCase() === "ARCHIVADO"
+                                            r.estatus.toUpperCase() ===
+                                              "ARCHIVADO"
                                               ? "Pendiente"
                                               : "Archivado"
                                           );
@@ -1036,8 +1066,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           alt="archivar"
                                         />
                                       </IconButton>
-                                        }
-                                      />
+                                    }
+                                  />
                                   {![
                                     Constants.ESTADOS_PROYECTO.APROBADO,
                                     Constants.ESTADOS_PROYECTO
@@ -1094,8 +1124,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                 title: "Eliminar Rol",
                                                 content: (
                                                   <Typography variant="body2">
-                                                    Seguro que deseas eliminar este
-                                                    rol?
+                                                    Seguro que deseas eliminar
+                                                    este rol?
                                                   </Typography>
                                                 ),
                                               });
@@ -1130,14 +1160,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       : []
                   }
                   filasExpandidas={expanded_rows}
-                  accordionContent={(
-                    element_index: number,
-                  ) => {
+                  accordionContent={(element_index: number) => {
                     const element = filtered_roles[element_index];
                     if (element) {
                       return (
                         <div style={{ width: "100%" }}>
-
                           <Grid container p={2}>
                             <Grid item container xs={11}>
                               <Grid item xs={7}>
@@ -1513,10 +1540,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     sx={{
                                       paddingRight: 1,
                                       fontStyle: "italic",
-                                      color:"#000000!important"
+                                      color: "#000000!important",
                                     }}
                                   >
-                                    {`${textos['descripcion']}`}:
+                                    {`${textos["descripcion"]}`}:
                                   </Typography>
                                   {roles.data
                                     ? roles.data[element_index]?.descripcion ||
@@ -1525,29 +1552,40 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 </Typography>
                               </Grid>
                             </Grid>
-                            <Grid item container justifyContent={'flex-end'} xs={1}>
+                            <Grid
+                              item
+                              container
+                              justifyContent={"flex-end"}
+                              xs={1}
+                            >
                               <div>
                                 <IconButton
                                   onClick={() => {
                                     setExpandedRows((prev) => {
-                                      if (prev.includes(`panel${element_index}`)) {
+                                      if (
+                                        prev.includes(`panel${element_index}`)
+                                      ) {
                                         return prev.filter(
                                           (p) => p !== `panel${element_index}`
                                         );
                                       }
-                                      return prev.concat([`panel${element_index}`]);
+                                      return prev.concat([
+                                        `panel${element_index}`,
+                                      ]);
                                     });
                                   }}
                                   color="primary"
                                   aria-label="expandir"
                                   component="label"
                                 >
-                                  {expanded_rows.includes(`panel${element_index}`) ? (
+                                  {expanded_rows.includes(
+                                    `panel${element_index}`
+                                  ) ? (
                                     <UpIcon sx={{ color: "#928F8F" }} />
                                   ) : (
                                     <DownIcon sx={{ color: "#928F8F" }} />
                                   )}
-                              </IconButton>
+                                </IconButton>
                               </div>
                             </Grid>
                             <Grid item xs={12}>
@@ -1558,7 +1596,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               />
                             </Grid>
 
-                            <Acordeon show={expanded_rows.includes(`panel${element_index}`)}>
+                            <Acordeon
+                              show={expanded_rows.includes(
+                                `panel${element_index}`
+                              )}
+                            >
                               <Grid container>
                                 <AnimatePresence>
                                   {expanded_rows.includes(
@@ -1581,13 +1623,14 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            {`${textos['habilidades']}`}:
+                                            {`${textos["habilidades"]}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
                                             roles.data[element_index]
                                               ?.habilidades &&
-                                            roles.data[element_index]?.habilidades
+                                            roles.data[element_index]
+                                              ?.habilidades
                                               ?.habilidades_seleccionadas ? (
                                               <>
                                                 {roles.data[
@@ -1596,7 +1639,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   (h, i) => {
                                                     if (roles.data) {
                                                       const el =
-                                                        roles.data[element_index];
+                                                        roles.data[
+                                                          element_index
+                                                        ];
                                                       if (el) {
                                                         return (
                                                           <Fragment
@@ -1605,7 +1650,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                             <Typography
                                                               component={"span"}
                                                               sx={{
-                                                                color: "#928F8F",
+                                                                color:
+                                                                  "#928F8F",
                                                               }}
                                                             >
                                                               {h.habilidad.es}
@@ -1663,7 +1709,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            {`${textos['desnudos_o_situaciones_sexuales']}`}:
+                                            {`${textos["desnudos_o_situaciones_sexuales"]}`}
+                                            :
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -1677,7 +1724,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   (n, i) => {
                                                     if (roles.data) {
                                                       const el =
-                                                        roles.data[element_index];
+                                                        roles.data[
+                                                          element_index
+                                                        ];
                                                       if (el) {
                                                         return (
                                                           <Fragment
@@ -1686,7 +1735,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                             <Typography
                                                               component={"span"}
                                                               sx={{
-                                                                color: "#928F8F",
+                                                                color:
+                                                                  "#928F8F",
                                                               }}
                                                             >
                                                               {n.nsfw?.es}
@@ -1744,11 +1794,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                             {`${textos['locacion_de_casting_y_fechas']}`}:
+                                            {`${textos["locacion_de_casting_y_fechas"]}`}
+                                            :
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
-                                            roles.data[element_index]?.casting &&
+                                            roles.data[element_index]
+                                              ?.casting &&
                                             (roles.data[element_index]?.casting
                                               .length || 0) > 0 ? (
                                               <>
@@ -1813,7 +1865,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                             {`${textos['locacion_de_filmacion_y_fechas']}`}:
+                                            {`${textos["locacion_de_filmacion_y_fechas"]}`}
+                                            :
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
@@ -1883,7 +1936,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            {`${textos['presentacion_solicitud']}`}:
+                                            {`${textos["presentacion_solicitud"]}`}
+                                            :
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             <Typography
@@ -1896,8 +1950,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               roles.data[element_index]
                                                 ?.requisitos?.estado_republica
                                                 ? roles.data[element_index]
-                                                    ?.requisitos?.estado_republica
-                                                    .es
+                                                    ?.requisitos
+                                                    ?.estado_republica.es
                                                 : "No especificado"}
                                             </Typography>
                                             <Divider
@@ -1966,17 +2020,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            {`${textos['requisitos']}`}:
+                                            {`${textos["requisitos"]}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
                                             {roles.data &&
                                             roles.data[element_index]
                                               ?.requisitos &&
-                                            roles.data[element_index]?.requisitos
-                                              ?.medios_multimedia &&
-                                            (roles.data[element_index]?.requisitos
-                                              ?.medios_multimedia.length || 0) >
-                                              0 ? (
+                                            roles.data[element_index]
+                                              ?.requisitos?.medios_multimedia &&
+                                            (roles.data[element_index]
+                                              ?.requisitos?.medios_multimedia
+                                              .length || 0) > 0 ? (
                                               <>
                                                 {roles.data[
                                                   element_index
@@ -1984,7 +2038,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   (m, i) => {
                                                     if (roles.data) {
                                                       const el =
-                                                        roles.data[element_index];
+                                                        roles.data[
+                                                          element_index
+                                                        ];
                                                       if (el) {
                                                         return (
                                                           <Fragment
@@ -1995,11 +2051,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                             <Typography
                                                               component={"span"}
                                                               sx={{
-                                                                color: "#928F8F",
+                                                                color:
+                                                                  "#928F8F",
                                                               }}
                                                             >
                                                               {
-                                                                m.medio_multimedia
+                                                                m
+                                                                  .medio_multimedia
                                                                   .es
                                                               }
                                                             </Typography>
@@ -2056,7 +2114,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               fontStyle: "italic",
                                             }}
                                           >
-                                            {`${textos['archivos_adicionales']}`}:
+                                            {`${textos["archivos_adicionales"]}`}
+                                            :
                                           </Typography>
                                           <MContainer
                                             direction="horizontal"
@@ -2082,7 +2141,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                     textDecoration: "underline",
                                                   }}
                                                 >
-                                                  {element.selftape.lineas.nombre}
+                                                  {
+                                                    element.selftape.lineas
+                                                      .nombre
+                                                  }
                                                 </Typography>
                                               )}
                                             {element.foto_referencia && (
@@ -2211,7 +2273,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
           user: session.user,
           id_proyecto: parseInt(id_proyecto as string),
-          can_edit: true
+          can_edit: true,
         },
       };
     }
