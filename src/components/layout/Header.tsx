@@ -71,7 +71,7 @@ export const Header: FC<Props> = ({
         <Link
           href="/"
           className="navbar-brand w-sm-50"
-          style={{ margin: "0 0 0 80px" }}
+          style={{ margin: "0 0 0 95px" }}
         >
           {(menuAzul || !esBlanco) && (
             <motion.img

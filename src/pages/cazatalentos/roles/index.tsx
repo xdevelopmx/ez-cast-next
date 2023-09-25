@@ -636,19 +636,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     </Typography>
                     <Divider style={{ borderWidth: 1 }} />
                   </Grid>
-                  <Grid mt={2} item xs={6} md={2}>
+                  <Grid mt={2} item xs={12} md={12}>
                     <Typography fontWeight={500}>
                       {proyecto.data ? proyecto.data.director_casting : "ND"}
-                    </Typography>
-                  </Grid>
-                  <Grid mt={2} item xs={6} md={2}>
-                    <Typography fontWeight={500}>
-                      {proyecto.data ? proyecto.data.email_contacto : "ND"}
-                    </Typography>
-                  </Grid>
-                  <Grid mt={2} item xs={6} md={2}>
-                    <Typography fontWeight={500}>
-                      {proyecto.data ? proyecto.data.telefono_contacto : "ND"}
+                      &nbsp;&nbsp; &nbsp;&nbsp;
+                      <span style={{ color: "#928F8F", fontWeight: '400' }}>{proyecto.data ? proyecto.data.email_contacto : "ND"}</span>
+                      &nbsp;&nbsp; &nbsp;&nbsp;
+                      <span style={{ color: "#928F8F", fontWeight: '400' }}>{proyecto.data ? proyecto.data.telefono_contacto : "ND"}</span>
                     </Typography>
                   </Grid>
 

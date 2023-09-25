@@ -59,6 +59,7 @@ export const MTooltip: FC<Props> = ({
       color={color}
       placement={placement}
       title={text}
+      className="tooltip_ez"
     >
       <IconButton
         onClick={onClick}
