@@ -101,7 +101,7 @@ const LoginPage: NextPage = () => {
             });
           } else {
             console.log('entro');
-            notify('error', 'Esta cuenta no tiene un correo disponible para iniciar sesion, por favor elige otro metodo');
+            notify('error', `${textos['cuenta_no_tiene_correo']}`);
           }
         } else {
           console.log('entro');
@@ -398,7 +398,7 @@ const LoginPage: NextPage = () => {
                     if (state.tipo_usuario) {
                       await signIn('google');
                     } else {
-                      notify('warning', 'No haz seleccionado ningun tipo de usuario aun');
+                      notify('warning', `${textos['no_haz_seleccionado_ningun_tipo_de_usuario_aun']}`);
                     }
                   }}
                 >
@@ -417,7 +417,7 @@ const LoginPage: NextPage = () => {
                     if (state.tipo_usuario) {
                       await signIn('facebook');
                     } else {
-                      notify('warning', 'No haz seleccionado ningun tipo de usuario aun');
+                      notify('warning', `${textos['no_haz_seleccionado_ningun_tipo_de_usuario_aun']}`);
                     }
                   }}
                 >

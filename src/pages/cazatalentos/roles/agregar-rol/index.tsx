@@ -1014,7 +1014,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
           }
         }
       }
-      notify("success", "Se guardo el rol con exito");
+      notify("success", `${textos['se_guardo_rol_con_exito']}`);
     },
     onError: (error) => {
       notify("error", parseErrorBody(error.message));
@@ -1359,7 +1359,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                           } else {
                             notify(
                               "warning",
-                              "Por favor ingresa el nombre y tipo de rol antes de intentar guardar los cambios"
+                              `${textos['ingresa_nombre_y_tipo_de_rol']}`
                             );
                           }
                         }}
@@ -1370,7 +1370,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                           {`${
                             form_validate.complete
                               ? `${textos["guardar_e_ir_a_proyectos"]}`
-                              : "Por favor llena los campos"
+                              : `${textos['llenar_campos']}`
                           }`}{" "}
                         </Typography>
                       </Button>
@@ -1390,7 +1390,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                           } else {
                             notify(
                               "warning",
-                              "Por favor ingresa el nombre y tipo de rol antes de intentar guardar los cambios"
+                              `${textos['ingresa_nombre_y_tipo_de_rol']}`
                             );
                           }
                         }}

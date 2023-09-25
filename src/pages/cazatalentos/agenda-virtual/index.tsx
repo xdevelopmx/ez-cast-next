@@ -67,7 +67,7 @@ const AgendaVirtual = () => {
 
     const deleteHorario = api.agenda_virtual.deleteById.useMutation({
         onSuccess: (data) => {
-            notify('success', 'Se elimino con exito');
+            notify('success', `${textos['se_elimino_con_exito']}`);
             horarios.refetch();
         }, 
         onError: (err) => {
@@ -77,7 +77,7 @@ const AgendaVirtual = () => {
 
     const updateHorario = api.agenda_virtual.create.useMutation({
         onSuccess: (data) => {
-            notify('success', 'Se actualizo el horario con exito');
+            notify('success', `${textos['se_actualizo_con_exito']}`);
             void router.push(`/cazatalentos/agenda-virtual/crear?id_horario=${data.id}`);
         }, 
         onError: (err) => {

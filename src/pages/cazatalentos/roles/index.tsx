@@ -177,11 +177,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
         </div>
       );
     }
-  }, [tabSelected]);
+  }, [tabSelected, textos]);
 
   const deleteRol = api.roles.deleteRolById.useMutation({
     onSuccess() {
-      notify("success", "Se elimino el rol con éxito");
+      notify("success", `${textos['se_elimino_el_rol_con_exito']}`);
       void roles.refetch();
     },
     onError(error) {
@@ -191,7 +191,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
 
   const updateEstadoRol = api.roles.updateEstadoRolById.useMutation({
     onSuccess() {
-      notify("success", "Se cambio el estado del rol con éxito");
+      notify("success", `${textos['se_cambio_el_estado_del_rol_con_exito']}`);
       void roles.refetch();
     },
     onError(error) {
@@ -201,7 +201,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
 
   const updateEstadoProyecto = api.proyectos.updateEstadoProyecto.useMutation({
     onSuccess() {
-      notify("success", "Se cambio el estado del proyecto con éxito");
+      notify("success", `${textos['se_cambio_el_estado_del_proyecto_con_exito']}`);
       void proyecto.refetch();
     },
     onError(error) {

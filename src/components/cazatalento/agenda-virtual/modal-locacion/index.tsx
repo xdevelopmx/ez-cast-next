@@ -13,8 +13,11 @@ import React, {
   type FC,
   useState,
   useEffect,
+  useContext,
 } from "react";
 import { FormGroup, MCheckboxGroup, MSelect } from "~/components/shared";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 import useNotify from "~/hooks/useNotify";
 import { api, parseErrorBody } from "~/utils/api";
 
@@ -41,6 +44,8 @@ export const ModalLocacion: FC<Props> = ({
   onChange,
 }) => {
   const { notify } = useNotify();
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
 
   const estados_republica = api.catalogos.getEstadosRepublica.useQuery(
     undefined,
@@ -59,7 +64,7 @@ export const ModalLocacion: FC<Props> = ({
 
   const update_locacion = api.agenda_virtual.updateLocalizacion.useMutation({
     onSuccess: (input) => {
-      notify("success", "Se la locacion con exito");
+      notify("success", `${textos['se_actualizo_con_exito']}`);
       onChange({ ...data, id: input.id }, input.result);
       setIsOpen(false);
     },

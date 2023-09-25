@@ -1,6 +1,6 @@
 import { Close, MessageOutlined } from '@mui/icons-material';
 import { Box, Button, Checkbox, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, FormControlLabel, Grid, Typography } from '@mui/material'
-import { type FC, useReducer, useState, useEffect, useRef } from 'react';
+import { type FC, useReducer, useState, useEffect, useRef, useContext } from 'react';
 import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from '~/components/shared'
@@ -14,6 +14,8 @@ import { motion } from 'framer-motion';
 import { conversorFecha } from '~/utils/conversor-fecha';
 import {DatePicker, DesktopDatePicker, esES, jaJP } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     id_talento: number,
@@ -21,6 +23,8 @@ interface Props {
 }
 
 export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
+	const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const [dialog, setDialog] = useState<{open: boolean, title: string, id: 'agregar_nota_talento' | 'reportar_talento' | 'elegir_talento' }>({ open: false, title: '', id: 'elegir_talento' });
 	
@@ -76,7 +80,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
     const updateTalentoDestacado = api.cazatalentos.updateTalentoDestacado.useMutation({
 		onSuccess: (data) => {
 			void talento_stars.refetch();
-			notify('success', 'Se actualizo la calificacion con exito');
+			//notify('success', 'Se actualizo la calificacion con exito');
+			notify("success", `${textos['se_actualizo_con_exito']}`);
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
@@ -86,7 +91,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 	const updateNotaTalento = api.cazatalentos.updateNotaTalento.useMutation({
 		onSuccess: (data) => {
 			void talento_nota.refetch();
-			notify('success', 'Se actualizo la nota con exito');
+			notify("success", `${textos['se_actualizo_con_exito']}`);
+			//notify('success', 'Se actualizo la nota con exito');
 			setDialog({ ...dialog, open: false });
 		},
 		onError: (error) => {
@@ -97,7 +103,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 	const deleteNotaTalento = api.cazatalentos.deleteNotaTalento.useMutation({
 		onSuccess: (data) => {
 			void talento_nota.refetch();
-			notify('success', 'Se elimino la nota con exito');
+			notify("success", `${textos['se_elimino_con_exito']}`);
+			//notify('success', 'Se elimino la nota con exito');
 			setDialog({ ...dialog, open: false });
 		},
 		onError: (error) => {
@@ -122,7 +129,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 	const updateSeleccionTalento = api.cazatalentos.updateSeleccionTalento.useMutation({
 		onSuccess: (data) => {
 			void audicion_talento.refetch();
-			notify('success', 'Se actualizo la audicion con exito');
+			//notify('success', 'Se actualizo la audicion con exito');
+			notify("success", `${textos['se_actualizo_con_exito']}`);
 			setDialog({ ...dialog, open: false });
 		},
 		onError: (error) => {
@@ -134,7 +142,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
     const updateReporteTalento = api.cazatalentos.updateReporteTalento.useMutation({
 		onSuccess: (data) => {
 			void reporte_talento.refetch();
-			notify('success', 'Se actualizo el reporte con exito');
+			//notify('success', 'Se actualizo el reporte con exito');
+			notify("success", `${textos['se_actualizo_con_exito']}`);
 			setDialog({ ...dialog, open: false });
 		},
 		onError: (error) => {
@@ -158,31 +167,31 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
         <>
             <MContainer direction='horizontal' justify='space-between'>
                 <Button onClick={() => { void router.replace('/cazatalentos/billboard') }} variant='text' startIcon={<motion.img src="/assets/img/iconos/return_blue.svg" alt="icono" />}>
-                    <p className="color_a mb-0 ml-2"><b>Regresar a Billboard</b></p>
+                    <p className="color_a mb-0 ml-2"><b>{textos['regresar_billboard']}</b></p>
                 </Button>
                 <Box width={'60%'} textAlign={'end'}>
                     <MotionDiv show={!talento_nota.isFetching && talento_nota.data == null} animation="fade">
-                        <Button onClick={() => { setDialog({ open: true, title: 'Escribir un comentario sobre el Talento', id: 'agregar_nota_talento' }) }} endIcon={<MessageOutlined />}>
-                            Agrega una nota
+                        <Button onClick={() => { setDialog({ open: true, title: `${textos['escribir_un_comentario_sobre_talento']}`, id: 'agregar_nota_talento' }) }} endIcon={<MessageOutlined />}>
+                            {textos['agregar']} {textos['una']} {textos['nota']}
                         </Button>
                     </MotionDiv>
                     <MContainer direction="horizontal" justify='space-between'>
                         
                         <MotionDiv show={talento_nota.data != null} animation="fade">
                             <MContainer direction="horizontal">
-                                <Typography mr={2}>Nota</Typography>
+                                <Typography mr={2}>{textos['nota']}</Typography>
                                 <MessageOutlined style={{marginRight: 64}}/>
                                 <Button size='small' style={{textDecoration: 'underline'}} variant="text" onClick={() => {
                                     updateNotaTalento.mutate({
                                         id_talento: id_talento,
                                         nota: form_nota_talento.nota
                                     });
-                                }}>Guardar</Button>
+                                }}>{textos['guardar']}</Button>
                             </MContainer>
                         </MotionDiv>
                         {(talento_nota.isFetching || !talento_nota.data) && <Box></Box>}
                         <MContainer direction='horizontal' styles={{ marginTop: 8 }}>
-                            <Typography style={{ marginRight: 16 }}>Destacar </Typography>
+                            <Typography style={{ marginRight: 16 }}>{textos['destacar']} </Typography>
                             <Box sx={{ display: 'flex', gap: .5 }}>
                                 {Array.from({length: 5}).map((v, i) => {
                                     return <Image key={i} style={{cursor: 'pointer'}} onClick={() => { handleTalentoStars(i + 1) }} src={(talento_stars.data && talento_stars.data  >= (i + 1)) ? '/assets/img/iconos/estrella-fill.svg' : '/assets/img/iconos/estrella_empty.svg'} width={20} height={20} alt="" />
@@ -216,13 +225,13 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                         <Box>
                             <Button disabled={!audicion_talento.isFetching && audicion_talento.data != null} variant='contained' onClick={() => { setDialog({ open: true, title: 'Elegir Talento', id: 'elegir_talento' }) }} style={{ borderRadius: 16, width: '100%', maxWidth: 280 }}>
                                 {audicion_talento.isFetching && <Typography>Cargando...</Typography>}
-								{!audicion_talento.isFetching && audicion_talento.data != null && <Typography>Audicion Programada</Typography>}
-								{!audicion_talento.isFetching && !audicion_talento.data && <Typography>Elegir Talento</Typography>}
+								{!audicion_talento.isFetching && audicion_talento.data != null && <Typography>{textos['audicion_programada']}</Typography>}
+								{!audicion_talento.isFetching && !audicion_talento.data && <Typography>{textos['elegir_talento']}</Typography>}
                             </Button>
                             <Button disabled={!reporte_talento.isFetching && reporte_talento.data != null} variant={(!reporte_talento.isFetching && reporte_talento.data != null) ? 'contained' : 'text'} color="error" onClick={() => { setDialog({ open: true, title: 'Reportar', id: 'reportar_talento' }) }} style={{ borderRadius: 16, width: '100%', marginTop: 8, textDecoration: 'underline', maxWidth: 280 }}>
-								{reporte_talento.isFetching && <Typography>Cargando...</Typography>}
-								{!reporte_talento.isFetching && reporte_talento.data != null && <Typography>Reporte Enviado</Typography>}
-								{!reporte_talento.isFetching && !reporte_talento.data && <Typography>Reportar</Typography>}
+								{reporte_talento.isFetching && <Typography>{textos['cargando']}...</Typography>}
+								{!reporte_talento.isFetching && reporte_talento.data != null && <Typography>{textos['reporte_enviado']}</Typography>}
+								{!reporte_talento.isFetching && !reporte_talento.data && <Typography>{textos['reportar']}</Typography>}
 							</Button>
                         </Box>
                     </MContainer>
@@ -232,9 +241,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 				<DialogTitle align="center" style={{color: '#069cb1'}}>{dialog.title}</DialogTitle>
 				<DialogContent style={{padding: 0}}>
 					<DialogContentText fontSize={14} px={4} textAlign={'justify'}>
-						La solicitud le llegará al Talento en mensajes.
-						Mantente al pendiente de tu entrada de mensajes
-						para saber la respuesta.
+						{textos['modal_elegir_talento_body']}
 					</DialogContentText>
 					<Typography variant="body2" px={4} py={2}>
 						Elige el tipo de audición del Talento
@@ -320,7 +327,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 								mensaje: form_select_talento.mensaje,
 							})
 						} else {
-							notify('warning', 'No haz seleccionado una fecha para la audicion');
+							notify('warning', `${textos['no_haz_seleccionado_ninguna_fecha']}`);
 						}
 					}}>Enviar</Button>
 				</Box>
@@ -386,7 +393,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                                     comentario: form_reporte_talento.comentario
                                 })
                             } else {
-                                notify('warning', 'No seleccionaste ningun tipo de reporte');
+                                notify('warning', `${textos['no_se_ha_seleccionado_un_tipo_de_reporte']}`);
                             }
                         }
                     }>
@@ -398,9 +405,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 				<DialogTitle align="center" style={{color: '#069cb1'}}>{dialog.title}</DialogTitle>
 				<DialogContent style={{padding: 0}}>
 					<DialogContentText fontSize={14} px={4} textAlign={'justify'}>
-						Deja un comentario para recordar en tu
-						proceso de selección
-						Estos no serán vistos por el Talento.
+						{textos['modal_comentario_talento']}
 					</DialogContentText>
 					<Box px={4}>
 						<FormGroup

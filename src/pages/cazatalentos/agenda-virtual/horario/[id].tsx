@@ -32,7 +32,7 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef, useContext } from "react";
 import {
   Alertas,
   DatosAudicion,
@@ -48,7 +48,9 @@ import { DraggableHorarioContainer } from "~/components/cazatalento/agenda-virtu
 import { TalentoReclutadoListCard } from "~/components/cazatalento/agenda-virtual/talento-reclutado-card/list-card";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import Constants from "~/constants";
+import AppContext from "~/context/app";
 import { TipoUsuario } from "~/enums";
+import useLang from "~/hooks/useLang";
 import useNotify from "~/hooks/useNotify";
 import { prisma } from "~/server/db";
 import { api, parseErrorBody } from "~/utils/api";
@@ -107,6 +109,8 @@ const AudicionPorId = (props: {
   can_start_callback: boolean;
 }) => {
   const { notify } = useNotify();
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
 
   const router = useRouter();
 
@@ -250,7 +254,7 @@ const AudicionPorId = (props: {
       onSuccess: (data) => {
         talentos_asignados_por_horario.refetch();
         bloque.refetch();
-        notify("success", "Se asigno el intervalo con exito");
+        notify("success", `${textos['se_asigno_el_intervalo_con_exito']}`);
       },
       onError: (error) => {
         notify("error", parseErrorBody(error.message));
@@ -260,7 +264,8 @@ const AudicionPorId = (props: {
   const updateAplicacionesTalentoByIdRolAndIdTalento =
     api.roles.updateAplicacionesTalentoByIdRolAndIdTalento.useMutation({
       onSuccess: (data) => {
-        notify("success", "Se actualizo el horario con exito");
+        notify("success", `${textos['se_actualizo_con_exito']}`);
+        //notify("success", "Se actualizo el horario con exito");
         void router.push(
           `/cazatalentos/agenda-virtual/crear?id_horario=${horario.data?.id}`
         );
@@ -287,7 +292,7 @@ const AudicionPorId = (props: {
   const sendHorarios = api.agenda_virtual.sendHorarios.useMutation({
     onSuccess: (data) => {
       if (data) {
-        notify("success", "Se enviaron los horarios con exito");
+        notify("success", `${textos['se_enviaron_los_horarios_con_exito']}`);
       }
     },
     onError: (err) => {
@@ -1183,7 +1188,7 @@ const AudicionPorId = (props: {
                                             } else {
                                               notify(
                                                 "warning",
-                                                "No haz seleccionado ninguna fecha aun"
+                                                `${textos['no_haz_seleccionado_ninguna_fecha']}`
                                               );
                                             }
                                           }}

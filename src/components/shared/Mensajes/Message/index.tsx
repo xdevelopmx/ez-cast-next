@@ -1,11 +1,13 @@
 import { Box, Button, ButtonGroup, Link, Typography } from '@mui/material'
-import React, { type CSSProperties } from 'react'
+import React, { useContext, type CSSProperties } from 'react'
 import Image from 'next/image'
 import { api, parseErrorBody } from '~/utils/api'
 import Constants from '~/constants'
 import useNotify from '~/hooks/useNotify'
 import { useQuery } from '@tanstack/react-query'
 import { AudioBar } from '../../AudioBar'
+import AppContext from '~/context/app'
+import useLang from '~/hooks/useLang'
 
 const estilos_ellipsis: CSSProperties = {
     overflow: 'hidden',
@@ -166,13 +168,16 @@ export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre, fecha }
 
 export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, nombre, id_intervalo, id_rol, id_talento, onChange }: (Props & {  onChange: (result: 'confirmado' | 'rechazado') => void, id_intervalo: number, id_rol: number, id_talento: number } )) => {
     const intervalo = api.agenda_virtual.getIntervaloById.useQuery({id_intervalo: id_intervalo});
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
     const {notify} = useNotify();
 
     const updateIntervaloHorario = api.agenda_virtual.updateIntervaloHorario.useMutation({
         onSuccess: (data) => {
             intervalo.refetch();
             onChange(data.estado.toLowerCase() === 'rechazado' ? 'rechazado' : 'confirmado');
-            notify('success', 'Se asigno el intervalo con exito');
+            //notify('success', 'Se asigno el intervalo con exito');
+            notify("success", `${textos['se_actualizo_con_exito']}`);
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));

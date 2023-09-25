@@ -3,7 +3,7 @@ import { GetServerSideProps, NextPage } from "next";
 import { User } from "next-auth";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect, useMemo, useReducer } from "react";
+import { useContext, useEffect, useMemo, useReducer } from "react";
 import {
   CuentaRepresentante,
   MStepper,
@@ -13,6 +13,8 @@ import {
 import { InformacionBasicaRepresentante } from "~/components";
 import { PermisosRepresentanteView } from "~/components/representante/forms/PermisosRepresentante";
 import { MTooltip } from "~/components/shared/MTooltip";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 import useNotify from "~/hooks/useNotify";
 import { Archivo } from "~/server/api/root";
 import { api, parseErrorBody } from "~/utils/api";
@@ -154,6 +156,8 @@ const EditarPerfilRepresentantePage: NextPage<
   );
 
   const { notify } = useNotify();
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
 
   const info = api.representantes.getInfo.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -247,7 +251,7 @@ const EditarPerfilRepresentantePage: NextPage<
 
   const saveInfoBasica = api.representantes.saveInfoBasica.useMutation({
     onSuccess(input) {
-      notify("success", "Se guardo la información básica con exito.");
+      notify("success", `${textos['se_guardo_info_basica_con_exito']}`);
       info.refetch();
     },
     onError: (error) => {
@@ -281,7 +285,7 @@ const EditarPerfilRepresentantePage: NextPage<
 
   const savePermisos = api.representantes.savePermisos.useMutation({
     onSuccess(input) {
-      notify("success", "Se guardaron los permisos con exito.");
+      notify("success", `${textos['se_guardaron_permisos_con_exito']}`);
       info.refetch();
     },
     onError: (error) => {
@@ -291,7 +295,7 @@ const EditarPerfilRepresentantePage: NextPage<
 
   const saveValidacion = api.representantes.saveValidacion.useMutation({
     onSuccess(input) {
-      notify("success", "Se guardo la validacion con exito.");
+      notify("success", `${textos['se_guardo_validacion_con_exito']}`);
       info.refetch();
     },
     onError: (error) => {

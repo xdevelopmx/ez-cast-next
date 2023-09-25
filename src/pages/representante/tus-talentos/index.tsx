@@ -3,12 +3,16 @@ import Image from "next/image";
 import { Box, Button, Divider, Grid, Typography } from "@mui/material";
 import { Alertas, MainLayout, MenuLateral, ModalTalento } from "~/components";
 import { TalentoPreviewLong } from "~/components/representante/talento-preview-long";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { api, parseErrorBody } from "~/utils/api";
 import useNotify from "~/hooks/useNotify";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 const RepresentanteTusTalentosPage = () => {
   const [showModal, setShowModal] = useState(false);
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
 
   const { notify } = useNotify();
 
@@ -24,7 +28,7 @@ const RepresentanteTusTalentosPage = () => {
 
   const removeTalento = api.representantes.removeTalento.useMutation({
     onSuccess(data, input) {
-      notify("success", "Se removio el talento con exito");
+      notify("success", `${textos['talento_removido']}`);
       void talentos_asignados.refetch();
     },
     onError: (error) => {

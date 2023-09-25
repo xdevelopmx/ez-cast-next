@@ -275,9 +275,9 @@ const AgendaVirtual: NextPage<{ user: User, id_talento: number }> = (props) => {
                                             <Grid xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
                                                 <DualDatePicker 
                                                     selected_dates={fechas_arr}
-                                                    direction="horizontal" 
-                                                    sx={estilos_calendario}
-                                                />
+                                                    direction="horizontal"
+                                                    sx={estilos_calendario} 
+                                                    is_dual={false}                                                />
                                             </Grid>
                                         </Grid>
                                     </Grid>

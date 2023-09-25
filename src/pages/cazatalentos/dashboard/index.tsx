@@ -63,7 +63,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
   );
   const deleteProyecto = api.proyectos.deleteById.useMutation({
     onSuccess() {
-      notify("success", "Se elimino el proyecto con exito");
+      notify("success", `${textos['se_elimino_el_proyecto_con_exito']}`);
       void proyectos.refetch();
     },
     onError(error) {
@@ -72,7 +72,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
   });
   const updateEstadoProyecto = api.proyectos.updateEstadoProyecto.useMutation({
     onSuccess() {
-      notify("success", "Se cambio el estado el proyecto con exito");
+      notify("success", `${textos['se_cambio_el_estado_del_proyecto_con_exito']}`);
       void proyectos.refetch();
     },
     onError(error) {
