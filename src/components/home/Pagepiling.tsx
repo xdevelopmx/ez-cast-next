@@ -157,6 +157,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
             ></div>
           </div>
         </div>
+        <button className="link_bottom" onClick={() => setPagina(2)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>
@@ -178,6 +194,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
         >
           <source src={videos_urls.video2} type="video/mp4" />
         </video>
+        <button className="link_bottom" onClick={() => setPagina(3)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>
@@ -211,6 +243,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
             </div>
           </div>
         </div>
+        <button className="link_bottom" onClick={() => setPagina(4)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>
@@ -232,6 +280,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
         >
           <source src={videos_urls.video3} type="video/mp4" />
         </video>
+        <button className="link_bottom" onClick={() => setPagina(5)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>
@@ -270,6 +334,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
             </div>
           </div>
         </div>
+        <button className="link_bottom" onClick={() => setPagina(6)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>
@@ -291,6 +371,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
         >
           <source src="#" type="video/mp4" />
         </video>
+        <button className="link_bottom2" onClick={() => setPagina(7)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>
@@ -329,6 +425,22 @@ export const Pagepiling: FC<Props> = ({ onCambiarPagina }) => {
             </div>
           </div>
         </div>
+        <button className="link_bottom" onClick={() => setPagina(8)}>
+          <svg
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+            stroke="currentColor"
+            strokeWidth="2"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="css-i6dzq1"
+          >
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
       </div>
 
       <div className="section" style={estilos}>

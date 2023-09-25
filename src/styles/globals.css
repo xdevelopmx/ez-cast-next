@@ -463,7 +463,26 @@ footer {
 
 .link_bottom:hover {
   color: #000 !important;
-  background: #fff;
+  background: transparent;
+}
+
+.link_bottom2 {
+  position: absolute;
+  bottom: 5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-block;
+  padding: 10px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  transition: 0.5s ease;
+  color: #000 !important;
+  background-color: transparent;
+}
+
+.link_bottom2:hover {
+  color: #fff !important;
+  background: #000;
 }
 
 @media (max-width: 768px) {
