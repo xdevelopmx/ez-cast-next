@@ -269,7 +269,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
             width: "100%",
           }}
         >
-          Aun no hay aplicaciones para este rol
+          {textos['aun_no_hay_aplicaciones_para_este_rol']}
         </Typography>,
       ];
     }
@@ -416,7 +416,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                     >
                       <Grid item xs={4}>
                         <MContainer direction="horizontal" styles={{ gap: 10 }}>
-                          <Typography>Rol</Typography>
+                          <Typography>{textos['rol']}</Typography>
                           <MSelect
                             id="nombre-rol-select"
                             loading={roles_by_proyecto.isFetching}
@@ -439,7 +439,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                       </Grid>
                       <Grid item xs={4}>
                         <MContainer direction="horizontal" styles={{ gap: 10 }}>
-                          <Typography sx={{ paddingRight: 1 }}>Ver</Typography>
+                          <Typography sx={{ paddingRight: 1 }}>{textos['ver']}</Typography>
                           <MSelect
                             id="estado-aplicacion-rol-select"
                             loading={estados_aplicaciones_roles.isFetching}

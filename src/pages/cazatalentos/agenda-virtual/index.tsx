@@ -78,26 +78,24 @@ const AgendaVirtual = () => {
   const { notify } = useNotify();
 
   const deleteHorario = api.agenda_virtual.deleteById.useMutation({
-    onSuccess: (data) => {
-      notify("success", "Se elimino con exito");
-      horarios.refetch();
-    },
-    onError: (err) => {
-      notify("error", parseErrorBody(err.message));
-    },
-  });
+      onSuccess: (data) => {
+          notify('success', `${textos['se_elimino_con_exito']}`);
+          horarios.refetch();
+      }, 
+      onError: (err) => {
+          notify('error', parseErrorBody(err.message));
+      }
+  })
 
   const updateHorario = api.agenda_virtual.create.useMutation({
-    onSuccess: (data) => {
-      notify("success", "Se actualizo el horario con exito");
-      void router.push(
-        `/cazatalentos/agenda-virtual/crear?id_horario=${data.id}`
-      );
-    },
-    onError: (err) => {
-      notify("error", parseErrorBody(err.message));
-    },
-  });
+      onSuccess: (data) => {
+          notify('success', `${textos['se_actualizo_con_exito']}`);
+          void router.push(`/cazatalentos/agenda-virtual/crear?id_horario=${data.id}`);
+      }, 
+      onError: (err) => {
+          notify('error', parseErrorBody(err.message));
+      }
+  })
 
   const [pagination, setPagination] = useState<{
     page: number;

@@ -241,7 +241,7 @@ const Proyecto: NextPage = () => {
   const updateProyectoFiles = api.proyectos.saveProyectoFiles.useMutation({
     onSuccess: (data) => {
       if (data) {
-        notify("success", "Se guardo el proyecto con exito");
+        notify("success", `${textos['se_guardo_el_proyecto_con_exito']}`);
         if (redirect === "back") {
           router.back();
         } else {
@@ -252,7 +252,7 @@ const Proyecto: NextPage = () => {
       } else {
         notify(
           "error",
-          "Ocurrio un problema al actualizar el proyecto, por favor contacta a soporte"
+          `${textos['contacta_soporte']}`
         );
       }
     },
@@ -412,7 +412,7 @@ const Proyecto: NextPage = () => {
       });
       notify(
         "warning",
-        "Por favor corrige los errores del formulario antes de guardar"
+        `${textos['corregir_errores_formulario']}`
       );
     }
   };
@@ -422,26 +422,26 @@ const Proyecto: NextPage = () => {
         errors: {
           nombre:
             !state.nombre || state.nombre.length < 2
-              ? "El nombre es demasiado corto"
+              ? `${textos['campo_demasiado_corto']}`.replace('[N]', `${textos['nombre']}`)
               : undefined,
           director:
             !state.director_casting || state.director_casting.length < 2
-              ? "El nombre es demasiado corto"
+              ? `${textos['campo_demasiado_corto']}`.replace('[N]', `${textos['nombre']}`)
               : undefined,
           telefono_contacto:
             !state.telefono_contacto ||
             state.telefono_contacto.length < 10 ||
             state.telefono_contacto.length > 12
-              ? "El telefono es invalido"
+              ? `${textos['campo_invalido']}`.replace('[N]', `${textos['telefono']}`)
               : undefined,
           email_contacto:
             !state.email_contacto ||
             !Constants.PATTERNS.EMAIL.test(state.email_contacto)
-              ? "El email es invalido"
+              ? `${textos['campo_invalido']}`.replace('[N]', `${textos['email']}`)
               : undefined,
           email_contacto_confirmacion:
             state.email_contacto !== state.email_contacto_confirmacion
-              ? "El email no es el mismo"
+              ? `${textos['campo_diferente']}`.replace('[N]', `${textos['email']}`)
               : undefined,
         },
         hasErrors: false,

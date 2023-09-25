@@ -126,7 +126,7 @@ const DashBoardTalentosPage: NextPage<{
                         <p className="m-0 p-0">
                           <Button sx={{textTransform: 'capitalize', textDecoration: 'underline'}} onClick={() => {
                               navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${props.id_talento}`);
-                              notify('success', 'Se copio el link');
+                              notify('success', `${textos['link_copiado']}`);
                           }}>
                             {textos['copiartd']}
                           </Button>

@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogContent, DialogTitle, Divider, Grid, Typography } from '@mui/material'
-import React, { type Dispatch, type SetStateAction, type FC, useState, useMemo, useEffect } from 'react'
+import React, { type Dispatch, type SetStateAction, type FC, useState, useMemo, useEffect, useContext } from 'react'
 import Image from 'next/image'
 import { FormGroup, MRadioGroup, MSelect } from '~/components/shared';
 import { DesktopTimePicker, MobileTimePicker, StaticTimePicker, TimeField, TimePicker, esES } from '@mui/x-date-pickers';
@@ -10,6 +10,8 @@ import { MContainer } from '~/components/layout/MContainer';
 import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client';
 import { Add, AddCircle } from '@mui/icons-material';
 import { api, parseErrorBody } from '~/utils/api';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 interface Props {
     locaciones: LocalizacionesPorHorarioAgenda[];
@@ -24,6 +26,8 @@ interface Props {
 export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles, locaciones, id_horario_agenda, onChange }) => {
 
     const {notify} = useNotify();
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const bloque = api.agenda_virtual.getBloqueHorarioByDateAndIdHorario.useQuery({
         id_horario_agenda: id_horario_agenda, fecha: dayjs(date, "DD/MM/YYYY").toDate()
@@ -34,7 +38,8 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
     const updateBloqueHorario = api.agenda_virtual.updateBloqueHorario.useMutation({
         onSuccess: (data) => {
             bloque.refetch();
-            notify('success', 'Se actualizo el bloque de horario con exito');
+            //notify('success', 'Se actualizo el bloque de horario con exito');
+            notify('success', `${textos['se_actualizo_con_exito']}`);
             setIsOpen(false);
         },
         onError: (err) => {
@@ -332,7 +337,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                 <Button
                                     onClick={() => {
                                         if (intervalos === 0) {
-                                            notify('warning', 'No se han definido los intervalos');
+                                            notify('warning', `${textos['no_se_han_definido_los_intervalos']}`);
                                             return;
                                         }
                                         let loc = 0;
@@ -343,7 +348,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                             }
                                         }
                                         if (loc === 0) {
-                                            notify('warning', 'No se han seleccionado una locacion');
+                                            notify('warning', `${textos['no_se_ha_seleccionado_una_locacion']}`);
                                             return;
                                         }
                                         updateBloqueHorario.mutate({

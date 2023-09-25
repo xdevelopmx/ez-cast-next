@@ -26,12 +26,14 @@ import { useRouter } from "next/navigation";
 import { MContainer } from "~/components/layout/MContainer";
 import Link from "next/link";
 import MotionDiv from "~/components/layout/MotionDiv";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { MTooltip } from "~/components/shared/MTooltip";
 import { api, parseErrorBody } from "~/utils/api";
 import { FileUploader } from "react-drag-drop-files";
 import { FileManager } from "~/utils/file-manager";
 import useNotify from "~/hooks/useNotify";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 type DashboardRepresentante = {
   user: User;
@@ -41,6 +43,8 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const { notify } = useNotify();
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
 
   const info = api.representantes.getInfo.useQuery(undefined, {
     refetchOnWindowFocus: false,
@@ -48,7 +52,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
 
   const updatePerfil = api.representantes.updatePerfil.useMutation({
     onSuccess(input) {
-      notify("success", "Se actualizo la foto de perfil.");
+      notify("success", `${textos['se_actualizo_foto_perfil']}`);
       info.refetch();
     },
     onError: (error) => {
@@ -139,7 +143,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                   {info.isFetching && <Skeleton width={300} />}
                   {!info.isFetching && (
                     <b>
-                      Bienvenido, {info.data?.nombre} {info.data?.apellido}
+                      {textos['bienvenido']}, {info.data?.nombre}
                     </b>
                   )}
                 </p>

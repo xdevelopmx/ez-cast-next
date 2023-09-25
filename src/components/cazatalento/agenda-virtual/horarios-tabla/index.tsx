@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Grid, Tooltip, Typography, tooltipClasses } from '@mui/material'
 import Image from 'next/image'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { ModalBloquesTiempos } from '../modal-bloques-tiempos'
 import useNotify from '~/hooks/useNotify'
 import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client'
@@ -8,6 +8,8 @@ import { api } from '~/utils/api'
 import { generateIntervalos } from '~/utils/dates'
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer'
 import { DraggableHorarioContainer } from './DraggableHorarioContainer'
+import AppContext from '~/context/app'
+import useLang from '~/hooks/useLang'
 
 export const HorariosTable = (props: {
     id_horario_agenda: number,
@@ -19,6 +21,9 @@ export const HorariosTable = (props: {
     const [opcionSelected, setOpcionSelected] = useState<string>(new Date().toString());
 
     const [isOpendModal, setIsOpendModal] = useState(false);
+
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const {notify} = useNotify();
 
@@ -111,7 +116,7 @@ export const HorariosTable = (props: {
                                     return (
                                         <div style={{ backgroundColor: (i.tipo === 'intervalo') ? '#a8e2ea' : '#94f0d1', width: '90%', height: 88, margin: 8, position: 'relative'}}>
                                             <p style={{position: 'absolute', top: 8, left: 8}}>{`${(i.inicio.length < 5) ? `${i.inicio}0` : i.inicio} - ${(i.fin. length < 5) ? `${i.fin}0` : i.fin }`}</p>
-                                            <DraggableHorarioContainer onDrop={(id_talento) => {}} allowedDropEffect="any" />
+                                            <DraggableHorarioContainer onDrop={(id_talento) => { } } allowedDropEffect="any" fecha={''} id_rol={0} />
                                         </div>
                                     )
                                 })}
@@ -144,7 +149,7 @@ export const HorariosTable = (props: {
                                             if (opcionSelected !== '') {
                                                 setIsOpendModal(true);
                                             } else {
-                                                notify('warning', 'No haz seleccionado ninguna fecha aun');
+                                                notify('warning', `${textos['no_haz_seleccionado_ninguna_fecha']}`);
                                             }
                                         }}
                                     >
@@ -166,8 +171,9 @@ export const HorariosTable = (props: {
                 roles={props.roles}
                 date={opcionSelected}
                 isOpen={isOpendModal}
-                setIsOpen={setIsOpendModal}
-            />
+                setIsOpen={setIsOpendModal} onChange={function (): void {
+                    throw new Error('Function not implemented.')
+                } }            />
         </Grid>
     )
 }

@@ -214,9 +214,9 @@ export const StateNDates: FC<Props> = ({
               return (
                 <Tag
                   key={i}
-                  text={`${fecha.inicio.toLocaleDateString("es-mx")}${
+                  text={`${fecha.inicio.toLocaleDateString("es-mx", {day: 'numeric', month: 'numeric', year: '2-digit'})}${
                     fecha.fin
-                      ? ` a ${fecha.fin.toLocaleDateString("es-mx")}`
+                      ? ` a ${fecha.fin.toLocaleDateString("es-mx", {day: 'numeric', month: 'numeric', year: '2-digit'})}`
                       : ""
                   }`}
                   onRemove={() => {

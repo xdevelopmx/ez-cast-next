@@ -4,16 +4,20 @@ import { FormGroup, MRadioGroup, MainLayout } from "~/components";
 import { MTooltip } from "~/components/shared/MTooltip";
 import useNotify from "~/hooks/useNotify";
 import { InvalidEmailError, InvalidFieldError } from "~/utils/errores";
-import { type FormEvent } from "react";
+import { useContext, type FormEvent } from "react";
 import useInvitarTalentoReducer from "../../../hooks/useInvitarTalentoReducer";
 import InvitacionTalentoEmail from "~/components/emails/invitacion-talento";
 import { api, parseErrorBody } from "~/utils/api";
 import { useRouter } from "next/router";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 const InvitarTalentoPage = () => {
   const { state, dispatch, TiposAcciones, validarFormulario } =
     useInvitarTalentoReducer();
 
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   const { notify } = useNotify();
 
   const router = useRouter();
@@ -23,8 +27,8 @@ const InvitarTalentoPage = () => {
       notify(
         success ? "success" : "error",
         success
-          ? "Se envio la invitacion con exito"
-          : "Ocurrio un problema al tratar de enviar la invitacion"
+          ? `${textos['se_envio_la_invitacion']}`
+          : `${textos['error_envio_invitacion']}`
       );
     },
     onError: (error) => {
@@ -38,7 +42,7 @@ const InvitarTalentoPage = () => {
       validarFormulario(state);
       sendInvitation.mutate({
         to: state.correo_electronico,
-        subject: `Invitacion para unirte a EZ-CAST`,
+        subject: `${textos['invitacion_unirte_a_ezcast']}`,
         from: state.correo_invitacion,
         data: {
           nombre: state.nombre,

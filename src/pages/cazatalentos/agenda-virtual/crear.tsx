@@ -171,7 +171,8 @@ const NuevoHorarioAgendaVirtual = () => {
 
 	const save_horario = api.agenda_virtual.create.useMutation({
         onSuccess: (data) => {
-            notify('success', 'Se actualizo el horario con exito');
+            notify("success", `${textos['se_actualizo_con_exito']}`);
+			//notify('success', 'Se actualizo el horario con exito');
 			router.push(`/cazatalentos/agenda-virtual/horario/${data.id}`)
 		},
 		onError: (error) => {
@@ -376,7 +377,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																		if (fechas_selected.fecha_inicio != null) {
 																			if (fechas_selected.fecha_fin != null) {
 																				if (fechas_selected.fecha_fin.getTime() < fechas_selected.fecha_inicio.getTime()) {
-																					notify('warning', 'La fecha final no puede ser menor a la fecha inicial');
+																					notify('warning', `${textos['fecha_final_menor_a_inicial']}`);
 																					return;
 																				}
 																			}
@@ -647,19 +648,19 @@ const NuevoHorarioAgendaVirtual = () => {
                             switch (confirmation_dialog.action) {
                                 case 'UPDATE': {
 									if (locaciones.length === 0 || locaciones.filter(l => l.checked).length === 0 && tipoLocacion === `${textos['presencial']}`) {
-										notify('warning', 'No se han agregado ninguna locacion');
+										notify('warning', `${textos['no_se_ha_seleccionado_una_locacion']}`);
 										return;
 									}
 									if (selected_proyecto < 1) {
-										notify('warning', 'No se ha seleccionado ningun proyecto');
+										notify('warning', `${textos['no_se_ha_seleccionado_un_proyecto']}`);
 										return;
 									}
 									if (fechas_audicion.size < 1 && tipoFechas === `${textos['nuevas']}`) {
-										notify('warning', 'No se ha seleccionado ninguna fecha');
+										notify('warning', `${textos['no_haz_seleccionado_ninguna_fecha']}`);
 										return;
 									}
 									if (uso_horario_selected < 1) {
-										notify('warning', 'No se ha seleccionado el uso de horario');
+										notify('warning', `${textos['no_se_ha_seleccionado_el_uso_de_horario']}`);
 										return;
 									}
 
