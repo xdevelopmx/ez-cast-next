@@ -20,7 +20,7 @@ import { api } from "~/utils/api";
 import { getSession } from "next-auth/react";
 import Image from "next/image";
 import { type User } from "next-auth";
-import { Fragment, useEffect, useState, useMemo, useRef } from "react";
+import { Fragment, useEffect, useState, useMemo, useRef, useContext } from "react";
 import type {
   Roles,
   CatalogoTiposRoles,
@@ -35,6 +35,8 @@ import Constants from "~/constants";
 import { TalentoTableItem } from "~/components/cazatalento/billboard/TalentoTableItem";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { ExpandMoreOutlined } from "@mui/icons-material";
+import AppContext from "~/context/app";
+import useLang from "~/hooks/useLang";
 
 type BillboardCazaTalentosPageProps = {
   user: User;
@@ -56,6 +58,8 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   user,
   id_proyecto,
 }) => {
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   const [selected_proyecto, setSelectedProyecto] =
     useState<number>(id_proyecto);
   const [pagination, setPagination] = useState<{
@@ -148,12 +152,12 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
       })[];
       descripcion: string;
     } = {
-      tipo: "No especificado",
+      tipo: `${textos['no_especificado']}`,
       generos: [],
       rango_edad_inicio: 0,
       rango_edad_fin: 0,
       apariencias_etnicas: [],
-      descripcion: "No especificado",
+      descripcion: `${textos['no_especificado']}`,
     };
 
     if (rol_applications.data) {
@@ -238,12 +242,12 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         ? a.talento.info_basica.union.descripcion
                         : "N/D"
                     }`
-                  : a.talento.info_basica.union.union.es
+                  : ctx.lang === 'es' ? a.talento.info_basica.union.union.es : a.talento.info_basica.union.union.en
                 : "N/D"
             }
             ubicacion={
               a.talento.info_basica
-                ? a.talento.info_basica.estado_republica.es
+                ? ctx.lang === 'es' ? a.talento.info_basica.estado_republica.es : a.talento.info_basica.estado_republica.en
                 : "N/D"
             }
             peso={a.talento.info_basica ? a.talento.info_basica.peso : 0}
@@ -444,7 +448,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                 ? estados_aplicaciones_roles.data.map((e) => {
                                     return {
                                       value: e.id.toString(),
-                                      label: e.es,
+                                      label: ctx.lang === 'es' ? e.es : e.en,
                                     };
                                   })
                                 : []
@@ -462,10 +466,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
 
                       <Grid xs={3}>
                         <Typography sx={{ color: "#fff", textAlign: "center" }}>
-                          {rol_applications.data
-                            ? rol_applications.data.count_applications
-                            : 0}{" "}
-                          resultados totales
+                          {`${textos['PAGINADOR_TOTAL']}`.replace('[N1]', rol_applications.data ? rol_applications.data.count_applications.toString() : '0')}
                         </Typography>
                       </Grid>
 
@@ -479,7 +480,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         >
                           <>
                             <Typography>
-                              Ver
+                              {textos['ver']}
                               <Typography
                                 onChange={(ev) => {
                                   setPagination((prev) => {
@@ -524,7 +525,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                   16
                                 </option>
                               </Typography>
-                              resultados
+                              {textos['resultados']}
                             </Typography>
                             <Button
                               disabled={!has_applitations}
@@ -569,7 +570,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                               )}
                             {!rol_applications.isFetching &&
                               !has_applitations && (
-                                <Typography>Sin resultados</Typography>
+                                <Typography>{textos['sin']} {textos['resultados']}</Typography>
                               )}
                             <Button
                               disabled={!has_applitations}
@@ -619,7 +620,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                           <Box sx={{ display: "flex", gap: 1 }}>
                             {detalles_rol.generos.length === 0 && (
                               <>
-                                <Typography>No especificado</Typography>
+                                <Typography>{textos['no_especificado']}</Typography>
                                 <Divider
                                   style={{
                                     borderWidth: 1,
@@ -635,7 +636,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                               detalles_rol.generos.map((g) => {
                                 return (
                                   <>
-                                    <Typography>{g.genero?.es}</Typography>
+                                    <Typography>{ctx.lang === 'es' ? g.genero?.es : g.genero?.en}</Typography>
                                     <Divider
                                       style={{
                                         borderWidth: 1,
@@ -678,7 +679,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                           >
                             {detalles_rol.apariencias_etnicas.length === 0 && (
                               <>
-                                <Typography>No especificado</Typography>
+                                <Typography>{textos['no_especificado']}</Typography>
                                 <Divider
                                   style={{
                                     borderWidth: 1,
@@ -695,7 +696,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                 return (
                                   <>
                                     <Typography>
-                                      {ae.aparencia_etnica.es}
+                                      {ctx.lang === 'es' ? ae.aparencia_etnica.es : ae.aparencia_etnica.en}
                                     </Typography>
                                     <Divider
                                       style={{
@@ -767,7 +768,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                   }}
                                   fontWeight={600}
                                 >
-                                  Página previa
+                                  {textos['pagina_anterior']}
                                 </Typography>
                               </Box>
                             </Button>
@@ -776,7 +777,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                               sx={{ color: "#069cb1" }}
                               fontWeight={600}
                             >
-                              Página{" "}
+                              {textos['pagina']} {" "}
                               <Typography
                                 component={"span"}
                                 sx={{
@@ -788,7 +789,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                               >
                                 {pagination.page + 1}
                               </Typography>{" "}
-                              de{" "}
+                              {textos['de']} {" "}
                               {rol_applications.data
                                 ? Math.ceil(
                                     rol_applications.data.count_applications /
@@ -827,7 +828,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                   }}
                                   fontWeight={600}
                                 >
-                                  Siguiente página
+                                  {textos['siguiente_pagina']}
                                 </Typography>
                                 <Image
                                   src="/assets/img/iconos/arow_r_blue.svg"

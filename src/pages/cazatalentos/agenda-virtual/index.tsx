@@ -150,7 +150,14 @@ const AgendaVirtual = () => {
                                         </Grid>
                                     </Grid>
                                     <div style={{ textAlign: 'right', width: '100%' }}>
-                                        <Link href="/cazatalentos/agenda-virtual/crear" className="btn btn-intro btn-price mb-2 mt-3"><Image src="/assets/img/iconos/mas.svg" width={14} height={14} style={{ filter: 'invert(1)', margin: '0 0 2px 0' }} alt="" />&nbsp;&nbsp;{textos['n_horario']}</Link>
+                                        <Button 
+                                            onClick={() => {
+                                                void router.push(`/cazatalentos/agenda-virtual/crear`);
+                                            }}
+                                            className="btn btn-intro btn-price mb-2 mt-3">
+                                                <Image src="/assets/img/iconos/mas.svg" width={14} height={14} style={{ filter: 'invert(1)', margin: '0 0 2px 0' }} alt="" />
+                                                &nbsp;&nbsp;{textos['n_horario']}
+                                        </Button>
                                     </div>
                                     <Grid item xs={12}>
                                         <Grid container item xs={20} sx={{ backgroundColor: '#fff', padding: '10px 10px' }} columns={18}>

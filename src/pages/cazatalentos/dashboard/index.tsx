@@ -727,6 +727,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
+  console.log(session?.user);
   if (session && session.user) {
     if (session.user.tipo_usuario === TipoUsuario.CAZATALENTOS) {
       return {

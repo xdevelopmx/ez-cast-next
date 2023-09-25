@@ -8,13 +8,15 @@ import Head from "next/head";
 import Image from 'next/image';
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Alertas, MainLayout, MenuLateral, FormGroup, MRadioGroup, Tag, AddButton, MSelect, ModalLocacion, SectionTitle, ModalLocacionState } from "~/components";
 import { MContainer } from "~/components/layout/MContainer";
 import MotionDiv from "~/components/layout/MotionDiv";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import { MTooltip } from "~/components/shared/MTooltip";
+import AppContext from "~/context/app";
 import { TipoUsuario } from "~/enums";
+import useLang from "~/hooks/useLang";
 import useNotify from "~/hooks/useNotify";
 import { api, parseErrorBody } from "~/utils/api";
 
@@ -22,15 +24,17 @@ type tipos_locacion = 'PRESENCIAL' | 'VIRTUAL';
 type tipos_audicion = 'AUDICION' | 'CALLBACK';
 
 const NuevoHorarioAgendaVirtual = () => {
+	const ctx = useContext(AppContext);
+  	const textos = useLang(ctx.lang);
 
 	const [showModal, setShowModal] = useState(false)
 
 	const { notify } = useNotify();
 
-	const [tipoAudicion, setTipoAudicion] = useState<tipos_audicion>('AUDICION');
-	const [tipoFechas, setTipoFechas] = useState<'ESTABLECIDAS' | 'NUEVAS'>('ESTABLECIDAS');
-	const [tipoLocacion, setTipoLocacion] = useState<tipos_locacion>('PRESENCIAL');
-	const [checkbox_tipo_fecha, setCheckboxTipoFecha] = useState<'Rango de fechas' | 'Individuales'>('Individuales');
+	const [tipoAudicion, setTipoAudicion] = useState<string>(``);
+	const [tipoFechas, setTipoFechas] = useState<string>('');
+	const [tipoLocacion, setTipoLocacion] = useState<string>('');
+	const [checkbox_tipo_fecha, setCheckboxTipoFecha] = useState<string>('');
 	const [selected_proyecto, setSelectedProyecto] = useState<number>(0);
 	const [fechas_audicion, setFechasAudicion] = useState<Map<string, { fecha_inicio: Date, fecha_fin: Date | null }>>(new Map());
 	const [fechas_selected, setFechasSelected] = useState<{fecha_inicio: Date | null, fecha_fin: Date | null}>({fecha_inicio: null, fecha_fin: null});
@@ -101,14 +105,14 @@ const NuevoHorarioAgendaVirtual = () => {
 	useEffect(() => {
 		if (horario.data) {
 			setSelectedProyecto(horario.data.id_proyecto);
-			setTipoAudicion((horario.data.tipo_agenda === 'AUDICION') ? 'AUDICION' : 'CALLBACK');
-			if (horario.data.tipo_agenda.toLowerCase() === 'callback') {
-				setTipoFechas('NUEVAS');
+			setTipoAudicion((horario.data.tipo_agenda === `${textos['audicion']}`) ? `${textos['audicion']}` : `${textos['callback']}`);
+			if (horario.data.tipo_agenda.toLowerCase() === `${textos['callback']}`) {
+				setTipoFechas(`${textos['nuevas']}`);
 			} else {
-				setTipoFechas((horario.data.tipo_fechas === 'NUEVAS') ? 'NUEVAS' : 'ESTABLECIDAS');
+				setTipoFechas((horario.data.tipo_fechas === `${textos['nuevas']}`) ? `${textos['nuevas']}` : `${textos['establecidas']}`);
 			}
-			setTipoLocacion((horario.data.tipo_localizacion === 'PRESENCIAL') ? 'PRESENCIAL' : 'VIRTUAL');
-			if (horario.data.tipo_fechas === 'NUEVAS') {
+			setTipoLocacion((horario.data.tipo_localizacion === `${textos['presencial']}`) ? `${textos['presencial']}` : `${textos['virtual']}`);
+			if (horario.data.tipo_fechas === `${textos['nuevas']}`) {
 				horario.data.fechas.forEach((f) => {
 					fechas_audicion.set(`${f.fecha_inicio}-${f.fecha_fin}`, {fecha_inicio: f.fecha_inicio, fecha_fin: f.fecha_fin});			
 				})
@@ -183,6 +187,13 @@ const NuevoHorarioAgendaVirtual = () => {
 
 	const input_background_hover_color = is_callback ? '#ea9d2190' : '#069fff';
 
+	useEffect(() => {
+		setTipoAudicion(`${textos['audicion']}`);
+		setCheckboxTipoFecha(`${textos['individuales']}`);
+		setTipoFechas(`${textos['establecidas']}`);
+		setTipoLocacion(`${textos['presencial']}`);
+	}, [textos]);
+
 	return (
 		<>
 			
@@ -208,8 +219,8 @@ const NuevoHorarioAgendaVirtual = () => {
 											<Image src="/assets/img/iconos/agenda.svg" width={50} height={50} style={{ margin: '15px 0 0 0', filter: 'invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)' }} alt="" />
 										</Grid>
 										<Grid item md={11}>
-											<Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>Agenda Virtual</Typography>
-											<Typography fontWeight={600} sx={{ color: '#000', fontSize: '`.7rem' }}>La organización es la base de un buen proyecto, ¡Comencemos!</Typography>
+											<Typography fontWeight={800} sx={{ color: '#069cb1', fontSize: '2rem' }}>{textos['agenda_virtual']}</Typography>
+											<Typography fontWeight={600} sx={{ color: '#000', fontSize: '`.7rem' }}>{textos['subtitle']}</Typography>
 										</Grid>
 
 									</Grid>
@@ -217,8 +228,7 @@ const NuevoHorarioAgendaVirtual = () => {
 								{!has_projects && id_horario === 0 &&
 									<Box display="flex" flexDirection={'column'} justifyContent={'center'} alignItems={'center'}> 
 										<div className="box_message_blue">
-											<p className="h3" style={{ fontWeight: 600 }}>No tienes mas proyectos para crear horario</p>
-											<p>Aqui apareceran todos los proyectos que hayas tengas activos que no cuenten aun con horarios creados<br /></p>
+											<p className="h3" style={{ fontWeight: 600 }}>{textos['no_proyectos']}</p>
 										</div>
 										<Button onClick={() => { router.back()}} variant='contained' style={{width: '200px'}}>Regresar</Button>
 									</Box>
@@ -230,21 +240,21 @@ const NuevoHorarioAgendaVirtual = () => {
 												<ButtonGroup sx={{ mt: 2, mb: 0 }} variant="contained" aria-label="outlined primary button group">
 													<Button
 														style={{
-															backgroundColor: (tipoAudicion === 'AUDICION') ? input_background_color : ''
+															backgroundColor: (tipoAudicion === `${textos['audicion']}`) ? input_background_color : ''
 														}}
 														disabled={is_callback}
-														onClick={() => { setTipoAudicion('AUDICION') }}
-														variant={tipoAudicion === 'AUDICION' ? 'contained' : 'outlined'}
+														onClick={() => { setTipoAudicion(`${textos['audicion']}`) }}
+														variant={tipoAudicion === `${textos['audicion']}` ? 'contained' : 'outlined'}
 													>
-														Audición
+														{textos['audicion']}
 													</Button>
 													<Button
 														style={{
-															backgroundColor: (tipoAudicion === 'CALLBACK') ? input_background_color : ''
+															backgroundColor: (tipoAudicion === `${textos['callback']}`) ? input_background_color : ''
 														}}
 														disabled={!is_callback}
-														onClick={() => { setTipoAudicion('CALLBACK') }}
-														variant={tipoAudicion === 'CALLBACK' ? 'contained' : 'outlined'}
+														onClick={() => { setTipoAudicion(`${textos['callback']}`) }}
+														variant={tipoAudicion === `${textos['callback']}` ? 'contained' : 'outlined'}
 													>
 														Callback
 													</Button>
@@ -265,18 +275,18 @@ const NuevoHorarioAgendaVirtual = () => {
 														onChange={(e) => {
 															setSelectedProyecto(parseInt(e.target.value))
 														}}
-														label='Proyecto al que se le creara un horario *'
+														label={`${textos['proyecto_al_que_se_creara']} *`}
 													/>
 												}
 												{id_horario > 0 &&
 													<>
-														<Typography>Proyecto al que se le creara un horario</Typography>
+														<Typography>{`${textos['proyecto_al_que_se_creara']}`}</Typography>
 														<Typography variant={'h5'}>{horario.data?.proyecto.nombre}</Typography>
 
 													</>
 												}
 												<p style={{ color: '#069cb1' }}>
-													Para tu control interno. No será visto por talento o representantes.
+													{textos['label_control_interno']}
 												</p>
 											</Grid>
 										</Grid>
@@ -287,40 +297,40 @@ const NuevoHorarioAgendaVirtual = () => {
 											<ButtonGroup sx={{ mt: 2, mb: 4 }} variant="contained" aria-label="outlined primary button group">
 												<Button
 													style={{
-														backgroundColor: (tipoFechas === 'ESTABLECIDAS') ? input_background_color : ''
+														backgroundColor: (tipoFechas === `${textos['establecidas']}`) ? input_background_color : ''
 													}}
 													disabled={is_callback}
-													onClick={() => { setTipoFechas('ESTABLECIDAS') }}
-													variant={tipoFechas === 'ESTABLECIDAS' ? 'contained' : 'outlined'}
+													onClick={() => { setTipoFechas(`${textos['establecidas']}`) }}
+													variant={tipoFechas === `${textos['establecidas']}` ? 'contained' : 'outlined'}
 												>
-													Usar Fechas Definidas En Roles
+													{textos['usar_fechas_definidas_en_roles']}
 												</Button>
 												<Button
 													style={{
-														backgroundColor: (tipoFechas === 'NUEVAS') ? input_background_color : ''
+														backgroundColor: (tipoFechas === `${textos['nuevas']}`) ? input_background_color : ''
 													}}
-													onClick={() => { setTipoFechas('NUEVAS') }}
-													variant={tipoFechas === 'NUEVAS' ? 'contained' : 'outlined'}
+													onClick={() => { setTipoFechas(`${textos['nuevas']}`) }}
+													variant={tipoFechas === `${textos['nuevas']}` ? 'contained' : 'outlined'}
 												>
-													Definir Nuevas Fechas
+													{textos['definir_nuevas_fechas']}
 												</Button>
 											</ButtonGroup>
 										</Grid>
 										<Grid item xs={12} sx={{ padding: '5px 10px', margin: '4px 0' }}>
-											<MotionDiv show={tipoFechas === 'NUEVAS'} animation="fade">
+											<MotionDiv show={tipoFechas === `${textos['nuevas']}`} animation="fade">
 
 												<Grid container>
 													<Grid xs={2}>
 														<MRadioGroup
-															label='Fecha audición'
+															label={`${textos['fecha_audicion']}`}
 															labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
 															style={{ gap: 0 }}
 															id="rango-de-fechas-radio"
-															options={['Rango de fechas', 'Individuales']}
+															options={[`${textos['rango_fechas']}`, `${textos['individuales']}`]}
 															value={checkbox_tipo_fecha}
 															direction='vertical'
 															onChange={(e) => {
-																setCheckboxTipoFecha(e.target.value === 'Individuales' ? 'Individuales' : 'Rango de fechas');
+																setCheckboxTipoFecha(e.target.value === `${textos['individuales']}` ? `${textos['individuales']}` : `${textos['rango_fechas']}`);
 															}}
 														/>
 
@@ -343,8 +353,8 @@ const NuevoHorarioAgendaVirtual = () => {
 																	}}
 																/>
 															</Grid>
-															<Grid item xs={4} md={3} style={{display: (checkbox_tipo_fecha === 'Rango de fechas') ? 'flex' : 'none'}}>
-																<MotionDiv show={checkbox_tipo_fecha === 'Rango de fechas'} animation="fade">
+															<Grid item xs={4} md={3} style={{display: (checkbox_tipo_fecha === `${textos['rango_fechas']}`) ? 'flex' : 'none'}}>
+																<MotionDiv show={checkbox_tipo_fecha === `${textos['rango_fechas']}`} animation="fade">
 																	<DatePicker
 																		localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
 																		slotProps={{ textField: { size: 'small' } }}
@@ -376,20 +386,20 @@ const NuevoHorarioAgendaVirtual = () => {
 																	}}
 																	sx={{
 																		textTransform: 'none',
-																		backgroundColor: tipoFechas === 'NUEVAS' ? input_background_color : '',
+																		backgroundColor: tipoFechas === `${textos['nuevas']}` ? input_background_color : '',
 																		borderRadius: '16px',
 																		color: '#fff',
 																		width: 150,
 																		marginLeft: 2,
 																		'&:hover': {
-																			backgroundColor: tipoFechas === 'NUEVAS' ? input_background_hover_color : '',
+																			backgroundColor: tipoFechas === `${textos['nuevas']}` ? input_background_hover_color : '',
 																			color: '#fff',
 																		},
 																		border: 'none',
 																		outline: 'none'
 																	}}
 																>
-																	Agregar fecha
+																	{textos['agregar']} {textos['fecha']}
 																</Button>
 															</Grid>
 															<Grid item xs={12}>
@@ -419,7 +429,7 @@ const NuevoHorarioAgendaVirtual = () => {
 
 												</Grid>
 											</MotionDiv>
-											<MotionDiv show={tipoFechas === 'ESTABLECIDAS'} animation="fade">
+											<MotionDiv show={tipoFechas === `${textos['establecidas']}`} animation="fade">
 												<Grid container sx={{ mt: 2 }}>
 													
 													{Array.from(fechas_audicion_por_roles).map((e, i) => {
@@ -450,40 +460,40 @@ const NuevoHorarioAgendaVirtual = () => {
 											<Grid xs={7}>
 												<Grid xs={12}>
 													<Typography fontWeight={600}>
-														Locación
+														{textos['locacion']}
 													</Typography>
 												</Grid>
 												<Grid xs={12}>
 													<ButtonGroup sx={{ mt: 2, mb: 0 }} variant="contained" aria-label="outlined primary button group">
 														<Button
 															style={{
-																backgroundColor: (tipoLocacion === 'PRESENCIAL') ? input_background_color : ''
+																backgroundColor: (tipoLocacion === `${textos['presencial']}`) ? input_background_color : ''
 															}}
-															onClick={() => { setTipoLocacion('PRESENCIAL') }}
-															variant={tipoLocacion === 'PRESENCIAL' ? 'contained' : 'outlined'}
+															onClick={() => { setTipoLocacion(`${textos['presencial']}`) }}
+															variant={tipoLocacion === `${textos['presencial']}` ? 'contained' : 'outlined'}
 														>
-															Presencial
+															{`${textos['presencial']}`}
 														</Button>
 														<Button
 															style={{
-																backgroundColor: (tipoLocacion === 'VIRTUAL') ? input_background_color : ''
+																backgroundColor: (tipoLocacion === `${textos['virtual']}`) ? input_background_color : ''
 															}}
-															onClick={() => { setTipoLocacion('VIRTUAL') }}
-															variant={tipoLocacion === 'VIRTUAL' ? 'contained' : 'outlined'}
+															onClick={() => { setTipoLocacion(`${textos['virtual']}`) }}
+															variant={tipoLocacion === `${textos['virtual']}` ? 'contained' : 'outlined'}
 														>
-															Virtual
+															{`${textos['virtual']}`}
 														</Button>
 													</ButtonGroup>
 												</Grid>
 												<Grid xs={12}>
-													<MotionDiv show={tipoLocacion === 'PRESENCIAL'} animation='fade'>
+													<MotionDiv show={tipoLocacion === `${textos['presencial']}`} animation='fade'>
 														<Typography sx={{ color: '#069cb1' }}>
-															Locaciones guardadas
+															{`${textos['locaciones_guardadas']}`}
 														</Typography>
 													</MotionDiv>
 												</Grid>
 												<Grid xs={12}>
-													<MotionDiv show={tipoLocacion === 'PRESENCIAL'} animation='fade'>
+													<MotionDiv show={tipoLocacion === `${textos['presencial']}`} animation='fade'>
 														<>
 															{
 																locaciones.map((loc, i) => (
@@ -508,7 +518,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																				<Typography>
 																					{loc.direccion}, {estados_republica.data?.filter(e => e.id === loc.id_estado_republica)[0]?.es} - {loc.id}
 																				</Typography> 
-																				{loc.guardado_en_bd && <Chip sx={{marginLeft: 2, backgroundColor: input_background_color, color: 'white'}} label="Guardado" />}
+																				{loc.guardado_en_bd && <Chip sx={{marginLeft: 2, backgroundColor: input_background_color, color: 'white'}} label={`${textos['guardado']}`} />}
 																			</MContainer>
 																		</Grid>
 																		<Grid xs={2}>
@@ -517,7 +527,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																					setShowModal(true);
 																				}} sx={{ textTransform: 'none' }}>
 																				<Typography sx={{ color: '#069cb1', textDecoration: 'underline' }}>
-																					Editar
+																					{`${textos['editar']}`}
 																				</Typography>
 																			</Button>
 																		</Grid>
@@ -525,7 +535,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																			{!loc.guardado_en_bd &&
 																				<Button onClick={() => { setLocaciones(prev => { return prev.filter(l => l.id !== loc.id)}) }} sx={{ textTransform: 'none' }}>
 																					<Typography sx={{ color: '#069cb1', textDecoration: 'underline' }}>
-																						Borrar
+																						{`${textos['eliminar']}`}
 																					</Typography>
 																				</Button>
 																			}
@@ -537,11 +547,11 @@ const NuevoHorarioAgendaVirtual = () => {
 													</MotionDiv>
 												</Grid>
 												<Grid xs={12}>
-													<MotionDiv show={tipoLocacion === 'PRESENCIAL'} animation='fade'>
+													<MotionDiv show={tipoLocacion === `${textos['presencial']}`} animation='fade'>
 														<Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
 															<AddButton
 																aStyles={{ margin: 0, borderRadius: '2rem' }}
-																text="Agregar locación"
+																text={`${textos['agregar']} ${textos['locacion']}`}
 																onClick={() => { 
 																	setLocationSelected(undefined);
 																	setShowModal(true) 
@@ -570,7 +580,7 @@ const NuevoHorarioAgendaVirtual = () => {
 														onChange={(e) => {
 															setNotas(e.target.value)
 														}}
-														label='Notas sobre locación'
+														label={`${textos['notas_sobre_locacion']}`}
 													/>
 												</Grid>
 												<Grid>
@@ -579,7 +589,7 @@ const NuevoHorarioAgendaVirtual = () => {
 														loading={usos_horarios.isFetching}
 														options={
 															(usos_horarios.data)
-																? usos_horarios.data.map(s => { return { value: s.id.toString(), label: s.es } })
+																? usos_horarios.data.map(s => { return { value: s.id.toString(), label: ctx.lang === 'es' ? s.es : s.en } })
 																: []
 														}
 														className={'form-input-md'}
@@ -587,7 +597,7 @@ const NuevoHorarioAgendaVirtual = () => {
 														onChange={(e) => {
 															setUsoHorarioSelected(parseInt(e.target.value));
 														}}
-														label='Uso horario*'
+														label={`${textos['timezone']}*`}
 													/>
 												</Grid>
 											</Grid>
@@ -608,7 +618,7 @@ const NuevoHorarioAgendaVirtual = () => {
 														}
 													}}>
 													<Typography>
-														Guardar y personalizar horario
+														{textos['guardar_y_personalizar']}
 													</Typography>
 												</Button>
 												<Link href={'/cazatalentos/agenda-virtual'}>
@@ -617,7 +627,7 @@ const NuevoHorarioAgendaVirtual = () => {
 															textTransform: 'none',
 														}}>
 														<Typography sx={{ color: '#06adc3', textDecoration: 'underline' }}>
-															Cancelar
+															{textos['cancelar']}
 														</Typography>
 													</Button>
 												</Link>
@@ -636,7 +646,7 @@ const NuevoHorarioAgendaVirtual = () => {
                         if (confirmed) {
                             switch (confirmation_dialog.action) {
                                 case 'UPDATE': {
-									if (locaciones.length === 0 || locaciones.filter(l => l.checked).length === 0 && tipoLocacion === 'PRESENCIAL') {
+									if (locaciones.length === 0 || locaciones.filter(l => l.checked).length === 0 && tipoLocacion === `${textos['presencial']}`) {
 										notify('warning', 'No se han agregado ninguna locacion');
 										return;
 									}
@@ -644,7 +654,7 @@ const NuevoHorarioAgendaVirtual = () => {
 										notify('warning', 'No se ha seleccionado ningun proyecto');
 										return;
 									}
-									if (fechas_audicion.size < 1 && tipoFechas === 'NUEVAS') {
+									if (fechas_audicion.size < 1 && tipoFechas === `${textos['nuevas']}`) {
 										notify('warning', 'No se ha seleccionado ninguna fecha');
 										return;
 									}
@@ -654,7 +664,7 @@ const NuevoHorarioAgendaVirtual = () => {
 									}
 
 									let dates: {fecha_inicio: Date, fecha_fin: Date | null}[] = [];
-									if (tipoFechas === 'ESTABLECIDAS') {
+									if (tipoFechas === `${textos['establecidas']}`) {
 										Array.from(fechas_audicion_por_roles).forEach(f => {
 											f[1].forEach(d => {
 												dates.push({fecha_inicio: d.fecha_inicio, fecha_fin: d.fecha_fin});
@@ -667,9 +677,9 @@ const NuevoHorarioAgendaVirtual = () => {
 									save_horario.mutate({
 										locaciones: locaciones.filter(l => l.checked),
 										fechas: dates,
-										tipo_agenda: tipoAudicion,
-										tipo_localizacion: tipoLocacion,
-										tipo_fechas: tipoFechas,
+										tipo_agenda: tipoAudicion === `${textos['audicion']}` ? 'AUDICION' : 'CALLBACK',
+										tipo_localizacion: tipoLocacion === `${textos['presencial']}` ? 'PRESENCIAL' : 'VIRTUAL',
+										tipo_fechas: tipoFechas === `${textos['establecidas']}` ? 'ESTABLECIDAS' : 'NUEVAS',
 										notas: notas,
 										id_uso_horario: uso_horario_selected,
 										id_proyecto: selected_proyecto

@@ -64,15 +64,20 @@ const LoginPage: NextPage = () => {
   console.log(sess.data);
   useEffect(() => {
     if (ctx.previous_route && !ctx.previous_route.includes('/login')) {
-      signOut({
-        redirect: false
-      }).then();
+      if (sess.data?.user?.provider === 'FACEBOOK_OR_GOOGLE') {
+        console.log('xd');
+        signOut({
+          redirect: false
+        }).then();
+      }
     } else {
 
       if (sess.status === 'authenticated') {
-        
+       
         if (!sess.data.user?.tipo_usuario) {
+          console.log('entro');
           if (sess.data.user?.email) {
+            console.log('entro');
             const tipo_usuario = sessionStorage.getItem('TIPO_USUARIO');
             fetch('/api/auth/get-user-by-email', {
               method: 'POST',
@@ -95,9 +100,11 @@ const LoginPage: NextPage = () => {
               notify('error', err.toString());
             });
           } else {
+            console.log('entro');
             notify('error', 'Esta cuenta no tiene un correo disponible para iniciar sesion, por favor elige otro metodo');
           }
         } else {
+          console.log('entro');
           router.push("/inicio");
         }
       }
