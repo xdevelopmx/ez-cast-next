@@ -453,7 +453,9 @@ type EditarTalentoPageProps = {
 const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   id_talento,
 }) => {
-  const [save_type, setSaveType] = useState<'save_and_finish_later' | 'save' | 'save_and_finish' | undefined>();
+  const [save_type, setSaveType] = useState<
+    "save_and_finish_later" | "save" | "save_and_finish" | undefined
+  >();
   const [busy, setBusy] = useState(false);
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -496,10 +498,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveInfoGral = api.talentos.saveInfoGral.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_info_gral"] ?? "éxito"}`);
-      if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
-        router.replace('/talento/dashboard');
+      if (
+        save_type === "save_and_finish_later" ||
+        save_type === "save_and_finish"
+      ) {
+        router.replace("/talento/dashboard");
       } else {
-        dispatch({ type: "update-form", value: { step_active: state.next_step } });
+        dispatch({
+          type: "update-form",
+          value: { step_active: state.next_step },
+        });
         void talento.refetch();
       }
     },
@@ -511,10 +519,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveMedios = api.talentos.saveMedios.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_medios"] ?? "éxito"}`);
-      if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
-        router.replace('/talento/dashboard');
+      if (
+        save_type === "save_and_finish_later" ||
+        save_type === "save_and_finish"
+      ) {
+        router.replace("/talento/dashboard");
       } else {
-        dispatch({ type: "update-form", value: { step_active: state.next_step } });
+        dispatch({
+          type: "update-form",
+          value: { step_active: state.next_step },
+        });
         void talento.refetch();
       }
     },
@@ -526,10 +540,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveCreditos = api.talentos.saveCreditos.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_creditos"] ?? "éxito"}`);
-      if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
-        router.replace('/talento/dashboard');
+      if (
+        save_type === "save_and_finish_later" ||
+        save_type === "save_and_finish"
+      ) {
+        router.replace("/talento/dashboard");
       } else {
-        dispatch({ type: "update-form", value: { step_active: state.next_step } });
+        dispatch({
+          type: "update-form",
+          value: { step_active: state.next_step },
+        });
         void talento.refetch();
       }
     },
@@ -541,10 +561,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveHabilidades = api.talentos.saveHabilidades.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_habilidades"] ?? "éxito"}`);
-      if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
-        router.replace('/talento/dashboard');
+      if (
+        save_type === "save_and_finish_later" ||
+        save_type === "save_and_finish"
+      ) {
+        router.replace("/talento/dashboard");
       } else {
-        dispatch({ type: "update-form", value: { step_active: state.next_step } });
+        dispatch({
+          type: "update-form",
+          value: { step_active: state.next_step },
+        });
         void talento.refetch();
       }
     },
@@ -556,10 +582,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const saveActivos = api.talentos.saveActivos.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_activos"] ?? "éxito"}`);
-      if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
-        router.replace('/talento/dashboard');
+      if (
+        save_type === "save_and_finish_later" ||
+        save_type === "save_and_finish"
+      ) {
+        router.replace("/talento/dashboard");
       } else {
-        dispatch({ type: "update-form", value: { step_active: state.next_step } });
+        dispatch({
+          type: "update-form",
+          value: { step_active: state.next_step },
+        });
         void talento.refetch();
       }
     },
@@ -571,10 +603,16 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
   const savePreferencias = api.talentos.savePreferencias.useMutation({
     onSuccess(_) {
       notify("success", `${textos["success_save_preferencias"] ?? "éxito"}`);
-      if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
-        router.replace('/talento/dashboard');
+      if (
+        save_type === "save_and_finish_later" ||
+        save_type === "save_and_finish"
+      ) {
+        router.replace("/talento/dashboard");
       } else {
-        dispatch({ type: "update-form", value: { step_active: state.next_step } });
+        dispatch({
+          type: "update-form",
+          value: { step_active: state.next_step },
+        });
         void talento.refetch();
       }
     },
@@ -587,13 +625,19 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     api.talentos.saveFiltrosApariencias.useMutation({
       onSuccess(_) {
         notify("success", `${textos["success_save_filtros"] ?? "éxito"}`);
-        if (save_type === 'save_and_finish_later' || save_type === 'save_and_finish') {
+        if (
+          save_type === "save_and_finish_later" ||
+          save_type === "save_and_finish"
+        ) {
           const timeout = setTimeout(() => {
-            router.replace('/talento/dashboard');
+            router.replace("/talento/dashboard");
             clearTimeout(timeout);
           }, 1000);
         } else {
-          dispatch({ type: "update-form", value: { step_active: state.next_step } });
+          dispatch({
+            type: "update-form",
+            value: { step_active: state.next_step },
+          });
           void talento.refetch();
         }
       },
@@ -1475,16 +1519,14 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           id_habilidad_especifica: number;
           id_habilidad: number;
         }[] = [];
-        state.habilidades.habilidades_seleccionadas.forEach(
-          (value, key) => {
-            value.forEach((id) => {
-              ids.push({
-                id_habilidad_especifica: id,
-                id_habilidad: key,
-              });
+        state.habilidades.habilidades_seleccionadas.forEach((value, key) => {
+          value.forEach((id) => {
+            ids.push({
+              id_habilidad_especifica: id,
+              id_habilidad: key,
             });
-          }
-        );
+          });
+        });
         saveHabilidades.mutate({
           id_talento: id_talento,
           ids_habilidades: ids,
@@ -1495,15 +1537,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       case 5: {
         saveActivos.mutate({
           id_talento: id_talento,
-          vehiculos: state.activos.vehiculos
-            ? state.activos.vehiculos
-            : [],
-          mascotas: state.activos.mascotas
-            ? state.activos.mascotas
-            : [],
-          vestuarios: state.activos.vestuarios
-            ? state.activos.vestuarios
-            : [],
+          vehiculos: state.activos.vehiculos ? state.activos.vehiculos : [],
+          mascotas: state.activos.mascotas ? state.activos.mascotas : [],
+          vestuarios: state.activos.vestuarios ? state.activos.vestuarios : [],
           props: state.activos.props ? state.activos.props : [],
           equipos_deportivos: state.activos.equipos_deportivos
             ? state.activos.equipos_deportivos
@@ -1516,8 +1552,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           id_talento: id_talento,
           preferencias: state.preferencias.preferencias,
           tipos_trabajo: state.preferencias.tipo_trabajo,
-          interes_en_proyectos:
-            state.preferencias.interes_en_proyectos,
+          interes_en_proyectos: state.preferencias.interes_en_proyectos,
           locaciones: state.preferencias.locaciones,
           documentos: state.preferencias.documentos,
           disponibilidad: state.preferencias.disponibilidad,
@@ -1544,14 +1579,20 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
       }
     }
     setSaveType(undefined);
-  }
+  };
 
   useEffect(() => {
     if (save_type) {
       switch (save_type) {
-        case 'save': handleStepChange(state.step_active); break;
-        case 'save_and_finish': handleStepChange(7); break;
-        case 'save_and_finish_later': handleStepChange(state.step_active); break;
+        case "save":
+          handleStepChange(state.step_active);
+          break;
+        case "save_and_finish":
+          handleStepChange(7);
+          break;
+        case "save_and_finish_later":
+          handleStepChange(state.step_active);
+          break;
       }
     }
   }, [save_type]);
@@ -1577,36 +1618,36 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
             minHeight: [1].includes(state.step_active)
               ? "calc(100vh - 76px)"
               : "100%",
-            padding: '50px 0 50px'
+            padding: "50px 0 50px",
           }}
         >
-          <div 
+          <div
             style={{
-              width: '70%',
-              margin: '0 auto',
-              backgroundColor: 'white',
-              border: '2px',
-              borderStyle: 'solid',
-              borderColor: '#4ab7c6',
-              padding: '48px 96px',
-              borderRadius: '8px'
+              width: "70%",
+              margin: "0 auto",
+              backgroundColor: "white",
+              border: "2px",
+              borderStyle: "solid",
+              borderColor: "#4ab7c6",
+              padding: "48px 96px",
+              borderRadius: "8px",
             }}
           >
             <MStepper
               disabled={talento.isFetching}
               onStepChange={(step: number) => {
-                console.log('step', step);
-                setSaveType('save');
+                console.log("step", step);
+                setSaveType("save");
                 dispatch({ type: "update-form", value: { next_step: step } });
               }}
               onFinish={() => {
-                console.log('entro aqui');
-                setSaveType('save_and_finish');
+                console.log("entro aqui");
+                setSaveType("save_and_finish");
               }}
               current_step={state.step_active}
               onStepSave={(step: number) => {
-                console.log('entro aqui');
-                setSaveType('save_and_finish_later');
+                console.log("entro aqui");
+                setSaveType("save_and_finish_later");
                 //handleStepChange(step);
               }}
               step_titles={{
@@ -1644,12 +1685,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
                   <MTooltip
                     text={
                       <>
-                        <Typography fontSize={14} fontWeight={600}>
+                        <Typography fontSize={"12px"} fontWeight={800}>
                           {textos["activos_title_tooltip_title"]
                             ? textos["activos_title_tooltip_title"]
                             : "Texto No Definido"}
                         </Typography>
-                        <Typography fontSize={14} fontWeight={400}>
+                        <Typography fontSize={"12px"} fontWeight={400}>
                           {textos["activos_title_tooltip_body"]
                             ? textos["activos_title_tooltip_body"]
                             : "Texto No Definido"}
@@ -1684,10 +1725,20 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           </div>
         </div>
       </MainLayout>
-      <ResourceAlert busy={
-        talento.isFetching || busy || saveInfoGralMedia.isLoading || saveInfoGral.isLoading || saveMedios.isLoading || saveCreditos.isLoading || 
-        saveHabilidades.isLoading || saveActivos.isLoading || saveFiltrosApariencias.isLoading || savePreferencias.isLoading
-      }/>
+      <ResourceAlert
+        busy={
+          talento.isFetching ||
+          busy ||
+          saveInfoGralMedia.isLoading ||
+          saveInfoGral.isLoading ||
+          saveMedios.isLoading ||
+          saveCreditos.isLoading ||
+          saveHabilidades.isLoading ||
+          saveActivos.isLoading ||
+          saveFiltrosApariencias.isLoading ||
+          savePreferencias.isLoading
+        }
+      />
     </>
   );
 };

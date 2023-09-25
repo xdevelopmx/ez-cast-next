@@ -52,10 +52,10 @@ export const DetallesAdicionales: FC<Props> = ({ state, onFormChange }) => {
               color="blue"
               text={
                 <>
-                  <Typography fontSize={14} fontWeight={600}>
+                  <Typography fontSize={"12px"} fontWeight={800}>
                     {textos["dqt"]}
                   </Typography>
-                  <Typography fontSize={14}>{textos["qst"]}</Typography>
+                  <Typography fontSize={"12px"}>{textos["qst"]}</Typography>
                 </>
               }
               placement="right"

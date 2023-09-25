@@ -1115,7 +1115,7 @@ footer {
 .slideshow img {
   width: 100%;
   height: 100%;
-  min-height: 900px;
+  min-height: 820px;
   object-fit: cover;
   object-position: center;
   opacity: 0;
@@ -1483,7 +1483,7 @@ footer {
 .container_list_proyects .nav-tabs .nav-link {
   border: 2px solid var(--txt_grey_v2);
   color: var(--txt_grey_v2);
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .container_list_proyects .nav-link.active,
@@ -2120,6 +2120,11 @@ table.boxBtnTable td {
 .logo_head_registro {
   width: 90px;
   margin: 40px 0 40px;
+}
+
+.tooltip_ez {
+  max-width: 250px;
+  text-align: center;
 }
 
 .contToolTip {

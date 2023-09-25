@@ -118,11 +118,13 @@ export const InformacionGeneral: FC<Props> = ({ state, onFormChange }) => {
               placement="right-start"
               text={
                 <>
-                  <Typography fontWeight={600}>
+                  <Typography fontSize={"12px"} fontWeight={800}>
                     {textos["ayuda_tipo"]}
                   </Typography>
                   <br />
-                  <Typography>{textos["ayuda_tipo1"]}</Typography>
+                  <Typography fontSize={"12px"}>
+                    {textos["ayuda_tipo1"]}
+                  </Typography>
                 </>
               }
             />

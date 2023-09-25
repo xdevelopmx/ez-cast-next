@@ -29,7 +29,7 @@ import { FileManager } from "~/utils/file-manager";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 import { useCountDown } from "~/hooks/useCountDown";
-import { ResourceAlert } from '~/components/shared/ResourceAlert';
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 type SelftapeTalentoPageProps = {
   user: User;
@@ -56,11 +56,14 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
 
   const router = useRouter();
 
-    const selftapes = api.talentos.getSelftapesByIdTalento.useQuery({id: id_talento}, {
-        refetchOnWindowFocus: false
-    });
+  const selftapes = api.talentos.getSelftapesByIdTalento.useQuery(
+    { id: id_talento },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
-    const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const { notify } = useNotify();
 
@@ -80,11 +83,11 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
   const [recording, setRecording] = useState(false);
 
   const _navigator = typeof window !== "undefined" ? navigator : null;
-  
+
   const microphone_permisson = "microphone" as PermissionName;
 
   const camera_permisson = "camera" as PermissionName;
-  
+
   useEffect(() => {
     if (_navigator) {
       //@ts-ignore
@@ -148,7 +151,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
               if (video_player.current) {
                 video_player.current.srcObject = stream;
                 media_recorder.current = new MediaRecorder(stream, {
-                  mimeType: 'video/mp4',
+                  mimeType: "video/mp4",
                   //mimeType: "video/webm;codecs=vp9,opus",
                 });
 
@@ -719,11 +722,11 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                             placement="right-start"
                             text={
                               <>
-                                <Typography fontWeight={600}>
+                                <Typography fontSize={"12px"} fontWeight={800}>
                                   Editar líneas
                                 </Typography>
                                 <br />
-                                <Typography>
+                                <Typography fontSize={"12px"}>
                                   Ut condimentum eleifend Leo nec ultricies.
                                 </Typography>
                               </>
@@ -783,82 +786,102 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                                                 </Box>
                                             </Grid>
                                         */}
-                                    </Grid>
-                                    
-                                </Box>
-                            </div>
-                        </div>
-                    </div>
-                </AnimatePresence>
-                <ConfirmationDialog
-                    opened={confirmation_dialog.opened}
-                    onOptionSelected={async (confirmed: boolean) => {
-                        if (confirmed) {
-                            switch (confirmation_dialog.action) {
-                                case 'PREVIEW': {
-                                    const id = confirmation_dialog.data.get('id');
-                                    const input_name = (confirmation_dialog.data.has('nombre')) ? confirmation_dialog.data.get('nombre') as string : '';
-                                    const is_public = (confirmation_dialog.data.has('public')) ? confirmation_dialog.data.get('public') as boolean : true;
-                                    //const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/webm');
-                                    const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/mp4');
-                                    const link = document.createElement('a');
-                                    link.href = recorded_url;
-                                    link.setAttribute('download', `selftape.mp4`);
-                                    //link.setAttribute('download', `selftape.webm`);
-                                    document.body.appendChild(link);
-                                    link.click();
-                                    if (link && link.parentNode) {
-                                        link.parentNode.removeChild(link);
-                                    }
-                                    const base_64 = await FileManager.convertFileToBase64(file);
-                                    const date = new Date();
-                                    const name = `selftape-${date.toLocaleDateString('es-mx').replaceAll('/', '-')}-${date.toLocaleTimeString('es-mx')}`;
-                                    const urls_saved = await FileManager.saveFiles([{path: `talentos/${id_talento}/videos`, name: name, file: file, base64: base_64}]);
-                                    if (urls_saved.length > 0) {
-                                        urls_saved.forEach((res, j) => {
-                                            Object.entries(res).forEach((e, i) => {
-                                                const url = e[1].url;  
-                                                if (url) {
-                                                    saveSelftapeMedia.mutate({
-                                                        id_talento: id_talento,
-                                                        selftape: {
-                                                            nombre: (input_name.length > 0) ? input_name : name,
-                                                            //type: 'video/webm',
-                                                            type: 'video/mp4',
-                                                            url: (url) ? url : '',
-                                                            clave: `talentos/${id_talento}/videos/${name}`,
-                                                            referencia: `VIDEOS-SELFTAPE-TALENTO-${id_talento}`,
-                                                            identificador: `video-selftape-${name}`,
-                                                            public: is_public
-                                                        }
-                                                    })
-                                                } else {
-                                                    const msg = (name) ? textos['error_didnt_upload_with_name']?.replace('[N1]', name) : textos['error_didnt_upload'];
-                                                    notify('error', `${msg} - ${e[1].error}`);
-                                                }
-                                            })
-                                        });
-                                    }
-                                    setBusy(false);
-                                    break;
-                                }
-                            }
+                  </Grid>
+                </Box>
+              </div>
+            </div>
+          </div>
+        </AnimatePresence>
+        <ConfirmationDialog
+          opened={confirmation_dialog.opened}
+          onOptionSelected={async (confirmed: boolean) => {
+            if (confirmed) {
+              switch (confirmation_dialog.action) {
+                case "PREVIEW": {
+                  const id = confirmation_dialog.data.get("id");
+                  const input_name = confirmation_dialog.data.has("nombre")
+                    ? (confirmation_dialog.data.get("nombre") as string)
+                    : "";
+                  const is_public = confirmation_dialog.data.has("public")
+                    ? (confirmation_dialog.data.get("public") as boolean)
+                    : true;
+                  //const file = await FileManager.convertUrlToFile(recorded_url, 'selftape', 'video/webm');
+                  const file = await FileManager.convertUrlToFile(
+                    recorded_url,
+                    "selftape",
+                    "video/mp4"
+                  );
+                  const link = document.createElement("a");
+                  link.href = recorded_url;
+                  link.setAttribute("download", `selftape.mp4`);
+                  //link.setAttribute('download', `selftape.webm`);
+                  document.body.appendChild(link);
+                  link.click();
+                  if (link && link.parentNode) {
+                    link.parentNode.removeChild(link);
+                  }
+                  const base_64 = await FileManager.convertFileToBase64(file);
+                  const date = new Date();
+                  const name = `selftape-${date
+                    .toLocaleDateString("es-mx")
+                    .replaceAll("/", "-")}-${date.toLocaleTimeString("es-mx")}`;
+                  const urls_saved = await FileManager.saveFiles([
+                    {
+                      path: `talentos/${id_talento}/videos`,
+                      name: name,
+                      file: file,
+                      base64: base_64,
+                    },
+                  ]);
+                  if (urls_saved.length > 0) {
+                    urls_saved.forEach((res, j) => {
+                      Object.entries(res).forEach((e, i) => {
+                        const url = e[1].url;
+                        if (url) {
+                          saveSelftapeMedia.mutate({
+                            id_talento: id_talento,
+                            selftape: {
+                              nombre: input_name.length > 0 ? input_name : name,
+                              //type: 'video/webm',
+                              type: "video/mp4",
+                              url: url ? url : "",
+                              clave: `talentos/${id_talento}/videos/${name}`,
+                              referencia: `VIDEOS-SELFTAPE-TALENTO-${id_talento}`,
+                              identificador: `video-selftape-${name}`,
+                              public: is_public,
+                            },
+                          });
+                        } else {
+                          const msg = name
+                            ? textos["error_didnt_upload_with_name"]?.replace(
+                                "[N1]",
+                                name
+                              )
+                            : textos["error_didnt_upload"];
+                          notify("error", `${msg} - ${e[1].error}`);
                         }
-                        setConfirmationDialog({ ...confirmation_dialog, opened: false });
-                    }}
-                    title={confirmation_dialog.title}
-                    content={confirmation_dialog.content}
-                    propsDialogActions={{
-                        style: {
-                            justifyContent: "center",
-                        },
-                    }}
-                />
-            </MainLayout>
-        </>
-
-    )
-}
+                      });
+                    });
+                  }
+                  setBusy(false);
+                  break;
+                }
+              }
+            }
+            setConfirmationDialog({ ...confirmation_dialog, opened: false });
+          }}
+          title={confirmation_dialog.title}
+          content={confirmation_dialog.content}
+          propsDialogActions={{
+            style: {
+              justifyContent: "center",
+            },
+          }}
+        />
+      </MainLayout>
+    </>
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);

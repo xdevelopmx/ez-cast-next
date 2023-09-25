@@ -1394,7 +1394,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                             );
                           }
                         }}
-                        className="btn btn-intro btn-price btn_out_line mb-2"
+                        className="btn btn-intro btn-price mb-2"
                         type="button"
                       >
                         <Typography>{`${textos["guardar_y_crear_otro_rol"]}`}</Typography>

@@ -87,10 +87,10 @@ export const InformacionGeneralRol: FC<Props> = ({
               placement="right"
               text={
                 <>
-                  <Typography fontSize={14} fontWeight={600}>
+                  <Typography fontSize={"12px"} fontWeight={800}>
                     ¿Tu rol tiene nombre?
                   </Typography>
-                  <Typography fontSize={14}>
+                  <Typography fontSize={"12px"}>
                     Ingresa el nombre del personaje si lo tiene; si no, puedes
                     quedarte con “Actor” o “Modelo”.
                   </Typography>

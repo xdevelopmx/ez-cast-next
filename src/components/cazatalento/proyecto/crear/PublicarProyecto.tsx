@@ -50,8 +50,12 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
                 color="blue"
                 text={
                   <>
-                    <Typography fontWeight={600}>{textos["titool"]}</Typography>
-                    <Typography>{textos["textool"]}</Typography>
+                    <Typography fontSize={"12px"} fontWeight={800}>
+                      {textos["titool"]}
+                    </Typography>
+                    <Typography fontSize={"12px"}>
+                      {textos["textool"]}
+                    </Typography>
                   </>
                 }
                 placement="right"
