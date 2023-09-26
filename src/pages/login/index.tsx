@@ -51,9 +51,9 @@ const LoginPage: NextPage = () => {
 
   useEffect(() => {
     if (state.tipo_usuario) {
-      sessionStorage.setItem("TIPO_USUARIO", state.tipo_usuario);
+      localStorage.setItem("TIPO_USUARIO", state.tipo_usuario);
     } else {
-      const tipo_usuario = sessionStorage.getItem("TIPO_USUARIO");
+      const tipo_usuario = localStorage.getItem("TIPO_USUARIO");
       if (tipo_usuario) {
         dispatch({
           type: "update-form",
@@ -68,7 +68,6 @@ const LoginPage: NextPage = () => {
   useEffect(() => {
     if (ctx.previous_route && !ctx.previous_route.includes("/login")) {
       if (sess.data?.user?.provider === "FACEBOOK_OR_GOOGLE") {
-        console.log("xd");
         signOut({
           redirect: false,
         }).then();
@@ -76,10 +75,8 @@ const LoginPage: NextPage = () => {
     } else {
       if (sess.status === "authenticated") {
         if (!sess.data.user?.tipo_usuario) {
-          console.log("entro");
           if (sess.data.user?.email) {
-            console.log("entro");
-            const tipo_usuario = sessionStorage.getItem("TIPO_USUARIO");
+            const tipo_usuario = localStorage.getItem("TIPO_USUARIO");
             fetch("/api/auth/get-user-by-email", {
               method: "POST",
               body: JSON.stringify({
@@ -89,8 +86,6 @@ const LoginPage: NextPage = () => {
             })
               .then((res) => res.json())
               .then((res) => {
-                //sessionStorage.removeItem('TIPO_USUARIO');
-                console.log(res);
                 if (res.status === "success") {
                   notify("success", `${textos["success_login"]}`);
                   sess.update({
@@ -104,11 +99,13 @@ const LoginPage: NextPage = () => {
                 notify("error", err.toString());
               });
           } else {
-            console.log('entro');
+            signOut({
+              redirect: false,
+            }).then();
+            console.log(sess);
             notify('error', `${textos['cuenta_no_tiene_correo']}`);
           }
         } else {
-          console.log("entro");
           router.push("/inicio");
         }
       }
