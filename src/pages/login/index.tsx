@@ -93,6 +93,9 @@ const LoginPage: NextPage = () => {
                     provider: "FACEBOOK_OR_GOOGLE",
                     lang: ctx.lang,
                   });
+                  router.replace('/inicio');
+                } else {
+                  notify('error', res.message);
                 }
               })
               .catch((err) => {
@@ -105,8 +108,6 @@ const LoginPage: NextPage = () => {
             }).then();
             notify('error', `${textos['cuenta_no_tiene_correo']}`);
           }
-        } else {
-          
         }
       }
     }
