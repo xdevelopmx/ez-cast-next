@@ -49,9 +49,8 @@ export const Alerts: FC = () => {
               icon={null}
             >
               <AlertTitle>
-                {v[1].severity === "success" ? ctx.lang === 'es' ? "Éxito" : 'Success' : ctx.lang === 'es' ? "Ocurrió un problema" : `There's been a problem`}
+                {v[1].severity === "success" ? ctx.lang === 'es' ? "Éxito" : 'Success' : ctx.lang === 'es' ? "Ocurrió un problema" : `There's been a problem`} &nbsp; <span style={{fontWeight: 400}}>{v[1].message}</span>
               </AlertTitle>
-              {v[1].message}
             </Alert>
           </MotionDiv>
         );

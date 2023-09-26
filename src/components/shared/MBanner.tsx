@@ -4,7 +4,7 @@ import Image from "next/image";
 import { api } from "~/utils/api";
 
 interface Props {
-  width: number;
+  width?: number;
   height: number;
   identificador: string;
   show_only_media: boolean;
@@ -53,10 +53,12 @@ export const MBanner: FC<Props> = (props) => {
               onClick={() => {
                 window.open(banner.data?.redirect_url);
               }}
-              width={props.width}
+              width={props.width || '1000'}
               height={props.height}
               style={{
+                objectFit: 'contain',
                 cursor: "pointer",
+                width: '100%!important',
                 ...(props.imageStyles ?? {}),
               }}
               alt={props.identificador}
