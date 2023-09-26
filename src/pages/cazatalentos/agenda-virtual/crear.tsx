@@ -31,10 +31,10 @@ const NuevoHorarioAgendaVirtual = () => {
 
 	const { notify } = useNotify();
 
-	const [tipoAudicion, setTipoAudicion] = useState<string>(``);
-	const [tipoFechas, setTipoFechas] = useState<string>('');
-	const [tipoLocacion, setTipoLocacion] = useState<string>('');
-	const [checkbox_tipo_fecha, setCheckboxTipoFecha] = useState<string>('');
+	const [tipoAudicion, setTipoAudicion] = useState<{value: 'CALLBACK' | 'AUDICION', label: string}>({value: 'AUDICION', label: ``});
+	const [tipoFechas, setTipoFechas] = useState<{value: 'NUEVAS' | 'ESTABLECIDAS', label: string}>({value: 'ESTABLECIDAS', label: ''});
+	const [tipoLocacion, setTipoLocacion] = useState<{value: 'PRESENCIAL' | 'VIRTUAL', label: string}>({value: 'PRESENCIAL', label: ''});
+	const [checkbox_tipo_fecha, setCheckboxTipoFecha] = useState<{value: 'INDIVIDUALES' | 'RANGO_FECHAS', label: string}>({value: 'INDIVIDUALES', label: ''});
 	const [selected_proyecto, setSelectedProyecto] = useState<number>(0);
 	const [fechas_audicion, setFechasAudicion] = useState<Map<string, { fecha_inicio: Date, fecha_fin: Date | null }>>(new Map());
 	const [fechas_selected, setFechasSelected] = useState<{fecha_inicio: Date | null, fecha_fin: Date | null}>({fecha_inicio: null, fecha_fin: null});
@@ -105,13 +105,13 @@ const NuevoHorarioAgendaVirtual = () => {
 	useEffect(() => {
 		if (horario.data) {
 			setSelectedProyecto(horario.data.id_proyecto);
-			setTipoAudicion((horario.data.tipo_agenda === `${textos['audicion']}`) ? `${textos['audicion']}` : `${textos['callback']}`);
-			if (horario.data.tipo_agenda.toLowerCase() === `${textos['callback']}`) {
-				setTipoFechas(`${textos['nuevas']}`);
+			setTipoAudicion((horario.data.tipo_agenda === 'CALLBACK') ? {value: 'CALLBACK', label: `${textos['callback']}`} : {value: 'AUDICION', label: `${textos['audicion']}`});
+			if (horario.data.tipo_agenda.toLowerCase() === 'callback') {
+				setTipoFechas({value: 'NUEVAS', label: `${textos['nuevas']}`});
 			} else {
-				setTipoFechas((horario.data.tipo_fechas === `${textos['nuevas']}`) ? `${textos['nuevas']}` : `${textos['establecidas']}`);
+				setTipoFechas((horario.data.tipo_fechas === 'NUEVAS') ? {value: 'NUEVAS', label: `${textos['nuevas']}`} : {value: 'ESTABLECIDAS', label: `${textos['establecidas']}`});
 			}
-			setTipoLocacion((horario.data.tipo_localizacion === `${textos['presencial']}`) ? `${textos['presencial']}` : `${textos['virtual']}`);
+			setTipoLocacion((horario.data.tipo_localizacion === 'PRESENCIAL') ? {value: 'PRESENCIAL', label: `${textos['presencial']}`} : {value: 'VIRTUAL', label: `${textos['virtual']}`});
 			if (horario.data.tipo_fechas === `${textos['nuevas']}`) {
 				horario.data.fechas.forEach((f) => {
 					fechas_audicion.set(`${f.fecha_inicio}-${f.fecha_fin}`, {fecha_inicio: f.fecha_inicio, fecha_fin: f.fecha_fin});			
@@ -189,10 +189,10 @@ const NuevoHorarioAgendaVirtual = () => {
 	const input_background_hover_color = is_callback ? '#ea9d2190' : '#069fff';
 
 	useEffect(() => {
-		setTipoAudicion(`${textos['audicion']}`);
-		setCheckboxTipoFecha(`${textos['individuales']}`);
-		setTipoFechas(`${textos['establecidas']}`);
-		setTipoLocacion(`${textos['presencial']}`);
+		setTipoAudicion({value: tipoAudicion.value, label: tipoAudicion.value === 'AUDICION' ? `${textos['audicion']}` : `${textos['callback']}`});
+		setCheckboxTipoFecha({value: checkbox_tipo_fecha.value, label: `${textos['individuales']}`});
+		setTipoFechas({value: tipoFechas.value, label: tipoFechas.value === 'NUEVAS' ? `${textos['nuevas']}` : `${textos['establecidas']}`});
+		setTipoLocacion({value: tipoLocacion.value, label: tipoLocacion.value === 'PRESENCIAL' ? `${textos['presencial']}` : `${textos['virtual']}`});
 	}, [textos]);
 
 	return (
@@ -241,21 +241,21 @@ const NuevoHorarioAgendaVirtual = () => {
 												<ButtonGroup sx={{ mt: 2, mb: 0 }} variant="contained" aria-label="outlined primary button group">
 													<Button
 														style={{
-															backgroundColor: (tipoAudicion === `${textos['audicion']}`) ? input_background_color : ''
+															backgroundColor: (tipoAudicion.value === 'AUDICION') ? input_background_color : ''
 														}}
 														disabled={is_callback}
-														onClick={() => { setTipoAudicion(`${textos['audicion']}`) }}
-														variant={tipoAudicion === `${textos['audicion']}` ? 'contained' : 'outlined'}
+														onClick={() => { setTipoAudicion({value: 'AUDICION', label: `${textos['audicion']}`}) }}
+														variant={tipoAudicion.value === 'AUDICION' ? 'contained' : 'outlined'}
 													>
-														{textos['audicion']}
+														{tipoAudicion.label}
 													</Button>
 													<Button
 														style={{
-															backgroundColor: (tipoAudicion === `${textos['callback']}`) ? input_background_color : ''
+															backgroundColor: (tipoAudicion.value === 'CALLBACK') ? input_background_color : ''
 														}}
 														disabled={!is_callback}
-														onClick={() => { setTipoAudicion(`${textos['callback']}`) }}
-														variant={tipoAudicion === `${textos['callback']}` ? 'contained' : 'outlined'}
+														onClick={() => { setTipoAudicion({value: 'CALLBACK', label: `${textos['callback']}`}) }}
+														variant={tipoAudicion.value === 'CALLBACK' ? 'contained' : 'outlined'}
 													>
 														Callback
 													</Button>
@@ -298,27 +298,27 @@ const NuevoHorarioAgendaVirtual = () => {
 											<ButtonGroup sx={{ mt: 2, mb: 4 }} variant="contained" aria-label="outlined primary button group">
 												<Button
 													style={{
-														backgroundColor: (tipoFechas === `${textos['establecidas']}`) ? input_background_color : ''
+														backgroundColor: (tipoFechas.value === 'ESTABLECIDAS') ? input_background_color : ''
 													}}
 													disabled={is_callback}
-													onClick={() => { setTipoFechas(`${textos['establecidas']}`) }}
-													variant={tipoFechas === `${textos['establecidas']}` ? 'contained' : 'outlined'}
+													onClick={() => { setTipoFechas({value: 'ESTABLECIDAS', label: `${textos['establecidas']}`}) }}
+													variant={tipoFechas.value === 'ESTABLECIDAS' ? 'contained' : 'outlined'}
 												>
 													{textos['usar_fechas_definidas_en_roles']}
 												</Button>
 												<Button
 													style={{
-														backgroundColor: (tipoFechas === `${textos['nuevas']}`) ? input_background_color : ''
+														backgroundColor: (tipoFechas.value === 'NUEVAS') ? input_background_color : ''
 													}}
-													onClick={() => { setTipoFechas(`${textos['nuevas']}`) }}
-													variant={tipoFechas === `${textos['nuevas']}` ? 'contained' : 'outlined'}
+													onClick={() => { setTipoFechas({value: 'NUEVAS', label: `${textos['nuevas']}`}) }}
+													variant={tipoFechas.value === 'NUEVAS' ? 'contained' : 'outlined'}
 												>
 													{textos['definir_nuevas_fechas']}
 												</Button>
 											</ButtonGroup>
 										</Grid>
 										<Grid item xs={12} sx={{ padding: '5px 10px', margin: '4px 0' }}>
-											<MotionDiv show={tipoFechas === `${textos['nuevas']}`} animation="fade">
+											<MotionDiv show={tipoFechas.value === 'NUEVAS'} animation="fade">
 
 												<Grid container>
 													<Grid xs={2}>
@@ -328,10 +328,10 @@ const NuevoHorarioAgendaVirtual = () => {
 															style={{ gap: 0 }}
 															id="rango-de-fechas-radio"
 															options={[`${textos['rango_fechas']}`, `${textos['individuales']}`]}
-															value={checkbox_tipo_fecha}
+															value={checkbox_tipo_fecha.label}
 															direction='vertical'
 															onChange={(e) => {
-																setCheckboxTipoFecha(e.target.value === `${textos['individuales']}` ? `${textos['individuales']}` : `${textos['rango_fechas']}`);
+																setCheckboxTipoFecha(e.target.value === `${textos['individuales']}` ? {value: 'INDIVIDUALES', label: `${textos['individuales']}`} : {value: 'RANGO_FECHAS', label: `${textos['rango_fechas']}`});
 															}}
 														/>
 
@@ -354,8 +354,8 @@ const NuevoHorarioAgendaVirtual = () => {
 																	}}
 																/>
 															</Grid>
-															<Grid item xs={4} md={3} style={{display: (checkbox_tipo_fecha === `${textos['rango_fechas']}`) ? 'flex' : 'none'}}>
-																<MotionDiv show={checkbox_tipo_fecha === `${textos['rango_fechas']}`} animation="fade">
+															<Grid item xs={4} md={3} style={{display: (checkbox_tipo_fecha.value === 'RANGO_FECHAS') ? 'flex' : 'none'}}>
+																<MotionDiv show={checkbox_tipo_fecha.value === 'RANGO_FECHAS'} animation="fade">
 																	<DatePicker
 																		localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
 																		slotProps={{ textField: { size: 'small' } }}
@@ -387,13 +387,13 @@ const NuevoHorarioAgendaVirtual = () => {
 																	}}
 																	sx={{
 																		textTransform: 'none',
-																		backgroundColor: tipoFechas === `${textos['nuevas']}` ? input_background_color : '',
+																		backgroundColor: tipoFechas.value === 'NUEVAS' ? input_background_color : '',
 																		borderRadius: '16px',
 																		color: '#fff',
 																		width: 150,
 																		marginLeft: 2,
 																		'&:hover': {
-																			backgroundColor: tipoFechas === `${textos['nuevas']}` ? input_background_hover_color : '',
+																			backgroundColor: tipoFechas.value === 'NUEVAS' ? input_background_hover_color : '',
 																			color: '#fff',
 																		},
 																		border: 'none',
@@ -410,9 +410,9 @@ const NuevoHorarioAgendaVirtual = () => {
 																			text={(() => {
 																				if (fecha[1].fecha_inicio) {
 																					if (fecha[1].fecha_fin) {
-																						return `${fecha[1].fecha_inicio.toLocaleDateString('es-mx')} - ${fecha[1].fecha_fin.toLocaleDateString('es-mx')}`
+																						return `${fecha[1].fecha_inicio.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'})} - ${fecha[1].fecha_fin.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'})}`
 																					}
-																					return fecha[1].fecha_inicio.toLocaleDateString('es-mx');
+																					return fecha[1].fecha_inicio.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'});
 																				}
 																				return 'ND';
 																				})()
@@ -430,7 +430,7 @@ const NuevoHorarioAgendaVirtual = () => {
 
 												</Grid>
 											</MotionDiv>
-											<MotionDiv show={tipoFechas === `${textos['establecidas']}`} animation="fade">
+											<MotionDiv show={tipoFechas.value === 'ESTABLECIDAS'} animation="fade">
 												<Grid container sx={{ mt: 2 }}>
 													
 													{Array.from(fechas_audicion_por_roles).map((e, i) => {
@@ -441,7 +441,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																	{
 																		e[1].map((fecha, i) => (
 																			<Tag styles={{ margin: 0.5, padding: 0.35 }} key={i}
-																				text={(!fecha.fecha_fin) ? fecha.fecha_inicio.toLocaleDateString('es-mx') : `${fecha.fecha_inicio.toLocaleDateString('es-mx')} - ${fecha.fecha_fin.toLocaleDateString('es-mx')}`}
+																				text={(!fecha.fecha_fin) ? fecha.fecha_inicio.toLocaleDateString('es-mx',  {day: 'numeric', month: 'numeric', year: '2-digit'}) : `${fecha.fecha_inicio.toLocaleDateString('es-mx',  {day: 'numeric', month: 'numeric', year: '2-digit'})} - ${fecha.fecha_fin.toLocaleDateString('es-mx',  {day: 'numeric', month: 'numeric', year: '2-digit'})}`}
 																				onRemove={() => console.log('click')}
 																			/>
 																		))
@@ -468,33 +468,33 @@ const NuevoHorarioAgendaVirtual = () => {
 													<ButtonGroup sx={{ mt: 2, mb: 0 }} variant="contained" aria-label="outlined primary button group">
 														<Button
 															style={{
-																backgroundColor: (tipoLocacion === `${textos['presencial']}`) ? input_background_color : ''
+																backgroundColor: (tipoLocacion.value === 'PRESENCIAL') ? input_background_color : ''
 															}}
-															onClick={() => { setTipoLocacion(`${textos['presencial']}`) }}
-															variant={tipoLocacion === `${textos['presencial']}` ? 'contained' : 'outlined'}
+															onClick={() => { setTipoLocacion({value: 'PRESENCIAL', label: `${textos['presencial']}`}) }}
+															variant={tipoLocacion.value === 'PRESENCIAL' ? 'contained' : 'outlined'}
 														>
 															{`${textos['presencial']}`}
 														</Button>
 														<Button
 															style={{
-																backgroundColor: (tipoLocacion === `${textos['virtual']}`) ? input_background_color : ''
+																backgroundColor: (tipoLocacion.value === 'VIRTUAL') ? input_background_color : ''
 															}}
-															onClick={() => { setTipoLocacion(`${textos['virtual']}`) }}
-															variant={tipoLocacion === `${textos['virtual']}` ? 'contained' : 'outlined'}
+															onClick={() => { setTipoLocacion({value: 'VIRTUAL', label: `${textos['virtual']}`}) }}
+															variant={tipoLocacion.value === 'VIRTUAL' ? 'contained' : 'outlined'}
 														>
 															{`${textos['virtual']}`}
 														</Button>
 													</ButtonGroup>
 												</Grid>
 												<Grid xs={12}>
-													<MotionDiv show={tipoLocacion === `${textos['presencial']}`} animation='fade'>
+													<MotionDiv show={tipoLocacion.value === 'PRESENCIAL'} animation='fade'>
 														<Typography sx={{ color: '#069cb1' }}>
 															{`${textos['locaciones_guardadas']}`}
 														</Typography>
 													</MotionDiv>
 												</Grid>
 												<Grid xs={12}>
-													<MotionDiv show={tipoLocacion === `${textos['presencial']}`} animation='fade'>
+													<MotionDiv show={tipoLocacion.value === 'PRESENCIAL'} animation='fade'>
 														<>
 															{
 																locaciones.map((loc, i) => (
@@ -548,7 +548,7 @@ const NuevoHorarioAgendaVirtual = () => {
 													</MotionDiv>
 												</Grid>
 												<Grid xs={12}>
-													<MotionDiv show={tipoLocacion === `${textos['presencial']}`} animation='fade'>
+													<MotionDiv show={tipoLocacion.value === 'PRESENCIAL'} animation='fade'>
 														<Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
 															<AddButton
 																aStyles={{ margin: 0, borderRadius: '2rem' }}
@@ -607,7 +607,7 @@ const NuevoHorarioAgendaVirtual = () => {
 												<Button
 													onClick={() => {
 														const params = new Map<string, unknown>();
-														setConfirmationDialog({ action: 'UPDATE', data: params, opened: true, title: (id_horario === 0) ? 'Crear Horario' : 'Actualizar Horario', content: <Typography variant="body2">{(id_horario > 0) ? 'Si se actualiza el horario, los cambios que hayas realizado en los bloques de tiempo se reinciaran, seguro que deseas actualizar con el horario?' : 'Seguro que quieres crear el horario?'}</Typography> });
+														setConfirmationDialog({ action: 'UPDATE', data: params, opened: true, title: (id_horario === 0) ? `${textos['crear']} ${textos['horario']}` : `${textos['actualizar']} ${textos['horario']}`, content: <Typography variant="body2">{(id_horario > 0) ? `${textos['update_horario_confirmation_message']}` : `${textos['create_horario_confirmation_message']}`}</Typography> });
 													}}
 													sx={{
 														textTransform: 'none',
@@ -647,7 +647,7 @@ const NuevoHorarioAgendaVirtual = () => {
                         if (confirmed) {
                             switch (confirmation_dialog.action) {
                                 case 'UPDATE': {
-									if (locaciones.length === 0 || locaciones.filter(l => l.checked).length === 0 && tipoLocacion === `${textos['presencial']}`) {
+									if (locaciones.length === 0 || locaciones.filter(l => l.checked).length === 0 && tipoLocacion.value === 'PRESENCIAL') {
 										notify('warning', `${textos['no_se_ha_seleccionado_una_locacion']}`);
 										return;
 									}
@@ -655,7 +655,7 @@ const NuevoHorarioAgendaVirtual = () => {
 										notify('warning', `${textos['no_se_ha_seleccionado_un_proyecto']}`);
 										return;
 									}
-									if (fechas_audicion.size < 1 && tipoFechas === `${textos['nuevas']}`) {
+									if (fechas_audicion.size < 1 && tipoFechas.value === 'NUEVAS') {
 										notify('warning', `${textos['no_haz_seleccionado_ninguna_fecha']}`);
 										return;
 									}
@@ -665,7 +665,7 @@ const NuevoHorarioAgendaVirtual = () => {
 									}
 
 									let dates: {fecha_inicio: Date, fecha_fin: Date | null}[] = [];
-									if (tipoFechas === `${textos['establecidas']}`) {
+									if (tipoFechas.value === 'ESTABLECIDAS') {
 										Array.from(fechas_audicion_por_roles).forEach(f => {
 											f[1].forEach(d => {
 												dates.push({fecha_inicio: d.fecha_inicio, fecha_fin: d.fecha_fin});
@@ -678,9 +678,9 @@ const NuevoHorarioAgendaVirtual = () => {
 									save_horario.mutate({
 										locaciones: locaciones.filter(l => l.checked),
 										fechas: dates,
-										tipo_agenda: tipoAudicion === `${textos['audicion']}` ? 'AUDICION' : 'CALLBACK',
-										tipo_localizacion: tipoLocacion === `${textos['presencial']}` ? 'PRESENCIAL' : 'VIRTUAL',
-										tipo_fechas: tipoFechas === `${textos['establecidas']}` ? 'ESTABLECIDAS' : 'NUEVAS',
+										tipo_agenda: tipoAudicion.value,
+										tipo_localizacion: tipoLocacion.value,
+										tipo_fechas: tipoFechas.value,
 										notas: notas,
 										id_uso_horario: uso_horario_selected,
 										id_proyecto: selected_proyecto

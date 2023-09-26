@@ -102,7 +102,7 @@ export const ModalLocacion: FC<Props> = ({
           fontWeight={600}
           sx={{ fontSize: "1.27rem", color: "#069cb1" }}
         >
-          Añadir locación
+          {textos['agregar']} {textos['locacion']}
         </Typography>
       </DialogTitle>
       <DialogContent sx={{ padding: "0px 100px" }}>
@@ -112,7 +112,7 @@ export const ModalLocacion: FC<Props> = ({
               value={data.direccion}
               labelClassName={"form-input-label"}
               labelStyle={{ fontWeight: 600 }}
-              label="Dirección*"
+              label={`${textos['direccion']}*`}
               onChange={(e) => {
                 setData((prev) => {
                   return { ...prev, direccion: e.target.value };
@@ -125,7 +125,7 @@ export const ModalLocacion: FC<Props> = ({
               value={data.direccion2}
               labelClassName={"form-input-label"}
               labelStyle={{ fontWeight: 600 }}
-              label="Dirección 2"
+              label={`${textos['direccion']} 2`}
               onChange={(e) => {
                 setData((prev) => {
                   return { ...prev, direccion2: e.target.value };
@@ -154,14 +154,14 @@ export const ModalLocacion: FC<Props> = ({
                   };
                 });
               }}
-              label="Estado/Provincia*"
+              label={`${textos['estado_provincia']}*`}
             />
           </Grid>
           <Grid xs={12}>
             <FormGroup
               labelClassName={"form-input-label"}
               labelStyle={{ fontWeight: 600 }}
-              label="Código postal*"
+              label={`${textos['codigo_postal']}*`}
               type="number"
               value={data.codigo_postal.toString()}
               onChange={(e) => {
@@ -181,7 +181,7 @@ export const ModalLocacion: FC<Props> = ({
               }}
               id="guardar-para-uso-futuro"
               //labelStyle={{ marginBottom: 0, width: '32%' }}
-              options={["Guardar para uso futuro"]}
+              options={[`${textos['guardar_para_uso_futuro']}`]}
               values={
                 /* (generos.data) ? generos.data.map(g => {
                                 return state.generos.includes(g.id);
@@ -212,7 +212,7 @@ export const ModalLocacion: FC<Props> = ({
                   },
                 }}
               >
-                <Typography>Añadir locación</Typography>
+                <Typography>{textos['agregar']} {textos['locacion']}</Typography>
               </Button>
               <Button
                 sx={{
@@ -222,7 +222,7 @@ export const ModalLocacion: FC<Props> = ({
                 }}
                 onClick={() => setIsOpen(false)}
               >
-                <Typography>Cancelar</Typography>
+                <Typography>{textos['cancelar']}</Typography>
               </Button>
             </Box>
           </Grid>

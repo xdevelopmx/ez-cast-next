@@ -424,7 +424,7 @@ const AgendaVirtual = () => {
                                           e.stopPropagation();
                                         }}
                                       >
-                                        Iniciar Callback
+                                        {textos['iniciar']} callback
                                       </Button>
                                       <MTooltip
                                         text="Podras cambiar el horario a callback una vez hayan finalizado las fechas de audiciones"

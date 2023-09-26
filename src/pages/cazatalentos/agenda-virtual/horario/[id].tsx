@@ -447,17 +447,17 @@ const AudicionPorId = (props: {
                         fontWeight={800}
                         sx={{ color: "#069cb1", fontSize: "1.8rem" }}
                       >
-                        Agenda Virtual
+                        {textos['agenda_virtual']}
                       </Typography>
                       <Typography
                         fontWeight={600}
                         sx={{ color: "#000", fontSize: "1.27rem" }}
                       >
-                        Horario para el proyecto{" "}
+                        {textos['horario_para_proyecto']} {" "}
                         {`${horario.data?.proyecto.nombre}`}
                       </Typography>
                       <Typography sx={{ fontSize: "1.27rem" }}>
-                        Del {ordered_dates[0]} al{" "}
+                        {textos['del']} {ordered_dates[0]} {textos['a']}{" "}
                         {ordered_dates[ordered_dates.length - 1]}
                       </Typography>
                     </Grid>
@@ -466,11 +466,11 @@ const AudicionPorId = (props: {
                     </Grid>
                     <DatosAudicion
                       id_horario={parseInt(id as string)}
-                      uso_horario={`${horario.data?.uso_horario.es}`}
+                      uso_horario={`${ctx.lang === 'es' ? horario.data?.uso_horario.es : horario.data?.uso_horario.en}`}
                       nota={
                         horario.data && horario.data.notas.length > 0
                           ? horario.data.notas
-                          : "No hay nota"
+                          : `${textos['no_nota_adicional']}`
                       }
                     />
                     <Grid container xs={12} mt={4}>
@@ -491,7 +491,7 @@ const AudicionPorId = (props: {
                                   fontWeight={600}
                                   sx={{ color: "#fff", fontSize: "1.27rem" }}
                                 >
-                                  Talentos reclutados
+                                  {textos['talentos_reclutados']}
                                 </Typography>
                               </Grid>
                               <Grid container xs={4}>
@@ -506,7 +506,7 @@ const AudicionPorId = (props: {
                                   <Typography
                                     sx={{ color: "#fff", fontSize: "1rem" }}
                                   >
-                                    Vista:
+                                    {textos['vista']}:
                                   </Typography>
 
                                   <IconButton
@@ -563,7 +563,7 @@ const AudicionPorId = (props: {
                                     id="posicion-contenido-select"
                                     labelStyle={{ fontWeight: 600 }}
                                     labelClassName={"form-input-label"}
-                                    label="Rol"
+                                    label={`${textos['rol']}`}
                                     options={
                                       roles.data
                                         ? roles.data
@@ -591,7 +591,7 @@ const AudicionPorId = (props: {
                                 </Grid>
                                 <Grid xs={12}>
                                   <Box>
-                                    <Typography>Ver:</Typography>
+                                    <Typography>{textos['ver']}:</Typography>
                                     <MSelect
                                       id="posicion-contenido-select"
                                       labelStyle={{ fontWeight: 600 }}
@@ -818,7 +818,7 @@ const AudicionPorId = (props: {
                                 fontWeight={600}
                                 sx={{ color: "#fff", fontSize: "1.27rem" }}
                               >
-                                Horario
+                                {textos['horario']}
                               </Typography>
                               <Box
                                 sx={{
@@ -837,7 +837,7 @@ const AudicionPorId = (props: {
                                       } else {
                                         notify(
                                           "warning",
-                                          "No haz seleccionado ninguna fecha aun"
+                                          `${textos['no_haz_seleccionado_ninguna_fecha']}`
                                         );
                                       }
                                     }}
@@ -867,8 +867,8 @@ const AudicionPorId = (props: {
                                     />
                                     <Typography sx={{ paddingLeft: "10px" }}>
                                       {!bloque.data && bloque.isFetched
-                                        ? "Añadir bloque de tiempo"
-                                        : "Editar bloque de tiempo"}
+                                        ? `${textos['agregar']} ${textos['bloque_de_tiempo']}`
+                                        : `${textos['editar']} ${textos['bloque_de_tiempo']}`}
                                     </Typography>
                                   </Button>
                                 )}
@@ -1160,8 +1160,7 @@ const AudicionPorId = (props: {
                                           marginBottom: "20px",
                                         }}
                                       >
-                                        ¡Comienza a crear tu horario y castea
-                                        organizadamente!
+                                        {textos['no_bloque_de_tiempo_creado_message']}
                                       </Typography>
 
                                       <Tooltip
@@ -1203,7 +1202,7 @@ const AudicionPorId = (props: {
                                             fontWeight={600}
                                             sx={{ paddingLeft: "10px" }}
                                           >
-                                            Añadir bloque de tiempo
+                                            {textos['agregar']} {textos['bloque_de_tiempo']}
                                           </Typography>
                                         </Button>
                                       </Tooltip>
@@ -1249,12 +1248,10 @@ const AudicionPorId = (props: {
                               action: "SEND_HORARIOS",
                               data: new Map(),
                               opened: true,
-                              title: "Mandar Horarios",
+                              title: `${textos['mandar_horarios']}`,
                               content: (
                                 <Typography>
-                                  Seguro que quieres mandar la confirmacion de
-                                  horarios a los talentos asignados en los
-                                  intervalos?
+                                  {textos['mandar_horarios_message']}
                                 </Typography>
                               ),
                             });
@@ -1265,7 +1262,7 @@ const AudicionPorId = (props: {
                             backgroundColor: "#F9B233",
                           }}
                         >
-                          Mandar Horarios
+                          {textos['mandar_horarios']}
                         </Button>
                       </Grid>
                       {props.can_start_callback && (
