@@ -70,7 +70,10 @@ export const Habilidades = (props: {
   }, [data, ctx.lang]);
 
   return (
-    <Grid id="habilidades" container sx={{ mt: 10 }}>
+    <Grid  container sx={{ mt: 10 }}>
+      <div id="habilidades" style={{margin: '-100px 0 100px 0'}}>
+
+      </div>
       <Grid item xs={12}>
         <SectionTitle
           title={

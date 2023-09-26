@@ -157,7 +157,10 @@ export const Activos = (props: { id_talento: number; read_only: boolean }) => {
   }, [data]);
 
   return (
-    <Grid id="activos" container sx={{ mt: 10 }}>
+    <Grid container sx={{ mt: 10 }}>
+      <div id="activos" style={{margin: '-100px 0 100px 0'}}>
+
+      </div>
       <Grid item xs={12}>
         <SectionTitle
           title={
