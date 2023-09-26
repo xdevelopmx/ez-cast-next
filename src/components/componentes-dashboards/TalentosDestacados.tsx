@@ -72,7 +72,7 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
                           variant={'body2'}>
                           {d.talento.info_basica?.union?.id_union === 99 ? d.talento.info_basica.union.descripcion : d.talento.info_basica?.union?.union.es}
                         </Typography>
-                        {d.talento.info_basica?.estado_republica.es.length > 0?
+                        {d.talento.info_basica?.estado_republica.es && d.talento.info_basica?.estado_republica.es.length > 0?
                         <div style={{ paddingLeft: 8, alignItems: 'baseline' }} className="d-lg-flex cart_slider_datos">
                           <p style={{fontSize: '0.7rem', margin: 0}}><motion.img src="/assets/img/iconos/cart_location_blue.svg" alt="icon" /> {d.talento.info_basica?.estado_republica.es}</p>
                         </div>

@@ -1,4 +1,4 @@
-import { Alert, AlertTitle } from "@mui/material";
+import { Alert, AlertTitle, Box, Typography } from "@mui/material";
 import { useContext, type FC } from "react";
 import useAlerts from "~/hooks/useAlerts";
 import MotionDiv from "./MotionDiv";
@@ -40,18 +40,31 @@ export const Alerts: FC = () => {
             }}
           >
             <Alert
-              severity="success"
               sx={{
                 backgroundColor: color,
                 color: "whitesmoke",
                 textAlign: "center",
+                height: 36,
+                padding: 0,
+                '.MuiAlert-message': {
+                  overflowY: 'hidden'
+                }
               }}
-              icon={null}
+              icon={false}
             >
-              <AlertTitle>
-                {v[1].severity === "success" ? ctx.lang === 'es' ? "Éxito" : 'Success' : ctx.lang === 'es' ? "Ocurrió un problema" : `There's been a problem`}
-              </AlertTitle>
-              {v[1].message}
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 2,
+              }}>
+                <Typography fontWeight={700} fontSize={'1rem'}>
+                  ({v[1].severity === "success" ? ctx.lang === 'es' ? "Éxito" : 'Success' : ctx.lang === 'es' ? "Ocurrió un problema" : `There's been a problem`})
+                </Typography>
+                <Typography fontWeight={400}>
+                  {v[1].message}
+                </Typography>
+
+              </Box>
             </Alert>
           </MotionDiv>
         );
