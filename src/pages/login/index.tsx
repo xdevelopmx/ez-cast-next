@@ -99,10 +99,10 @@ const LoginPage: NextPage = () => {
                 notify("error", err.toString());
               });
           } else {
+            console.log(sess);
             signOut({
               redirect: false,
             }).then();
-            console.log(sess);
             notify('error', `${textos['cuenta_no_tiene_correo']}`);
           }
         } else {
@@ -399,7 +399,10 @@ const LoginPage: NextPage = () => {
                     if (state.tipo_usuario) {
                       await signIn("google");
                     } else {
-                      notify('warning', `${textos['no_haz_seleccionado_ningun_tipo_de_usuario_aun']}`);
+                      notify(
+                        "warning",
+                        `${textos["no_haz_seleccionado_ningun_tipo_de_usuario_aun"]}`
+                      );
                     }
                   }}
                 >
@@ -418,7 +421,10 @@ const LoginPage: NextPage = () => {
                     if (state.tipo_usuario) {
                       await signIn("facebook");
                     } else {
-                      notify('warning', `${textos['no_haz_seleccionado_ningun_tipo_de_usuario_aun']}`);
+                      notify(
+                        "warning",
+                        `${textos["no_haz_seleccionado_ningun_tipo_de_usuario_aun"]}`
+                      );
                     }
                   }}
                 >

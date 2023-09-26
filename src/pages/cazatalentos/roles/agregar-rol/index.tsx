@@ -1291,7 +1291,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       <MainLayout menuSiempreBlanco={true}>
         <div className="d-flex wrapper_ezc">
           <MenuLateral />
-          <Grid container xs={12} sx={{ padding: "0rem 8.5rem 5rem 8.5rem" }}>
+          <Grid container xs={12} sx={{ padding: "0rem 8.5rem 5rem 8.5rem", position: 'relative' }}>
             <Grid item xs={12}>
               <div className="container_box_header">
                 <div className="d-flex justify-content-end align-items-start py-2">

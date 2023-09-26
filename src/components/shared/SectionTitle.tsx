@@ -26,7 +26,7 @@ export const SectionTitle: FC<Props> = ({
     <>
       <MContainer direction="horizontal" justify="space-between">
         <MContainer direction="horizontal">
-          <Typography sx={titleSx} fontWeight={600}>
+          <Typography sx={titleSx} fontWeight={700}>
             {title}
           </Typography>
           <>
