@@ -38,7 +38,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
     id_proyecto: 0,
   });
 
-  const proyectos = api.proyectos.getProyectosRandom.useQuery(20, {
+  const proyectos = api.proyectos.getProyectosEnCartelera.useQuery(undefined, {
     refetchOnWindowFocus: false,
   });
 
@@ -287,7 +287,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                       }}
                       style={{ cursor: "pointer", border: "1px solid #bababa" }}
                       src={
-                        proyecto.url ? proyecto.url : "/assets/img/no-image.png"
+                        proyecto.foto_portada ? proyecto.foto_portada.url : "/assets/img/no-image.png"
                       }
                       fill
                       alt=""

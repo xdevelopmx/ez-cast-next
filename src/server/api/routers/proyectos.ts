@@ -19,6 +19,29 @@ export const ProyectosRouter = createTRPCRouter({
 			return await ctx.prisma.$queryRaw<{id: number, nombre: string, url: null | string}[]>`select p.id, p.nombre, m.url  from Proyecto p left join Media m on m.identificador = concat("foto-portada-proyecto-", p.id) order by rand() limit ${input}`
 		}
 	),
+	getProyectosEnCartelera: publicProcedure
+		.query(async ({ctx}) => {
+			const proyectos = await ctx.prisma.proyecto.findMany({
+				where: { en_casting: true },
+				//take: input,
+				include: {
+					tipo: {
+						include: {
+							tipo_proyecto: true
+						}
+					},
+					sindicato: {
+						include: {
+							sindicato: true
+						}
+					},
+					foto_portada: true,
+					archivo: true
+				}
+			});
+			return proyectos;
+		}
+	),
 	getProyectosDestacados: publicProcedure
 		.input(z.number())
 		.query(async ({input, ctx}) => {
@@ -196,6 +219,39 @@ export const ProyectosRouter = createTRPCRouter({
 					},
 					data: {
 						destacado: input.destacado
+					}
+				});
+				if (!proyecto) {
+					throw new TRPCError({
+						code: 'INTERNAL_SERVER_ERROR',
+						message: getResponse('error_save_project')
+					});
+				}
+				return proyecto;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: getResponse('error_invalid_role')
+			});
+		}
+	),
+	updateEnCartelera: protectedProcedure
+		.input(z.object({
+			id: z.number(),
+			en_casting: z.boolean(),
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('ProyectosRouter_updateEnCasting', lang);
+
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+			if (ctx.session && ctx.session.user && ctx.session.user.tipo_usuario === TipoUsuario.ADMIN) {
+				const proyecto: Proyecto = await ctx.prisma.proyecto.update({
+					where: {
+						id: input.id
+					},
+					data: {
+						en_casting: input.en_casting
 					}
 				});
 				if (!proyecto) {

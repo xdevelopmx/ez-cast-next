@@ -23,6 +23,7 @@ import { MTable } from "~/components/shared/MTable/MTable";
 import Constants from "~/constants";
 import useNotify from "~/hooks/useNotify";
 import RolesIndexPage from "~/pages/cazatalentos/roles";
+import TheatersIcon from '@mui/icons-material/Theaters';
 import { api, parseErrorBody } from "~/utils/api";
 
 export const CatalogoProyectos = () => {
@@ -107,6 +108,27 @@ export const CatalogoProyectos = () => {
       notify("error", parseErrorBody(error.message));
     },
   });
+
+  const update_en_casting = api.proyectos.updateEnCartelera.useMutation({
+    onSuccess: (data) => {
+      setData((prev) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return prev.map((p) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          if (p.id === data.id) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            p.en_casting = data.en_casting;
+          }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          return p;
+        });
+      });
+      notify("success", "Se actualizo el proyecto con exito");
+    },
+    onError: (error) => {
+      notify("error", parseErrorBody(error.message));
+    },
+  })
 
   const update_destacado = api.proyectos.updateDestacado.useMutation({
     onSuccess: (data) => {
@@ -335,6 +357,20 @@ export const CatalogoProyectos = () => {
                     }}
                   >
                     <People />
+                  </IconButton>
+                  <IconButton
+                    onClick={(e) => {
+                      update_en_casting.mutate({
+                        id: p.id,
+                        en_casting: !p.en_casting,
+                      });
+                      e.stopPropagation();
+                    }}
+                    color={p.en_casting ? 'primary' : 'default'}
+                    aria-label="Actualizar Estado En Cartelera"
+                    component="label"
+                  >
+                    <TheatersIcon/>
                   </IconButton>
                   <IconButton
                     onClick={(e) => {

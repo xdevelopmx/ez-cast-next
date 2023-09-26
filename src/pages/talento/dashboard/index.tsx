@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Link, Skeleton } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, Link, Skeleton } from "@mui/material";
 import {
   Activos,
   Creditos,
@@ -19,7 +19,7 @@ import { getSession } from "next-auth/react";
 import { TipoUsuario } from "~/enums";
 import Constants from "~/constants";
 import { type User } from "next-auth/core/types";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TalentoDashBoardSelect } from "~/components/cazatalento/talento/talento-dashboard-select";
 import { TalentoDashBoardRepresentanteSection } from "~/components/representante/talento/TalentoDashBoardRepresentanteSection";
 import { prisma } from "~/server/db";
@@ -34,6 +34,7 @@ const DashBoardTalentosPage: NextPage<{
   scroll_section: string;
   can_edit: boolean;
 }> = (props) => {
+  const [dialog_open, setDialogOpen] = useState(false);
   const { notify } = useNotify();
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -114,7 +115,7 @@ const DashBoardTalentosPage: NextPage<{
                     </div>
                     {props.user && props.user.tipo_usuario && [TipoUsuario.TALENTO, TipoUsuario.ADMIN].includes(props.user.tipo_usuario) &&
                       <div className="d-flex-column">
-                        <p className="m-0 p-0">
+                        <Button className="m-0 p-0" onClick={() => {setDialogOpen(true)}}>
                           <Image
                             src="/assets/img/iconos/eye_blue.svg"
                             width={20}
@@ -122,7 +123,7 @@ const DashBoardTalentosPage: NextPage<{
                             alt=""
                           />{" "}
                           {textos['vertd']}
-                        </p>
+                        </Button>
                         <p className="m-0 p-0">
                           <Button sx={{textTransform: 'capitalize', textDecoration: 'underline'}} onClick={() => {
                               navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${props.id_talento}`);
@@ -211,6 +212,22 @@ const DashBoardTalentosPage: NextPage<{
           </div>
         </div>
       </MainLayout>
+      <Dialog
+          style={{
+              marginTop: 56
+          }}
+          fullWidth={true}
+          maxWidth={'xl'}
+          open={dialog_open}
+          onClose={() => { setDialogOpen(false) }}
+      >
+          <DialogContent>
+              <DashBoardTalentosPage id_talento={props.id_talento} id_rol={0} scroll_section={""} can_edit={false} />
+          </DialogContent>
+          <DialogActions>
+              <Button onClick={() => { setDialogOpen(false) }}>Cerrar</Button>
+          </DialogActions>
+      </Dialog>
       {props.user && <Flotantes />}
     </>
   );

@@ -321,6 +321,16 @@ export default function ApiResponses(route: string, lang: string) {
                 error_invalid_role: 'Solo el rol de admin puede marcar un proyecto como destacado.',
             }
         },
+        ProyectosRouter_updateEnCasting: {
+            en: {
+                error_save_project: 'An error occurred while trying to save the project.',
+                error_invalid_role: 'Only the admin role can mark a project as now casting.'
+            },
+            es: {
+                error_save_project: 'Ocurrio un error al tratar de guardar el proyecto.',
+                error_invalid_role: 'Solo el rol de admin puede marcar un proyecto como ahora casteando.',
+            }
+        },
         ProyectosRouter_saveProyectoFiles: {
             en: {
                 error_invalid_role: 'Only the talent scout role can modify the general information.'

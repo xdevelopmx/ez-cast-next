@@ -424,6 +424,7 @@ model Proyecto {
   agencia_publicidad    String
   sinopsis              String
   destacado             Boolean                  @default(false)
+  en_casting             Boolean                  @default(true)
   id_archivo_media      Int?
   detalles_adicionales  String
   id_estado_republica   Int
