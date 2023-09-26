@@ -31,6 +31,7 @@ interface Props {
   stylesStepLabel?: SxProps;
   styleH3Paso?: CSSProperties;
   styleSpanH3PasoTitulo?: CSSProperties;
+  stylesNumeroPaso?: CSSProperties;
 }
 
 export const MStepper: FC<Props> = ({
@@ -47,6 +48,7 @@ export const MStepper: FC<Props> = ({
   stylesStep,
   stylesStepLabel,
   styleSpanH3PasoTitulo,
+  stylesNumeroPaso,
 }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -84,7 +86,10 @@ export const MStepper: FC<Props> = ({
         </Stepper>
         <h3 className="paso-stepper" style={styleH3Paso}>
           <span>
-            {textos["paso"] ? textos["paso"] : "Texto No Definido"} {current_step}{" "}
+            <span style={stylesNumeroPaso}>
+              {textos["paso"] ? textos["paso"] : "Texto No Definido"}{" "}
+              {current_step}{" "}
+            </span>
             <span style={styleSpanH3PasoTitulo}>
               {" "}
               {step_titles[current_step]}

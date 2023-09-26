@@ -128,7 +128,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             styles={{ gap: "0px 40px", alignItems: "center", marginTop: 10 }}
           >
             <FormGroup
-              className={"form-input-md"}
+              className={"form-input-md form-input-small"}
               labelClassName={"form-input-label"}
               value={`${state.apariencia.rango_inicial_edad}`}
               style={{ width: 60 }}
@@ -145,7 +145,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             />
             <Typography>a</Typography>
             <FormGroup
-              className={"form-input-md"}
+              className={"form-input-md form-input-small"}
               labelClassName={"form-input-label"}
               value={`${state.apariencia.rango_final_edad}`}
               style={{ width: 60 }}
@@ -193,6 +193,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                   })
                 : []
             }
+            className={"form-input-small"}
             style={{ width: 250 }}
             value={`${state.apariencia.id_genero}`}
             onChange={(e) => {
@@ -287,6 +288,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             }
             style={{ width: 250 }}
             value={`${state.apariencia.id_apariencia_etnica}`}
+            className={"form-input-small"}
             onChange={(e) => {
               onFormChange({
                 apariencia: {
@@ -317,7 +319,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 : []
             }
             value={state.apariencia.id_pais.toString()}
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             onChange={(e) => {
               onFormChange({
                 apariencia: {
@@ -353,6 +355,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
               <MSelect
                 loading={is_loading}
                 id="color-cabello"
+                className={"form-input-small"}
                 options={
                   colores_cabello.isSuccess && colores_cabello.data
                     ? colores_cabello.data.map((u) => {
@@ -388,6 +391,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             <Grid item xs={6}>
               <MSelect
                 id="estilo-cabello"
+                className={"form-input-small"}
                 options={
                   estilos_cabello.isSuccess && estilos_cabello.data
                     ? estilos_cabello.data.map((u) => {
@@ -423,6 +427,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             <Grid item xs={6}>
               <MSelect
                 id="vello-facial"
+                className={"form-input-small"}
                 options={
                   vellos_facial.isSuccess && vellos_facial.data
                     ? vellos_facial.data.map((u) => {
@@ -458,6 +463,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
             <Grid item xs={6}>
               <MSelect
                 id="color-ojos"
+                className={"form-input-small"}
                 options={
                   colores_ojos.isSuccess && colores_ojos.data
                     ? colores_ojos.data.map((u) => {
@@ -494,7 +500,11 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 ?
               </Typography>
             </Grid>
-            <Grid item xs={5} sx={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Grid
+              item
+              xs={5}
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
               <MRadioGroup
                 id="dispuesto-cambiar-color"
                 options={[
@@ -506,7 +516,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                   margin: 0,
                   fontWeight: 800,
                   fontSize: "0.72rem",
-                  color: "#069cb1"
+                  color: "#069cb1",
                 }}
                 value={
                   state.apariencia.disposicion_cambio_color_cabello
@@ -542,7 +552,11 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 ?
               </Typography>
             </Grid>
-            <Grid item xs={5} sx={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Grid
+              item
+              xs={5}
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
               <MRadioGroup
                 id="dispuesto-cambiar-corte"
                 options={[
@@ -590,7 +604,11 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 ?
               </Typography>
             </Grid>
-            <Grid item xs={5} sx={{display: 'flex', justifyContent: 'flex-end'}}>
+            <Grid
+              item
+              xs={5}
+              sx={{ display: "flex", justifyContent: "flex-end" }}
+            >
               <MRadioGroup
                 id="dispuesto-cambiar-corte"
                 options={[
@@ -716,6 +734,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 </Typography>
                 <MSelect
                   id="filtos_apariencias_subtitutlo-tatuaje"
+                  className={"form-input-small"}
                   options={
                     tipos_tatuajes.data
                       ? tipos_tatuajes.data.map((t) => {
@@ -745,7 +764,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 </Typography>
                 <FormGroup
                   rootStyle={{ margin: 0 }}
-                  className={"form-input-md"}
+                  className={"form-input-md form-input-small"}
                   labelClassName={"form-input-label"}
                   value={state.descripcion_tatoo}
                   onChange={(e) => {
@@ -887,6 +906,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 </Typography>
                 <MSelect
                   id="tipo-piercing"
+                  className={"form-input-small"}
                   options={
                     tipos_piercings.data
                       ? tipos_piercings.data.map((t) => {
@@ -922,7 +942,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                     : "Texto No Definido"}
                 </Typography>
                 <FormGroup
-                  className={"form-input-md"}
+                  className={"form-input-md form-input-small"}
                   labelClassName={"form-input-label"}
                   value={state.descripcion_piercing}
                   rootStyle={{ margin: 0 }}
@@ -1095,7 +1115,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                 >
                   <FormGroup
                     label=""
-                    className={"form-input-md"}
+                    className={"form-input-md form-input-small"}
                     labelClassName={"form-input-label"}
                     value={state.hermanos?.descripcion}
                     onChange={(e) => {
@@ -1197,7 +1217,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                     ? textos["filtros_apariencias_particularidades_otro_tipo"]
                     : "Texto No Definido"
                 }
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.descripcion_otra_particularidad}
                 rootStyle={{ margin: 0 }}

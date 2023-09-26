@@ -459,7 +459,7 @@ export const InfoGeneral = (props: {
                         width={20}
                         height={20}
                         alt="estrella"
-                      /> 
+                      />
                       <Typography
                         sx={{
                           color: "#069CB1",

@@ -182,7 +182,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
                   <Image
                     width={191}
                     height={240}
-                    style={{ border: "1px solid #000000", objectFit: 'cover' }}
+                    style={{ border: "1px solid #000000", objectFit: "cover" }}
                     src={image.url}
                     alt=""
                   />

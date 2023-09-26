@@ -1713,6 +1713,12 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
                   />
                 ),
               }}
+              styleSpanH3PasoTitulo={{
+                fontWeight: 400,
+              }}
+              stylesNumeroPaso={{
+                fontWeight: 700,
+              }}
             >
               {editar_info_basica_talento}
               {editar_media_talento}

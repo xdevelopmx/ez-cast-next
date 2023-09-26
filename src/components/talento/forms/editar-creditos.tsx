@@ -78,6 +78,7 @@ export const EditarCreditosTalento: FC<Props> = ({
             onChange={(e) => {
               onFormChange({ tipo_proyecto: parseInt(e.target.value) });
             }}
+            className={"form-input-md form-input-small"}
             label={
               textos["tipo_proyecto"]
                 ? textos["tipo_proyecto"]
@@ -88,7 +89,7 @@ export const EditarCreditosTalento: FC<Props> = ({
         <Grid item xs={20} md={4} lg={4}>
           <FormGroup
             style={{ width: "100%" }}
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             labelClassName={"form-input-label"}
             value={state ? state.titulo : ""}
             onChange={(e) => {
@@ -109,13 +110,14 @@ export const EditarCreditosTalento: FC<Props> = ({
             onChange={(e) => {
               onFormChange({ rol: e.target.value });
             }}
+            className={"form-input-md form-input-small"}
             label={textos["rol"] ? textos["rol"] : "Texto No Definido"}
           />
         </Grid>
         <Grid item xs={20} md={4} lg={4}>
           <FormGroup
             style={{ width: "100%" }}
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             labelClassName={"form-input-label"}
             value={state ? state.director : ""}
             onChange={(e) => {
@@ -138,6 +140,7 @@ export const EditarCreditosTalento: FC<Props> = ({
                 onFormChange({ anio: parseInt(e.target.value) });
               }}
               label={textos["anio"] ? textos["anio"] : "Texto No Definido"}
+              className={"form-input-md form-input-small"}
             />
           </MContainer>
         </Grid>

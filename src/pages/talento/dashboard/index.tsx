@@ -4,7 +4,14 @@ import Image from "next/image";
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { OptionsGroup } from "~/components/shared/OptionsGroup";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Dialog, DialogActions, DialogContent, Link, Skeleton } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Link,
+  Skeleton,
+} from "@mui/material";
 import {
   Activos,
   Creditos,
@@ -109,32 +116,48 @@ const DashBoardTalentosPage: NextPage<{
                       )}
                       {!talento.isFetching && talento.data && (
                         <p className="h3 font-weight-bold mb-0 ml-2">
-                            {talento.data.nombre} {talento.data.apellido}
+                          {talento.data.nombre} {talento.data.apellido}
                         </p>
                       )}
                     </div>
-                    {props.user && props.user.tipo_usuario && [TipoUsuario.TALENTO, TipoUsuario.ADMIN].includes(props.user.tipo_usuario) &&
-                      <div className="d-flex-column">
-                        <Button className="m-0 p-0" onClick={() => {setDialogOpen(true)}}>
-                          <Image
-                            src="/assets/img/iconos/eye_blue.svg"
-                            width={20}
-                            height={20}
-                            alt=""
-                          />{" "}
-                          {textos['vertd']}
-                        </Button>
-                        <p className="m-0 p-0">
-                          <Button sx={{textTransform: 'capitalize', textDecoration: 'underline'}} onClick={() => {
-                              navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${props.id_talento}`);
-                              notify('success', `${textos['link_copiado']}`);
-                          }}>
-                            {textos['copiartd']}
+                    {props.user &&
+                      props.user.tipo_usuario &&
+                      [TipoUsuario.TALENTO, TipoUsuario.ADMIN].includes(
+                        props.user.tipo_usuario
+                      ) && (
+                        <div className="d-flex-column">
+                          <Button
+                            className="m-0 p-0"
+                            onClick={() => {
+                              setDialogOpen(true);
+                            }}
+                          >
+                            <Image
+                              src="/assets/img/iconos/eye_blue.svg"
+                              width={20}
+                              height={20}
+                              alt=""
+                            />{" "}
+                            {textos["vertd"]}
                           </Button>
-                          
-                        </p>
-                      </div>
-                    }
+                          <p className="m-0 p-0">
+                            <Button
+                              sx={{
+                                textTransform: "capitalize",
+                                textDecoration: "underline",
+                              }}
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  `${process.env.NEXT_PUBLIC_APP_URL}/talento/dashboard?id_talento=${props.id_talento}`
+                                );
+                                notify("success", `${textos["link_copiado"]}`);
+                              }}
+                            >
+                              {textos["copiartd"]}
+                            </Button>
+                          </p>
+                        </div>
+                      )}
                   </div>
                   {props.id_talento > 0 &&
                     props.user?.tipo_usuario === TipoUsuario.REPRESENTANTE && (
@@ -213,20 +236,33 @@ const DashBoardTalentosPage: NextPage<{
         </div>
       </MainLayout>
       <Dialog
-          style={{
-              marginTop: 56
-          }}
-          fullWidth={true}
-          maxWidth={'xl'}
-          open={dialog_open}
-          onClose={() => { setDialogOpen(false) }}
+        style={{
+          marginTop: 56,
+        }}
+        fullWidth={true}
+        maxWidth={"xl"}
+        open={dialog_open}
+        onClose={() => {
+          setDialogOpen(false);
+        }}
       >
-          <DialogContent>
-              <DashBoardTalentosPage id_talento={props.id_talento} id_rol={0} scroll_section={""} can_edit={false} />
-          </DialogContent>
-          <DialogActions>
-              <Button onClick={() => { setDialogOpen(false) }}>Cerrar</Button>
-          </DialogActions>
+        <DialogContent>
+          <DashBoardTalentosPage
+            id_talento={props.id_talento}
+            id_rol={0}
+            scroll_section={""}
+            can_edit={false}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDialogOpen(false);
+            }}
+          >
+            Cerrar
+          </Button>
+        </DialogActions>
       </Dialog>
       {props.user && <Flotantes />}
     </>
@@ -251,8 +287,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         talento_id = parseInt(session.user.id);
         const talento_info = await prisma.infoBasicaPorTalentos.findFirst({
           where: {
-            id_talento: talento_id
-          }
+            id_talento: talento_id,
+          },
         });
         if (!talento_info) {
           // si no tiene info basica lo mandamos a el form de editar talento

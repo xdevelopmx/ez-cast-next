@@ -72,7 +72,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
       <Grid item xs={12} md={6} lg={4}>
         <FormGroup
           loading={talento_fetching}
-          className={"form-input-md"}
+          className={"form-input-md form-input-small"}
           labelClassName={"form-input-label"}
           value={state ? state.nombre : ""}
           onChange={(e) => {
@@ -98,7 +98,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                   })
                 : []
             }
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             value={union_selected.id.toString()}
             onChange={(e) => {
               const id = parseInt(e.target.value);
@@ -139,7 +139,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                 })
               : []
           }
-          className={"form-input-md"}
+          className={"form-input-md form-input-small"}
           value={state ? state.id_estado_republica.toString() : "0"}
           onChange={(e) => {
             onFormChange({ id_estado_republica: parseInt(e.target.value) });
@@ -154,9 +154,15 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                 height={24}
                 src="/assets/img/iconos/cart_location_blue.svg"
                 alt=""
+                style={{
+                  marginRight: "15px",
+                }}
               />{" "}
             </span>
           }
+          style={{
+            height: "25px",
+          }}
         />
       </Grid>
       <Grid container item xs={12} className="mt-5 mb-3" md={12}>
@@ -170,6 +176,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             )}
             style={{ width: 100 }}
             value={state ? state.edad.toString() : "0"}
+            className={"form-input-small"}
             onChange={(e) => {
               onFormChange({
                 edad: parseInt(e.target.value),
@@ -236,7 +243,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                   }
                   return undefined;
                 })()}
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 labelStyle={{ fontWeight: 400 }}
                 value={
@@ -263,7 +270,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                   }
                   return undefined;
                 })()}
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelStyle={{ fontWeight: 400 }}
                 labelClassName={"form-input-label"}
                 value={
@@ -286,9 +293,8 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             </MContainer>
             <MContainer direction="horizontal" styles={{ gap: 40 }}>
               <FormGroup
-                className={"form-input-md"}
                 labelStyle={{ fontWeight: 400 }}
-                labelClassName={"form-input-label"}
+                className={"form-input-md form-input-small"}
                 value={
                   state && state.representante
                     ? state.representante.agencia
@@ -318,7 +324,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                   }
                   return undefined;
                 })()}
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 type="number"
                 labelStyle={{ fontWeight: 400 }}
                 labelClassName={"form-input-label"}
@@ -441,6 +447,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                 onChange={(e) => {
                   onFormChange({ peso: parseInt(e.currentTarget.value) });
                 }}
+                className={"form-input-md form-input-small"}
               />
               <Typography variant="body1" component="p">
                 kg
@@ -460,6 +467,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                 onChange={(e) => {
                   onFormChange({ altura: parseInt(e.currentTarget.value) });
                 }}
+                className={"form-input-md form-input-small"}
               />
               <Typography variant="body1" component="p">
                 cm
@@ -608,7 +616,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />
           </MContainer>
           <FormGroup
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             value={state.redes_sociales ? state.redes_sociales.pagina_web : ""}
             onChange={(e) => {
               onFormChange({
@@ -651,7 +659,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />{" "}
           </span>
           <FormGroup
-            className={"form-input-sm"}
+            className={"form-input-sm form-input-small"}
             value={
               state && state.redes_sociales ? state.redes_sociales.vimeo : ""
             }
@@ -684,7 +692,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />{" "}
           </span>
           <FormGroup
-            className={"form-input-sm"}
+            className={"form-input-sm form-input-small"}
             value={
               state && state.redes_sociales
                 ? state.redes_sociales.instagram
@@ -719,7 +727,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />{" "}
           </span>
           <FormGroup
-            className={"form-input-sm"}
+            className={"form-input-sm form-input-small"}
             value={
               state && state.redes_sociales ? state.redes_sociales.youtube : ""
             }
@@ -752,7 +760,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />{" "}
           </span>
           <FormGroup
-            className={"form-input-sm"}
+            className={"form-input-sm form-input-small"}
             value={
               state && state.redes_sociales ? state.redes_sociales.twitter : ""
             }
@@ -785,7 +793,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />{" "}
           </span>
           <FormGroup
-            className={"form-input-sm"}
+            className={"form-input-sm form-input-small"}
             value={
               state && state.redes_sociales ? state.redes_sociales.imdb : ""
             }
@@ -818,7 +826,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
             />{" "}
           </span>
           <FormGroup
-            className={"form-input-sm"}
+            className={"form-input-sm form-input-small"}
             value={
               state && state.redes_sociales ? state.redes_sociales.linkedin : ""
             }

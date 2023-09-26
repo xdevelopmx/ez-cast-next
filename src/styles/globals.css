@@ -3539,6 +3539,11 @@ p.edo_pendiente {
   max-width: 100%;
 }
 
+.form-input-small {
+  height: 25px;
+  padding: 0px 15px;
+}
+
 .link-input-label {
   font-weight: 800;
   font-size: 0.85rem;
