@@ -40,7 +40,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
         return (
           <MSelect
             id="tipo-raza-select"
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             options={
               tipos_razas.data
                 ? tipos_razas.data.map((m) => {
@@ -87,7 +87,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
         return (
           <MSelect
             id="tipo-vestuario-especifico-select"
-            className={"form-input-md"}
+            className={"form-input-md form-input-small"}
             options={
               tipos_vestuarios_especificos.data
                 ? tipos_vestuarios_especificos.data
@@ -151,7 +151,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             <>
               <MSelect
                 id="tipo-vehiculo-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={
                   tipos_vehiculos.data
                     ? tipos_vehiculos.data.map((v) => {
@@ -189,7 +189,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 }
               />
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.vehiculo?.marca}
                 onChange={(e) => {
@@ -200,7 +200,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 label={textos["marca"] ? textos["marca"] : "Texto No Definido"}
               />
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.vehiculo?.modelo}
                 onChange={(e) => {
@@ -213,7 +213,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 }
               />
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.vehiculo?.color}
                 onChange={(e) => {
@@ -225,7 +225,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               />
               <MSelect
                 id="anio-vehiculo-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={VEHICULO_YEARS.map((i) => {
                   return { value: i.toString(), label: i.toString() };
                 })}
@@ -409,7 +409,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             <MContainer direction="vertical">
               <MSelect
                 id="tipo-mascota-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={
                   tipos_mascotas.data
                     ? tipos_mascotas.data.map((m) => {
@@ -451,7 +451,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               <>{raza_select}</>
               <MSelect
                 id="tamanio-mascota-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={[
                   {
                     value: "Chico",
@@ -664,7 +664,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             <>
               <MSelect
                 id="tipo-vestuario-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={
                   tipos_vestuarios.data
                     ? tipos_vestuarios.data.map((m) => {
@@ -705,7 +705,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               />
               <>{vestuario_especifico_select}</>
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.vestuario?.descripcion}
                 onChange={(e) => {
@@ -868,7 +868,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             <>
               <MSelect
                 id="tipo-prop-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={
                   tipos_props.data
                     ? tipos_props.data.map((m) => {
@@ -907,7 +907,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 }
               />
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.prop?.descripcion}
                 onChange={(e) => {
@@ -1052,7 +1052,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             <>
               <MSelect
                 id="tipo-equipo-deportivo-select"
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 options={
                   tipo_equipo_deportivo.data
                     ? tipo_equipo_deportivo.data.map((m) => {
@@ -1091,7 +1091,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 }
               />
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={state.equipo_deportivo?.descripcion}
                 onChange={(e) => {

@@ -346,6 +346,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                       })
                     : []
                 }
+                className={"form-input-md form-input-small"}
                 style={{ width: 250 }}
                 value={locacionPrincipalSelect}
                 labelStyle={{ fontWeight: 400 }}
@@ -389,6 +390,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 loading={is_loading}
                 id="locacion-principal-select"
                 labelStyle={{ fontWeight: 400 }}
+                className={"form-input-md form-input-small"}
                 options={
                   estados_republica.isSuccess && estados_republica.data
                     ? estados_republica.data.map((u) => {
@@ -541,7 +543,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           <MotionDiv show={tieneAgenciaRepresentante} animation="fade">
             <MContainer direction="horizontal" styles={{ gap: 40 }}>
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 value={state.preferencias.nombre_agente}
                 onChange={(e) => {
                   onFormChange({
@@ -557,7 +559,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
               />
 
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 type="email"
                 textBlueLabel={
                   textos["correo_electronico"]
@@ -653,7 +655,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
               animation="fade"
             >
               <FormGroup
-                className={"form-input-md"}
+                className={"form-input-md form-input-small"}
                 labelClassName={"form-input-label"}
                 value={
                   state.documentos.filter(
@@ -771,7 +773,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           />
         </Typography>
         <FormGroup
-          className={"form-input-md"}
+          className={"form-input-md form-input-small"}
           labelClassName={"form-input-label"}
           value={otrasProfesionesInput}
           onChange={(e) => {
