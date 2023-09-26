@@ -88,7 +88,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   <b>
                     {textos["proyectos_activos"]
                       ? textos["proyectos_activos"]
-                      : "<p>Texto No definido</p>"}
+                      : "Texto No definido"}
                   </b>
                 </p>
                 <p
@@ -100,7 +100,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                 >
                   {textos["ahora_siendo_casteado"]
                     ? textos["ahora_siendo_casteado"]
-                    : "<p>Texto No definido</p>"}
+                    : "Texto No definido"}
                 </p>
               </div>
               <div className="d-flex align-items-center">
@@ -114,7 +114,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   >
                     {textos["continuar_a_ezcast"]
                       ? textos["continuar_a_ezcast"]
-                      : "<p>Texto No definido</p>"}
+                      : "Texto No definido"}
                   </p>
                 </Link>
                 <motion.img
@@ -138,7 +138,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               >
                 {textos["destacados"]
                   ? textos["destacados"]
-                  : "<p>Texto No definido</p>"}
+                  : "Texto No definido"}
               </p>
             </div>
           </div>
@@ -227,15 +227,28 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
             </>
           )}
           {container_ref.current && (
-            <MBanner
-              show_only_media
-              width={container_ref.current.getBoundingClientRect().width}
-              height={422}
-              imageStyles={{
-                width: "100%",
-              }}
-              identificador="banner-cartelera-proyectos-1"
-            />
+            <Carroucel
+              navigationNew
+              navigation={false}
+              arrowsColor="#F9B233"
+              slidesPerView={1}
+              spaceBetween={0}
+            >
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div style={{width: '1000px', margin: '0 auto'}}>
+                  <MBanner
+                    show_only_media
+                    width={1000}
+                    height={222}
+                    imageStyles={{
+                      width: "100%",
+                      margin: 0
+                    }}
+                    identificador="banner-cartelera-proyectos-1"
+                  />
+                </div>
+              ))}
+          </Carroucel>
           )}
           <p
             className="mt-5 h5"
@@ -246,7 +259,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
           >
             {textos["ahora_castenado_en_ezcast"]
               ? textos["ahora_castenado_en_ezcast"]
-              : "<p>Texto No definido</p>"}
+              : "Texto No definido"}
           </p>
           <hr className="hr_blue" style={{ margin: "0px 0 40px 0" }} />
 
@@ -319,7 +332,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               <p className="mb-0 color_a mr-2 fw-600">
                 {textos["continuar_a_ezcast"]
                   ? textos["continuar_a_ezcast"]
-                  : "<p>Texto No definido</p>"}
+                  : "Texto No definido"}
               </p>
             </Link>
             <motion.img src="/assets/img/iconos/icon_next_blue.svg" alt="" />

@@ -106,7 +106,7 @@ const LoginPage: NextPage = () => {
             notify('error', `${textos['cuenta_no_tiene_correo']}`);
           }
         } else {
-          router.push("/inicio");
+          
         }
       }
     }

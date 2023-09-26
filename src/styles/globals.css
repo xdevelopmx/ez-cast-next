@@ -2281,9 +2281,10 @@ body .tooltip > .tooltip-inner,
 }
 
 .container_slider_intro {
-  width: 85%;
+  max-width: 90%;
+  width: 1150px;
   margin: 40px auto 150px;
-  padding: 0 0 90px 0;
+  padding: 0 50px 90px;
 }
 
 .fs-20px {

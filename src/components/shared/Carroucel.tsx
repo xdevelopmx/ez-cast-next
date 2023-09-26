@@ -41,10 +41,10 @@ export const Carroucel: FC<Props> = ({
   ));
 
   return (
-    <div className="d-flex carrusel-personalizado">
+    <div className="d-flex carrusel-personalizado" style={{maxWidth: '100%'}}>
       {navigationNew && (
         <IconButton
-          sx={{ margin: "0 0 0 -55px", color: arrowsColor }}
+          sx={{ margin: "0 0 0 -55px", color: arrowsColor, left: '28px' }}
           onClick={() => swiperRef.current?.slidePrev()}
           aria-label="delete"
           size="large"
@@ -61,6 +61,7 @@ export const Carroucel: FC<Props> = ({
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           "--swiper-theme-color": arrowsColor,
+          maxWidth: '100%'
         }}
         modules={[Navigation, Pagination]}
         spaceBetween={spaceBetween}
@@ -76,13 +77,12 @@ export const Carroucel: FC<Props> = ({
         onBeforeInit={(swiper) => {
           swiperRef.current = swiper;
         }}
-        onSlideChange={() => console.log("slide change")}
       >
         {slides}
       </Swiper>
       {navigationNew && (
         <IconButton
-          sx={{ margin: "0 -55px 0 0", color: arrowsColor }}
+          sx={{ margin: "0 -55px 0 0", color: arrowsColor, right: '28px' }}
           onClick={() => swiperRef.current?.slideNext()}
           aria-label="delete"
           size="large"
