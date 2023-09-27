@@ -763,7 +763,10 @@ export const FiltrosApariencias = (props: {
         <Grid item my={2} xs={12}>
           <Divider />
         </Grid>
-        <Grid id="medidas" my={6} item xs={12}>
+        <Grid my={6} item xs={12}>
+          <div id="medidas" style={{margin: '-100px 0 100px 0'}}>
+
+          </div>
           <SectionTitle
             title={
               textos["medidas"] ? `${textos["medidas"]}:` : "Texto No definido"

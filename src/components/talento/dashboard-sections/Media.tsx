@@ -104,7 +104,10 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
   }, [current_selftape_video_url]);
 
   return (
-    <Grid id="media" container sx={{ mt: 10 }}>
+    <Grid  container sx={{ mt: 10 }}>
+      <div id="media" style={{margin: '-100px 0 100px 0'}}>
+
+      </div>
       <Grid item xs={12}>
         <SectionTitle
           title={textos["media"] ? textos["media"] : "Texto No definido"}

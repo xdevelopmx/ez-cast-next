@@ -77,7 +77,10 @@ export const Preferencias = (props: {id_talento: number, read_only: boolean}) =>
     }, [data, ctx.lang]);
 
     return (
-        <Grid id="preferencia-de-roles" container sx={{ mt: 10 }}>
+        <Grid container sx={{ mt: 10 }}>
+            <div id="preferencia-de-roles" style={{margin: '-100px 0 100px 0'}}>
+
+            </div>
             <Grid item xs={12}>
                 <SectionTitle titleSx={{ fontSize: "24px", }} dividerSx={{ borderTop: "2px solid #069cb1" }} title={textos['preferencias_roles'] ? `${textos['preferencias_roles']}` : 'Texto No definido'} textButton={textos['editar'] ? textos['editar'] : 'Texto No definido'} onClickButton={(!props.read_only) ? () => { 
                     // eslint-disable-next-line @typescript-eslint/no-floating-promises
