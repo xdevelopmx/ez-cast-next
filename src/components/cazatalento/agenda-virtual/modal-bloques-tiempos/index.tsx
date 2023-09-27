@@ -62,7 +62,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
 
     const [usar_descanso, setUsarDescanso] = useState('No');
 
-    const [administrar_intervalos, setAdministrarIntervalos] = useState<'Manualmente' | 'Automaticamente'>('Manualmente');
+    const [administrar_intervalos, setAdministrarIntervalos] = useState<string>('');
 
     const [asignaciones_intervalos_por_rol, setAsignacionesIntervalosPorRol] = useState<number[]>(roles.map((r, i) => r.id));
 
@@ -83,13 +83,13 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
             setInicioDescanso((bloque.data.hora_descanso_inicio) ? bloque.data.hora_descanso_inicio : '00:00');
             setFinDescanso((bloque.data.hora_descanso_fin) ? bloque.data.hora_descanso_fin : '00:00');
             setUsarDescanso(bloque.data.hora_descanso_inicio != null && bloque.data.hora_descanso_inicio !== '00:00' ? 'Si' : 'No');
-            setAdministrarIntervalos(bloque.data.tipo_administracion_intervalo.toLowerCase() === 'automaticamente' ? 'Automaticamente' : 'Manualmente');
+            setAdministrarIntervalos(bloque.data.tipo_administracion_intervalo.toLowerCase() === 'automaticamente' ? `${textos['automaticamente']}` : `${textos['manualmente']}`);
             const locacion = locaciones.map(l => `${l.direccion}, ${estados_republica.data.filter(er => er.id === l.id_estado_republica)[0]?.es}`)[0];
             if (locacion) {
                 setSelectedLocacion(locacion)
             }
         }
-    }, [bloque.data, estados_republica.data]);
+    }, [bloque.data, estados_republica.data, textos]);
 
     const intervalos = useMemo(() => {
         return calculateIntervalos(minutos_por_talento, inicio_casting, fin_casting, (usar_descanso) ? {inicio_tiempo: inicio_descanso, fin_tiempo: fin_descanso} : undefined);
@@ -119,10 +119,10 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                         <Image src="/assets/img/iconos/icono_relog_blue.png" width={30} height={30} alt="" />
                         <Box>
                             <Typography fontWeight={600} sx={{ fontSize: '1.4rem' }}>
-                                Crear Bloques de Tiempo
+                                {textos['crear']} {textos['bloque_de_tiempo']}
                             </Typography>
                             <Typography>
-                                {dayjs(date, 'DD/MM/YYYY').toDate().toLocaleString('es-mx', {
+                                {dayjs(date, 'DD/MM/YYYY').toDate().toLocaleString(ctx.lang === 'es' ? 'es-mx' : 'en-us', {
                                 weekday: "long",
                                 year: "numeric",
                                 month: "long",
@@ -135,7 +135,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                 <Grid xs={12}>
                     <Grid xs={12}>
                         <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                            Intervalos de tiempo (Duración)
+                            {textos['intervalos_tiempo']}
                         </Typography>
                     </Grid>
                     <Grid xs={12}>
@@ -153,7 +153,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     labelStyle={{ fontWeight: 600, width: '100%' }}
                                     labelClassName={'form-input-label'}
                                     value={inicio_casting}
-                                    label='Inicia casting'
+                                    label={`${textos['inicia_casting']}`}
                                     onChange={(e) => {
                                         setInicioCasting(e.target.value);
                                     }}
@@ -166,7 +166,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     labelClassName={'form-input-label'}
                                     
                                     value={`${minutos_por_talento.toString()}`}
-                                    label='Tiempo por talento (min)'
+                                    label={`${textos['tiempo_por_talento']}`}
                                     onChange={(e) => {
                                         setMinutosPorTalento(parseInt(e.target.value));
                                     }}
@@ -178,7 +178,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     labelStyle={{ fontWeight: 600, width: '100%' }}
                                     labelClassName={'form-input-label'}
                                     value={fin_casting}
-                                    label='Finaliza casting'
+                                    label={`${textos['finaliza_casting']}`}
                                     onChange={(e) => {
                                         setFinCasting(e.target.value);
                                     }}
@@ -187,16 +187,16 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                         </Grid>
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                                {intervalos} intervalos
+                                {intervalos} {textos['intervalos']}
                             </Typography>
                         </Grid>
                         <Grid xs={12}>
                             <MRadioGroup
-                                label='¿Deseas agregar un descanso?'
+                                label={`${textos['desea_agregar_descanso']}`}
                                 labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                                 style={{ gap: 0 }}
                                 id="quieres-agregar-descanso"
-                                options={['Si', 'No']}
+                                options={[`${textos['si']}`, `${textos['no']}`]}
                                 value={usar_descanso}
                                 direction='horizontal'
                                 onChange={(e) => {
@@ -205,14 +205,14 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                             />
                         </Grid>
                         <Grid xs={12}>
-                            {usar_descanso === 'Si' &&
+                            {usar_descanso === `${textos['si']}` &&
                                 <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                                    Crear descanso
+                                    {textos['crear']} {textos['descanso']}
                                 </Typography>
                             }
                         </Grid>
                         <Grid xs={12}>
-                            {usar_descanso === 'Si' &&
+                            {usar_descanso === `${textos['si']}` &&
                             
                                 <Box sx={{
                                     display: 'flex',
@@ -227,7 +227,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         labelStyle={{ fontWeight: 600, width: '100%' }}
                                         labelClassName={'form-input-label'}
                                         value={inicio_descanso}
-                                        label='Hora de inicio'
+                                        label={`${textos['hora_inicio']}`}
                                         onChange={(e) => {
                                             setInicioDescanso(e.target.value);
                                         }}
@@ -239,7 +239,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         labelStyle={{ fontWeight: 600, width: '100%' }}
                                         labelClassName={'form-input-label'}
                                         value={fin_descanso}
-                                        label='Hora fin'
+                                        label={`${textos['hora_fin']}`}
                                         onChange={(e) => {
                                             setFinDescanso(e.target.value);
                                         }}
@@ -257,31 +257,31 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                     <Grid xs={12}>
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                                Administrar Bloques de Tiempo
+                                {textos['administrar_bloques']}
                             </Typography>
                         </Grid>
                         <Grid xs={12}>
                             <MRadioGroup
-                                label='¿Como te gustaría administrar los intervalos?'
+                                label={`${textos['como_manejar_intervalos']}`}
                                 labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                                 style={{ gap: 0 }}
                                 id="como-adminisitrar-intervalos"
-                                options={['Manualmente', 'Automaticamente']}
+                                options={[`${textos['manualmente']}`, `${textos['automaticamente']}`]}
                                 value={administrar_intervalos}
                                 direction='vertical'
                                 onChange={(e) => {
-                                    setAdministrarIntervalos(e.target.value === 'Manualmente' ? 'Manualmente' : 'Automaticamente');
+                                    setAdministrarIntervalos(e.target.value);
                                 }}
                             />
                         </Grid>
                         <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                                Locación
+                                {textos['locacion']}
                             </Typography>
                         </Grid>
                         <Grid xs={12}>
                             <MRadioGroup
-                                label='¿Donde se llevará a cabo?'
+                                label={`${textos['donde_se_llevara_acabo']}`}
                                 labelStyle={{ fontSize: '1.1rem', color: '#000', fontWeight: 600 }}
                                 style={{ gap: 0 }}
                                 id="locaciones"
@@ -354,7 +354,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         updateBloqueHorario.mutate({
                                             id_bloque: (bloque.data) ? bloque.data.id : 0,
                                             id_horario_agenda: id_horario_agenda,
-                                            tipo_administracion_intervalo: administrar_intervalos,
+                                            tipo_administracion_intervalo: administrar_intervalos === `${textos['manualmente']}` ? 'Manualmente' : 'Automaticamente',
                                             fecha: dayjs(date, "DD/MM/YYYY").toDate(),
                                             hora_inicio: inicio_casting,
                                             hora_fin: fin_casting,
@@ -375,7 +375,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         }
                                     }}>
                                     <Typography>
-                                        Agregar horario
+                                        {textos['agregar']} {textos['horario']}
                                     </Typography>
                                 </Button>
                                 <Button
@@ -386,7 +386,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         textTransform: 'none',
                                     }}>
                                     <Typography sx={{ color: '#06adc3', textDecoration: 'underline' }}>
-                                        Cancelar
+                                        {textos['cancelar']}
                                     </Typography>
                                 </Button>
                             </MContainer>

@@ -293,6 +293,7 @@ const AudicionPorId = (props: {
     onSuccess: (data) => {
       if (data) {
         notify("success", `${textos['se_enviaron_los_horarios_con_exito']}`);
+        bloque.refetch();
       }
     },
     onError: (err) => {
@@ -354,8 +355,8 @@ const AudicionPorId = (props: {
         justifyContent={"space-between"}
       >
         <Typography>
-          Horario{" "}
-          {bloque.data.fecha.toLocaleString("es-mx", {
+          {textos['horario']} {" "}
+          {bloque.data.fecha.toLocaleString(ctx.lang === 'es' ? "es-mx" : 'en-us', {
             weekday: "long",
             year: "numeric",
             month: "long",
@@ -363,7 +364,7 @@ const AudicionPorId = (props: {
           })}
         </Typography>
         <Typography>
-          Bloques de{" "}
+          {textos['bloques_de']} {" "}
           {(() => {
             const horas = bloque.data.intervalos[0]?.hora
               .split("-")
@@ -386,11 +387,11 @@ const AudicionPorId = (props: {
             }
             return 0;
           })()}{" "}
-          Minutos
+          {textos['minutos']}
         </Typography>
       </Box>
       <Typography>
-        de {bloque.data.hora_inicio} a {bloque.data.hora_fin}
+        {textos['del']} {bloque.data.hora_inicio} {textos['a']} {bloque.data.hora_fin}
       </Typography>
       <Typography>
         {bloque.data.locacion.direccion},{" "}
@@ -976,9 +977,9 @@ const AudicionPorId = (props: {
                                                 Rol - {i.rol?.nombre}
                                               </p>
                                               {[
-                                                "confirmado",
-                                                "aprobado",
-                                                "rechazado",
+                                                Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO,
+                                                Constants.ESTADOS_ASIGNACION_HORARIO.APROBADO,
+                                                Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO
                                               ].includes(
                                                 i.estado.toLowerCase()
                                               ) &&
@@ -1005,20 +1006,12 @@ const AudicionPorId = (props: {
                                                               id_rol: i.id_rol,
                                                               id_talento:
                                                                 i.id_talento,
-                                                              estado: [
-                                                                "rechazado",
-                                                                "confirmado",
-                                                              ].includes(
-                                                                i.estado.toLowerCase()
-                                                              )
-                                                                ? "Activo"
-                                                                : "Inactivo",
+                                                              estado: Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO ? Constants.ESTADOS_ASIGNACION_HORARIO.APROBADO : Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO
                                                             }
                                                           );
                                                         }}
                                                         checked={
-                                                          i.estado.toLowerCase() ===
-                                                          "aprobado"
+                                                          i.estado === Constants.ESTADOS_ASIGNACION_HORARIO.APROBADO
                                                         }
                                                       />
                                                     }
@@ -1050,7 +1043,7 @@ const AudicionPorId = (props: {
                                                     i.talento.info_basica
                                                       ? i.talento.info_basica
                                                           .estado_republica.es
-                                                      : "Sin Ubicacion"
+                                                      : `${textos['sin_locacion']}`
                                                   }
                                                   onDrop={(id_talento) => {
                                                     //alert('SE DROPEO ESTE WEON' + id_talento);
@@ -1063,7 +1056,7 @@ const AudicionPorId = (props: {
                                                             id_intervalo: i.id,
                                                             id_rol: null,
                                                             id_talento: null,
-                                                            estado: "Pendiente",
+                                                            estado: Constants.ESTADOS_ASIGNACION_HORARIO.PENDIENTE,
                                                           }
                                                         );
                                                       }}
@@ -1371,22 +1364,17 @@ const AudicionPorId = (props: {
                                 action: "CALLBACK",
                                 data: params,
                                 opened: true,
-                                title: "Iniciar Callback",
+                                title: `${textos['iniciar']} callback`,
                                 content: (
                                   <Box>
                                     {talentos_elements.length === 0 && (
                                       <Typography variant="body2">
-                                        No haz aprobado ningun talento para
-                                        callback, seguro que deseas iniciar con
-                                        el proceso de callback con este horario?
+                                        {textos['mandar_a_callback_no_talentos_message']}
                                       </Typography>
                                     )}
                                     {talentos_elements.length > 0 && (
                                       <Typography variant="body2">
-                                        Los siguientes talentos han sido
-                                        aprobados para continuar al callback,
-                                        seguro que deseas iniciar con el proceso
-                                        de callback con este horario?
+                                        {textos['mandar_a_callback_con_talentos_message']}
                                       </Typography>
                                     )}
                                     {talentos_elements.map((t) => {
@@ -1403,7 +1391,7 @@ const AudicionPorId = (props: {
                               backgroundColor: "#F9B233",
                             }}
                           >
-                            Iniciar Callback
+                            {textos['iniciar']} callback
                           </Button>
                         </Grid>
                       )}

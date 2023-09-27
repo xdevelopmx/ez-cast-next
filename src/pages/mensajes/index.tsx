@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { type GetServerSideProps, type NextPage } from "next";
 import { Alertas, FlotantesSinMensajes, MainLayout, MenuLateral, RolCompletoPreview } from '~/components';
 import Head from 'next/head'
@@ -17,6 +17,8 @@ import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader';
 import { RolPreview } from '~/components/shared/RolPreview';
 import { Close } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
 
 type DashBoardCazaTalentosPageProps = {
     user: User,
@@ -25,6 +27,9 @@ type DashBoardCazaTalentosPageProps = {
 const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
 
     const { notify } = useNotify();
+
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
 
     const conversaciones = api.mensajes.getConversaciones.useQuery();
 
@@ -151,7 +156,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                             <div className="row d-lg-flex">
                                 <div className="mt-2 col-md-6" style={{ padding: 0 }}>
                                     <p className="h5 font-weight-bold" style={{ fontSize: '1.3rem' }}>
-                                        <b>Mensajes</b>
+                                        <b>{textos['mensajes']}</b>
                                     </p>
                                 </div>
                                 <Grid container>
@@ -161,7 +166,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             padding: '16px'
                                         }}>
                                             <Typography fontWeight={600}>
-                                                Conversaciones
+                                                {textos['conversaciones']}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={12} sx={{
@@ -180,7 +185,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 ))
                                             }
                                             {conversaciones.isFetched && conversaciones.data && conversaciones.data.length === 0 &&
-                                                 <Typography style={{padding: '10px 20px 0px 20px',}}>No tienes ninguna conversacion aun</Typography>  
+                                                 <Typography style={{padding: '10px 20px 0px 20px',}}>{textos['no_conversaciones']}</Typography>  
                                             }
                                             {conversaciones.isFetched && conversaciones.data &&
                                                 conversaciones.data.map((c, i) => {
@@ -218,21 +223,21 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 </Typography>
                                                 {selected_conversacion && user.tipo_usuario === TipoUsuario.CAZATALENTOS && selected_conversacion.tipo_usuario_receptor === TipoUsuario.TALENTO &&
                                                     <Link href={`${selected_conversacion.receptor_perfil_url}`} >
-                                                        <u>Ver perfil.</u>
+                                                        <u>{textos['ver']} {textos['perfil']}.</u>
                                                     </Link>
                                                 }
                                                 {selected_conversacion && user.tipo_usuario === TipoUsuario.CAZATALENTOS && selected_conversacion.tipo_usuario_emisor === TipoUsuario.TALENTO &&
                                                     <Link href={`${selected_conversacion.emisor_perfil_url}`} >
-                                                        <u>Ver perfil.</u>
+                                                        <u>{textos['ver']} {textos['perfil']}.</u>
                                                     </Link>
                                                 }
                                                 {selected_conversacion && user.tipo_usuario === TipoUsuario.TALENTO && selected_conversacion.tipo_usuario_emisor === TipoUsuario.CAZATALENTOS &&
                                                     <>
                                                         <Typography fontWeight={100} mr={4}>
-                                                            De parte de {selected_conversacion ? `${selected_conversacion.proyecto?.nombre}` : 'ND'}
+                                                            {textos['de_parte_de']} {selected_conversacion ? `${selected_conversacion.proyecto?.nombre}` : 'ND'}
                                                         </Typography>
                                                         <Button variant='text' onClick={() => { setProjectDialogOpened(true) }}>
-                                                            <u>Ver proyecto</u>
+                                                            <u>{textos['ver']} {textos['proyecto']}</u>
                                                         </Button>
                                                     </>
                                                 }
@@ -299,7 +304,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                                 tipo_usuario_emisor: (user.tipo_usuario) ? user.tipo_usuario : '',
                                                                                 id_receptor: (selected_conversacion) ? selected_conversacion.id_emisor === parseInt(user.id) ? selected_conversacion.id_receptor : selected_conversacion.id_emisor : 0,
                                                                                 tipo_usuario_receptor: (selected_conversacion) ? selected_conversacion.id_emisor === parseInt(user.id) ? selected_conversacion.tipo_usuario_receptor : selected_conversacion.tipo_usuario_emisor : '',
-                                                                                mensaje: `El talento ${user.name} ha ${result} el horario al que se le asigno en la agenda virtual.`
+                                                                                mensaje: `${textos['mensaje_notificacion_respuesta']}`.replace('[N1]', `${user.name}`).replace('[N2]', result)
                                                                             })
                                                                         }}
                                                                         id_intervalo={params.id_intervalo}
@@ -352,7 +357,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 ))
                                             }
                                             {mensajes.isFetched && !mensajes.data &&
-                                                <Typography>No se ha seleccionado ninguna conversacion</Typography>   
+                                                <Typography>{textos['no_se_ha_seleccionado_ninguna_conversacion']}</Typography>   
                                             }
                                             {/*
                                             <ConfirmacionDialog />
@@ -439,7 +444,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                         }
                                                     }}
                                                 >
-                                                    Enviar
+                                                    {textos['enviar']}
                                                 </Button>
                                             </Box>
                                         </Grid>

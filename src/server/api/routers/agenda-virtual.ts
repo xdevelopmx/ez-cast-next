@@ -46,6 +46,18 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			if (horario) {
 				//const intervalos = horario.bloque_horario.map(b => b.intervalos).flat();
 				await Promise.all(await horario.bloque_horario.map(async (b) => {
+					// ponemos todos los intervalos como pendientes
+					await ctx.prisma.intervaloBloqueHorario.updateMany({
+						where: {
+							id_bloque_horario: b.id,
+							estado: {
+								notIn: [Constants.ESTADOS_ASIGNACION_HORARIO.APROBADO, Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO]
+							}
+						},
+						data: {
+							estado: Constants.ESTADOS_ASIGNACION_HORARIO.PENDIENTE
+						}
+					})
 					b.intervalos.forEach( async (i) => {
 
 						if (i.rol && i.talento) {

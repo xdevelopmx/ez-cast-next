@@ -468,11 +468,10 @@ const AgendaVirtual = () => {
                                       action: "DELETE",
                                       data: params,
                                       opened: true,
-                                      title: "Eliminar Horario",
+                                      title: `${textos['eliminar']} ${textos['horario']}`,
                                       content: (
                                         <Typography variant="body2">
-                                          Seguro que deseas eliminar este
-                                          horario?
+                                          {textos['eliminar_horario_message']}
                                         </Typography>
                                       ),
                                     });

@@ -166,7 +166,7 @@ export const MediaMessage = ({ imagen, mensaje, esMensajePropio, nombre, fecha }
     )
 }
 
-export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, nombre, id_intervalo, id_rol, id_talento, onChange }: (Props & {  onChange: (result: 'confirmado' | 'rechazado') => void, id_intervalo: number, id_rol: number, id_talento: number } )) => {
+export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, nombre, id_intervalo, id_rol, id_talento, onChange }: (Props & {  onChange: (result: string) => void, id_intervalo: number, id_rol: number, id_talento: number } )) => {
     const intervalo = api.agenda_virtual.getIntervaloById.useQuery({id_intervalo: id_intervalo});
     const ctx = useContext(AppContext);
     const textos = useLang(ctx.lang);
@@ -175,7 +175,7 @@ export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, n
     const updateIntervaloHorario = api.agenda_virtual.updateIntervaloHorario.useMutation({
         onSuccess: (data) => {
             intervalo.refetch();
-            onChange(data.estado.toLowerCase() === 'rechazado' ? 'rechazado' : 'confirmado');
+            onChange(data.estado.toLowerCase() === Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO ? Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO : Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO);
             //notify('success', 'Se asigno el intervalo con exito');
             notify("success", `${textos['se_actualizo_con_exito']}`);
 		},
@@ -232,7 +232,7 @@ export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, n
                                 })
                             }}
                         >
-                            Confirmar
+                            {textos['confirmar']}
                         </Button>
                         <Button
                             variant={(intervalo.data && intervalo.data.estado.toUpperCase() === Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO.toUpperCase()) ? 'contained' : 'outlined' }
@@ -246,7 +246,7 @@ export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, n
                                 })
                             }}
                         >
-                            Rechazar
+                            {textos['rechazar']}
                         </Button> 
                     </ButtonGroup>
                 </Box>

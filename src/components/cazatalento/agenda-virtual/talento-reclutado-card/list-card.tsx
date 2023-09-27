@@ -1,9 +1,12 @@
-import type { CSSProperties, FC } from 'react'
+import { useMemo, type CSSProperties, type FC, useContext } from 'react'
 import type { DragSourceMonitor } from 'react-dnd'
 import Image from 'next/image';
 import { useDrag } from 'react-dnd'
 import { Box, Button, Divider, Grid, Typography } from '@mui/material'
 import { TalentoReclutadoCardProps } from '~/components';
+import AppContext from '~/context/app';
+import useLang from '~/hooks/useLang';
+import Constants from '~/constants';
 
 const style: CSSProperties = {
   border: '1px dashed gray',
@@ -20,6 +23,8 @@ interface DropResult {
 
 export const TalentoReclutadoListCard: FC<(TalentoReclutadoCardProps & {action: JSX.Element, tipo_agenda?: string, ubicacion: string, notas?: { talento?: string, cazatalentos?: string }})> = ({ id_talento, onDrop, profile_url, nombre, union, ubicacion, calificacion, estado, action, notas, tipo_agenda}) => {
   const input_background_color = (tipo_agenda === 'callback') ? '#F9B233' : '#069cb1';
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: 'ELEMENT',
@@ -41,6 +46,17 @@ export const TalentoReclutadoListCard: FC<(TalentoReclutadoCardProps & {action: 
     [name, id_talento],
   )
 
+  const estado_label = useMemo(() => {
+    console.log(estado);
+    switch (estado) {
+      case Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO: return `${textos['confirmado']}`;
+      case Constants.ESTADOS_ASIGNACION_HORARIO.APROBADO: return `${textos['aprobado']}`;
+      case Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO: return `${textos['inactivo']}`;
+      case Constants.ESTADOS_ASIGNACION_HORARIO.PENDIENTE: return `${textos['pendiente']}`;
+    }
+    return 'N/D';
+  }, [textos]);
+
   return (
     <div ref={drag} style={{...style}}>
         <Box display={'flex'} flexDirection={'row'} sx={{backgroundColor: input_background_color}}>
@@ -54,7 +70,7 @@ export const TalentoReclutadoListCard: FC<(TalentoReclutadoCardProps & {action: 
                         return <Image src={(tipo_agenda === 'callback') ? '/assets/img/iconos/icono_star_blue.svg' : '/assets/img/iconos/icono_star_blue_active.svg'} width={12} height={12} alt="" />
                       })}
                     </Box>
-                    <Typography color={'white'}>{estado}</Typography>
+                    <Typography color={'white'}>{estado_label}</Typography>
                     {action}
                 </Box>
             </Box>

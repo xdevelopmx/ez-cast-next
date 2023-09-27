@@ -1,6 +1,8 @@
 import { Typography } from '@mui/material'
-import type { CSSProperties, FC } from 'react'
+import { useContext, type CSSProperties, type FC } from 'react'
 import { useDrop } from 'react-dnd'
+import AppContext from '~/context/app'
+import useLang from '~/hooks/useLang'
 
 const style: CSSProperties = {
   height: '12rem',
@@ -34,6 +36,8 @@ function selectBackgroundColor(isActive: boolean, canDrop: boolean) {
   
 
 export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ allowedDropEffect, onDrop, fecha, id_rol }) => {
+  const ctx = useContext(AppContext);
+  const textos = useLang(ctx.lang);
   const [{ canDrop, isOver }, drop] = useDrop(
     () => ({
       accept: 'ELEMENT',
@@ -56,7 +60,7 @@ export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ 
   const backgroundColor = selectBackgroundColor(isActive, canDrop)
   return (
     <div  ref={drop} style={{marginTop: 40, width: '90%', marginLeft: 'auto', marginRight: 'auto', border: 'dotted', borderRadius: 16, padding: 2, color: backgroundColor}}>
-        <Typography>{isActive ? 'Suelta' : 'Arrastra'} aqui para agregar talento a este intervalo</Typography>
+        <Typography>{isActive ? `${textos['suelta_para_agregar_talento']}` : `${textos['arrastra_para_agregar_talento']}`}</Typography>
     </div>
   )
 }
