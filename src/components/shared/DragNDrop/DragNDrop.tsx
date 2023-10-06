@@ -92,8 +92,13 @@ function DragNDrop(props: Props) {
   useEffect(() => {
     files.clear();
     if (props.files) {
+      console.log(props.files);
       props.files.forEach((f) => {
-        files.set(`${f.file.name}-${f.file.size}-${f.file.type}`, f.file);
+        try {
+          files.set(`${f.file.name}-${f.file.size}-${f.file.type}`, f.file);
+        } catch (e) {
+          console.error(e);
+        }
       });
       setFiles(new Map(files));
     }

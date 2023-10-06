@@ -154,9 +154,35 @@ export const FileManager = {
     return bases[0] === bases[1];
   },
   convertUrlToFile: async (url: string, name: string, type: string) => {
-    const blob = await (await fetch(url)).blob();
-    const file = new File([blob], name, { type: type });
-    return file;
+    try {
+      const blob = await (await fetch(url)).blob();
+      const file = new File([blob], name, { type: type });
+      return file;
+    } catch (e) {
+      console.error(e);
+      try {
+        const result = await fetch(`/api/files/fetch`, {
+          method: 'POST',
+          body: JSON.stringify({
+            url: url,
+            type: type
+          }),
+          headers: {
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        });
+        if (result.ok) {
+          const file_result = await result.json();
+          const _file = await (await fetch(file_result.file)).blob();
+          const file = new File([_file], name, { type: type });
+          return file;
+        }
+      } catch (e2) {
+        console.error(e2);
+      }
+    }
+    return null;
   },
   createDummyFile: (name: string, type: string) => {
     return new File([], name, { type: type });

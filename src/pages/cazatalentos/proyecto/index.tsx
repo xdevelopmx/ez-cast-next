@@ -144,14 +144,16 @@ const Proyecto: NextPage = () => {
         state.files.media.archivo.nombre,
         state.files.media.archivo.type
       );
-      const base_64 = await FileManager.convertFileToBase64(file);
-      files.archivo = {
-        id: state.files.media.archivo.id,
-        base64: base_64,
-        name: state.files.media.archivo.nombre,
-        file: file,
-        url: state.files.media.archivo.url,
-      };
+      if (file) {
+        const base_64 = await FileManager.convertFileToBase64(file);
+        files.archivo = {
+          id: state.files.media.archivo.id,
+          base64: base_64,
+          name: state.files.media.archivo.nombre,
+          file: file,
+          url: state.files.media.archivo.url,
+        };
+      }
     }
     if (state.files.media.foto_portada) {
       const file = await FileManager.convertUrlToFile(
@@ -159,14 +161,16 @@ const Proyecto: NextPage = () => {
         state.files.media.foto_portada.nombre,
         state.files.media.foto_portada.type
       );
-      const base_64 = await FileManager.convertFileToBase64(file);
-      files.foto_portada = {
-        id: state.files.media.foto_portada.id,
-        base64: base_64,
-        name: state.files.media.foto_portada.nombre,
-        file: file,
-        url: state.files.media.foto_portada.url,
-      };
+      if (file) {
+        const base_64 = await FileManager.convertFileToBase64(file);
+        files.foto_portada = {
+          id: state.files.media.foto_portada.id,
+          base64: base_64,
+          name: state.files.media.foto_portada.nombre,
+          file: file,
+          url: state.files.media.foto_portada.url,
+        };
+      }
     }
     dispatch({
       type: "update-proyecto-form",

@@ -358,14 +358,16 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         state.descripcion_rol.files.media.lineas.nombre,
         state.descripcion_rol.files.media.lineas.type
       );
-      const base_64 = await FileManager.convertFileToBase64(file);
-      files.lineas = {
-        id: state.descripcion_rol.files.media.lineas.id,
-        base64: base_64,
-        name: state.descripcion_rol.files.media.lineas.nombre,
-        file: file,
-        url: state.descripcion_rol.files.media.lineas.url,
-      };
+      if (file) {
+        const base_64 = await FileManager.convertFileToBase64(file);
+        files.lineas = {
+          id: state.descripcion_rol.files.media.lineas.id,
+          base64: base_64,
+          name: state.descripcion_rol.files.media.lineas.nombre,
+          file: file,
+          url: state.descripcion_rol.files.media.lineas.url,
+        };
+      }
     }
     if (state.descripcion_rol.files.media.foto_referencia) {
       const file = await FileManager.convertUrlToFile(
@@ -373,14 +375,16 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         state.descripcion_rol.files.media.foto_referencia.nombre,
         state.descripcion_rol.files.media.foto_referencia.type
       );
-      const base_64 = await FileManager.convertFileToBase64(file);
-      files.foto_referencia = {
-        id: state.descripcion_rol.files.media.foto_referencia.id,
-        base64: base_64,
-        name: state.descripcion_rol.files.media.foto_referencia.nombre,
-        file: file,
-        url: state.descripcion_rol.files.media.foto_referencia.url,
-      };
+      if (file) {
+        const base_64 = await FileManager.convertFileToBase64(file);
+        files.foto_referencia = {
+          id: state.descripcion_rol.files.media.foto_referencia.id,
+          base64: base_64,
+          name: state.descripcion_rol.files.media.foto_referencia.nombre,
+          file: file,
+          url: state.descripcion_rol.files.media.foto_referencia.url,
+        };
+      }
     }
     dispatch({
       type: "update-descripcion-rol",
@@ -411,14 +415,16 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         state.selftape.files.media.lineas.nombre,
         state.selftape.files.media.lineas.type
       );
-      const base_64 = await FileManager.convertFileToBase64(file);
-      files.lineas = {
-        id: state.selftape.files.media.lineas.id,
-        base64: base_64,
-        name: state.selftape.files.media.lineas.nombre,
-        file: file,
-        url: state.selftape.files.media.lineas.url,
-      };
+      if (file) {
+        const base_64 = await FileManager.convertFileToBase64(file);
+        files.lineas = {
+          id: state.selftape.files.media.lineas.id,
+          base64: base_64,
+          name: state.selftape.files.media.lineas.nombre,
+          file: file,
+          url: state.selftape.files.media.lineas.url,
+        };
+      }
     }
     dispatch({
       type: "update-selftape-rol",

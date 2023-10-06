@@ -733,16 +733,17 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         foto_perfil.nombre,
         foto_perfil.type
       );
-      const foto_file_base_64 = await FileManager.convertFileToBase64(
-        foto_file
-      );
-      fotos_talento.push({
-        id: foto_perfil.id,
-        base64: foto_file_base_64,
-        name: foto_perfil.nombre,
-        file: foto_file,
-        url: foto_perfil.url,
-      });
+      let f_foto_base_64 = '';
+      if (foto_file) {
+        f_foto_base_64 = await FileManager.convertFileToBase64(foto_file);
+        fotos_talento.push({
+          id: foto_perfil.id,
+          base64: f_foto_base_64,
+          name: foto_perfil.nombre,
+          file: foto_file,
+          url: foto_perfil.url,
+        });
+      }
     }
     const fotos_perfil = await Promise.all(
       fotos.map(async (f) => {
@@ -751,10 +752,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           f.nombre,
           f.type
         );
-        const f_file_base_64 = await FileManager.convertFileToBase64(f_file);
+        let f_base_64 = '';
+        if (f_file) {
+          f_base_64 = await FileManager.convertFileToBase64(f_file);
+        }
         return {
           id: f.id,
-          base64: f_file_base_64,
+          base64: f_base_64,
           name: f.nombre,
           file: f_file,
           url: f.url,
@@ -768,10 +772,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           f.nombre,
           f.type
         );
-        const f_file_base_64 = await FileManager.convertFileToBase64(f_file);
+        let f_base_64 = '';
+        if (f_file) {
+          f_base_64 = await FileManager.convertFileToBase64(f_file);
+        }
         return {
           id: f.id,
-          base64: f_file_base_64,
+          base64: f_base_64,
           name: f.nombre,
           file: f_file,
           url: f.url,
@@ -785,23 +792,33 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
           f.nombre,
           f.type
         );
-        const f_file_base_64 = await FileManager.convertFileToBase64(f_file);
+        let f_base_64: string = '';
+        if (f_file) {
+          f_base_64 = await FileManager.convertFileToBase64(f_file);
+        }
         return {
           id: f.id,
-          base64: f_file_base_64,
+          base64: f_base_64,
           name: f.nombre,
           file: f_file,
           url: f.url,
         };
       })
     );
+
+    const fotos_perfil_without_nulls: Archivo[] = [];
+    fotos_perfil.forEach(f => {
+      if (f.file) {
+        fotos_perfil_without_nulls.push({...f, file: f.file});
+      }
+    });
     dispatch({
       type: "update-medios",
       value: {
         ...state.medios,
-        fotos: fotos_talento.concat(fotos_perfil),
+        fotos: fotos_talento.concat(fotos_perfil_without_nulls),
         fotos_order: fotos_talento
-          .concat(fotos_perfil)
+          .concat(fotos_perfil_without_nulls)
           .map((f) => f.id)
           .join("-"),
         audios: audios_perfil,

@@ -96,22 +96,26 @@ export const Banners = () => {
 								}}>Eliminar</Button>
 								<Button size="small" onClick={async () => { 
 									const file = await FileManager.convertUrlToFile(b.content.url, b.content.nombre, b.content.type);
-									const base64 = await FileManager.convertFileToBase64(file);
-									setBanner({
-										id: b.id,
-										position: b.position,
-										isButton: b.isButton,
-										text: b.text,
-										redirect_url: b.redirect_url,
-										archivo: {
-											id: b.content.id,
-											file: file,
-											name: b.content.nombre,
-											base64: base64,
-											url: b.content.url
-										}
-									})
-									setDialog({...dialog, open: true, title: 'Editar Banner', identificador: 'banner-cartelera-proyectos-1', ref: 'banners-cartelera-proyectos'}) 
+									if (file) {
+										const base64 = await FileManager.convertFileToBase64(file);
+										setBanner({
+											id: b.id,
+											position: b.position,
+											isButton: b.isButton,
+											text: b.text,
+											redirect_url: b.redirect_url,
+											archivo: {
+												id: b.content.id,
+												file: file,
+												name: b.content.nombre,
+												base64: base64,
+												url: b.content.url
+											}
+										})
+										setDialog({...dialog, open: true, title: 'Editar Banner', identificador: 'banner-cartelera-proyectos-1', ref: 'banners-cartelera-proyectos'}) 
+									} else {
+										notify('error', 'No se pudo obtener el archivo: ' + b.content.nombre);
+									}
 								}}>Editar</Button>
 							</CardActions>
 						</Card>

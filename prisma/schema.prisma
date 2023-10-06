@@ -634,6 +634,7 @@ model CatalogoHabilidades {
   id                                  Int                              @id @default(autoincrement())
   es                                  String
   en                                  String
+  parent                              Int?
   habilidades_seleccionadas_por_roles HabilidadesSelecPorRoles[]
   habilidades_especificas             CatalogoHabilidadesEspecificas[]
   HabilidadesPorTalentos              HabilidadesPorTalentos[]

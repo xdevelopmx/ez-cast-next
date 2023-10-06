@@ -811,57 +811,61 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                     "selftape",
                     "video/mp4"
                   );
-                  const link = document.createElement("a");
-                  link.href = recorded_url;
-                  link.setAttribute("download", `selftape.mp4`);
-                  //link.setAttribute('download', `selftape.webm`);
-                  document.body.appendChild(link);
-                  link.click();
-                  if (link && link.parentNode) {
-                    link.parentNode.removeChild(link);
-                  }
-                  const base_64 = await FileManager.convertFileToBase64(file);
-                  const date = new Date();
-                  const name = `selftape-${date
-                    .toLocaleDateString("es-mx")
-                    .replaceAll("/", "-")}-${date.toLocaleTimeString("es-mx")}`;
-                  const urls_saved = await FileManager.saveFiles([
-                    {
-                      path: `talentos/${id_talento}/videos`,
-                      name: name,
-                      file: file,
-                      base64: base_64,
-                    },
-                  ]);
-                  if (urls_saved.length > 0) {
-                    urls_saved.forEach((res, j) => {
-                      Object.entries(res).forEach((e, i) => {
-                        const url = e[1].url;
-                        if (url) {
-                          saveSelftapeMedia.mutate({
-                            id_talento: id_talento,
-                            selftape: {
-                              nombre: input_name.length > 0 ? input_name : name,
-                              //type: 'video/webm',
-                              type: "video/mp4",
-                              url: url ? url : "",
-                              clave: `talentos/${id_talento}/videos/${name}`,
-                              referencia: `VIDEOS-SELFTAPE-TALENTO-${id_talento}`,
-                              identificador: `video-selftape-${name}`,
-                              public: is_public,
-                            },
-                          });
-                        } else {
-                          const msg = name
-                            ? textos["error_didnt_upload_with_name"]?.replace(
-                                "[N1]",
-                                name
-                              )
-                            : textos["error_didnt_upload"];
-                          notify("error", `${msg} - ${e[1].error}`);
-                        }
+                  if (file) {
+                    const link = document.createElement("a");
+                    link.href = recorded_url;
+                    link.setAttribute("download", `selftape.mp4`);
+                    //link.setAttribute('download', `selftape.webm`);
+                    document.body.appendChild(link);
+                    link.click();
+                    if (link && link.parentNode) {
+                      link.parentNode.removeChild(link);
+                    }
+                    const base_64 = await FileManager.convertFileToBase64(file);
+                    const date = new Date();
+                    const name = `selftape-${date
+                      .toLocaleDateString("es-mx")
+                      .replaceAll("/", "-")}-${date.toLocaleTimeString("es-mx")}`;
+                    const urls_saved = await FileManager.saveFiles([
+                      {
+                        path: `talentos/${id_talento}/videos`,
+                        name: name,
+                        file: file,
+                        base64: base_64,
+                      },
+                    ]);
+                    if (urls_saved.length > 0) {
+                      urls_saved.forEach((res, j) => {
+                        Object.entries(res).forEach((e, i) => {
+                          const url = e[1].url;
+                          if (url) {
+                            saveSelftapeMedia.mutate({
+                              id_talento: id_talento,
+                              selftape: {
+                                nombre: input_name.length > 0 ? input_name : name,
+                                //type: 'video/webm',
+                                type: "video/mp4",
+                                url: url ? url : "",
+                                clave: `talentos/${id_talento}/videos/${name}`,
+                                referencia: `VIDEOS-SELFTAPE-TALENTO-${id_talento}`,
+                                identificador: `video-selftape-${name}`,
+                                public: is_public,
+                              },
+                            });
+                          } else {
+                            const msg = name
+                              ? textos["error_didnt_upload_with_name"]?.replace(
+                                  "[N1]",
+                                  name
+                                )
+                              : textos["error_didnt_upload"];
+                            notify("error", `${msg} - ${e[1].error}`);
+                          }
+                        });
                       });
-                    });
+                    }
+                  } else {
+                    notify("error", 'No se pudo obtener el archivo: ' + recorded_url);
                   }
                   setBusy(false);
                   break;

@@ -275,6 +275,8 @@ export const MediaBank = (props: {
                   });
                   setDialogSeltape({ open: true });
                 }
+              } else {
+                notify('error', 'No se pudo obtener el archivo: ' + props.selftape.nombre);
               }
             }}
             size="small"
