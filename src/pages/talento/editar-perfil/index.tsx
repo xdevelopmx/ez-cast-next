@@ -625,10 +625,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
     api.talentos.saveFiltrosApariencias.useMutation({
       onSuccess(_) {
         notify("success", `${textos["success_save_filtros"] ?? "éxito"}`);
+        console.log('entro aqui');
+        console.log(save_type);
         if (
           save_type === "save_and_finish_later" ||
           save_type === "save_and_finish"
         ) {
+          console.log('entro aqui')
           const timeout = setTimeout(() => {
             router.replace("/talento/dashboard");
             clearTimeout(timeout);
@@ -1595,7 +1598,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         break;
       }
     }
-    setSaveType(undefined);
+    if (step !== 7) {
+      setSaveType(undefined);
+    }
   };
 
   useEffect(() => {
