@@ -179,8 +179,9 @@ export const authOptions: NextAuthOptions = {
 						case TipoUsuario.ADMIN: tipo_usuario = TipoUsuario.ADMIN; break;
 					}
 					const login_intent = await login( (credentials.user) ? credentials.user : '', (credentials.correo_usuario) ? credentials.correo_usuario : '', (credentials.password) ? credentials.password : '', tipo_usuario, (credentials.lang) ? credentials.lang === 'es' ? 'es' : 'en' : 'es');
-					console.log(login_intent);
-					return {...login_intent, lang: login_intent?.lang ? login_intent.lang : 'es', id: `${login_intent?.id}`, provider: 'CREDENTIALS'};
+					if (login_intent) {
+						return {...login_intent, lang: login_intent?.lang ? login_intent.lang : 'es', id: `${login_intent?.id}`, provider: 'CREDENTIALS'};
+					}
 				} 
 				return null;
 			}

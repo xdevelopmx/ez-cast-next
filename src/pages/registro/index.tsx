@@ -132,12 +132,12 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 	const validationStepPerfil = useMemo(() => {
 		const result = {
 			errors: {
-				nombre: (!state.perfil.nombre || state.perfil.nombre.length < 2) ? 'El nombre es demasiado corto' : undefined,
-				apellido: (!state.perfil.apellido || state.perfil.apellido.length < 2) ? 'El apellido es demasiado corto' : undefined,
-				usuario: (!state.perfil.usuario || state.perfil.usuario.length < 2) ? 'El usuario es demasiado corto' : undefined,
-				email: (!Constants.PATTERNS.EMAIL.test(state.perfil.email)) ? 'El email es invalido' : undefined,
-				contrasenia: (!state.perfil.contrasenia || state.perfil.contrasenia.length < 8) ? 'La contraseña es demasiado corta' : undefined,
-				confirmacion_contrasenia: (!state.perfil.confirmacion_contrasenia || !state.perfil.contrasenia || state.perfil.contrasenia !== state.perfil.confirmacion_contrasenia) ? 'Las contraseñas no son la misma' : undefined
+				nombre: (!state.perfil.nombre || state.perfil.nombre.length < 2) ? `${textos['nombre_corto']}` : undefined,
+				apellido: (!state.perfil.apellido || state.perfil.apellido.length < 2) ? `${textos['apellido_corto']}` : undefined,
+				usuario: (!state.perfil.usuario || state.perfil.usuario.length < 2) ? `${textos['usuario_corto']}` : undefined,
+				email: (!Constants.PATTERNS.EMAIL.test(state.perfil.email)) ? `${textos['mail_invalido']}` : undefined,
+				contrasenia: (!state.perfil.contrasenia || state.perfil.contrasenia.length < 8) ? `${textos['contra_corta']}` : undefined,
+				confirmacion_contrasenia: (!state.perfil.confirmacion_contrasenia || !state.perfil.contrasenia || state.perfil.contrasenia !== state.perfil.confirmacion_contrasenia) ? `${textos['contra_diferente']}` : undefined
 			},
 			hasErrors: false
 		}

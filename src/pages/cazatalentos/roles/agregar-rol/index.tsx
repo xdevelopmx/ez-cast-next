@@ -37,6 +37,7 @@ import { FileManager } from "~/utils/file-manager";
 import { User } from "next-auth";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 export type RolInformacionGeneralForm = {
   nombre: string;
@@ -1358,7 +1359,13 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                           ) {
                             if (!form_validate.error) {
                               setOnSaveAction("redirect-to-proyectos");
-                              saveRol.mutate(form_validate.data);
+                              saveRol.mutate({
+                                ...form_validate.data,
+                                info_gral: {
+                                  ...form_validate.data.info_gral,
+                                  id_proyecto: state.id_proyecto
+                                }
+                              });
                             } else {
                               notify("warning", form_validate.error);
                             }
@@ -1413,6 +1420,9 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
           </Grid>
         </div>
       </MainLayout>
+      <ResourceAlert
+        busy={updateRolFiles.isLoading || saveRol.isLoading}
+      />
       <Flotantes />
     </>
   );

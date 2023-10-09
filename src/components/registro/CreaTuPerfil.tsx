@@ -42,7 +42,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => { 
                             onFormChange({
                                 nombre: e.currentTarget.value,
-                                errors: {...state.errors, nombre: (!e.target.value || e.target.value.length < 2) ? 'El nombre es demasiado corto' : undefined}
+                                errors: {...state.errors, nombre: (!e.target.value || e.target.value.length < 2) ? `${textos['nombre_corto']}` : undefined}
                             }) 
                         }} 
                         label={textos["nombref"]?? ""} 
@@ -56,7 +56,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => { 
                             onFormChange({
                                 apellido: e.currentTarget.value,
-                                errors: {...state.errors, apellido: (!e.target.value || e.target.value.length < 2) ? 'El apellido es demasiado corto' : undefined}
+                                errors: {...state.errors, apellido: (!e.target.value || e.target.value.length < 2) ? `${textos['apellido_corto']}` : undefined}
                             }) 
                         }} 
                         label={textos["apellidosf"]?? ""} 
@@ -72,7 +72,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => { 
                             onFormChange({
                                 usuario: e.currentTarget.value,
-                                errors: {...state.errors, usuario: (!e.target.value || e.target.value.length < 2) ? 'El usuario es demasiado corto' : undefined}
+                                errors: {...state.errors, usuario: (!e.target.value || e.target.value.length < 2) ? `${textos['usuario_corto']}` : undefined}
                             })
                         }} 
                         label={textos["usuario"]?? ""} 
@@ -86,7 +86,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => { 
                             onFormChange({
                                 email: e.currentTarget.value,
-                                errors: {...state.errors, email: (!Constants.PATTERNS.EMAIL.test(e.target.value)) ? 'El email es invalido' : undefined}
+                                errors: {...state.errors, email: (!Constants.PATTERNS.EMAIL.test(e.target.value)) ? `${textos['mail_invalido']}` : undefined}
                             }) 
                         }} 
                         label={textos["mail"]?? ""} 
@@ -104,7 +104,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => { 
                             onFormChange({
                                 contrasenia: e.currentTarget.value,
-                                errors: {...state.errors, contrasenia: (!e.target.value || e.target.value.length < 8) ? 'La contraseña es demasiado corto' : undefined}
+                                errors: {...state.errors, contrasenia: (!e.target.value || e.target.value.length < 8) ? `${textos['contra_corta']}` : undefined}
                             })
                         }} 
                         label={textos["contra"]?? ""} 
@@ -119,7 +119,7 @@ export const CreaTuPerfil: FC<Props> = ({ onFormChange, state }) => {
                         onChange={(e) => { 
                             onFormChange({
                                 confirmacion_contrasenia: e.currentTarget.value,
-                                errors: {...state.errors, confirmacion_contrasenia: (!e.target.value || !state.contrasenia || state.contrasenia !== e.target.value) ? 'Las contraseñas no son la misma' : undefined}
+                                errors: {...state.errors, confirmacion_contrasenia: (!e.target.value || !state.contrasenia || state.contrasenia !== e.target.value) ? `${textos['contra_diferente']}` : undefined}
                             })
                         }} 
                         label={textos["confirma_contra"]?? ""} 

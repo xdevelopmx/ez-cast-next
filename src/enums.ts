@@ -10,12 +10,15 @@ export enum TipoMembresia {
 	GRATIS = "Gratis",
 	STANDARD = "Standard",
 	PREMIUM = 'Premium',
-	EXECUTIVE = 'Executive'
+	EXECUTIVE = 'Executive',
+	GRATIS_EN = 'Free',
 }
 
 
 export enum TipoCobro {
-    MENSUAL = "Mensual",
+	MENSUAL_EN = 'Monthly',
+	ANUAL_EN = 'Annual',
+	MENSUAL = "Mensual",
     ANUAL = "Anual"
 }
 

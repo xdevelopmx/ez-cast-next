@@ -16,18 +16,21 @@ import AppContext from "~/context/app";
 
 function getInitialDates() {
     const d = new Date().toLocaleDateString('es-mx').split('/');
-    let date = dayjs();
-    let secondDate = dayjs();
-    if (d[0] && d[1] && d[2]) {
-        date = dayjs(`${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`, 'DD/MM/YYYY');
-    }
+    let date = dayjs(new Date());
+    console.log(date);
     const d2 = new Date();
     d2.setMonth(d2.getMonth() + 1);
-    const date2 = d2.toLocaleDateString('es-mx').split('/');
-    if (date2[0] && date2[1] && date2[2]) {
-        secondDate = dayjs(`${parseInt(date2[0]) > 10 ? date2[0] : `0${date2[0]}`}/${parseInt(date2[1]) > 10 ? date2[1] : `0${date2[1]}`}/${date2[2]}`, 'DD/MM/YYYY');
-    }
-
+    let secondDate = dayjs(d2);
+    //if (d[0] && d[1] && d[2]) {
+    //    date = dayjs(`${parseInt(d[0]) > 10 ? d[0] : `0${d[0]}`}/${parseInt(d[1]) > 10 ? d[1] : `0${d[1]}`}/${d[2]}`, 'DD/MM/YYYY');
+    //}
+    //const d2 = new Date();
+    //d2.setMonth(d2.getMonth() + 1);
+    //const date2 = d2.toLocaleDateString('es-mx').split('/');
+    //if (date2[0] && date2[1] && date2[2]) {
+    //    secondDate = dayjs(`${parseInt(date2[0]) > 10 ? date2[0] : `0${date2[0]}`}/${parseInt(date2[1]) > 10 ? date2[1] : `0${date2[1]}`}/${date2[2]}`, 'DD/MM/YYYY');
+   // }
+    console.log(date);
     return [date, secondDate];
 }
 
@@ -101,11 +104,12 @@ export default function DualDatePicker(props: {
                 case 'ambas': color_background = 'linear-gradient(to right,#069cb1 0%,#069cb1 50%,#F9B233 50%,#F9B233 100%)!important'; break;
             }
         }
-
         return (
             <>
                 {isSelected &&
-                    <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} sx={{background: color_background}} selected day={day} />
+                    <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} sx={{
+                        background: color_background
+                    }} selected day={day} />
                 }
     
                 {!isSelected && <PickersDay {...other} selected={true} sx={{backgroundColor: 'transparent!important', color: 'black!important'}} outsideCurrentMonth={outsideCurrentMonth} day={day} />}

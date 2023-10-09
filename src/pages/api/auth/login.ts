@@ -135,6 +135,5 @@ export default async function handler(req: Request, res: NextApiResponse) {
 			break;
 		}
 	}
-
 	return res.status(401).json({status: 'error', message: 'Login incorrecto'});
 } 

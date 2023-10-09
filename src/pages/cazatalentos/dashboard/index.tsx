@@ -124,7 +124,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
         </div>
       );
     }
-  }, [tabSelected]);
+  }, [tabSelected, textos]);
 
   return (
     <>
