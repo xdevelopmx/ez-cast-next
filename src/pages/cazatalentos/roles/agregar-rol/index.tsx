@@ -1399,7 +1399,13 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                           ) {
                             setOnSaveAction("reset-form");
 
-                            saveRol.mutate(form_validate.data);
+                            saveRol.mutate({
+                              ...form_validate.data,
+                              info_gral: {
+                                ...form_validate.data.info_gral,
+                                id_proyecto: state.id_proyecto
+                              }
+                            });
                           } else {
                             notify(
                               "warning",

@@ -263,7 +263,7 @@ const RegistroPage: NextPage<RegistroProps> = ({is_representante = false, onSave
 										...(() => {
 											return (steps.length === 4
 												? ({
-													3: 'Pago',
+													3: `${textos['pago']}`,
 													4: (textos["terminos"]?? "")
 												})
 												: ({

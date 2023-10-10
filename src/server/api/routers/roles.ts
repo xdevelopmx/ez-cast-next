@@ -1207,6 +1207,7 @@ export const RolesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      console.log(input);
       const lang =
         ctx.session && ctx.session.user ? ctx.session.user.lang : "es";
       const getResponse = ApiResponses("RolesRouter_saveRol", lang);
@@ -1284,7 +1285,7 @@ export const RolesRouter = createTRPCRouter({
           nombre: input.info_gral.nombre,
           id_tipo_rol: input.info_gral.id_tipo_rol,
           id_proyecto: input.info_gral.id_proyecto,
-          id_color_ojos: input.descripcion_rol.id_color_cabello,
+          id_color_ojos: input.descripcion_rol.id_color_ojos,
           id_color_cabello: input.descripcion_rol.id_color_cabello,
         },
       });

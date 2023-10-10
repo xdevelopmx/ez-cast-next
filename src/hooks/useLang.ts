@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    months_list: 'January,February,March,April,May,June,July,August,September,October,November,December',
     mensaje_notificacion_respuesta: 'Talent [N1] has [N2] the schedule assigned to them in the virtual agenda.',
     de_parte_de: 'From',
     enviar: 'Send',
@@ -448,6 +449,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
       "Choose the category that applies to you.",
   },
   es: {
+    months_list: 'Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre',
     mensaje_notificacion_respuesta: `El talento [N1] ha [N2] el horario al que se le asigno en la agenda virtual.`,
     de_parte_de: 'De parte de',
     enviar: 'Enviar',
@@ -966,8 +968,15 @@ const TEXTS_BY_PATHNAME: {
       gratis: "Free",
       anual: "Annual",
       mensual: "Monthly",
-      pago: "Pay",
+      pago: "Payment",
+      credito_o_debito: 'Credit/Debit',
       forma_pago: "Way to pay",
+      nombre_en_tarjeta: 'Name in the card',
+      cvv_message: '3 or 4 number code on the back of the card',
+      numero_de_tarjeta: 'Number of the card',
+      direccion: 'Address',
+      fecha_de_caducidad: 'Date of Expiry',
+      cp: 'Z.C.',
       success_login: "Successful Authentication",
       validar_campos_form: "Please first correct the errors in the form.",
       no_ha_aceptado_terminos:
@@ -1004,7 +1013,14 @@ const TEXTS_BY_PATHNAME: {
       anual: "Anual",
       mensual: "Mensual",
       pago: "Pago",
+      credito_o_debito: 'Crédito/Débito',
+      cvv_message: 'Código de 3 o 4 números al reverso de la tarjeta',
       forma_pago: "Forma de pago",
+      nombre_en_tarjeta: 'Nombre en la tarjeta',
+      numero_de_tarjeta: 'Número de tarjeta',
+      direccion: 'Dirección',
+      fecha_de_caducidad: 'Fecha de caducidad',
+      cp: 'C.P.',
       success_login: "Autenticacion Exitosa",
       validar_campos_form:
         "Por favor primero corrige los errores del formulario",
