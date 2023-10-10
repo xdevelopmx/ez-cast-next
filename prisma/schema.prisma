@@ -849,7 +849,7 @@ model MediosMultimediaPorRoles {
   id                      Int                      @id @default(autoincrement())
   id_requisitos_por_roles Int
   id_medio_multimedia     Int
-  requisitos_por_rol      RequisitosPorRoles       @relation(fields: [id_requisitos_por_roles], references: [id])
+  requisitos_por_rol      RequisitosPorRoles       @relation(fields: [id_requisitos_por_roles], references: [id], onDelete: Cascade)
   medio_multimedia        CatalogoMediosMultimedia @relation(fields: [id_medio_multimedia], references: [id])
 }
 

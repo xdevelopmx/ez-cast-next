@@ -1278,7 +1278,7 @@ export const RolesRouter = createTRPCRouter({
         update: {
           nombre: input.info_gral.nombre,
           id_tipo_rol: input.info_gral.id_tipo_rol,
-          id_color_ojos: input.descripcion_rol.id_color_cabello,
+          id_color_ojos: input.descripcion_rol.id_color_ojos,
           id_color_cabello: input.descripcion_rol.id_color_cabello,
         },
         create: {
