@@ -1161,8 +1161,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   }
                   filasExpandidas={expanded_rows}
                   accordionContent={(element_index: number) => {
+                    if (roles.isFetching) {
+                      return null;
+                    }
                     const element = filtered_roles[element_index];
                     if (element) {
+                      console.log(element);
                       return (
                         <div style={{ width: "100%" }}>
                           <Grid container p={2}>
@@ -1198,21 +1202,19 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       />
                                     </>
                                   )}
-                                  {roles.data &&
-                                  roles.data[element_index]?.tipo_rol.tipo ? (
-                                    <Divider
-                                      style={{
-                                        borderWidth: 1,
-                                        height: 12,
-                                        borderColor: "#069cb1",
-                                        margin: 8,
-                                      }}
-                                      orientation="vertical"
-                                    />
-                                  ) : (
+                                  {(
                                     <>
+                                      <Divider
+                                        style={{
+                                          borderWidth: 1,
+                                          height: 12,
+                                          borderColor: "#069cb1",
+                                          margin: 8,
+                                        }}
+                                        orientation="vertical"
+                                      />
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {ctx.lang === 'es' ? element.tipo_rol.es : element.tipo_rol.en}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1226,55 +1228,67 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   )}
 
-                                  {roles.data &&
-                                  roles.data[element_index]?.compensaciones &&
-                                  roles.data[element_index]?.compensaciones
-                                    ?.compensaciones_no_monetarias ? (
+                                  {element.compensaciones &&
+                                    element.compensaciones.compensaciones_no_monetarias && element.compensaciones.compensaciones_no_monetarias.length > 0 ? (
                                     <>
-                                      {roles.data[
-                                        element_index
-                                      ]?.compensaciones?.compensaciones_no_monetarias.map(
+                                      {element.compensaciones.compensaciones_no_monetarias.map(
                                         (c, i) => {
-                                          if (roles.data) {
-                                            const el =
-                                              roles.data[element_index];
-                                            if (el) {
-                                              return (
-                                                <Fragment
-                                                  key={c.id_compensacion}
-                                                >
-                                                  <Typography
-                                                    component={"span"}
-                                                    sx={{ color: "#928F8F" }}
-                                                  >
-                                                    {c.compensacion.es}
-                                                  </Typography>
-                                                  {i !==
-                                                    (el.compensaciones
-                                                      ?.compensaciones_no_monetarias
-                                                      .length || 0) -
-                                                      1 && (
-                                                    <Divider
-                                                      style={{
-                                                        borderWidth: 1,
-                                                        height: 12,
-                                                        borderColor: "#069cb1",
-                                                        margin: 8,
-                                                      }}
-                                                      orientation="vertical"
-                                                    />
-                                                  )}
-                                                </Fragment>
-                                              );
-                                            }
-                                          }
+                                          return (
+                                            <Fragment
+                                              key={c.id_compensacion}
+                                            >
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {ctx.lang === 'es' ? c.compensacion.es : c.compensacion.en}
+                                              </Typography>
+                                              {i !==
+                                                (element.compensaciones && element.compensaciones.compensaciones_no_monetarias
+                                                  .length || 0) -
+                                                  1 && (
+                                                <Divider
+                                                  style={{
+                                                    borderWidth: 1,
+                                                    height: 12,
+                                                    borderColor: "#069cb1",
+                                                    margin: 8,
+                                                  }}
+                                                  orientation="vertical"
+                                                />
+                                              )}
+                                            </Fragment>
+                                          );
                                         }
                                       )}
                                     </>
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {textos['no_especificado']}
+                                      </Typography>
+                                    </>
+                                  )}
+
+                                  {element.proyecto && element.proyecto.sindicato ? (
+                                    <>
+                                    <Fragment>
+                                      <Divider
+                                        style={{
+                                          borderWidth: 1,
+                                          height: 12,
+                                          borderColor: "#069cb1",
+                                          margin: 8,
+                                        }}
+                                        orientation="vertical"
+                                      />
+                                      <Typography
+                                        component={"span"}
+                                        sx={{ color: "#928F8F" }}
+                                      >
+                                        {
+                                          ctx.lang === 'es' ? element.proyecto.sindicato.sindicato.es : element.proyecto.sindicato.sindicato.en
+                                        }
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1285,46 +1299,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         }}
                                         orientation="vertical"
                                       />
-                                    </>
-                                  )}
-
-                                  {roles.data &&
-                                  roles.data[element_index]?.proyecto &&
-                                  roles.data[element_index]?.proyecto
-                                    ?.sindicato &&
-                                  roles.data[element_index]?.proyecto?.sindicato
-                                    ?.sindicato ? (
-                                    <>
-                                      <Fragment>
-                                        <Divider
-                                          style={{
-                                            borderWidth: 1,
-                                            height: 12,
-                                            borderColor: "#069cb1",
-                                            margin: 8,
-                                          }}
-                                          orientation="vertical"
-                                        />
-                                        <Typography
-                                          component={"span"}
-                                          sx={{ color: "#928F8F" }}
-                                        >
-                                          {
-                                            roles.data[element_index]?.proyecto
-                                              ?.sindicato?.sindicato.es
-                                          }
-                                        </Typography>
-                                        <Divider
-                                          style={{
-                                            borderWidth: 1,
-                                            height: 12,
-                                            borderColor: "#069cb1",
-                                            margin: 8,
-                                          }}
-                                          orientation="vertical"
-                                        />
-                                      </Fragment>
-                                    </>
+                                    </Fragment>
+                                  </>
                                   ) : (
                                     <>
                                       <Divider
@@ -1337,7 +1313,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         orientation="vertical"
                                       />
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1356,40 +1332,32 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   direction="horizontal"
                                   styles={{ gap: 10 }}
                                 >
-                                  {roles.data &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos?.generos ? (
-                                    <>
-                                      {roles.data[
-                                        element_index
-                                      ]?.filtros_demograficos?.generos.map(
-                                        (g) => (
-                                          <Fragment key={g.id_genero}>
-                                            <Typography
-                                              component={"span"}
-                                              sx={{ color: "#928F8F" }}
-                                            >
-                                              {g.genero.es}
-                                            </Typography>
-                                            <Divider
-                                              style={{
-                                                borderWidth: 1,
-                                                height: 12,
-                                                borderColor: "#069cb1",
-                                                margin: 8,
-                                              }}
-                                              orientation="vertical"
-                                            />
-                                          </Fragment>
-                                        )
-                                      )}
-                                    </>
+                                  {element.filtros_demograficos && element.filtros_demograficos.generos.length > 0 ? (
+                                    element.filtros_demograficos.generos.map(
+                                      (g) => (
+                                        <Fragment key={g.id_genero}>
+                                          <Typography
+                                            component={"span"}
+                                            sx={{ color: "#928F8F" }}
+                                          >
+                                            {ctx.lang === 'es' ? g.genero.es : g.genero.en}
+                                          </Typography>
+                                          <Divider
+                                            style={{
+                                              borderWidth: 1,
+                                              height: 12,
+                                              borderColor: "#069cb1",
+                                              margin: 8,
+                                            }}
+                                            orientation="vertical"
+                                          />
+                                        </Fragment>
+                                      )
+                                    )
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1403,30 +1371,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   )}
 
-                                  {roles.data &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos &&
-                                  typeof roles.data[element_index]
-                                    ?.filtros_demograficos?.rango_edad_fin ===
-                                    "number" &&
-                                  typeof roles.data[element_index]
-                                    ?.filtros_demograficos
-                                    ?.rango_edad_inicio === "number" ? (
+                                  {element.filtros_demograficos ? (
                                     <>
                                       <Typography
                                         component={"span"}
                                         sx={{ color: "#928F8F" }}
                                       >
                                         {
-                                          roles.data[element_index]
-                                            ?.filtros_demograficos
-                                            ?.rango_edad_inicio
+                                          element.filtros_demograficos.rango_edad_inicio
                                         }
                                         -
                                         {
-                                          roles.data[element_index]
-                                            ?.filtros_demograficos
-                                            ?.rango_edad_fin
+                                          element.filtros_demograficos.rango_edad_fin
                                         }
                                       </Typography>
                                       <Divider
@@ -1442,7 +1398,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1456,16 +1412,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   )}
 
-                                  {roles.data &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos
-                                    ?.aparencias_etnicas ? (
+                                  {element.filtros_demograficos && element.filtros_demograficos.aparencias_etnicas.length > 0 ? (
                                     <>
-                                      {roles.data[
-                                        element_index
-                                      ]?.filtros_demograficos?.aparencias_etnicas.map(
+                                      {element.filtros_demograficos.aparencias_etnicas.map(
                                         (ae) => (
                                           <Fragment
                                             key={ae.id_aparencia_etnica}
@@ -1474,7 +1423,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               component={"span"}
                                               sx={{ color: "#928F8F" }}
                                             >
-                                              {ae.aparencia_etnica.es}
+                                              {ctx.lang === 'es' ? ae.aparencia_etnica.es : ae.aparencia_etnica.en}
                                             </Typography>
                                             <Divider
                                               style={{
@@ -1492,7 +1441,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1506,24 +1455,19 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   )}
 
-                                  {roles.data &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos &&
-                                  roles.data[element_index]
-                                    ?.filtros_demograficos?.pais ? (
+                                  {element.filtros_demograficos ? (
                                     <Typography
                                       component={"span"}
                                       sx={{ color: "#928F8F" }}
                                     >
                                       {
-                                        roles.data[element_index]
-                                          ?.filtros_demograficos?.pais.es
+                                        ctx.lang === 'es' ? element.filtros_demograficos.pais.es : element.filtros_demograficos.pais.en
                                       }
                                     </Typography>
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#928F8F" }}>
-                                        No especificado
+                                        {`${textos['no_especificado']}`}
                                       </Typography>
                                     </>
                                   )}
@@ -1545,10 +1489,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   >
                                     {`${textos["descripcion"]}`}:
                                   </Typography>
-                                  {roles.data
-                                    ? roles.data[element_index]?.descripcion ||
-                                      "No especificado"
-                                    : "No especificado"}
+                                  {element.descripcion &&
+                                    element.descripcion
+                                  }
+                                  {!element.descripcion &&
+                                    `${textos['no_especificado']}`
+                                  }
                                 </Typography>
                               </Grid>
                             </Grid>
@@ -1626,16 +1572,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             {`${textos["habilidades"]}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
-                                            {roles.data &&
-                                            roles.data[element_index]
-                                              ?.habilidades &&
-                                            roles.data[element_index]
-                                              ?.habilidades
-                                              ?.habilidades_seleccionadas ? (
+                                            {element.habilidades && element.habilidades.habilidades_seleccionadas.length > 0 ? (
                                               <>
-                                                {roles.data[
-                                                  element_index
-                                                ]?.habilidades?.habilidades_seleccionadas.map(
+                                                {element.habilidades.habilidades_seleccionadas.map(
                                                   (h, i) => {
                                                     if (roles.data) {
                                                       const el =
@@ -1654,7 +1593,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                                   "#928F8F",
                                                               }}
                                                             >
-                                                              {h.habilidad.es}
+                                                              {ctx.lang === 'es' ? h.habilidad.es : h.habilidad.en}
                                                             </Typography>
                                                             {i !==
                                                               (el.habilidades
@@ -1685,7 +1624,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  No especificado
+                                                  {`${textos['no_especificado']}`}
                                                 </Typography>
                                               </>
                                             )}
@@ -1713,14 +1652,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             :
                                           </Typography>
                                           <MContainer direction="horizontal">
-                                            {roles.data &&
-                                            roles.data[element_index]?.nsfw &&
-                                            roles.data[element_index]?.nsfw
-                                              ?.nsfw_seleccionados ? (
+                                            {element.nsfw && element.nsfw.nsfw_seleccionados.length > 0 ? (
                                               <>
-                                                {roles.data[
-                                                  element_index
-                                                ]?.nsfw?.nsfw_seleccionados.map(
+                                                {element.nsfw.nsfw_seleccionados.map(
                                                   (n, i) => {
                                                     if (roles.data) {
                                                       const el =
@@ -1739,7 +1673,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                                   "#928F8F",
                                                               }}
                                                             >
-                                                              {n.nsfw?.es}
+                                                              {ctx.lang === 'es' ? n.nsfw?.es : n.nsfw?.en}
                                                             </Typography>
                                                             {i !==
                                                               (el.nsfw
@@ -1770,7 +1704,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  No especificado
+                                                  {`${textos['no_especificado']}`}
                                                 </Typography>
                                               </>
                                             )}
@@ -1798,21 +1732,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             :
                                           </Typography>
                                           <MContainer direction="horizontal">
-                                            {roles.data &&
-                                            roles.data[element_index]
-                                              ?.casting &&
-                                            (roles.data[element_index]?.casting
-                                              .length || 0) > 0 ? (
+                                            {element.casting && element.casting.length > 0 ? (
                                               <>
-                                                {roles.data[
-                                                  element_index
-                                                ]?.casting.map((c) => (
+                                                {element.casting.map((c) => (
                                                   <Fragment key={c.id}>
                                                     <Typography
                                                       component={"span"}
                                                       sx={{ color: "#928F8F" }}
                                                     >
-                                                      {c.estado_republica.es}
+                                                      {ctx.lang === 'es' ? c.estado_republica.es : c.estado_republica.en}
                                                     </Typography>
                                                     <Divider
                                                       style={{
@@ -1841,7 +1769,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  No especificado
+                                                  {`${textos['no_especificado']}`}
                                                 </Typography>
                                               </>
                                             )}
@@ -1869,21 +1797,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             :
                                           </Typography>
                                           <MContainer direction="horizontal">
-                                            {roles.data &&
-                                            roles.data[element_index]
-                                              ?.filmaciones &&
-                                            (roles.data[element_index]
-                                              ?.filmaciones.length || 0) > 0 ? (
+                                            {element.filmaciones && element.filmaciones.length > 0 ? (
                                               <>
-                                                {roles.data[
-                                                  element_index
-                                                ]?.filmaciones.map((c) => (
+                                                {element.filmaciones.map((c) => (
                                                   <Fragment key={c.id}>
                                                     <Typography
                                                       component={"span"}
                                                       sx={{ color: "#928F8F" }}
                                                     >
-                                                      {c.estado_republica.es}
+                                                      {ctx.lang === 'es' ? c.estado_republica.es : c.estado_republica.en}
                                                     </Typography>
                                                     <Divider
                                                       style={{
@@ -1912,7 +1834,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  No especificado
+                                                  {`${textos['no_especificado']}`}
                                                 </Typography>
                                               </>
                                             )}
@@ -1940,20 +1862,23 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             :
                                           </Typography>
                                           <MContainer direction="horizontal">
-                                            <Typography
-                                              component={"span"}
-                                              sx={{ color: "#928F8F" }}
-                                            >
-                                              {roles.data &&
-                                              roles.data[element_index]
-                                                ?.requisitos &&
-                                              roles.data[element_index]
-                                                ?.requisitos?.estado_republica
-                                                ? roles.data[element_index]
-                                                    ?.requisitos
-                                                    ?.estado_republica.es
-                                                : "No especificado"}
-                                            </Typography>
+                                            {element.requisitos &&
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {ctx.lang === 'es' ? element.requisitos.estado_republica.es : element.requisitos.estado_republica.en}
+                                              </Typography>
+                                            }
+                                            {!element.requisitos &&
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {`${textos['no_especificado']}`}
+                                              </Typography>
+                                            }
+
                                             <Divider
                                               style={{
                                                 borderWidth: 1,
@@ -1963,21 +1888,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               }}
                                               orientation="vertical"
                                             />
-                                            <Typography
-                                              component={"span"}
-                                              sx={{ color: "#928F8F" }}
-                                            >
-                                              {roles.data &&
-                                              roles.data[element_index]
-                                                ?.requisitos &&
-                                              roles.data[element_index]
-                                                ?.requisitos
-                                                ?.presentacion_solicitud
-                                                ? roles.data[
-                                                    element_index
-                                                  ]?.requisitos?.presentacion_solicitud.toString()
-                                                : "No especificado"}
-                                            </Typography>
+                                            {element.requisitos &&
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {element.requisitos.presentacion_solicitud.toLocaleDateString(ctx.lang === 'es' ? 'es-mx' : 'en-us')}
+                                              </Typography>
+                                            }
+                                            {!element.requisitos &&
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {`${textos['no_especificado']}`}
+                                              </Typography>
+                                            }
                                             <Divider
                                               style={{
                                                 borderWidth: 1,
@@ -1987,19 +1913,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               }}
                                               orientation="vertical"
                                             />
-                                            <Typography
-                                              component={"span"}
-                                              sx={{ color: "#928F8F" }}
-                                            >
-                                              {roles.data &&
-                                              roles.data[element_index]
-                                                ?.requisitos &&
-                                              roles.data[element_index]
-                                                ?.requisitos?.uso_horario
-                                                ? roles.data[element_index]
-                                                    ?.requisitos?.uso_horario.es
-                                                : "No especificado"}
-                                            </Typography>
+                                            {element.requisitos &&
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {ctx.lang === 'es' ? element.requisitos.uso_horario.es : element.requisitos.uso_horario.en}
+                                              </Typography>
+                                            }
+                                            {!element.requisitos &&
+                                              <Typography
+                                                component={"span"}
+                                                sx={{ color: "#928F8F" }}
+                                              >
+                                                {`${textos['no_especificado']}`}
+                                              </Typography>
+                                            }
                                           </MContainer>
                                         </MContainer>
                                       </Grid>
@@ -2023,18 +1952,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             {`${textos["requisitos"]}`}:
                                           </Typography>
                                           <MContainer direction="horizontal">
-                                            {roles.data &&
-                                            roles.data[element_index]
-                                              ?.requisitos &&
-                                            roles.data[element_index]
-                                              ?.requisitos?.medios_multimedia &&
-                                            (roles.data[element_index]
-                                              ?.requisitos?.medios_multimedia
-                                              .length || 0) > 0 ? (
+                                            {element.requisitos && element.requisitos.medios_multimedia.length > 0 ? (
                                               <>
-                                                {roles.data[
-                                                  element_index
-                                                ]?.requisitos?.medios_multimedia.map(
+                                                {element.requisitos.medios_multimedia.map(
                                                   (m, i) => {
                                                     if (roles.data) {
                                                       const el =
@@ -2056,9 +1976,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                               }}
                                                             >
                                                               {
-                                                                m
-                                                                  .medio_multimedia
-                                                                  .es
+                                                                ctx.lang === 'es' ? m.medio_multimedia.es : m.medio_multimedia.en
                                                               }
                                                             </Typography>
                                                             {i !==
@@ -2090,7 +2008,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  No especificado
+                                                  {`${textos['no_especificado']}`}
                                                 </Typography>
                                               </>
                                             )}

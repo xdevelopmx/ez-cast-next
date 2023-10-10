@@ -505,7 +505,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                 ? `${sueldo.periodo.substring(0, 1)}${sueldo.periodo
                     .substring(1, sueldo.periodo.length)
                     .toLowerCase()}`
-                : "Diario",
+                : `${textos["diario"]}`,
             },
             compensaciones_no_monetarias: compensaciones_no_monetarias.map(
               (c) => {
@@ -517,9 +517,9 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
             ),
 
             //extras para el formulario
-            se_pagara_sueldo: rol.data.compensaciones?.sueldo ? "Sí" : "No",
+            se_pagara_sueldo: rol.data.compensaciones?.sueldo ? `${textos['si']}` : `${textos['no']}`,
             se_otorgaran_compensaciones:
-              compensaciones_no_monetarias.length > 0 ? "Sí" : "No",
+              compensaciones_no_monetarias.length > 0 ? `${textos['si']}` : `${textos['no']}`,
             descripcion_otra_compensacion: otra_compensacion
               ? otra_compensacion.descripcion_compensacion
               : "",
@@ -550,19 +550,19 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
             //extras
             genero_del_rol:
               filtros_demo && filtros_demo.generos.length > 0
-                ? "Género especificado"
-                : "No especificado",
+                ? `${textos['genero_especificado']}`
+                : `${textos['no_especificado']}`,
             apariencia_etnica_del_rol:
               filtros_demo && filtros_demo.aparencias_etnicas.length > 0
-                ? "Especificado"
-                : "No especificado",
+                ? `${textos['especificado']}`
+                : `${textos['no_especificado']}`,
             es_mascota: animal != null,
           },
           descripcion_rol: {
             tiene_nsfw:
               rol.data && rol.data.nsfw
-                ? "Desnudos/Situaciones Sexuales"
-                : "No hay desnudos y/o situaciones sexuales",
+                ? `${textos['desnudos_o_situaciones_sexuales']}`
+                : `${textos['no_hay_desnudos']}`,
             descripcion: rol.data ? rol.data.descripcion : "",
             detalles_adicionales: rol.data ? rol.data.detalles_adicionales : "",
             habilidades:
@@ -599,7 +599,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
               rol.data.casting && rol.data.casting.length > 0
                 ? rol.data.casting[0]?.id_estado_republica
                 : 0,
-            tipo_fecha_selected: "Rango de fechas",
+            tipo_fecha_selected: `${textos['rango_fechas']}`,
             fechas: rol.data.casting
               ? rol.data.casting.map((c) => {
                   return {
@@ -614,7 +614,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
               rol.data.filmaciones && rol.data.filmaciones.length > 0
                 ? rol.data.filmaciones[0]?.id_estado_republica
                 : 0,
-            tipo_fecha_selected: "Rango de fechas",
+            tipo_fecha_selected: `${textos['rango_fechas']}`,
             fechas: rol.data.filmaciones
               ? rol.data.filmaciones.map((c) => {
                   return {
@@ -659,7 +659,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       });
       //void initDescripcionFiles();
     }
-  }, [rol.data]);
+  }, [rol.data, textos]);
 
   const form_validate = useMemo(() => {
     const form: { data: NewRol; complete: boolean; error: null | string } = {
@@ -732,7 +732,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       tipo_trabajo: state.informacion_general.tipo_trabajo,
     };
 
-    if (state.compensacion.se_pagara_sueldo === "Sí") {
+    if (state.compensacion.se_pagara_sueldo === `${textos['si']}`) {
       if (
         state.compensacion.sueldo &&
         state.compensacion.sueldo.cantidad_sueldo <= 0
@@ -753,7 +753,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       };
     }
 
-    if (state.compensacion.se_otorgaran_compensaciones === "Sí") {
+    if (state.compensacion.se_otorgaran_compensaciones === `${textos['si']}`) {
       if (
         state.compensacion.compensaciones_no_monetarias &&
         state.compensacion.compensaciones_no_monetarias.length === 0
@@ -783,7 +783,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       },
     };
 
-    if (state.filtros_demograficos.genero_del_rol === "Género especificado") {
+    if (state.filtros_demograficos.genero_del_rol === `${textos['genero_especificado']}`) {
       if (state.filtros_demograficos.generos.length === 0) {
         return {
           ...form,
@@ -798,7 +798,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     }
 
     if (
-      state.filtros_demograficos.apariencia_etnica_del_rol === "Especificado"
+      state.filtros_demograficos.apariencia_etnica_del_rol === `${textos['especificado']}`
     ) {
       if (state.filtros_demograficos.generos.length === 0) {
         return { ...form, error: "Debes seleccionar al menos una etnia" };
@@ -870,7 +870,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       id_color_ojos: state.descripcion_rol.id_color_ojos,
     };
 
-    if (state.descripcion_rol.tiene_nsfw === "Desnudos/Situaciones Sexuales") {
+    if (state.descripcion_rol.tiene_nsfw === `${textos['desnudos_o_situaciones_sexuales']}`) {
       if (state.descripcion_rol.nsfw.ids.length === 0) {
         return {
           ...form,
@@ -1000,7 +1000,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       state.requisitos.id_estado_donde_aceptan_solicitudes > 0 &&
       state.requisitos.info_trabajo.length > 0;
     return form;
-  }, [state]);
+  }, [state, textos]);
 
   const updateRolFiles = api.roles.saveRolFiles.useMutation({
     onSuccess: (data) => {
@@ -1364,7 +1364,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                                 info_gral: {
                                   ...form_validate.data.info_gral,
                                   id_proyecto: state.id_proyecto
-                                }
+                                },
+                                compensaciones: form_validate.data.compensaciones
                               });
                             } else {
                               notify("warning", form_validate.error);
@@ -1404,7 +1405,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                               info_gral: {
                                 ...form_validate.data.info_gral,
                                 id_proyecto: state.id_proyecto
-                              }
+                              },
+                              compensaciones: form_validate.data.compensaciones
                             });
                           } else {
                             notify(
