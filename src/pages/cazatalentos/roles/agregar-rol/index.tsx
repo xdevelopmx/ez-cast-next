@@ -717,13 +717,13 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       !state.informacion_general.nombre ||
       state.informacion_general.nombre.length < 2
     ) {
-      return { ...form, error: "El nombre del rol es invalido" };
+      return { ...form, error: `${textos['nombre_rol_invalido']}` };
     }
     if (state.informacion_general.id_tipo_rol < 1) {
-      return { ...form, error: "El tipo del rol es invalido" };
+      return { ...form, error: `${textos['tipo_rol_invalido']}` };
     }
     if (state.informacion_general.tipo_trabajo.length === 0) {
-      return { ...form, error: "Debes elegir al menos un tipo de trabajo" };
+      return { ...form, error: `${textos['tipo_trabajo_invalido']}` };
     }
     form.data.info_gral = {
       nombre: state.informacion_general.nombre,
@@ -737,7 +737,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         state.compensacion.sueldo &&
         state.compensacion.sueldo.cantidad_sueldo <= 0
       ) {
-        return { ...form, error: "El sueldo no puede ser menor o igual a 0" };
+        return { ...form, error: `${textos['cantidad_sueldo_invalido']}` };
       }
 
       form.data.compensaciones = {
@@ -760,7 +760,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       ) {
         return {
           ...form,
-          error: "Debes seleccionar al menos una compensacion",
+          error: `${textos['compensaciones_invalidas']}`,
         };
       }
 
@@ -788,7 +788,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         return {
           ...form,
           filtros_demograficos: undefined,
-          error: "Debes seleccionar al menos un genero",
+          error: `${textos['generos_invalidos']}`,
         };
       }
       form.data.filtros_demograficos = {
@@ -801,7 +801,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       state.filtros_demograficos.apariencia_etnica_del_rol === `${textos['especificado']}`
     ) {
       if (state.filtros_demograficos.generos.length === 0) {
-        return { ...form, error: "Debes seleccionar al menos una etnia" };
+        return { ...form, error: `${textos['etnias_invalidas']}` };
       }
 
       form.data.filtros_demograficos = {
@@ -817,10 +817,10 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
           (state.filtros_demograficos.animal &&
             state.filtros_demograficos.animal.tamanio.length === 0)
         ) {
-          return { ...form, error: "No se especifico un animal valido" };
+          return { ...form, error: `${textos['animal_invalido']}` };
         }
       } else {
-        return { ...form, error: "No se especifico un animal valido" };
+        return { ...form, error: `${textos['animal_invalido']}` };
       }
 
       form.data.filtros_demograficos = {
@@ -830,7 +830,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     }
 
     if (state.filtros_demograficos.id_pais <= 0) {
-      return { ...form, error: "No se especifico la nacionalidad del rol" };
+      return { ...form, error: `${textos['nacionalidad_invalida']}` };
     }
 
     form.data.filtros_demograficos = {
@@ -845,15 +845,15 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       !state.descripcion_rol.descripcion ||
       state.descripcion_rol.descripcion.length <= 0
     ) {
-      return { ...form, error: "No se especifico la descripcion del rol" };
+      return { ...form, error: `${textos['descripcion_rol_invalida']}` };
     }
 
     if (state.descripcion_rol.id_color_cabello <= 0) {
-      return { ...form, error: "No se especifico el color de cabello del rol" };
+      return { ...form, error: `${textos['color_cabello_rol_invalido']}` };
     }
 
     if (state.descripcion_rol.id_color_ojos <= 0) {
-      return { ...form, error: "No se especifico el color de ojos del rol" };
+      return { ...form, error: `${textos['color_ojos_rol_invalido']}` };
     }
 
     form.data.descripcion_rol = {
@@ -874,13 +874,13 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       if (state.descripcion_rol.nsfw.ids.length === 0) {
         return {
           ...form,
-          error: "No se especifico ningun tipo de escena NSFW",
+          error: `${textos['nsfw_rol_invalido']}`,
         };
       }
       if (state.descripcion_rol.nsfw.descripcion.length === 0) {
         return {
           ...form,
-          error: "No especificaste los detalles de las escenas NSFW",
+          error: `${textos['detalles_nsfw_rol_invalido']}`,
         };
       }
 
@@ -893,14 +893,14 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     if (state.castings.fechas.length === 0) {
       return {
         ...form,
-        error: "No se especifico ninguna fecha para los castings del rol",
+        error: `${textos['fecha_castings_rol_invalida']}`,
       };
     }
 
     if (state.castings.id_estado_republica <= 0) {
       return {
         ...form,
-        error: "No se especifico estado para los castings del rol",
+        error: `${textos['estado_castings_rol_invalido']}`,
       };
     }
 
@@ -913,14 +913,14 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     if (state.filmaciones.fechas.length === 0) {
       return {
         ...form,
-        error: "No se especifico ninguna fecha para las filmaciones del rol",
+        error: `${textos['fecha_filmaciones_rol_invalida']}`,
       };
     }
 
     if (state.filmaciones.id_estado_republica <= 0) {
       return {
         ...form,
-        error: "No se especifico estado para las filmaciones del rol",
+        error: `${textos['estado_filmacion_rol_invalido']}`,
       };
     }
 
@@ -933,37 +933,36 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     if (state.requisitos.fecha_presentacion === "") {
       return {
         ...form,
-        error:
-          "No se especifico la fecha de presentacion de solicitudes del rol",
+        error: `${textos['fecha_presentacion_rol_invalida']}`,
       };
     }
 
     if (state.requisitos.info_trabajo.length === 0) {
       return {
         ...form,
-        error: "No se especifico la informacion del trabajo del rol",
+        error: `${textos['info_trabajo_rol_invalida']}`,
       };
     }
 
     if (state.requisitos.medios_multimedia_a_incluir.length === 0) {
       return {
         ...form,
-        error: "No se especifico ningun medio multimedia del rol",
+        error: `${textos['medios_multimedia_rol_invalidos']}`,
       };
     }
 
     if (state.requisitos.id_uso_horario <= 0) {
-      return { ...form, error: "No se especifico el uso de horario del rol" };
+      return { ...form, error: `${textos['uso_horario_rol_invalido']}` };
     }
 
     if (state.requisitos.id_idioma <= 0) {
-      return { ...form, error: "No se especifico el idioma del rol" };
+      return { ...form, error: `${textos['idioma_rol_invalido']}` };
     }
 
     if (state.requisitos.id_estado_donde_aceptan_solicitudes <= 0) {
       return {
         ...form,
-        error: "No se especifico estado donde aceptar las solicitudes",
+        error: `${textos['estado_donde_aceptan_solicitudes_invalido']}`,
       };
     }
 
@@ -1319,7 +1318,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                     style={{ marginLeft: 20 }}
                     className="color_a h4 font-weight-bold mb-0"
                   >
-                    <b>{`${textos["agregar"]} ${textos["rol"]}`}</b>
+                    <b>{`${textos[state.id_rol > 0 ? "editar" : "agregar"]} ${textos["rol"]}`}</b>
                   </p>
                 </div>
               </div>
@@ -1342,6 +1341,12 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                         style={{ textAlign: "center", width: "inherit" }}
                       >
                         {`${textos["llenar_campos_obligatorios"]}`}*{" "}
+                        <Typography
+                          style={{ textAlign: "center", width: "inherit" }}
+                        >
+                          {form_validate.error}
+                          
+                        </Typography>  
                       </Typography>
                     </Alert>
                   </MContainer>
@@ -1390,7 +1395,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                       </Button>
                     )}
                   </div>
-                  {form_validate.complete && (
+                  {form_validate.complete && state.id_rol === 0 && (
                     <div>
                       <Button
                         onClick={() => {
