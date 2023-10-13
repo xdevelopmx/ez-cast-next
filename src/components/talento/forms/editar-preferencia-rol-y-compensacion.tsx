@@ -182,7 +182,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           placement="right"
         />
       </Grid>
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
       <Grid item xs={12}>
@@ -254,7 +254,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           />
         </MContainer>
       </Grid>
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
       <Grid item xs={12}>
@@ -311,18 +311,19 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           } //[(state) ? state.mostrar_anio_en_perfil : false]}
         />
       </Grid>
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
 
       <Grid item xs={12}>
         <MContainer direction="vertical">
           <MContainer direction="horizontal">
-            <Typography fontSize={"1.2rem"} fontWeight={600} component={"p"}>
+            <Typography className="left-tool" fontSize={"1.2rem"} fontWeight={600} component={"p"}>
               {textos["preferencias_rol_locacion"]
                 ? textos["preferencias_rol_locacion"]
                 : "Texto No Definido"}
               <MTooltip
+                textoIzquierda
                 text={
                   textos["preferencias_rol_locacion_tooltip"]
                     ? textos["preferencias_rol_locacion_tooltip"]
@@ -410,6 +411,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 }
               />
               <AddButton
+                aStyles={{fontSize: '13px', fontWeight: 500}}
                 text={
                   textos["preferencias_rol_locacion_button"]
                     ? textos["preferencias_rol_locacion_button"]
@@ -497,7 +499,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
         </MContainer>
       </Grid>
 
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
 
@@ -584,7 +586,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
         </MContainer>
       </Grid>
 
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
 
@@ -681,7 +683,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
         </MContainer>
       </Grid>
 
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
 
@@ -748,7 +750,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
         </MContainer>
       </Grid>
 
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
 
@@ -813,7 +815,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
         </MContainer>
       </Grid>
 
-      <Grid my={4} item xs={12}>
+      <Grid my={2} item xs={12}>
         <Divider />
       </Grid>
 

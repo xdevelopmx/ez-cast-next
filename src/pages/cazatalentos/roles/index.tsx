@@ -1017,7 +1017,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   <MTooltip
                                     color="orange"
                                     placement="top"
-                                    text="Editar proyecto"
+                                    text="Archivar"
                                     icon={
                                       <IconButton
                                         onClick={(e) => {
@@ -1040,8 +1040,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             title:
                                               r.estatus.toUpperCase() ===
                                               "ARCHIVADO"
-                                                ? "Desarchivar Rol"
-                                                : "Archivar Rol",
+                                                ? "Desarchivar"
+                                                : "Archivar",
                                             content: (
                                               <Typography variant="body2">{`Seguro que deseas ${
                                                 r.estatus.toUpperCase() ===
@@ -1081,7 +1081,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       <MTooltip
                                         color="orange"
                                         placement="top"
-                                        text="Editar proyecto"
+                                        text="Editar Rol"
                                         icon={
                                           <IconButton
                                             onClick={(e) => {
@@ -1108,7 +1108,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       <MTooltip
                                         color="orange"
                                         placement="top"
-                                        text="Editar proyecto"
+                                        text="Archivar"
                                         icon={
                                           <IconButton
                                             onClick={(e) => {
@@ -1131,6 +1131,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               });
                                               e.stopPropagation();
                                             }}
+                                            style={{padding: 0}}
                                             color="primary"
                                             aria-label="eliminar"
                                             component="label"

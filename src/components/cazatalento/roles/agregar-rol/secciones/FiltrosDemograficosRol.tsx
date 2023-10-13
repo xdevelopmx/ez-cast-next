@@ -87,10 +87,9 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
           dividerSx={{ backgroundColor: "#9B9B9B" }}
         />
       </Grid>
-
       <Grid item xs={12} mt={4}>
         <Grid container item xs={12}>
-          <Grid item container xs={6}>
+          <Grid item container md={7} xs={6}>
             <Grid item xs={12}>
               <Typography fontWeight={600}>
                 {`${textos["rango_edad"]}`} (
@@ -332,7 +331,7 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
               />
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item md={5} xs={6}>
             <Grid xs={12}>
               <MCheckboxGroup
                 direction="horizontal"

@@ -391,7 +391,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
             <Grid
               item
               xs={12}
-              sx={{ mt: 4 }}
+              sx={{ mt: 4, padding: '0 20px' }}
               textAlign={"start"}
               maxHeight={"95vh"}
             >
@@ -414,10 +414,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     }
                     return undefined;
                   })()}
-                  style={{ width: 200 }}
-                  labelStyle={{
+                  style={{ width: 200, maxWidth: '100%' }}
+                  labelStyle={{ marginBottom: '0',
                     fontWeight: 800,
-                    fontSize: "1rem",
+                    fontSize: "0.8rem",
                     textAlign: "start",
                     color: "#069cb1",
                   }}
@@ -435,7 +435,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
             {user_info &&
               user_info.tipo_usuario === TipoUsuario.CAZATALENTOS && (
                 <>
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -448,10 +448,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												} */
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -464,7 +464,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -477,10 +477,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												} */
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -495,18 +495,18 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 </>
               )}
 
-            <Grid item xs={12} textAlign={"start"}>
+            <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
               <MContainer
                 direction="vertical"
                 styles={{ alignContent: "space-around", textAlign: "center" }}
               >
                 <FormGroup
                   type={"text-area"}
-                  style={{ width: 200 }}
-                  labelStyle={{
-                    width: 200,
+                  style={{ width: 200, maxWidth: '100%' }}
+                  labelStyle={{ marginBottom: '0',
+                    width: 200, maxWidth: '100%',
                     fontWeight: 800,
-                    fontSize: "1rem",
+                    fontSize: "0.8rem",
                     textAlign: "start",
                     color: "#069cb1",
                   }}
@@ -529,7 +529,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 user_info.tipo_usuario
               ) && (
                 <>
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -542,10 +542,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												} */
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -564,7 +564,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -590,10 +590,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												} */
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -612,7 +612,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -637,10 +637,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												} */
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -659,7 +659,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -684,10 +684,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                           }
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -706,7 +706,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -731,10 +731,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 												} */
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -753,7 +753,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -778,10 +778,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                           }
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -800,7 +800,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start"}>
+                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -825,10 +825,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                           }
                           return undefined;
                         })()}
-                        style={{ width: 200 }}
-                        labelStyle={{
+                        style={{ width: 200, maxWidth: '100%' }}
+                        labelStyle={{ marginBottom: '0',
                           fontWeight: 800,
-                          fontSize: "1rem",
+                          fontSize: "0.8rem",
                           textAlign: "start",
                           color: "#069cb1",
                         }}
@@ -849,7 +849,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 </>
               )}
 
-            <Grid item xs={12} textAlign={"center"} sx={{ paddingBottom: 3 }}>
+            <Grid item xs={12} textAlign={"center"} sx={{ paddingBottom: 3, paddingRight: '20px', paddingLeft: '20px' }}>
               <Button
                 onClick={() => {
                   if (user_info) {
@@ -1035,8 +1035,9 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 }}
                 style={{
                   backgroundColor: "#069cb1",
-                  width: 200,
+                  width: 200, maxWidth: '100%',
                   color: "white",
+                  fontSize: '10px',
                   borderRadius: 16,
                 }}
               >

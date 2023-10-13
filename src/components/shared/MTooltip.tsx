@@ -28,6 +28,7 @@ interface Props {
     | "bottom-end";
   sx?: SxProps<Theme>;
   styles?: CSSProperties;
+  textoIzquierda?: boolean;
 }
 
 const BootstrapTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -52,6 +53,7 @@ export const MTooltip: FC<Props> = ({
   color,
   icon,
   styles,
+  textoIzquierda = false
 }) => {
   return (
     <BootstrapTooltip
@@ -59,7 +61,7 @@ export const MTooltip: FC<Props> = ({
       color={color}
       placement={placement}
       title={text}
-      className="tooltip_ez"
+      className={`tooltip_ez ${textoIzquierda ? 'alineado_izquierda' : ''}`}
     >
       <IconButton
         onClick={onClick}

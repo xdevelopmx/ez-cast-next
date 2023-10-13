@@ -98,6 +98,7 @@ export const MCheckboxGroup: FC<Props> = ({
                   }}
                   style={style}
                   sx={{
+                    margin: '0 0 0 10px',
                     color: "#069CB1",
                     "&.Mui-checked": {
                       color: "#069CB1",

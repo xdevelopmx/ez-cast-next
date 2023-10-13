@@ -53,7 +53,9 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
                         ))
                     }
                     {conversaciones.isFetched && conversaciones.data && conversaciones.data.length === 0 &&
-                            <Typography>{`${textos['no_conversaciones']}`}</Typography>  
+                            <div style={{backgroundColor: '#a8e2ea', textAlign: 'center', maxWidth: '90%', margin: '1rem auto', padding: '1rem 1.5rem'}}>
+                                <Typography sx={{color: '#037788', fontSize: '1.2rem', fontWeight: '600'}}>{`${textos['no_conversaciones']}`}</Typography> 
+                            </div> 
                     }
                     {conversaciones.isFetched && conversaciones.data &&
                         conversaciones.data.map((c, i) => {

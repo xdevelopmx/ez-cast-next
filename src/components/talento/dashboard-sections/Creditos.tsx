@@ -62,7 +62,7 @@ export const Creditos = (props: { id_talento: number; read_only: boolean }) => {
 
   return (
     <>
-      <Grid id="créditos" container sx={{ mt: 10 }}>
+      <Grid id="créditos" container sx={{ marginTop: '-50px', padding: '120px 0 0 0'  }}>
         <Grid item xs={12}>
           <SectionTitle
             titleSx={{ fontSize: 26 }}

@@ -250,16 +250,18 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               ))}
           </Carroucel>
           )}
+          <br />
           <p
-            className="mt-5 h5"
-            style={{
-              fontWeight: "800",
-              fontSize: "24px",
-            }}
-          >
-            {textos["ahora_castenado_en_ezcast"]
-              ? textos["ahora_castenado_en_ezcast"]
-              : "Texto No definido"}
+              className="mb-2 ml-2 h5"
+              style={{
+                fontWeight: "600",
+                fontSize: "24px",
+                textTransform: "capitalize",
+              }}
+            >
+              {textos["ahora_castenado_en_ezcast"]
+            ? textos["ahora_castenado_en_ezcast"]
+            : "Texto No definido"}
           </p>
           <hr className="hr_blue" style={{ margin: "0px 0 40px 0" }} />
 

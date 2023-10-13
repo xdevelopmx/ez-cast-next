@@ -1645,7 +1645,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
         >
           <div
             style={{
-              width: "70%",
+              width: "75%",
               margin: "0 auto",
               backgroundColor: "white",
               border: "2px",

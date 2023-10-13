@@ -73,87 +73,6 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
       </Grid>
       <Grid item container xs={12} mt={4}>
         <Grid item container xs={12}>
-          <Grid item xs={4}>
-            <MRadioGroup
-              label={`${textos["desnudos_o_situaciones_sexuales"]}*`}
-              labelStyle={{
-                ...estilosBold,
-                color: "#000",
-              }}
-              style={{ gap: 0 }}
-              styleRoot={{ marginTop: 1 }}
-              id="desnudos-situaciones-rol"
-              options={[
-                `${textos["desnudos_o_situaciones_sexuales"]}`,
-                `${textos["no_hay_desnudos"]}`,
-              ]}
-              value={state.tiene_nsfw}
-              direction="vertical"
-              onChange={(e) => {
-                onFormChange({
-                  tiene_nsfw: e.target.value,
-                });
-              }}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Box sx={{ padding: "0px 0px 0px 10px", my: 4 }}>
-              <MCheckboxGroup
-                disabled={state.tiene_nsfw === `${textos["no_hay_desnudos"]}`}
-                direction="vertical"
-                title={`${textos["rol_involucra"]}:`}
-                onChange={(e, i) => {
-                  const nsfw = tipos_nsfw.data?.filter(
-                    (_, index) => index === i
-                  )[0];
-                  if (nsfw) {
-                    onFormChange({
-                      nsfw: {
-                        ...state.nsfw,
-                        ids: state.nsfw.ids.includes(nsfw.id)
-                          ? state.nsfw.ids.filter((n) => n !== nsfw.id)
-                          : state.nsfw.ids.concat([nsfw.id]),
-                      },
-                    });
-                  }
-                  console.log("change");
-                }}
-                id="tipos-apariencias-rol"
-                labelStyle={{ marginBottom: 0, width: "90%", ...estilosBold }}
-                options={
-                  tipos_nsfw.data
-                    ? tipos_nsfw.data.map((n) =>
-                        ctx.lang === "es" ? n.es : n.en
-                      )
-                    : []
-                }
-                values={
-                  tipos_nsfw.data
-                    ? tipos_nsfw.data.map((g) => {
-                        return state.nsfw.ids.includes(g.id);
-                      })
-                    : [false]
-                }
-              />
-            </Box>
-          </Grid>
-          <Grid item xs={4}>
-            <FormGroup
-              disabled={state.tiene_nsfw === `${textos["no_hay_desnudos"]}`}
-              type={"text-area"}
-              className={"form-input-md"}
-              style={{ width: "80%" }}
-              labelStyle={{ ...estilosBold, width: "100%" }}
-              labelClassName={"form-input-label"}
-              value={state.nsfw.descripcion}
-              onChange={(e) => {
-                onFormChange({
-                  nsfw: { ...state.nsfw, descripcion: e.target.value },
-                });
-              }}
-              label={`${textos["descripcion"]}:`}
-            />
-          </Grid>
           <Grid item xs={4} mb={5}>
             <MContainer
               direction="vertical"
@@ -288,6 +207,87 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
                 });
               }}
               label={`${textos["especificaciones_habilidad"]}`}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <MRadioGroup
+              label={`${textos["desnudos_o_situaciones_sexuales"]}*`}
+              labelStyle={{
+                ...estilosBold,
+                color: "#000",
+              }}
+              style={{ gap: 0 }}
+              styleRoot={{ marginTop: 1 }}
+              id="desnudos-situaciones-rol"
+              options={[
+                `${textos["desnudos_o_situaciones_sexuales"]}`,
+                `${textos["no_hay_desnudos"]}`,
+              ]}
+              value={state.tiene_nsfw}
+              direction="vertical"
+              onChange={(e) => {
+                onFormChange({
+                  tiene_nsfw: e.target.value,
+                });
+              }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Box sx={{ padding: "0px 0px 0px 10px", my: 4 }}>
+              <MCheckboxGroup
+                disabled={state.tiene_nsfw === `${textos["no_hay_desnudos"]}`}
+                direction="vertical"
+                title={`${textos["rol_involucra"]}:`}
+                onChange={(e, i) => {
+                  const nsfw = tipos_nsfw.data?.filter(
+                    (_, index) => index === i
+                  )[0];
+                  if (nsfw) {
+                    onFormChange({
+                      nsfw: {
+                        ...state.nsfw,
+                        ids: state.nsfw.ids.includes(nsfw.id)
+                          ? state.nsfw.ids.filter((n) => n !== nsfw.id)
+                          : state.nsfw.ids.concat([nsfw.id]),
+                      },
+                    });
+                  }
+                  console.log("change");
+                }}
+                id="tipos-apariencias-rol"
+                labelStyle={{ marginBottom: 0, width: "90%", ...estilosBold }}
+                options={
+                  tipos_nsfw.data
+                    ? tipos_nsfw.data.map((n) =>
+                        ctx.lang === "es" ? n.es : n.en
+                      )
+                    : []
+                }
+                values={
+                  tipos_nsfw.data
+                    ? tipos_nsfw.data.map((g) => {
+                        return state.nsfw.ids.includes(g.id);
+                      })
+                    : [false]
+                }
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={4}>
+            <FormGroup
+              disabled={state.tiene_nsfw === `${textos["no_hay_desnudos"]}`}
+              type={"text-area"}
+              className={"form-input-md"}
+              style={{ width: "80%" }}
+              labelStyle={{ ...estilosBold, width: "100%" }}
+              labelClassName={"form-input-label"}
+              value={state.nsfw.descripcion}
+              onChange={(e) => {
+                onFormChange({
+                  nsfw: { ...state.nsfw, descripcion: e.target.value },
+                });
+              }}
+              label={`${textos["descripcion"]}:`}
             />
           </Grid>
           <Grid item xs={12} mt={4}>

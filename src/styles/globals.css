@@ -1312,6 +1312,10 @@ footer {
   width: 100%;
 }
 
+.form-group {
+  max-width: 100%;
+}
+
 .popup_conteiner .btn-confirm {
   margin-top: 20px;
 }
@@ -2143,9 +2147,21 @@ table.boxBtnTable td {
   margin: 40px 0 40px;
 }
 
+.MuiTooltip-tooltip  {
+  padding: 7px 10px;
+}
+
+.MuiTooltip-tooltip  p {
+  font-size: 11.2px;
+}
+
 .tooltip_ez {
-  max-width: 250px;
+  max-width: 220px;
   text-align: center;
+}
+
+.tooltip_ez.alineado_izquierda{
+  text-align: left;
 }
 
 .contToolTip {
