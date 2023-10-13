@@ -3415,7 +3415,7 @@ p.edo_pendiente {
   font-weight: 800;
   margin: 32px 0 32px 0;
   color: #069cb1;
-  border-bottom: 2px solid #909295;
+  border-bottom: 2px solid #069cb1;
   font-family: "Gill Sans";
   text-transform: uppercase;
   padding-bottom: 10px;
@@ -3713,7 +3713,7 @@ strong {
 }
 
 .check {
-  margin: 0 0 0 6px;
+  margin: 0 0 0 10px;
 }
 
 .w-120 {

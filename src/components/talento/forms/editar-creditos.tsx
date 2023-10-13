@@ -268,7 +268,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "left", padding: "0px 6px", display: "flex", alignItems: "center", gap: "10px"  }}
             >
               {textos["credito_destacado"]
                 ? textos["credito_destacado"]
@@ -277,6 +277,7 @@ export const EditarCreditosTalento: FC<Props> = ({
                 text={textos["creditos_credito_destacado_tooltip"]}
                 color="orange"
                 placement="top"
+                sx={{marginLeft:"0px!important"}}
               />
             </Typography>,
             <Typography
