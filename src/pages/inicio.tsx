@@ -25,6 +25,36 @@ import { MBanner } from "~/components/shared/MBanner";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 
+const urlBanners = [
+  {
+    url: '/assets/img/banners/1.png'
+  },
+  {
+    url: '/assets/img/banners/2.png'
+  },
+  {
+    url: '/assets/img/banners/3.png'
+  },
+  {
+    url: '/assets/img/banners/4.png'
+  },
+  {
+    url: '/assets/img/banners/5.png'
+  },
+  {
+    url: '/assets/img/banners/6.png'
+  },
+  {
+    url: '/assets/img/banners/8.png'
+  },
+  {
+    url: '/assets/img/banners/13.png'
+  },
+  {
+    url: '/assets/img/banners/14.png'
+  },
+]
+
 type InicioPageProps = {
   user: User;
 };
@@ -234,7 +264,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               slidesPerView={1}
               spaceBetween={0}
             >
-              {Array.from({ length: 6 }).map((_, i) => (
+              {urlBanners.map((banner, i) => (
                 <div style={{width: '1000px', margin: '0 auto'}}>
                   <MBanner
                     show_only_media
@@ -244,10 +274,12 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                       width: "100%",
                       margin: 0
                     }}
+                    urlImage={banner.url}
                     identificador="banner-cartelera-proyectos-1"
                   />
                 </div>
-              ))}
+                ))
+              }
           </Carroucel>
           )}
           <br />

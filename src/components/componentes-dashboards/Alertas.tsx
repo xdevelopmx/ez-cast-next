@@ -246,7 +246,7 @@ export const Alertas = () => {
           </Grid>
         </motion.div>
       </div>
-      <div className="pt-4 container_alerts_header">
+      <div className="pt-5 container_alerts_header">
         <div className="d-flex justify-content-end btn_alerts_header">
           <div className="box_alert_header mr-4">
             <motion.img

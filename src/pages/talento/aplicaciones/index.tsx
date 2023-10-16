@@ -219,24 +219,23 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({
                 <Grid container>
                   <Grid item xs={12}>
                     <Grid container item columns={12}>
-                      <Grid item md={1} textAlign={"center"}>
-                        <Image
-                          src="/assets/img/iconos/tus-aplicaciones.png"
-                          width={40}
-                          height={30}
-                          style={{
-                            margin: "15px 0 0 0",
-                            filter:
-                              "invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)",
-                          }}
-                          alt=""
-                        />
-                      </Grid>
                       <Grid item md={11}>
                         <Typography
                           fontWeight={800}
-                          sx={{ color: "#000000", fontSize: "1.8rem" }}
+                          sx={{ color: "#000000", fontSize: "1.8rem", margin: "20px 0 0 0" }}
                         >
+                          <Image
+                            src="/assets/img/iconos/tus-aplicaciones.png"
+                            width={30}
+                            height={30}
+                            style={{
+                              margin: "0px 0",
+                              filter:
+                                "invert(43%) sepia(92%) saturate(431%) hue-rotate(140deg) brightness(97%) contrast(101%)",
+                            }}
+                            alt=""
+                          />
+                          &nbsp;&nbsp;
                           {textos["tus"]} {textos["aplicaciones"]}
                         </Typography>
                       </Grid>

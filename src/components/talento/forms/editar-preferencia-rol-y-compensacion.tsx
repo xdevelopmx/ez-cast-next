@@ -323,7 +323,6 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 ? textos["preferencias_rol_locacion"]
                 : "Texto No Definido"}
               <MTooltip
-                textoIzquierda
                 text={
                   textos["preferencias_rol_locacion_tooltip"]
                     ? textos["preferencias_rol_locacion_tooltip"]

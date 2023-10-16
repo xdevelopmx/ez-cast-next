@@ -418,12 +418,8 @@ export const EditarCreditosTalento: FC<Props> = ({
                           });
                         }}
                         variant="outlined"
-                        startIcon={<Close />}
+                        startIcon={<Close style={{margin: 0}} />}
                       >
-                        {" "}
-                        {textos["eliminar"]
-                          ? textos["eliminar"]
-                          : "Texto No Definido"}{" "}
                       </Button>
                     ),
                   };

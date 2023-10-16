@@ -144,7 +144,11 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
               <div className="d-flex justify-content-end align-items-start py-2">
                 <Alertas />
               </div>
-              <div className="d-flex">
+              <div className="d-flex"
+                style={{
+                  padding: "40px 0 0 0"
+                }}
+              >
                 <motion.img
                   src="/assets/img/iconos/chair_dir_blue.svg"
                   alt="icono"
@@ -152,7 +156,8 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                 <p
                   className="color_a h4 font-weight-bold mb-0 ml-2"
                   style={{
-                    fontSize: "1.45rem",
+                    fontSize: "1.35rem",
+                    padding: "10px 0 0 0"
                   }}
                 >
                   <b>{textos["bienvenido"]?? ""}, {user.name}</b>

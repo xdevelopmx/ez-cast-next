@@ -138,7 +138,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
               <div className="d-flex justify-content-end align-items-start py-2">
                 <Alertas />
               </div>
-              <div className="d-flex">
+              <div className="d-flex mt-4">
                 <p className="color_a h4 font-weight-bold mb-0">
                   {info.isFetching && <Skeleton width={300} />}
                   {!info.isFetching && (

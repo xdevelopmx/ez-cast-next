@@ -302,7 +302,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                 <Grid item xs={12}>
                   <Typography
                     fontWeight={800}
-                    sx={{ color: "#069cb1", fontSize: "2rem" }}
+                    sx={{ color: "#069cb1", fontSize: "1.6rem", margin: "43px 0 0 0" }}
                   >
                     Billboard
                   </Typography>

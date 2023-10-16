@@ -89,6 +89,7 @@ export const InfoGeneral = (props: {
             style={{
               position: "relative",
               width: 350,
+              height: 450,
               aspectRatio: "500/500",
               maxWidth: "100%",
               border: "1px solid #e3e3e3",
@@ -105,13 +106,13 @@ export const InfoGeneral = (props: {
           </div>
         </Grid>
         <Grid item xs={12} md={8} sx={{ paddingTop: 3 }}>
-          <MContainer className="ml-3" direction="vertical">
+          <MContainer className="ml-4 my-5" direction="vertical">
             <MContainer
               styles={{ alignItems: "center" }}
               className={`m-1`}
               direction="horizontal"
             >
-              <p style={{ fontSize: 28, fontWeight: 800, margin: 0 }}>
+              <p style={{ fontSize: 24, fontWeight: 800, margin: 0 }}>
                 {textos["info_basica"]
                   ? textos["info_basica"]
                   : "Texto No definido"}
@@ -336,8 +337,8 @@ export const InfoGeneral = (props: {
                 {redes_sociales["vimeo"] != null && (
                   <span className="badge">
                     <Image
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       src="/assets/img/iconos/icon_vimeo_blue.svg"
                       alt=""
                     />{" "}
@@ -346,8 +347,8 @@ export const InfoGeneral = (props: {
                 {redes_sociales["twitter"] && (
                   <span className="badge">
                     <Image
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       src="/assets/img/iconos/icon_Twitwe_blue.svg"
                       alt=""
                     />{" "}
@@ -356,8 +357,8 @@ export const InfoGeneral = (props: {
                 {redes_sociales["youtube"] && (
                   <span className="badge">
                     <Image
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       src="/assets/img/iconos/icon_youtube_blue.svg"
                       alt=""
                     />{" "}
@@ -366,8 +367,8 @@ export const InfoGeneral = (props: {
                 {redes_sociales["linkedin"] && (
                   <span className="badge">
                     <Image
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       src="/assets/img/iconos/icon_linkedin_blue.svg"
                       alt=""
                     />{" "}
@@ -376,8 +377,8 @@ export const InfoGeneral = (props: {
                 {redes_sociales["instagram"] && (
                   <span className="badge">
                     <Image
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       src="/assets/img/iconos/icon_insta_blue.svg"
                       alt=""
                     />{" "}
@@ -386,8 +387,8 @@ export const InfoGeneral = (props: {
                 {redes_sociales["imdb"] && (
                   <span className="badge">
                     <Image
-                      width={32}
-                      height={32}
+                      width={26}
+                      height={26}
                       src="/assets/img/iconos/icon_imbd_blue.svg"
                       alt=""
                     />{" "}

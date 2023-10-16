@@ -176,8 +176,12 @@ const AgendaVirtual = () => {
                 </div>
                 <Grid container>
                   <Grid item xs={12}>
-                    <Grid container item columns={12}>
-                      <Grid item md={1} textAlign={"center"}>
+                    <Grid container item columns={12} style={{
+                      padding: "15px 0 0 0"
+                    }}>
+                      <Grid item md={1} style={{
+                        textAlign: "center",
+                      }}>
                         <Image
                           src="/assets/img/iconos/agenda.svg"
                           width={50}
@@ -193,7 +197,7 @@ const AgendaVirtual = () => {
                       <Grid item md={11}>
                         <Typography
                           fontWeight={800}
-                          sx={{ color: "#069cb1", fontSize: "2rem" }}
+                          sx={{ color: "#069cb1", fontSize: "1.6rem" }}
                         >
                           {textos["agenda_virtual"]}
                         </Typography>

@@ -13,7 +13,7 @@ export const Alertas = (props: Props) => {
   const textos = useLang(ctx.lang);
   const { messageProps = {}, ...propsDiv } = props;
   return (
-    <div className="pt-4 container_alerts_header" {...propsDiv}>
+    <div className="pt-5 container_alerts_header" {...propsDiv}>
       <div className="d-flex justify-content-end btn_alerts_header">
         <div className="box_alert_header mr-4">
           <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />

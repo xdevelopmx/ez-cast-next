@@ -81,7 +81,7 @@ const DashBoardTalentosPage: NextPage<{
           {props.user && <MenuLateral />}
           <div
             className="seccion_container col"
-            style={{ paddingTop: props.user ? 70 : 0 }}
+            style={{ paddingTop: props.user ? 50 : 0 }}
           >
             {props.user && (
               <>

@@ -326,7 +326,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                 <Grid xs={12} mt={4}>
                   <Grid container mt={4} mb={3}>
                     <Grid item container xs={12}>
-                      <Typography fontWeight={800} sx={{ fontSize: "22.5px" }}>
+                      <Typography fontWeight={800} sx={{ fontSize: "22.5px", padding: "0" }}>
                         Casting Billboard
                       </Typography>
                     </Grid>

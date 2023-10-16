@@ -10,6 +10,7 @@ interface Props {
   show_only_media: boolean;
   sx?: SxProps;
   imageStyles?: CSSProperties;
+  urlImage: string;
 }
 
 export const MBanner: FC<Props> = (props) => {
@@ -49,7 +50,7 @@ export const MBanner: FC<Props> = (props) => {
           {!props.show_only_media && element}
           {banner.data.type.includes("image") && (
             <Image
-              src={banner.data.content.url}
+              src={props.urlImage}
               onClick={() => {
                 window.open(banner.data?.redirect_url);
               }}

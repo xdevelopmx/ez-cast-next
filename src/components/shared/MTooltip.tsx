@@ -53,7 +53,7 @@ export const MTooltip: FC<Props> = ({
   color,
   icon,
   styles,
-  textoIzquierda = false
+  textoIzquierda = true
 }) => {
   return (
     <BootstrapTooltip

@@ -1051,9 +1051,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
           <>
             <motion.img
               src="/assets/img/iconos/EZ_Claqueta.svg"
-              className="mt-5 mb-3 claqueta_black"
+              className="mb-3 claqueta_black"
               style={{
                 width: "55px",
+                marginTop: "30px"
               }}
             />
             <p

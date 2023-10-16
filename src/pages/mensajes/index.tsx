@@ -154,7 +154,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                 <Alertas />
                             </div>
                             <div className="row d-lg-flex">
-                                <div className="mt-2 col-md-6" style={{ padding: 0 }}>
+                                <div className="mt-2 col-md-6" style={{ padding: "35px 0 0 0" }}>
                                     <p className="h5 font-weight-bold" style={{ fontSize: '1.3rem' }}>
                                         <b>{textos['mensajes']}</b>
                                     </p>
