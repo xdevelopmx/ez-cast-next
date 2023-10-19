@@ -1,6 +1,6 @@
 import { useMemo, type FC, useContext } from "react";
 import { AddButton, FormGroup } from "~/components";
-import { Button, Divider, Grid, Typography } from "@mui/material";
+import { Button, Divider, Grid, TableRow, Typography } from "@mui/material";
 import { MContainer } from "~/components/layout/MContainer";
 import { MSelect } from "~/components/shared/MSelect/MSelect";
 import { MCheckboxGroup } from "~/components/shared/MCheckboxGroup";
@@ -301,6 +301,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["tipo"] ? textos["tipo"] : "Texto No Definido"}
                 </Typography>,
@@ -309,6 +310,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["marca"] ? textos["marca"] : "Texto No Definido"}
                 </Typography>,
@@ -317,6 +319,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["modelo"] ? textos["modelo"] : "Texto No Definido"}
                 </Typography>,
@@ -325,6 +328,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["color"] ? textos["color"] : "Texto No Definido"}
                 </Typography>,
@@ -333,6 +337,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["anio"] ? textos["anio"] : "Texto No Definido"}
                 </Typography>,
@@ -341,6 +346,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["acciones"]
                     ? textos["acciones"]
@@ -352,34 +358,57 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 state.vehiculos
                   ? state.vehiculos.map((e, j) => {
                       return {
-                        tipo: e.tipo,
-                        marca: e.marca,
-                        modelo: e.modelo,
-                        color: e.color,
-                        anio: e.anio,
+                        tipo: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {e.tipo}
+                          </TableRow>
+                        ),
+                        marca: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {e.marca}
+                          </TableRow>
+                        ),
+                        modelo: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {e.modelo}
+                          </TableRow>
+                        ),
+                        color: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {e.color}
+                          </TableRow>
+                        ),
+                        anio: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {e.anio}
+                          </TableRow>
+                        ),
                         delete: (
-                          <Button
-                            style={{
-                              textTransform: "capitalize",
-                              fontWeight: 800,
-                              color: "#069CB1",
-                            }}
-                            onClick={() => {
-                              if (state.vehiculos) {
-                                onFormChange({
-                                  vehiculos: state.vehiculos.filter(
-                                    (v, i) => i !== j
-                                  ),
-                                });
-                              }
-                            }}
-                            variant="outlined"
-                            startIcon={<Close />}
-                          >
-                            {textos["eliminar"]
-                              ? textos["eliminar"]
-                              : "Texto No Definido"}
-                          </Button>
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                              style={{
+                                minWidth: 10,
+                                textTransform: "capitalize",
+                                fontWeight: 800,
+                                color: "#069CB1",
+                              }}
+                              onClick={() => {
+                                if (state.vehiculos) {
+                                  onFormChange({
+                                    vehiculos: state.vehiculos.filter(
+                                      (v, i) => i !== j
+                                    ),
+                                  });
+                                }
+                              }}
+                              variant="outlined"
+                              startIcon={<Close />}
+                            >
+                              {textos["eliminar"]
+                                ? textos["eliminar"]
+                                : "Texto No Definido"}
+                            </Button>
+                          </TableRow>
                         ),
                       };
                     })
@@ -558,6 +587,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["mascota"] ? textos["mascota"] : "Texto No Definido"}
                 </Typography>,
@@ -566,6 +596,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["raza"] ? textos["raza"] : "Texto No Definido"}
                 </Typography>,
@@ -574,6 +605,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["tamanio"] ? textos["tamanio"] : "Texto No Definido"}
                 </Typography>,
@@ -582,6 +614,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["acciones"]
                     ? textos["acciones"]
@@ -593,11 +626,18 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 state.mascotas
                   ? state.mascotas?.map((mascota, j) => {
                       return {
-                        tipo: mascota.tipo,
-                        tipo_raza:
-                          mascota.id_tipo_mascota === 5
-                            ? mascota.tipo_raza
-                            : "No Aplica",
+                        tipo: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {mascota.tipo}
+                          </TableRow>
+                        ),
+                        tipo_raza: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {mascota.id_tipo_mascota === 5
+                              ? mascota.tipo_raza
+                              : "No Aplica"}
+                          </TableRow>
+                        ),
                         tamanio: (() => {
                           //mascota.tamanio
                           if (ctx.lang === "en") {
@@ -610,31 +650,37 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                                 return "Large";
                             }
                           }
-                          return mascota.tamanio;
+                          return (
+                            <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                              {mascota.tamanio}
+                            </TableRow>
+                          );
                         })(),
                         delete: (
-                          <Button
-                            style={{
-                              textTransform: "capitalize",
-                              fontWeight: 800,
-                              color: "#069CB1",
-                            }}
-                            onClick={() => {
-                              if (state.mascotas) {
-                                onFormChange({
-                                  mascotas: state.mascotas.filter(
-                                    (v, i) => i !== j
-                                  ),
-                                });
-                              }
-                            }}
-                            variant="outlined"
-                            startIcon={<Close />}
-                          >
-                            {textos["eliminar"]
-                              ? textos["eliminar"]
-                              : "Texto No Definido"}
-                          </Button>
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                              style={{
+                                textTransform: "capitalize",
+                                fontWeight: 800,
+                                color: "#069CB1",
+                              }}
+                              onClick={() => {
+                                if (state.mascotas) {
+                                  onFormChange({
+                                    mascotas: state.mascotas.filter(
+                                      (v, i) => i !== j
+                                    ),
+                                  });
+                                }
+                              }}
+                              variant="outlined"
+                              startIcon={<Close />}
+                            >
+                              {textos["eliminar"]
+                                ? textos["eliminar"]
+                                : "Texto No Definido"}
+                            </Button>
+                          </TableRow>
                         ),
                       };
                     })
@@ -771,6 +817,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["tipo_vestuario"]
                     ? textos["tipo_vestuario"]
@@ -781,6 +828,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["tipo_vestuario_especifico"]
                     ? textos["tipo_vestuario_especifico"]
@@ -791,6 +839,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["descripcion"]
                     ? textos["descripcion"]
@@ -801,6 +850,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["acciones"]
                     ? textos["acciones"]
@@ -812,35 +862,48 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 state.vestuarios
                   ? state.vestuarios?.map((vestuario, j) => {
                       return {
-                        tipo: vestuario.tipo,
-                        tipo_especifico:
-                          vestuario.id_tipo !== 3
+                        tipo: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {vestuario.tipo}
+                          </TableRow>
+                        ),
+                        tipo_especifico: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {vestuario.id_tipo !== 3
                             ? vestuario.tipo_especifico
-                            : "No Aplica",
-                        descripcion: vestuario.descripcion,
+                            : "No Aplica"}
+                          </TableRow>
+                        ),
+                        descripcion: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {vestuario.descripcion}
+                          </TableRow>
+                        ),
                         delete: (
-                          <Button
-                            style={{
-                              textTransform: "capitalize",
-                              fontWeight: 800,
-                              color: "#069CB1",
-                            }}
-                            onClick={() => {
-                              if (state.vestuarios) {
-                                onFormChange({
-                                  vestuarios: state.vestuarios.filter(
-                                    (v, i) => i !== j
-                                  ),
-                                });
-                              }
-                            }}
-                            variant="outlined"
-                            startIcon={<Close />}
-                          >
-                            {textos["eliminar"]
-                              ? textos["eliminar"]
-                              : "Texto No Definido"}
-                          </Button>
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                              style={{
+                                textTransform: "capitalize",
+                                fontWeight: 800,
+                                color: "#069CB1",
+                              }}
+                              onClick={() => {
+                                if (state.vestuarios) {
+                                  onFormChange({
+                                    vestuarios: state.vestuarios.filter(
+                                      (v, i) => i !== j
+                                    ),
+                                  });
+                                }
+                              }}
+                              variant="outlined"
+                              startIcon={<Close />}
+                            >
+                              {textos["eliminar"]
+                                ? textos["eliminar"]
+                                : "Texto No Definido"}
+                            </Button>
+                          </TableRow>
                         ),
                       };
                     })
@@ -967,6 +1030,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["tipo_prop"]
                     ? textos["tipo_prop"]
@@ -977,6 +1041,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["descripcion"]
                     ? textos["descripcion"]
@@ -987,6 +1052,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["acciones"]
                     ? textos["acciones"]
@@ -998,29 +1064,39 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 state.props
                   ? state.props?.map((prop, j) => {
                       return {
-                        tipo: prop.tipo,
-                        descripcion: prop.descripcion,
+                        tipo: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {prop.tipo}
+                          </TableRow>
+                        ),
+                        descripcion: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {prop.descripcion}
+                          </TableRow>
+                        ),
                         delete: (
-                          <Button
-                            style={{
-                              textTransform: "capitalize",
-                              fontWeight: 800,
-                              color: "#069CB1",
-                            }}
-                            onClick={() => {
-                              if (state.props) {
-                                onFormChange({
-                                  props: state.props.filter((v, i) => i !== j),
-                                });
-                              }
-                            }}
-                            variant="outlined"
-                            startIcon={<Close />}
-                          >
-                            {textos["eliminar"]
-                              ? textos["eliminar"]
-                              : "Texto No Definido"}
-                          </Button>
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                              style={{
+                                textTransform: "capitalize",
+                                fontWeight: 800,
+                                color: "#069CB1",
+                              }}
+                              onClick={() => {
+                                if (state.props) {
+                                  onFormChange({
+                                    props: state.props.filter((v, i) => i !== j),
+                                  });
+                                }
+                              }}
+                              variant="outlined"
+                              startIcon={<Close />}
+                            >
+                              {textos["eliminar"]
+                                ? textos["eliminar"]
+                                : "Texto No Definido"}
+                            </Button>
+                          </TableRow>
                         ),
                       };
                     })
@@ -1169,6 +1245,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["tipo_equipo"]
                     ? textos["tipo_equipo"]
@@ -1179,6 +1256,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["descripcion"]
                     ? textos["descripcion"]
@@ -1189,6 +1267,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                   fontSize={"1.2rem"}
                   fontWeight={600}
                   component={"p"}
+                  sx={{ textAlign: "center" }}
                 >
                   {textos["acciones"]
                     ? textos["acciones"]
@@ -1200,32 +1279,42 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 state.equipos_deportivos
                   ? state.equipos_deportivos?.map((ed, j) => {
                       return {
-                        tipo: ed.tipo,
-                        descripcion: ed.descripcion,
+                        tipo: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {ed.tipo}
+                          </TableRow>
+                        ),
+                        descripcion: (
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            {ed.descripcion}
+                          </TableRow>
+                        ),
                         delete: (
-                          <Button
-                            style={{
-                              textTransform: "capitalize",
-                              fontWeight: 800,
-                              color: "#069CB1",
-                            }}
-                            onClick={() => {
-                              if (state.equipos_deportivos) {
-                                onFormChange({
-                                  equipos_deportivos:
-                                    state.equipos_deportivos.filter(
-                                      (v, i) => i !== j
-                                    ),
-                                });
-                              }
-                            }}
-                            variant="outlined"
-                            startIcon={<Close />}
-                          >
-                            {textos["eliminar"]
-                              ? textos["eliminar"]
-                              : "Texto No Definido"}
-                          </Button>
+                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                              style={{
+                                textTransform: "capitalize",
+                                fontWeight: 800,
+                                color: "#069CB1",
+                              }}
+                              onClick={() => {
+                                if (state.equipos_deportivos) {
+                                  onFormChange({
+                                    equipos_deportivos:
+                                      state.equipos_deportivos.filter(
+                                        (v, i) => i !== j
+                                      ),
+                                  });
+                                }
+                              }}
+                              variant="outlined"
+                              startIcon={<Close />}
+                            >
+                              {textos["eliminar"]
+                                ? textos["eliminar"]
+                                : "Texto No Definido"}
+                            </Button>
+                          </TableRow>
                         ),
                       };
                     })
