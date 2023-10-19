@@ -142,6 +142,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             }}
             id="mostrar-vehiculos"
             labelClassName={"label-black-lg"}
+            labelStyle={{ margin: 0 }}
             options={[
               textos["vehiculos"] ? textos["vehiculos"] : "Texto No Definido",
             ]}
@@ -429,6 +430,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             }}
             id="mostrar-mascotas"
             labelClassName={"label-black-lg"}
+            labelStyle={{ margin: 0 }}
             options={[
               textos["mascotas"] ? textos["mascotas"] : "Texto No Definido",
             ]}
@@ -701,6 +703,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             }}
             id="mostrar-vestuario"
             labelClassName={"label-black-lg"}
+            labelStyle={{ margin: 0 }}
             options={[
               textos["vestuarios"] ? textos["vestuarios"] : "Texto No Definido",
             ]}
@@ -924,6 +927,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             }}
             id="mostrar-props"
             labelClassName={"label-black-lg"}
+            labelStyle={{ margin: 0 }}
             options={["Props"]}
             values={[state.has_props]} //[(state) ? state.mostrar_anio_en_perfil : false]}
           />
@@ -1117,6 +1121,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             }}
             id="mostrar-equipo-deportivo"
             labelClassName={"label-black-lg"}
+            labelStyle={{ margin: 0 }}
             options={[
               textos["equipo_deportivo"]
                 ? textos["equipo_deportivo"]

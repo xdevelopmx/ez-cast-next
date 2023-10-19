@@ -238,7 +238,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
               }
             }}
             id="genero-interesado-interpretar"
-            labelStyle={{ marginBottom: 0, width: "32%" }}
+            labelStyle={{ margin: 0, width: "32%" }}
             options={
               generos.data
                 ? generos.data.map((g) => (es_ingles ? g.en : g.es))
@@ -1196,7 +1196,7 @@ export const EditarFiltrosAparenciasTalento: FC<Props> = ({
                   : [false]
               }
               id="particularidades-checkboxgroup"
-              labelStyle={{ marginBottom: 0, width: "32%" }}
+              labelStyle={{ margin: 0, width: "32%" }}
               options={
                 tipos_particularidades.data
                   ? tipos_particularidades.data.map((tp) =>
