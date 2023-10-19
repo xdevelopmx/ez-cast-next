@@ -2,7 +2,7 @@ import { useContext, type FC } from "react";
 import Image from "next/image";
 import { FormGroup } from "~/components";
 import { MContainer } from "~/components/layout/MContainer";
-import { Button, Grid, IconButton, Typography } from "@mui/material";
+import { Button, Grid, IconButton, TableRow, Typography } from "@mui/material";
 import { MSelect } from "~/components/shared/MSelect/MSelect";
 import { MCheckboxGroup } from "~/components/shared/MCheckboxGroup";
 import { MTable } from "~/components/shared/MTable/MTable";
@@ -213,7 +213,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               onFormChange({ mostrar_anio_en_perfil: e });
             }}
             id="mostrar-anio-perfil"
-            labelStyle={{ fontWeight: "400", fontSize: "1rem" }}
+            labelStyle={{ fontWeight: "400", fontSize: "1rem", margin: 0 }}
             options={[
               textos["mostrar_anio_en_perfil"]
                 ? textos["mostrar_anio_en_perfil"]
@@ -232,7 +232,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "center", padding: "0px 6px" }}
             >
               {textos["titulo"] ? textos["titulo"] : "Texto No Definido"}
             </Typography>,
@@ -241,7 +241,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "center", padding: "0px 6px" }}
             >
               {textos["rol"] ? textos["rol"] : "Texto No Definido"}
             </Typography>,
@@ -250,7 +250,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "center", padding: "0px 6px" }}
             >
               {textos["director"] ? textos["director"] : "Texto No Definido"}
             </Typography>,
@@ -259,7 +259,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "center", padding: "0px 6px" }}
             >
               {textos["anio"] ? textos["anio"] : "Texto No Definido"}
             </Typography>,
@@ -268,7 +268,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px", display: "flex", alignItems: "center", gap: "10px"  }}
+              sx={{ display: "flex", alignItems: "center", justifyContent: 'center', gap: "10px", padding: "0px 6px"  }}
             >
               {textos["credito_destacado"]
                 ? textos["credito_destacado"]
@@ -285,7 +285,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "center", padding: "0px 6px" }}
             >
               Clip
             </Typography>,
@@ -294,7 +294,7 @@ export const EditarCreditosTalento: FC<Props> = ({
               fontSize={"1rem"}
               fontWeight={600}
               component={"p"}
-              sx={{ textAlign: "left", padding: "0px 6px" }}
+              sx={{ textAlign: "center", padding: "0px 6px" }}
             >
               {textos["acciones"] ? textos["acciones"] : "Texto No Definido"}
             </Typography>,
@@ -303,124 +303,150 @@ export const EditarCreditosTalento: FC<Props> = ({
             state
               ? state.creditos.map((credito) => {
                   return {
-                    titulo: credito.titulo,
-                    rol: credito.rol,
-                    director: credito.director,
-                    anio: credito.anio,
-                    credito: (
-                      <IconButton
-                        style={{ color: credito.destacado ? "gold" : "gray" }}
-                        aria-label="marcar como"
-                        onClick={() => {
-                          if (
-                            state.creditos.filter((c) => c.destacado).length < 3
-                          ) {
-                            onFormChange({
-                              creditos: state.creditos.map((c) => {
-                                if (c.id === credito.id) {
-                                  c.destacado = !credito.destacado;
-                                }
-                                return c;
-                              }),
-                            });
-                          } else {
-                            notify(
-                              "warning",
-                              textos[
-                                "creditos_credito_destacado_max_validacion"
-                              ]
-                                ? textos[
-                                    "creditos_credito_destacado_max_validacion"
-                                  ]
-                                : "Texto No Definido"
-                            );
-                          }
-                        }}
-                      >
-                        <Star />
-                      </IconButton>
+                    titulo: (
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        {credito.titulo}
+                      </TableRow>
                     ),
-                    clip: (
-                      <Button
-                        style={{
-                          minWidth: 10,
-                          padding: 6,
-                          fontWeight: 800,
-                          color: "#069cb1",
-                        }}
-                        className="btn  btn-social mr-1 ml-1"
-                        variant="outlined"
-                        component="label"
-                      >
-                        <MContainer direction="vertical">
-                          <>
-                            <MContainer direction="horizontal">
-                              <Image
-                                width={14}
-                                height={14}
-                                className="mr-2"
-                                style={{ marginTop: 3 }}
-                                src="/assets/img/iconos/cruz_blue.svg"
-                                alt="Boton de añadir credito"
-                              />
-                              <Typography fontSize={"0.9rem"} fontWeight={700}>
-                                {credito.clip
-                                  ? textos["cambiar"]
-                                    ? textos["cambiar"]
-                                    : "Texto No Definido"
-                                  : textos["aniadir"]
-                                  ? textos["aniadir"]
-                                  : "Texto No Definido"}
-                              </Typography>
-                            </MContainer>
-                            {credito.clip && (
-                              <Typography fontSize={"0.7rem"} fontWeight={400}>
-                                {credito.clip.name.includes("clip")
-                                  ? credito.clip.name
-                                  : `clip-${credito.clip.name}`}
-                              </Typography>
-                            )}
-                          </>
-                        </MContainer>
-                        <input
-                          onChange={(ev) => {
-                            if (ev.target.files) {
-                              const file = ev.target.files[0];
+                    rol: (
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        {credito.rol}
+                      </TableRow>
+                    ),
+                    director: (
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        {credito.director}
+                      </TableRow>
+                    ),
+                    anio: (
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        {credito.anio}
+                      </TableRow>
+                    ),
+                    credito: (
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        <IconButton
+                          style={{ 
+                            color: credito.destacado ? "gold" : "gray", 
+                            alignContent: "center",
+                            margin: "0px auto",
+                          }}
+                          aria-label="marcar como"
+                          onClick={() => {
+                            if (
+                              state.creditos.filter((c) => c.destacado).length < 3
+                            ) {
                               onFormChange({
                                 creditos: state.creditos.map((c) => {
                                   if (c.id === credito.id) {
-                                    c.clip = file;
-                                    c.touched = true;
+                                    c.destacado = !credito.destacado;
                                   }
                                   return c;
                                 }),
                               });
+                            } else {
+                              notify(
+                                "warning",
+                                textos[
+                                  "creditos_credito_destacado_max_validacion"
+                                ]
+                                  ? textos[
+                                      "creditos_credito_destacado_max_validacion"
+                                    ]
+                                  : "Texto No Definido"
+                              );
                             }
                           }}
-                          hidden
-                          accept="video/mp4, video/mov"
-                          type="file"
-                        />
-                      </Button>
+                        >
+                          <Star />
+                        </IconButton>
+                      </TableRow>
+                    ),
+                    clip: (
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                          style={{
+                            minWidth: 10,
+                            padding: 6,
+                            fontWeight: 800,
+                            color: "#069cb1",
+                          }}
+                          className="btn btn-social mr-1 ml-1"
+                          variant="outlined"
+                          component="label"
+                        >
+                          <MContainer direction="vertical">
+                            <>
+                              <MContainer direction="horizontal">
+                                <Image
+                                  width={14}
+                                  height={14}
+                                  className="mr-2"
+                                  style={{ marginTop: 3 }}
+                                  src="/assets/img/iconos/cruz_blue.svg"
+                                  alt="Boton de añadir credito"
+                                />
+                                <Typography fontSize={"0.9rem"} fontWeight={700}>
+                                  {credito.clip
+                                    ? textos["cambiar"]
+                                      ? textos["cambiar"]
+                                      : "Texto No Definido"
+                                    : textos["aniadir"]
+                                    ? textos["aniadir"]
+                                    : "Texto No Definido"}
+                                </Typography>
+                              </MContainer>
+                              {credito.clip && (
+                                <Typography fontSize={"0.7rem"} fontWeight={400}>
+                                  {credito.clip.name.includes("clip")
+                                    ? credito.clip.name
+                                    : `clip-${credito.clip.name}`}
+                                </Typography>
+                              )}
+                            </>
+                          </MContainer>
+                          <input
+                            onChange={(ev) => {
+                              if (ev.target.files) {
+                                const file = ev.target.files[0];
+                                onFormChange({
+                                  creditos: state.creditos.map((c) => {
+                                    if (c.id === credito.id) {
+                                      c.clip = file;
+                                      c.touched = true;
+                                    }
+                                    return c;
+                                  }),
+                                });
+                              }
+                            }}
+                            hidden
+                            accept="video/mp4, video/mov"
+                            type="file"
+                          />
+                        </Button>
+                      </TableRow>
                     ),
                     acciones: (
-                      <Button
-                        style={{
-                          textTransform: "capitalize",
-                          fontWeight: 800,
-                          color: "#069CB1",
-                        }}
-                        onClick={() => {
-                          onFormChange({
-                            creditos: state.creditos.filter(
-                              (c) => c.id !== credito.id
-                            ),
-                          });
-                        }}
-                        variant="outlined"
-                        startIcon={<Close style={{margin: 0}} />}
-                      >
-                      </Button>
+                      <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                          style={{
+                            textTransform: "capitalize",
+                            fontWeight: 800,
+                            color: "#069CB1",
+                          }}
+                          onClick={() => {
+                            onFormChange({
+                              creditos: state.creditos.filter(
+                                (c) => c.id !== credito.id
+                              ),
+                            });
+                          }}
+                          variant="outlined"
+                        >
+                          <Close style={{margin: 0}} />
+                        </Button>
+                      </TableRow>
                     ),
                   };
                 })
