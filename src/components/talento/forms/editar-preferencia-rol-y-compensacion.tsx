@@ -156,7 +156,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             }
           }}
           id="tipo-trabajo"
-          labelStyle={{ marginBottom: 0 }}
+          labelStyle={{ margin: 0 }}
           style={{ padding: "4px" }}
           options={
             tipos_trabajo.data
@@ -294,7 +294,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             }
           }}
           id="interes-proyectos-checkbox"
-          labelStyle={{ marginBottom: 0 }}
+          labelStyle={{ margin: 0 }}
           options={
             tipos_interes_proyectos.data
               ? tipos_interes_proyectos.data.map((t) =>
@@ -628,7 +628,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
               }
             }}
             id="documentos-checkbox"
-            labelStyle={{ marginBottom: 0 }}
+            labelStyle={{ margin: 0 }}
             titleStyle={{ paddingBottom: "10px" }}
             style={{ padding: "4px" }}
             fontWeight={400}
@@ -728,7 +728,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
               }
             }}
             id="disponibilidad-para-checkboxgroup"
-            labelStyle={{ marginBottom: 0, width: "32%" }}
+            labelStyle={{ margin: 0, width: "32%" }}
             titleStyle={{ paddingBottom: "15px", fontWeight: 500 }}
             style={{ padding: "6px" }}
             options={
