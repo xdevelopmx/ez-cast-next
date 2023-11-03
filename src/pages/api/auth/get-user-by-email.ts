@@ -56,9 +56,9 @@ export default async function handler(req: Request, res: NextApiResponse) {
 				})
 				if (proyectos_pendientes_a_revisar.length > 0) {
 					await Promise.all(proyectos_pendientes_a_revisar.map(async (proyecto) => {
-						const message = `¡Hola <span style="color: white; font-weight: 800;">“${cazatalentos.nombre} ${cazatalentos.apellido}”</span>! Te recordamos que tu proyecto <span style="color: white; font-weight: 800;">“${proyecto.nombre}“</span>, aún no
+						const message = `<p style="font-size: 12px;">¡Hola <span style="color: white; font-weight: 800;">“${cazatalentos.nombre} ${cazatalentos.apellido}”</span>! Te recordamos que tu proyecto <span style="color: white; font-weight: 800;">“${proyecto.nombre}“</span>, aún no
 						ha sido enviado a aprobacion, ¡aprovecha esos momentos de inspiración y <a style="text-decoration: underline; color: white;" href="/cazatalentos/proyecto?id_proyecto=${proyecto.id}">concluye</a> o <a style="text-decoration: underline; color: white;" href="/cazatalentos/roles?id_proyecto=${proyecto.id}">manda tu proyecto a revision</a> para que pronto
-						podamos aprobarlo y así comiences a filmar!`;
+						podamos aprobarlo y así comiences a filmar!</p>`;
 						const alerta = await prisma.alertas.findFirst({
 							where: {
 								mensaje: {

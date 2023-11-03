@@ -36,7 +36,7 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
   return (
     <>
       <div className="col-md-6" style={{
-        paddingLeft: '60px'
+        paddingLeft: '30px'
       }}>
         <p className="h4 font-weight-bold" style={{ fontSize: '1.3rem' }}>{textos["destacados"]?? ""}</p>
         <div className="container_slider_destacados" style={{padding: '10px 20px'}}>

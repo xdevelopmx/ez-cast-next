@@ -217,7 +217,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
               <div className="col container_list_proyects">
                 <div className="row">
                   <ul
-                    className="nav nav-tabs col ml-3"
+                    className="nav nav-tabs col ml-3 mr-3"
                     id="myTab"
                     role="tablist"
                   >

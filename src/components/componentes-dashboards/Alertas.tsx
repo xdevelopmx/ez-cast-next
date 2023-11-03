@@ -9,7 +9,7 @@ import Image from "next/image";
 import useNotify from "~/hooks/useNotify";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
-
+import { useTheme } from '@mui/material/styles';
 export const Alertas = () => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -17,6 +17,7 @@ export const Alertas = () => {
   const { notify } = useNotify();
   const session = useSession();
   const [show_alertas, setShowAlertas] = useState(false);
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<{
     el: null | HTMLElement;
     id_alerta: number;
@@ -86,7 +87,7 @@ export const Alertas = () => {
                 }}
               />
             )}
-            <div style={{ padding: 8, marginLeft: 32, width: "85%" }}>
+            <div style={{ padding: 14, marginLeft: 32, width: "85%" }}>
               <div dangerouslySetInnerHTML={{ __html: a.mensaje }} />
             </div>
             <IconButton
@@ -225,18 +226,30 @@ export const Alertas = () => {
             container
             gap={2}
             justifyContent="center"
-            maxHeight={"60vh"}
             overflow={"auto"}
+            className="grid-scroll"
+            sx={{
+              [theme.breakpoints.up('xl')]: {
+                maxHeight: '60dvh'
+              },
+              [theme.breakpoints.up('lg')]: {
+                maxHeight: '55dvh'
+              },
+              [theme.breakpoints.up('md')]: {
+                maxHeight: '40dvh'
+              },
+              [theme.breakpoints.up('sm')]: {
+                maxHeight: '35dvh'
+              },
+              [theme.breakpoints.up('xs')]: {
+                maxHeight: '25dvh'
+              }, 
+            }}
           >
             {alert_elements.map((r, i) => {
               return (
                 <Grid key={i} item xs={12}>
                   <Box
-                    sx={{
-                      position: "relative",
-                      display: "flex",
-                      flexDirection: "row",
-                    }}
                   >
                     {r}
                   </Box>

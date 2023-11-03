@@ -29,7 +29,7 @@ import { FileManager } from "~/utils/file-manager";
 import { useRouter } from "next/router";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
-
+import { useTheme } from '@mui/material/styles';
 type Props = {
   stylesRoot?: CSSProperties;
 };
@@ -69,7 +69,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
   const { id_talento } = router.query;
   const [edit_mode, setEditMode] = useState(false);
   const session = useSession();
-
+  const theme = useTheme();
   const cazatalentos = api.cazatalentos.getPerfilById.useQuery(
     session && session.data?.user?.tipo_usuario === TipoUsuario.CAZATALENTOS
       ? parseInt(session.data.user.id)
@@ -129,8 +129,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
   const profile_img_talento_representado = talento_representado.data
     ? talento_representado.data.media.filter((m) =>
-        m.media.identificador.includes("foto-perfil")
-      )[0]?.media.url
+      m.media.identificador.includes("foto-perfil")
+    )[0]?.media.url
     : undefined;
 
   const update_perfil_talento = api.talentos.updatePerfil.useMutation({
@@ -297,8 +297,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 ? "550px"
                 : user_info &&
                   user_info.tipo_usuario === TipoUsuario.CAZATALENTOS
-                ? "calc(75vh)"
-                : "calc(75vh)",
+                  ? "calc(75vh)"
+                  : "calc(75vh)",
             overflowY:
               user_info && user_info.tipo_usuario === TipoUsuario.TALENTO
                 ? "visible"
@@ -405,17 +405,18 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     if (form.nombre.length === 0) {
                       return textos["field_cant_be_empty"]
                         ? textos["field_cant_be_empty"].replace(
-                            "[CAMPO]",
-                            textos["nombre"]
-                              ? textos["nombre"]
-                              : "Texto No Definido"
-                          )
+                          "[CAMPO]",
+                          textos["nombre"]
+                            ? textos["nombre"]
+                            : "Texto No Definido"
+                        )
                         : "Texto No Definido";
                     }
                     return undefined;
                   })()}
                   style={{ width: 200, maxWidth: '100%' }}
-                  labelStyle={{ marginBottom: '0',
+                  labelStyle={{
+                    marginBottom: '0',
                     fontWeight: 800,
                     fontSize: "0.8rem",
                     textAlign: "start",
@@ -425,9 +426,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   onChange={(e) => {
                     setForm({ ...form, nombre: e.target.value });
                   }}
-                  label={`${
-                    textos["nombre"] ? textos["nombre"] : "Texto No Definido"
-                  }*`}
+                  label={`${textos["nombre"] ? textos["nombre"] : "Texto No Definido"
+                    }*`}
                 />
               </MContainer>
             </Grid>
@@ -435,7 +435,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
             {user_info &&
               user_info.tipo_usuario === TipoUsuario.CAZATALENTOS && (
                 <>
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -444,12 +444,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         show_error_message={false}
                         error={(() => {
                           /* if (form.nombre.length === 0) {
-													return 'El nombre no debe estar vacio';
-												} */
+                          return 'El nombre no debe estar vacio';
+                        } */
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -464,7 +465,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -473,12 +474,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         show_error_message={false}
                         error={(() => {
                           /* if (form.nombre.length === 0) {
-													return 'El nombre no debe estar vacio';
-												} */
+                          return 'El nombre no debe estar vacio';
+                        } */
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -495,7 +497,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 </>
               )}
 
-            <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+            <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
               <MContainer
                 direction="vertical"
                 styles={{ alignContent: "space-around", textAlign: "center" }}
@@ -503,7 +505,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 <FormGroup
                   type={"text-area"}
                   style={{ width: 200, maxWidth: '100%' }}
-                  labelStyle={{ marginBottom: '0',
+                  labelStyle={{
+                    marginBottom: '0',
                     width: 200, maxWidth: '100%',
                     fontWeight: 800,
                     fontSize: "0.8rem",
@@ -529,7 +532,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                 user_info.tipo_usuario
               ) && (
                 <>
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -538,12 +541,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         show_error_message={false}
                         error={(() => {
                           /* if (form.nombre.length === 0) {
-													return 'El nombre no debe estar vacio';
-												} */
+                          return 'El nombre no debe estar vacio';
+                        } */
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -564,7 +568,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -586,12 +590,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         show_error_message={false}
                         error={(() => {
                           /* if (form.nombre.length === 0) {
-													return 'El nombre no debe estar vacio';
-												} */
+                          return 'El nombre no debe estar vacio';
+                        } */
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -612,7 +617,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -633,12 +638,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         show_error_message={false}
                         error={(() => {
                           /* if (form.nombre.length === 0) {
-													return 'El nombre no debe estar vacio';
-												} */
+                          return 'El nombre no debe estar vacio';
+                        } */
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -659,7 +665,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -685,7 +691,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -706,7 +713,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -727,12 +734,13 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         show_error_message={false}
                         error={(() => {
                           /* if (form.nombre.length === 0) {
-													return 'El nombre no debe estar vacio';
-												} */
+                          return 'El nombre no debe estar vacio';
+                        } */
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -753,7 +761,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -779,7 +787,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -800,7 +809,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     </MContainer>
                   </Grid>
 
-                  <Grid item xs={12} textAlign={"start" } sx={{ padding: '0 20px' }}>
+                  <Grid item xs={12} textAlign={"start"} sx={{ padding: '0 20px' }}>
                     <MContainer
                       direction="vertical"
                       styles={{ alignContent: "space-around" }}
@@ -826,7 +835,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                           return undefined;
                         })()}
                         style={{ width: 200, maxWidth: '100%' }}
-                        labelStyle={{ marginBottom: '0',
+                        labelStyle={{
+                          marginBottom: '0',
                           fontWeight: 800,
                           fontSize: "0.8rem",
                           textAlign: "start",
@@ -870,7 +880,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                                 if (talento.data) {
                                   const response =
                                     res[
-                                      `foto-perfil-talento-${talento.data.id}-${time}`
+                                    `foto-perfil-talento-${talento.data.id}-${time}`
                                     ];
                                   if (response) {
                                     update_perfil_talento.mutate({
@@ -921,7 +931,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                               if (cazatalentos.data) {
                                 const response =
                                   res[
-                                    `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`
+                                  `foto-perfil-cazatalentos-${cazatalentos.data.id}-${time}`
                                   ];
                                 if (response) {
                                   update_perfil_cazatalento.mutate({
@@ -985,7 +995,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                               if (representante.data) {
                                 const response =
                                   res[
-                                    `foto-perfil-representante-${representante.data.id}-${time}`
+                                  `foto-perfil-representante-${representante.data.id}-${time}`
                                   ];
                                 if (response) {
                                   update_perfil_representante.mutate({
@@ -1077,7 +1087,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
             )}
             <Box position={"relative"}>
               <div className="mt-3 mb-3 avatar">
-                <motion.img width={128} src={foto_perfil} alt="avatar" />
+                <motion.img width={120} src={foto_perfil} alt="avatar" />
               </div>
               {profile_img_talento_representado && (
                 <motion.img
@@ -1141,6 +1151,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      flexWrap: "wrap",
                     }}
                   >
                     {form.redes_sociales.vimeo && (
@@ -1214,8 +1225,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      alignItems: "start",
+                      justifyContent: "start",
                     }}
                   >
                     <Image
@@ -1226,15 +1237,52 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       alt=""
                     />
                     <a
-                      style={{ textDecoration: "underline", color: "#fff" }}
+                      style={{
+                        textDecoration: "underline", color: "#fff",
+                     
+                      }}
                       href={form.redes_sociales.pagina_web}
                       target="_blank"
                     >
-                      <Typography sx={{ fontSize: "0.9rem", color: "#fff" }}>
+                      <Typography
+                        sx={{
+                          textAlign: "center", fontSize: "0.9rem", color: "#fff",
+                        
+                          [theme.breakpoints.up('xl')]: {
+                            overflowWrap: 'break-word',
+                            maxWidth: '100%'
+                          },
+                          // [theme.breakpoints.down('xl')]: {
+                          //   overflowWrap: 'break-word',
+                          //   maxWidth: '80%'
+                          // },
+                          [theme.breakpoints.up('lg')]: {
+                            overflowWrap: 'break-word',
+                            maxWidth: '70%'
+                          },
+                          [theme.breakpoints.up('md')]: {
+                            overflowWrap: 'break-word',
+                            maxWidth: '50%'
+                          },
+                          [theme.breakpoints.up('sm')]: {
+                            overflowWrap: 'break-word',
+                            maxWidth: '35%'
+                          },
+                          [theme.breakpoints.up('sm')]: {
+                            overflowWrap: 'break-word',
+                            maxWidth: '20%'
+                          },
+                          
+                    
+
+                        }}>
                         {form.redes_sociales.pagina_web}
                       </Typography>
                     </a>
                   </Box>
+
+
+
                 </>
               )}
 
@@ -1323,6 +1371,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   </Link>
                 </div>
               )}
+
             {!is_fetching &&
               user_info?.tipo_usuario === TipoUsuario.CAZATALENTOS && (
                 <div className="sub_menu">
@@ -1396,9 +1445,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   {id_talento && parseInt(id_talento as string) > 0 && (
                     <>
                       <Link
-                        href={`/talento/billboard?id_talento=${
-                          id_talento as string
-                        }`}
+                        href={`/talento/billboard?id_talento=${id_talento as string
+                          }`}
                         className={
                           router.pathname.includes("/talento/billbarod")
                             ? "active"
@@ -1408,9 +1456,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         Casting Billboard
                       </Link>
                       <Link
-                        href={`/representante/aplicaciones?id_talento=${
-                          id_talento as string
-                        }`}
+                        href={`/representante/aplicaciones?id_talento=${id_talento as string
+                          }`}
                         className={
                           router.pathname.includes(
                             "/representante/aplicaciones"
@@ -1422,9 +1469,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                         Aplicaciones
                       </Link>
                       <Link
-                        href={`/talento/agenda-virtual?id_talento=${
-                          id_talento as string
-                        }`}
+                        href={`/talento/agenda-virtual?id_talento=${id_talento as string
+                          }`}
                         className={
                           router.pathname.includes("agenda-virtual")
                             ? "active"

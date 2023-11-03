@@ -54,6 +54,7 @@ const variants = {
   }),
 };
 
+
 export const PagePilingComponent: FC<Props> = ({
   children,
   onCambiarPagina,
@@ -64,10 +65,12 @@ export const PagePilingComponent: FC<Props> = ({
   const [direccion, setDireccion] = useState("");
   const animando = useRef(false);
   const hijos = Children.map(children, (child) => child);
-
+  const [cambioRealizado, setCambioRealizado] = useState(false);
   const detectarRueda = (e: WheelEvent) => {
     const { deltaY } = e;
-    if (!animando.current) {
+
+
+    if (!cambioRealizado && !animando.current) {
       animando.current = true;
       setPagina((pagina) => {
         let nuevaPagina = pagina;
@@ -83,11 +86,26 @@ export const PagePilingComponent: FC<Props> = ({
           return pagina;
         } else {
           setDireccion(deltaY > 0 ? "incrementando" : "decrementando");
+          setCambioRealizado(true); // Marcar el cambio como realizado
           return nuevaPagina;
         }
       });
     }
   };
+
+  // Reiniciar cambioRealizado a su estado inicial cuando finalice el evento de scroll
+  useEffect(() => {
+    const reiniciarCambio = () => {
+      setCambioRealizado(false);
+    };
+
+    window.addEventListener('wheel', reiniciarCambio);
+
+    return () => {
+      window.removeEventListener('wheel', reiniciarCambio);
+    };
+  }, []);
+
 
   useEffect(() => {
     document.addEventListener("wheel", detectarRueda);
