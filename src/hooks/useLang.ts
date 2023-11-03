@@ -1203,6 +1203,7 @@ const TEXTS_BY_PATHNAME: {
         "Select those options that fit your skills",
       preferencias_rol_interesado_trabajo_extra_title:
         "Are you interested in extra work",
+      preferencias_rol_interesado_trabajo_extra_tooltip_tittle:'Do you have much or little experience and knowledge within a set?',  
       preferencias_rol_interesado_trabajo_extra_tooltip: `Do you have much or little experience and knowledge within a set? Working extra can open many doors for you and give you knowledge in the field, in addition to being an important and always useful role in any production.`,
       preferencias_rol_interesado_trabajo_extra_subtitle: `If you indicate interest in working as an extra, you will appear in the Director's extras search`,
       preferencias_rol_interes_en_proyectos: "Interest in projects",
@@ -1304,8 +1305,9 @@ const TEXTS_BY_PATHNAME: {
         "Selecciona aquellas opciones que vayan de acuerdo a tus habilidades",
       preferencias_rol_interesado_trabajo_extra_title:
         "Estás interesado en trabajo de extra",
+      preferencias_rol_interesado_trabajo_extra_tooltip_tittle:'Tienes mucha o poca experiencia y conocimiento dentro de un set?',
       preferencias_rol_interesado_trabajo_extra_tooltip:
-        "Tienes mucha o poca experiencia y conocimiento dentro de un set? Trabajar de extra puede abrirte muchas puertas y darte conocimiento en el campo, además de que es un rol importante y siempre útil en toda producción.",
+        "Trabajar de extra puede abrirte muchas puertas y darte conocimiento en el campo, además de que es un rol importante y siempre útil en toda producción.",
       preferencias_rol_interesado_trabajo_extra_subtitle:
         "Si indicas interés en trabajar como extra, aparecerás en la búsqueda de extras del Director",
       preferencias_rol_interes_en_proyectos: "Interés en proyectos",

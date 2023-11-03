@@ -44,11 +44,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             options={
               tipos_razas.data
                 ? tipos_razas.data.map((m) => {
-                    return {
-                      value: m.id.toString(),
-                      label: ctx.lang === "es" ? m.es : m.en,
-                    };
-                  })
+                  return {
+                    value: m.id.toString(),
+                    label: ctx.lang === "es" ? m.es : m.en,
+                  };
+                })
                 : []
             }
             style={{ width: 200 }}
@@ -56,8 +56,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             onChange={(e) => {
               const tipo = tipos_razas.data
                 ? tipos_razas.data.filter(
-                    (d) => d.id === parseInt(e.target.value)
-                  )
+                  (d) => d.id === parseInt(e.target.value)
+                )
                 : [];
               onFormChange({
                 mascota: {
@@ -91,15 +91,15 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             options={
               tipos_vestuarios_especificos.data
                 ? tipos_vestuarios_especificos.data
-                    .filter(
-                      (v) => v.id_tipo_vestuario === state.vestuario?.id_tipo
-                    )
-                    .map((m) => {
-                      return {
-                        value: m.id.toString(),
-                        label: ctx.lang === "es" ? m.es : m.en,
-                      };
-                    })
+                  .filter(
+                    (v) => v.id_tipo_vestuario === state.vestuario?.id_tipo
+                  )
+                  .map((m) => {
+                    return {
+                      value: m.id.toString(),
+                      label: ctx.lang === "es" ? m.es : m.en,
+                    };
+                  })
                 : []
             }
             style={{ width: 200 }}
@@ -107,8 +107,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
             onChange={(e) => {
               const tipo = tipos_vestuarios_especificos.data
                 ? tipos_vestuarios_especificos.data.filter(
-                    (d) => d.id === parseInt(e.target.value)
-                  )
+                  (d) => d.id === parseInt(e.target.value)
+                )
                 : [];
               onFormChange({
                 vestuario: {
@@ -156,19 +156,19 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 options={
                   tipos_vehiculos.data
                     ? tipos_vehiculos.data.map((v) => {
-                        return {
-                          value: v.id.toString(),
-                          label: ctx.lang === "es" ? v.es : v.en,
-                        };
-                      })
+                      return {
+                        value: v.id.toString(),
+                        label: ctx.lang === "es" ? v.es : v.en,
+                      };
+                    })
                     : []
                 }
                 value={state.vehiculo.id_tipo_vehiculo.toString()}
                 onChange={(e) => {
                   const tipo = tipos_vehiculos.data
                     ? tipos_vehiculos.data.filter(
-                        (d) => d.id === parseInt(e.target.value)
-                      )
+                      (d) => d.id === parseInt(e.target.value)
+                    )
                     : [];
                   onFormChange({
                     vehiculo: {
@@ -274,11 +274,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         "warning",
                         textos["llenar_todos_los_campos"]
                           ? textos["llenar_todos_los_campos"].replace(
-                              "[TYPE]",
-                              textos["activos"]
-                                ? textos["activos"]
-                                : "Texto No Definido"
-                            )
+                            "[TYPE]",
+                            textos["activos"]
+                              ? textos["activos"]
+                              : "Texto No Definido"
+                          )
                           : "Texto No Definido"
                       );
                     }
@@ -296,6 +296,7 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
           <MContainer direction="vertical">
             <Divider style={{ marginTop: 32 }} />
             <MTable
+            
               columnsHeader={[
                 <Typography
                   key={1}
@@ -358,61 +359,61 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               data={
                 state.vehiculos
                   ? state.vehiculos.map((e, j) => {
-                      return {
-                        tipo: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {e.tipo}
-                          </TableRow>
-                        ),
-                        marca: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {e.marca}
-                          </TableRow>
-                        ),
-                        modelo: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {e.modelo}
-                          </TableRow>
-                        ),
-                        color: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {e.color}
-                          </TableRow>
-                        ),
-                        anio: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {e.anio}
-                          </TableRow>
-                        ),
-                        delete: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button
-                              style={{
-                                minWidth: 10,
-                                textTransform: "capitalize",
-                                fontWeight: 800,
-                                color: "#069CB1",
-                              }}
-                              onClick={() => {
-                                if (state.vehiculos) {
-                                  onFormChange({
-                                    vehiculos: state.vehiculos.filter(
-                                      (v, i) => i !== j
-                                    ),
-                                  });
-                                }
-                              }}
-                              variant="outlined"
-                              startIcon={<Close />}
-                            >
-                              {textos["eliminar"]
-                                ? textos["eliminar"]
-                                : "Texto No Definido"}
-                            </Button>
-                          </TableRow>
-                        ),
-                      };
-                    })
+                    return {
+                      tipo: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {e.tipo}
+                        </TableRow>
+                      ),
+                      marca: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {e.marca}
+                        </TableRow>
+                      ),
+                      modelo: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {e.modelo}
+                        </TableRow>
+                      ),
+                      color: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {e.color}
+                        </TableRow>
+                      ),
+                      anio: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {e.anio}
+                        </TableRow>
+                      ),
+                      delete: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Button
+                            style={{
+                              minWidth: 10,
+                              textTransform: "capitalize",
+                              fontWeight: 800,
+                              color: "#069CB1",
+                            }}
+                            onClick={() => {
+                              if (state.vehiculos) {
+                                onFormChange({
+                                  vehiculos: state.vehiculos.filter(
+                                    (v, i) => i !== j
+                                  ),
+                                });
+                              }
+                            }}
+                            variant="outlined"
+                            startIcon={<Close />}
+                          >
+                            {textos["eliminar"]
+                              ? textos["eliminar"]
+                              : "Texto No Definido"}
+                          </Button>
+                        </TableRow>
+                      ),
+                    };
+                  })
                   : []
               }
             />
@@ -444,11 +445,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 options={
                   tipos_mascotas.data
                     ? tipos_mascotas.data.map((m) => {
-                        return {
-                          value: m.id.toString(),
-                          label: ctx.lang === "es" ? m.es : m.en,
-                        };
-                      })
+                      return {
+                        value: m.id.toString(),
+                        label: ctx.lang === "es" ? m.es : m.en,
+                      };
+                    })
                     : []
                 }
                 style={{ width: 200 }}
@@ -456,8 +457,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 onChange={(e) => {
                   const tipo = tipos_mascotas.data
                     ? tipos_mascotas.data.filter(
-                        (d) => d.id === parseInt(e.target.value)
-                      )
+                      (d) => d.id === parseInt(e.target.value)
+                    )
                     : [];
                   onFormChange({
                     mascota: {
@@ -540,11 +541,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                             "warning",
                             textos["llenar_todos_los_campos"]
                               ? textos["llenar_todos_los_campos"].replace(
-                                  "[TYPE]",
-                                  textos["activos"]
-                                    ? textos["activos"]
-                                    : "Texto No Definido"
-                                )
+                                "[TYPE]",
+                                textos["activos"]
+                                  ? textos["activos"]
+                                  : "Texto No Definido"
+                              )
                               : "Texto No Definido"
                           );
                         }
@@ -561,11 +562,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         "warning",
                         textos["llenar_todos_los_campos"]
                           ? textos["llenar_todos_los_campos"].replace(
-                              "[TYPE]",
-                              textos["activos"]
-                                ? textos["activos"]
-                                : "Texto No Definido"
-                            )
+                            "[TYPE]",
+                            textos["activos"]
+                              ? textos["activos"]
+                              : "Texto No Definido"
+                          )
                           : "Texto No Definido"
                       );
                     }
@@ -627,65 +628,65 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               data={
                 state.mascotas
                   ? state.mascotas?.map((mascota, j) => {
-                      return {
-                        tipo: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {mascota.tipo}
-                          </TableRow>
-                        ),
-                        tipo_raza: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {mascota.id_tipo_mascota === 5
-                              ? mascota.tipo_raza
-                              : "No Aplica"}
-                          </TableRow>
-                        ),
-                        tamanio: (() => {
-                          //mascota.tamanio
-                          if (ctx.lang === "en") {
-                            switch (mascota.tamanio.toLowerCase()) {
-                              case "chico":
-                                return "Small";
-                              case "mediano":
-                                return "Medium";
-                              case "grande":
-                                return "Large";
-                            }
+                    return {
+                      tipo: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {mascota.tipo}
+                        </TableRow>
+                      ),
+                      tipo_raza: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {mascota.id_tipo_mascota === 5
+                            ? mascota.tipo_raza
+                            : "No Aplica"}
+                        </TableRow>
+                      ),
+                      tamanio: (() => {
+                        //mascota.tamanio
+                        if (ctx.lang === "en") {
+                          switch (mascota.tamanio.toLowerCase()) {
+                            case "chico":
+                              return "Small";
+                            case "mediano":
+                              return "Medium";
+                            case "grande":
+                              return "Large";
                           }
-                          return (
-                            <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                              {mascota.tamanio}
-                            </TableRow>
-                          );
-                        })(),
-                        delete: (
+                        }
+                        return (
                           <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button
-                              style={{
-                                textTransform: "capitalize",
-                                fontWeight: 800,
-                                color: "#069CB1",
-                              }}
-                              onClick={() => {
-                                if (state.mascotas) {
-                                  onFormChange({
-                                    mascotas: state.mascotas.filter(
-                                      (v, i) => i !== j
-                                    ),
-                                  });
-                                }
-                              }}
-                              variant="outlined"
-                              startIcon={<Close />}
-                            >
-                              {textos["eliminar"]
-                                ? textos["eliminar"]
-                                : "Texto No Definido"}
-                            </Button>
+                            {mascota.tamanio}
                           </TableRow>
-                        ),
-                      };
-                    })
+                        );
+                      })(),
+                      delete: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Button
+                            style={{
+                              textTransform: "capitalize",
+                              fontWeight: 800,
+                              color: "#069CB1",
+                            }}
+                            onClick={() => {
+                              if (state.mascotas) {
+                                onFormChange({
+                                  mascotas: state.mascotas.filter(
+                                    (v, i) => i !== j
+                                  ),
+                                });
+                              }
+                            }}
+                            variant="outlined"
+                            startIcon={<Close />}
+                          >
+                            {textos["eliminar"]
+                              ? textos["eliminar"]
+                              : "Texto No Definido"}
+                          </Button>
+                        </TableRow>
+                      ),
+                    };
+                  })
                   : []
               }
             />
@@ -717,11 +718,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 options={
                   tipos_vestuarios.data
                     ? tipos_vestuarios.data.map((m) => {
-                        return {
-                          value: m.id.toString(),
-                          label: ctx.lang === "es" ? m.es : m.en,
-                        };
-                      })
+                      return {
+                        value: m.id.toString(),
+                        label: ctx.lang === "es" ? m.es : m.en,
+                      };
+                    })
                     : []
                 }
                 style={{ width: 200 }}
@@ -729,8 +730,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 onChange={(e) => {
                   const tipo = tipos_vestuarios.data
                     ? tipos_vestuarios.data.filter(
-                        (d) => d.id === parseInt(e.target.value)
-                      )
+                      (d) => d.id === parseInt(e.target.value)
+                    )
                     : [];
                   onFormChange({
                     vestuario: {
@@ -792,11 +793,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         "warning",
                         textos["llenar_todos_los_campos"]
                           ? textos["llenar_todos_los_campos"].replace(
-                              "[TYPE]",
-                              textos["activos"]
-                                ? textos["activos"]
-                                : "Texto No Definido"
-                            )
+                            "[TYPE]",
+                            textos["activos"]
+                              ? textos["activos"]
+                              : "Texto No Definido"
+                          )
                           : "Texto No Definido"
                       );
                     }
@@ -864,52 +865,52 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               data={
                 state.vestuarios
                   ? state.vestuarios?.map((vestuario, j) => {
-                      return {
-                        tipo: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {vestuario.tipo}
-                          </TableRow>
-                        ),
-                        tipo_especifico: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {vestuario.id_tipo !== 3
+                    return {
+                      tipo: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {vestuario.tipo}
+                        </TableRow>
+                      ),
+                      tipo_especifico: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {vestuario.id_tipo !== 3
                             ? vestuario.tipo_especifico
                             : "No Aplica"}
-                          </TableRow>
-                        ),
-                        descripcion: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {vestuario.descripcion}
-                          </TableRow>
-                        ),
-                        delete: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button
-                              style={{
-                                textTransform: "capitalize",
-                                fontWeight: 800,
-                                color: "#069CB1",
-                              }}
-                              onClick={() => {
-                                if (state.vestuarios) {
-                                  onFormChange({
-                                    vestuarios: state.vestuarios.filter(
-                                      (v, i) => i !== j
-                                    ),
-                                  });
-                                }
-                              }}
-                              variant="outlined"
-                              startIcon={<Close />}
-                            >
-                              {textos["eliminar"]
-                                ? textos["eliminar"]
-                                : "Texto No Definido"}
-                            </Button>
-                          </TableRow>
-                        ),
-                      };
-                    })
+                        </TableRow>
+                      ),
+                      descripcion: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {vestuario.descripcion}
+                        </TableRow>
+                      ),
+                      delete: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Button
+                            style={{
+                              textTransform: "capitalize",
+                              fontWeight: 800,
+                              color: "#069CB1",
+                            }}
+                            onClick={() => {
+                              if (state.vestuarios) {
+                                onFormChange({
+                                  vestuarios: state.vestuarios.filter(
+                                    (v, i) => i !== j
+                                  ),
+                                });
+                              }
+                            }}
+                            variant="outlined"
+                            startIcon={<Close />}
+                          >
+                            {textos["eliminar"]
+                              ? textos["eliminar"]
+                              : "Texto No Definido"}
+                          </Button>
+                        </TableRow>
+                      ),
+                    };
+                  })
                   : []
               }
             />
@@ -939,11 +940,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 options={
                   tipos_props.data
                     ? tipos_props.data.map((m) => {
-                        return {
-                          value: m.id.toString(),
-                          label: ctx.lang === "es" ? m.es : m.en,
-                        };
-                      })
+                      return {
+                        value: m.id.toString(),
+                        label: ctx.lang === "es" ? m.es : m.en,
+                      };
+                    })
                     : []
                 }
                 style={{ width: 200 }}
@@ -951,8 +952,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 onChange={(e) => {
                   const tipo = tipos_props.data
                     ? tipos_props.data.filter(
-                        (d) => d.id === parseInt(e.target.value)
-                      )
+                      (d) => d.id === parseInt(e.target.value)
+                    )
                     : [];
                   onFormChange({
                     prop: {
@@ -1006,11 +1007,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         "warning",
                         textos["llenar_todos_los_campos"]
                           ? textos["llenar_todos_los_campos"].replace(
-                              "[TYPE]",
-                              textos["activos"]
-                                ? textos["activos"]
-                                : "Texto No Definido"
-                            )
+                            "[TYPE]",
+                            textos["activos"]
+                              ? textos["activos"]
+                              : "Texto No Definido"
+                          )
                           : "Texto No Definido"
                       );
                     }
@@ -1067,43 +1068,43 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               data={
                 state.props
                   ? state.props?.map((prop, j) => {
-                      return {
-                        tipo: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {prop.tipo}
-                          </TableRow>
-                        ),
-                        descripcion: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {prop.descripcion}
-                          </TableRow>
-                        ),
-                        delete: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button
-                              style={{
-                                textTransform: "capitalize",
-                                fontWeight: 800,
-                                color: "#069CB1",
-                              }}
-                              onClick={() => {
-                                if (state.props) {
-                                  onFormChange({
-                                    props: state.props.filter((v, i) => i !== j),
-                                  });
-                                }
-                              }}
-                              variant="outlined"
-                              startIcon={<Close />}
-                            >
-                              {textos["eliminar"]
-                                ? textos["eliminar"]
-                                : "Texto No Definido"}
-                            </Button>
-                          </TableRow>
-                        ),
-                      };
-                    })
+                    return {
+                      tipo: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {prop.tipo}
+                        </TableRow>
+                      ),
+                      descripcion: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {prop.descripcion}
+                        </TableRow>
+                      ),
+                      delete: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Button
+                            style={{
+                              textTransform: "capitalize",
+                              fontWeight: 800,
+                              color: "#069CB1",
+                            }}
+                            onClick={() => {
+                              if (state.props) {
+                                onFormChange({
+                                  props: state.props.filter((v, i) => i !== j),
+                                });
+                              }
+                            }}
+                            variant="outlined"
+                            startIcon={<Close />}
+                          >
+                            {textos["eliminar"]
+                              ? textos["eliminar"]
+                              : "Texto No Definido"}
+                          </Button>
+                        </TableRow>
+                      ),
+                    };
+                  })
                   : []
               }
             />
@@ -1137,11 +1138,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 options={
                   tipo_equipo_deportivo.data
                     ? tipo_equipo_deportivo.data.map((m) => {
-                        return {
-                          value: m.id.toString(),
-                          label: ctx.lang === "es" ? m.es : m.en,
-                        };
-                      })
+                      return {
+                        value: m.id.toString(),
+                        label: ctx.lang === "es" ? m.es : m.en,
+                      };
+                    })
                     : []
                 }
                 style={{ width: 200 }}
@@ -1149,8 +1150,8 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                 onChange={(e) => {
                   const tipo = tipo_equipo_deportivo.data
                     ? tipo_equipo_deportivo.data.filter(
-                        (d) => d.id === parseInt(e.target.value)
-                      )
+                      (d) => d.id === parseInt(e.target.value)
+                    )
                     : [];
                   onFormChange({
                     equipo_deportivo: {
@@ -1220,11 +1221,11 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
                         "warning",
                         textos["llenar_todos_los_campos"]
                           ? textos["llenar_todos_los_campos"].replace(
-                              "[TYPE]",
-                              textos["activos"]
-                                ? textos["activos"]
-                                : "Texto No Definido"
-                            )
+                            "[TYPE]",
+                            textos["activos"]
+                              ? textos["activos"]
+                              : "Texto No Definido"
+                          )
                           : "Texto No Definido"
                       );
                     }
@@ -1283,46 +1284,46 @@ export const EditarActivosTalento: FC<Props> = ({ onFormChange, state }) => {
               data={
                 state.equipos_deportivos
                   ? state.equipos_deportivos?.map((ed, j) => {
-                      return {
-                        tipo: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {ed.tipo}
-                          </TableRow>
-                        ),
-                        descripcion: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            {ed.descripcion}
-                          </TableRow>
-                        ),
-                        delete: (
-                          <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button
-                              style={{
-                                textTransform: "capitalize",
-                                fontWeight: 800,
-                                color: "#069CB1",
-                              }}
-                              onClick={() => {
-                                if (state.equipos_deportivos) {
-                                  onFormChange({
-                                    equipos_deportivos:
-                                      state.equipos_deportivos.filter(
-                                        (v, i) => i !== j
-                                      ),
-                                  });
-                                }
-                              }}
-                              variant="outlined"
-                              startIcon={<Close />}
-                            >
-                              {textos["eliminar"]
-                                ? textos["eliminar"]
-                                : "Texto No Definido"}
-                            </Button>
-                          </TableRow>
-                        ),
-                      };
-                    })
+                    return {
+                      tipo: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {ed.tipo}
+                        </TableRow>
+                      ),
+                      descripcion: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          {ed.descripcion}
+                        </TableRow>
+                      ),
+                      delete: (
+                        <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
+                          <Button
+                            style={{
+                              textTransform: "capitalize",
+                              fontWeight: 800,
+                              color: "#069CB1",
+                            }}
+                            onClick={() => {
+                              if (state.equipos_deportivos) {
+                                onFormChange({
+                                  equipos_deportivos:
+                                    state.equipos_deportivos.filter(
+                                      (v, i) => i !== j
+                                    ),
+                                });
+                              }
+                            }}
+                            variant="outlined"
+                            startIcon={<Close />}
+                          >
+                            {textos["eliminar"]
+                              ? textos["eliminar"]
+                              : "Texto No Definido"}
+                          </Button>
+                        </TableRow>
+                      ),
+                    };
+                  })
                   : []
               }
             />

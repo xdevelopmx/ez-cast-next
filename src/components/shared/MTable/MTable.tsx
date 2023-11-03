@@ -123,6 +123,7 @@ export const MTable: FC<MTableProps> = ({
       <TableContainer
         component={Paper}
         style={{ ...style, overflowY: "hidden" }}
+        className="grid-scroll"
       >
         <Table
           sx={{ minWidth: 700 }}

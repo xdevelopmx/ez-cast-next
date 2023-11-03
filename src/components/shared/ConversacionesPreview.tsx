@@ -39,7 +39,7 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
                     </Box>
                 </Grid>
                 <Grid item xs={12} sx={{
-                    height: '450px',
+                    height: '350px',
                     border: '2px solid #B4B5B6',
                     borderTop: 'none',
                     overflowY: 'scroll'
@@ -53,7 +53,13 @@ export const ConversacionesPreview = (props: {width: string | number, onClose: (
                         ))
                     }
                     {conversaciones.isFetched && conversaciones.data && conversaciones.data.length === 0 &&
-                            <div style={{backgroundColor: '#a8e2ea', textAlign: 'center', maxWidth: '90%', margin: '1rem auto', padding: '1rem 1.5rem'}}>
+                            <div style={{
+                                backgroundColor: '#a8e2ea', textAlign: 'center', 
+                                maxWidth: '90%', 
+                                margin: '1rem auto',
+                                padding: '1rem 1.5rem'
+                            
+                            }}>
                                 <Typography sx={{color: '#037788', fontSize: '1.2rem', fontWeight: '600'}}>{`${textos['no_conversaciones']}`}</Typography> 
                             </div> 
                     }

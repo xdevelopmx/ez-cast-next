@@ -131,8 +131,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
               tipo_trabajo: !checked
                 ? []
                 : tipos_trabajo.data
-                ? tipos_trabajo.data.map((v) => v.id)
-                : [],
+                  ? tipos_trabajo.data.map((v) => v.id)
+                  : [],
             });
           }}
           direction="vertical"
@@ -188,13 +188,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
       <Grid item xs={12}>
         <MContainer direction="vertical">
           <MContainer direction="horizontal">
+            
             <Typography fontSize={"1.2rem"} fontWeight={600} component={"p"}>
               ¿
               {textos["preferencias_rol_interesado_trabajo_extra_title"]
                 ? textos["preferencias_rol_interesado_trabajo_extra_title"]
                 : "Texto No Definido"}
               ?
-              <MTooltip
+              {/* <MTooltip
                 text={`¿${
                   textos["preferencias_rol_interesado_trabajo_extra_tooltip"]
                     ? textos[
@@ -204,7 +205,25 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 }?`}
                 color="orange"
                 placement="right"
-              />
+              /> */}
+              <MTooltip
+                    text={
+                      <>
+                        <Typography fontSize={"12px"} fontWeight={800}>
+                          {textos["preferencias_rol_interesado_trabajo_extra_tooltip_tittle"]
+                            ? textos["preferencias_rol_interesado_trabajo_extra_tooltip_tittle"]
+                            : "Texto No Definido"}
+                        </Typography>
+                        <Typography fontSize={"12px"} fontWeight={400}>
+                          {textos["preferencias_rol_interesado_trabajo_extra_tooltip"]
+                            ? textos["preferencias_rol_interesado_trabajo_extra_tooltip"]
+                            : "Texto No Definido"}
+                        </Typography>
+                      </>
+                    }
+                    color="orange"
+                    placement="right"
+                  />
             </Typography>
           </MContainer>
           <Typography
@@ -237,8 +256,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                   ? textos["si"]
                   : ""
                 : textos["no"]
-                ? textos["no"]
-                : ""
+                  ? textos["no"]
+                  : ""
             }
             onChange={(e) => {
               onFormChange({
@@ -298,15 +317,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           options={
             tipos_interes_proyectos.data
               ? tipos_interes_proyectos.data.map((t) =>
-                  es_ingles ? t.en : t.es
-                )
+                es_ingles ? t.en : t.es
+              )
               : []
           }
           values={
             tipos_interes_proyectos.data
               ? tipos_interes_proyectos.data.map((v) =>
-                  state.interes_en_proyectos.includes(v.id)
-                )
+                state.interes_en_proyectos.includes(v.id)
+              )
               : [false]
           } //[(state) ? state.mostrar_anio_en_perfil : false]}
         />
@@ -342,8 +361,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 options={
                   estados_republica.isSuccess && estados_republica.data
                     ? estados_republica.data.map((u) => {
-                        return { value: u.id.toString(), label: u.es };
-                      })
+                      return { value: u.id.toString(), label: u.es };
+                    })
                     : []
                 }
                 className={"form-input-md form-input-small"}
@@ -394,8 +413,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 options={
                   estados_republica.isSuccess && estados_republica.data
                     ? estados_republica.data.map((u) => {
-                        return { value: u.id.toString(), label: u.es };
-                      })
+                      return { value: u.id.toString(), label: u.es };
+                    })
                     : []
                 }
                 style={{ width: 250 }}
@@ -410,7 +429,7 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                 }
               />
               <AddButton
-                aStyles={{fontSize: '13px', fontWeight: 500}}
+                aStyles={{ fontSize: '13px', fontWeight: 500 }}
                 text={
                   textos["preferencias_rol_locacion_button"]
                     ? textos["preferencias_rol_locacion_button"]
@@ -444,8 +463,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                         "preferencias_rol_locacion_empty_locacion_validation"
                       ]
                         ? textos[
-                            "preferencias_rol_locacion_empty_locacion_validation"
-                          ]
+                        "preferencias_rol_locacion_empty_locacion_validation"
+                        ]
                         : "Texto No Definido"
                     );
                   }
@@ -476,7 +495,14 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                       .map((estado) => estado.es)}
                     <IconButton
                       onClick={() => {
-                        console.log("xd");
+                        if (locacion.es_principal) {
+                          setLocacionPrincipalSelect('0');
+                        } else {
+                          setLocacionesAdicionalesSelect('0');
+                        }
+                        onFormChange({
+                          locaciones: state.locaciones.filter(l => l.id_estado_republica !== locacion.id_estado_republica)
+                        });
                       }}
                       style={{
                         position: "absolute",
@@ -529,8 +555,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                   ? textos["si"]
                   : ""
                 : textos["no"]
-                ? textos["no"]
-                : ""
+                  ? textos["no"]
+                  : ""
             }
             onChange={(e) => {
               setTieneAgenciaRepresentante(
@@ -640,10 +666,10 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             values={
               tipos_documentos.data
                 ? tipos_documentos.data.map((v) =>
-                    state.documentos
-                      .map((documento) => documento.id_documento)
-                      .includes(v.id)
-                  )
+                  state.documentos
+                    .map((documento) => documento.id_documento)
+                    .includes(v.id)
+                )
                 : [false]
             } //[(state) ? state.mostrar_anio_en_perfil : false]}
           />
@@ -734,15 +760,15 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
             options={
               tipos_disponibilidad.data
                 ? tipos_disponibilidad.data.map((t) =>
-                    es_ingles ? t.en : t.es
-                  )
+                  es_ingles ? t.en : t.es
+                )
                 : []
             }
             values={
               tipos_disponibilidad.data
                 ? tipos_disponibilidad.data.map((v) =>
-                    state.disponibilidad.includes(v.id)
-                  )
+                  state.disponibilidad.includes(v.id)
+                )
                 : [false]
             } //[(state) ? state.mostrar_anio_en_perfil : false]}
           />
@@ -782,9 +808,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
           }}
         />
         <AddButton
-          text={`${
-            textos["agregar"] ? textos["agregar"] : "Texto No Definido"
-          }`}
+          text={`${textos["agregar"] ? textos["agregar"] : "Texto No Definido"
+            }`}
           onClick={() => {
             if (!otrasProfesionesInput) return;
             onFormChange({
@@ -845,8 +870,8 @@ export const EditarPreferenciaRolYCompensacionTalento: FC<Props> = ({
                     ? textos["si"]
                     : ""
                   : textos["no"]
-                  ? textos["no"]
-                  : ""
+                    ? textos["no"]
+                    : ""
               }
               onChange={(e) => {
                 setEstaEmbarazada(

@@ -6,6 +6,7 @@ import {
   AccordionDetails,
   Skeleton,
   Chip,
+  Box,
 } from "@mui/material";
 import { Add, ExpandMore, Remove } from "@mui/icons-material";
 import { api } from "~/utils/api";
@@ -47,7 +48,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
       });
     }
     if (habilidades.data) {
-      
+
       return habilidades.data.filter(h => !h.parent).map((habilidad, i) => {
         const habilidades_childrens = habilidades.data.filter(h => h.parent && h.parent === habilidad.id);
         let habilidades_especificas_seleccionadas_by_id: number[] = [];
@@ -70,8 +71,26 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
         }
         if (habilidades_childrens.length > 0) {
           return (
-            <Accordion sx={{boxShadow: 'none', border: 'none', position: 'static'}} key={i}>
+            //este acordion corresponde a la opcion de deportes
+            <Accordion
+              sx={{
+                boxShadow: 'none',
+                border: 'none',
+                position: 'static',
+                margin: 0.4,
+                // '.MuiAccordionSummary-root': {
+                //   height: 3,
+                //   // padding:2
+                // },
+                '.Mui-expanded': {
+                  minHeight: 28,
+                  transition: 'none' // Agregar una transición suave
+                }
+              }}
+              key={i}
+            >
               <AccordionSummary
+                sx={{ height: '30px', minHeight: '30px' }}
                 style={{
                   color:
                     habilidades_especificas_seleccionadas_by_id.length > 0
@@ -85,6 +104,8 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                 expandIcon={
                   <ExpandMore
                     style={{
+                      marginBottom: 0,
+                      padding: 0,
                       color:
                         habilidades_especificas_seleccionadas_by_id.length > 0
                           ? "#000"
@@ -96,14 +117,17 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                 id="panel1a-header"
               >
                 <Typography
-                  sx={{ margin: 0 }}
+                  sx={{ margin: 0, }}
                   fontSize={"1.1rem"}
                   fontWeight={500}
                 >
                   {ctx.lang === "es" ? habilidad.es : habilidad.en}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails>
+              <AccordionDetails
+                //esto es el contenido del acordion
+                sx={{ paddingBottom: 0 }}
+              >
                 {habilidades_childrens.map((h_child, k) => {
                   let child_habilidades_especificas_seleccionadas_by_id: number[] = [];
                   if (state) {
@@ -115,40 +139,61 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                     }
                   }
                   return (
-                    <Accordion sx={{boxShadow: 'none', border: 'none', position: 'static'}} key={k}>
+                    <Accordion sx={{
+                      boxShadow: 'none', border: 'none', position: 'static', margin: 0.4,
+                      '.Mui-expanded': {
+                        minHeight: 28,
+                        transition: 'none' // Agregar una transición suave
+                      }
+
+                    }} key={k}>
                       <AccordionSummary
+                        sx={{
+                          height: '30px', minHeight: '30px',
+                        }}
                         style={{
                           color:
-                          child_habilidades_especificas_seleccionadas_by_id.length > 0
+                            child_habilidades_especificas_seleccionadas_by_id.length > 0
                               ? "#f2f2f2"
                               : "black",
                           backgroundColor:
-                          child_habilidades_especificas_seleccionadas_by_id.length > 0
+                            child_habilidades_especificas_seleccionadas_by_id.length > 0
                               ? "#069cb1"
-                              : "#f2f2f2",
+                              : "#30c3d78a",
+
                         }}
                         expandIcon={
                           <ExpandMore
                             style={{
                               color:
-                              child_habilidades_especificas_seleccionadas_by_id.length > 0
+                                child_habilidades_especificas_seleccionadas_by_id.length > 0
                                   ? "#000"
                                   : "#06acc2",
                             }}
                           />
+
                         }
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                       >
-                        <Typography
-                          sx={{ margin: 0 }}
-                          fontSize={"1.1rem"}
-                          fontWeight={500}
-                        >
-                          {ctx.lang === "es" ? h_child.es : h_child.en}
-                        </Typography>
+                        <Box sx={{ margin: 0, padding: 0, minHeight: '0px' }}>
+
+
+
+
+                          <Typography
+                            sx={{ margin: 0 }}
+                            fontSize={"1.1rem"}
+                            fontWeight={500}
+                          >
+                            {ctx.lang === "es" ? h_child.es : h_child.en}
+                          </Typography>
+                        </Box>
                       </AccordionSummary>
-                      <AccordionDetails>
+                      <AccordionDetails
+                        //esto es el contenido del acordion
+                        sx={{ paddingBottom: 0 }}
+                      >
                         {h_child.habilidades_especificas.map((he, j) => {
                           return (
                             <Chip
@@ -162,14 +207,14 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                                       state.habilidades_seleccionadas.set(h_child.id, child_habilidades_especificas_seleccionadas_by_id.concat([he.id]));
                                     }
                                   } else {
-                                      state.habilidades_seleccionadas.set(h_child.id, [he.id]);
+                                    state.habilidades_seleccionadas.set(h_child.id, [he.id]);
                                   }
                                   onFormChange({
                                     habilidades_seleccionadas: new Map(
                                       state.habilidades_seleccionadas
                                     ),
                                   });
-                                  
+
                                 }
                               }}
                               icon={
@@ -201,19 +246,19 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                                 borderRadius: 10,
                                 flexDirection: "row-reverse",
                                 color:
-                                child_habilidades_especificas_seleccionadas_by_id.includes(
+                                  child_habilidades_especificas_seleccionadas_by_id.includes(
                                     he.id
                                   )
                                     ? "#f2f2f2"
                                     : "#069cb1",
                                 borderColor:
-                                child_habilidades_especificas_seleccionadas_by_id.includes(
+                                  child_habilidades_especificas_seleccionadas_by_id.includes(
                                     he.id
                                   )
                                     ? "none"
                                     : "#069cb1",
                                 backgroundColor:
-                                child_habilidades_especificas_seleccionadas_by_id.includes(
+                                  child_habilidades_especificas_seleccionadas_by_id.includes(
                                     he.id
                                   )
                                     ? "#069cb1"
@@ -231,16 +276,29 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
             </Accordion>
           )
         }
+
+        //este acordion es el que modifica toda la lista de habilidades
         return (
-          <Accordion sx={{boxShadow: 'none', border: 'none', position: 'static'}} key={i}>
+          <Accordion sx={{
+            boxShadow: 'none', border: 'none', position: 'static', margin: 0.4,
+            '.Mui-expanded': {
+              minHeight: 28,
+              margin: 0,  
+              transition: 'none' // Agregar una transición suave
+            }
+          }}
+            key={i}>
             <AccordionSummary
+              sx={{
+                height: '30px', minHeight: '30px',
+              }}
               style={{
                 color:
-                habilidades_especificas_seleccionadas_by_id.length > 0
+                  habilidades_especificas_seleccionadas_by_id.length > 0
                     ? "#f2f2f2"
                     : "black",
                 backgroundColor:
-                habilidades_especificas_seleccionadas_by_id.length > 0
+                  habilidades_especificas_seleccionadas_by_id.length > 0
                     ? "#069cb1"
                     : "#f2f2f2",
               }}
@@ -248,7 +306,7 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                 <ExpandMore
                   style={{
                     color:
-                    habilidades_especificas_seleccionadas_by_id.length > 0
+                      habilidades_especificas_seleccionadas_by_id.length > 0
                         ? "#000"
                         : "#06acc2",
                   }}
@@ -265,7 +323,12 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                 {ctx.lang === "es" ? habilidad.es : habilidad.en}
               </Typography>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails
+              //esto es el contenido del acordion
+              sx={{
+                paddingBottom: 0, margin: 0,
+              }}
+            >
               {habilidad.habilidades_especificas.map((he, j) => {
                 return (
                   <Chip
@@ -333,19 +396,19 @@ const EditarHabilidadesTalento: FC<EditarHabilidadesTalentoPageProps> = ({
                       borderRadius: 10,
                       flexDirection: "row-reverse",
                       color:
-                      habilidades_especificas_seleccionadas_by_id.includes(
+                        habilidades_especificas_seleccionadas_by_id.includes(
                           he.id
                         )
                           ? "#f2f2f2"
                           : "#069cb1",
                       borderColor:
-                      habilidades_especificas_seleccionadas_by_id.includes(
+                        habilidades_especificas_seleccionadas_by_id.includes(
                           he.id
                         )
                           ? "none"
                           : "#069cb1",
                       backgroundColor:
-                      habilidades_especificas_seleccionadas_by_id.includes(
+                        habilidades_especificas_seleccionadas_by_id.includes(
                           he.id
                         )
                           ? "#069cb1"
