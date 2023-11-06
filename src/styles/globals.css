@@ -147,8 +147,7 @@ button:focus {
 
 .container_text_scroll {
   /* Personaliza la barra de desplazamiento */
-  width: 8px;
-  height: 8px;
+
   /* Ancho de la barra de desplazamiento */
   scrollbar-color: #069cb1 #f2f2f2;
   /* Color de la barra de desplazamiento */
