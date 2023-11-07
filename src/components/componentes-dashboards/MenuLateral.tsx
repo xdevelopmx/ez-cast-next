@@ -1226,19 +1226,21 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      // justifyContent: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    <Image
-                      src="/assets/img/iconos/icon_website.svg"
-                      style={{ marginRight: 10 }}
-                      width="20"
-                      height="30"
-                      alt=""
-                    />
-                    <a href={form.redes_sociales.pagina_web}  target="_blank" style={{ textDecoration: "underline",color: '#fff', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%'}}>
-                      {form.redes_sociales.pagina_web}
-                    </a>
+          
+
+                      <a href={form.redes_sociales.pagina_web} target="_blank" style={{ textDecoration: "underline", color: '#fff', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>
+                        <Image
+                          src="/assets/img/iconos/icon_website.svg"
+                          style={{ marginRight: 10 }}
+                          width="20"
+                          height="30"
+                          alt=""
+                        />
+                        {form.redes_sociales.pagina_web}
+                      </a>
                   </Box>
                 </>
               )}
