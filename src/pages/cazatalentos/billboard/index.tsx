@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { type NextPage } from "next";
 import Head from "next/head";
-import { Alertas, MSelect, MainLayout, MenuLateral } from "~/components";
+import { Alertas, MSelect, MainLayout, MenuLateral, Flotantes } from "~/components";
 import { PerfilTable } from "~/components/cazatalento/billboard/PerfilTable";
 import { MContainer } from "~/components/layout/MContainer";
 import { api } from "~/utils/api";
@@ -848,6 +848,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
           </div>
         </div>
       </MainLayout>
+      <Flotantes />
     </>
   );
 };

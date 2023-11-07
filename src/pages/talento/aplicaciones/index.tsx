@@ -10,6 +10,7 @@ import Head from "next/head";
 import Image from "next/image";
 import {
   Alertas,
+  Flotantes,
   MainLayout,
   MenuLateral,
   type RolCompletoPreview,
@@ -373,6 +374,7 @@ const AplicacionesTalento: NextPage<AplicacionesTalentoPageProps> = ({
           content={confirmation_dialog.content}
         />
       </MainLayout>
+      <Flotantes />
       <AplicacionRolDialog
         readonly
         id_aplicacion={dialog.data.get("id_aplicacion") as number}

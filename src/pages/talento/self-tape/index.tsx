@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Head from "next/head";
 import Image from "next/image";
-import { Alertas, FormGroup, MainLayout, MenuLateral } from "~/components";
+import { Alertas, Flotantes, FormGroup, MainLayout, MenuLateral } from "~/components";
 import { useContext, useEffect, useRef, useState } from "react";
 import { api, parseErrorBody } from "~/utils/api";
 import { AnimatePresence, motion } from "framer-motion";
@@ -88,72 +88,137 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
 
   const camera_permisson = "camera" as PermissionName;
 
-  useEffect(() => {
-    if (_navigator) {
-      //@ts-ignore
-      _navigator.permissions
-        .query({ name: microphone_permisson })
-        .then((permissionObj) => {
-          setPermissions((prev) => ({
-            ...prev,
-            microphone: permissionObj.state === "granted",
-          }));
-          permissionObj.onchange = () => {
-            setPermissions((prev) => ({
-              ...prev,
-              microphone: permissionObj.state === "granted",
-            }));
-          };
-        })
-        .catch(() => {
-          setPermissions((prev) => ({ ...prev, microphone: false }));
-        });
+  // useEffect(() => {
+  //   if (_navigator) {
+  //     //@ts-ignore
 
-      //@ts-ignore
-      _navigator.permissions
-        .query({ name: camera_permisson })
-        .then((permissionObj) => {
-          setPermissions((prev) => ({
-            ...prev,
-            camera: permissionObj.state === "granted",
-          }));
-          permissionObj.onchange = () => {
-            setPermissions((prev) => ({
-              ...prev,
-              camera: permissionObj.state === "granted",
-            }));
-          };
-        })
-        .catch(() => {
-          setPermissions((prev) => ({ ...prev, camera: false }));
+  //     console.log('navegador', _navigator);
+  //     _navigator.permissions
+  //       .query({ name: microphone_permisson })
+  //       .then((permissionObj) => {
+
+  //         console.log('bmicrophone', permissionObj);
+  //         setPermissions((prev) => ({
+  //           ...prev,
+  //           microphone: permissionObj.state === "granted",
+  //         }));
+  //         permissionObj.onchange = () => {
+  //           setPermissions((prev) => ({
+  //             ...prev,
+  //             microphone: permissionObj.state === "granted",
+  //           }));
+  //         };
+  //       })
+  //       .catch(() => {
+  //         setPermissions((prev) => ({ ...prev, microphone: false }));
+  //       });
+
+  //     //@ts-ignore
+  //     _navigator.permissions
+  //       .query({ name: camera_permisson })
+  //       .then((permissionObj) => {
+
+  //         console.log('camera', permissionObj);
+  //         setPermissions((prev) => ({
+  //           ...prev,
+  //           camera: permissionObj.state === "granted",
+  //         }));
+  //         permissionObj.onchange = () => {
+  //           setPermissions((prev) => ({
+  //             ...prev,
+  //             camera: permissionObj.state === "granted",
+  //           }));
+  //         };
+  //       })
+  //       .catch(() => {
+  //         setPermissions((prev) => ({ ...prev, camera: false }));
+  //       });
+  //   }
+  //   console.log('permisios', has_permissions);
+  // }, [_navigator]);
+  useEffect(() => {
+    const requestUserMediaAccess = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+        console.log('Acceso concedido a la cámara y al micrófono');
+        setPermissions({
+          microphone: true,
+          camera: true
         });
+        // Hacer algo con el stream, como asignarlo a un elemento <video> o <audio>
+      } catch (error) {
+        console.error('Acceso denegado a la cámara y al micrófono:', error);
+        setPermissions({
+          microphone: false,
+          camera: false
+        });
+        // Manejar el error o mostrar un mensaje al usuario sobre el acceso denegado
+      }
+    };
+
+    if (_navigator) {
+      requestUserMediaAccess();
     }
   }, [_navigator]);
 
+  function obtenerMejorTipoMIME() {
+    const tiposSoportados = [
+      "video/webm",
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm;codecs=h264,opus",
+      "video/mp4"
+      // Agrega aquí más tipos MIME según sea necesario
+    ];
+
+    const navegador = navigator.userAgent.toLowerCase();
+
+    for (let tipo of tiposSoportados) {
+      try {
+        new MediaRecorder(new MediaStream(), { mimeType: tipo });
+        return tipo; // Si no genera errores, es un tipo MIME compatible
+      } catch (error) {
+        // Si genera un error, prueba con el siguiente tipo MIME
+        console.log('ninguno es compatible')
+      }
+    }
+
+    return "video/mp4"; // En caso de no encontrar un tipo MIME compatible, retorna uno por defecto
+  }
+
   useEffect(() => {
     if (recording) {
+      console.log('log entro 1');
       if (
         !media_recorder.current ||
         media_recorder.current.state !== "recording"
       ) {
+        console.log('log entro 2');
         if (
           "mediaDevices" in navigator &&
           "getUserMedia" in navigator.mediaDevices
         ) {
-          const mediaDevices = navigator.mediaDevices;
+          console.log('log entro 3');
           // Accessing the user camera and video.
-          mediaDevices
-            .getUserMedia({
-              video: true,
-              audio: true,
-            })
+          navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: true,
+          })
             .then((stream) => {
+              console.log('log entro 4');
+              console.log('vd player', video_player.current);
               if (video_player.current) {
                 video_player.current.srcObject = stream;
+                console.log('log entro 5');
+                const mejorTipoMIME = obtenerMejorTipoMIME(); // Obtener el mejor tipo MIME
+                console.log('elmejor', mejorTipoMIME);
                 media_recorder.current = new MediaRecorder(stream, {
-                  mimeType: "video/mp4",
-                  //mimeType: "video/webm;codecs=vp9,opus",
+                  mimeType: mejorTipoMIME, // Utilizar el mejor tipo MIME
                 });
+                // media_recorder.current = new MediaRecorder(stream, {
+                //   mimeType: "video/mp4",
+                //   //mimeType: "video/webm;codecs=vp9,opus",
+                // });
 
                 media_recorder.current.ondataavailable = (ev) => {
                   blob.push(ev.data);
@@ -381,9 +446,9 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                       {!can_record
                         ? textos["max_selftapes_reached"]
                         : `${(textos["current_count_selftape"] ?? "")?.replace(
-                            "[COUNT]",
-                            `${selftapes.data?.length}`
-                          )}`}
+                          "[COUNT]",
+                          `${selftapes.data?.length}`
+                        )}`}
                       <Button
                         onClick={() => {
                           void router.push("/talento/media-bank");
@@ -855,9 +920,9 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
                           } else {
                             const msg = name
                               ? textos["error_didnt_upload_with_name"]?.replace(
-                                  "[N1]",
-                                  name
-                                )
+                                "[N1]",
+                                name
+                              )
                               : textos["error_didnt_upload"];
                             notify("error", `${msg} - ${e[1].error}`);
                           }
@@ -883,6 +948,7 @@ const SelftapeTalentoPage: NextPage<SelftapeTalentoPageProps> = ({
           }}
         />
       </MainLayout>
+      <Flotantes />
     </>
   );
 };

@@ -354,10 +354,12 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
               <MSelect
                 disabled={!state.es_mascota}
                 id="tipo-mascotas-select"
+                labelClassName={"form-input-label"}
                 loading={mascotas.isFetching}
                 options={
                   mascotas.data
                     ? mascotas.data.map((s) => {
+                        // console.log('valor de mascotas',s); 
                         return {
                           value: s.id.toString(),
                           label: ctx.lang === "es" ? s.es : s.en,
@@ -368,9 +370,11 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                 value={state.animal ? state.animal.id.toString() : "0"}
                 className={"form-input-md"}
                 onChange={(e) => {
+                  console.log('target',e.target.value);
                   onFormChange({
-                    animal: { ...state.animal, id: parseInt(e.target.value) },
+                    animal: { id: parseInt(e.target.value) },
                   });
+                  console.log('verificando_animal',state.animal?.id);
                 }}
                 labelStyle={estilosBold}
               />

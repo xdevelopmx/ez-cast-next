@@ -22,7 +22,7 @@ import { getSession } from "next-auth/react";
 import { type GetServerSideProps } from "next";
 import Constants from "~/constants";
 import { TipoUsuario } from "~/enums";
-import { Alertas, MainLayout, MenuLateral } from "~/components";
+import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { AnimatePresence } from "framer-motion";
 import Head from "next/head";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
@@ -1034,6 +1034,7 @@ export const MediaBank = (props: {
         </AnimatePresence>
         <ResourceAlert busy={busy || saveSelftapeMedia.isLoading}/>
       </MainLayout>
+      <Flotantes />
     </>
   );
 };

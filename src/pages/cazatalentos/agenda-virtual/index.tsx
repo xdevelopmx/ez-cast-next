@@ -13,7 +13,7 @@ import {
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import { Alertas, MainLayout, MenuLateral } from "~/components";
+import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 
 import { useMemo, useState } from "react";
 import { DateCalendar, LocalizationProvider } from "@mui/x-date-pickers";
@@ -645,6 +645,7 @@ const AgendaVirtual = () => {
           content={confirmation_dialog.content}
         />
       </MainLayout>
+      <Flotantes />
     </>
   );
 };

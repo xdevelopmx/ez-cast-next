@@ -87,8 +87,8 @@ export type FiltrosDemograficosRolForm = {
 
 export type DescripcionDelRolForm = {
   tiene_nsfw:
-    | "Desnudos/Situaciones Sexuales"
-    | "No hay desnudos y/o situaciones sexuales";
+  | "Desnudos/Situaciones Sexuales"
+  | "No hay desnudos y/o situaciones sexuales";
   descripcion: string;
   detalles_adicionales: string;
   habilidades: number[];
@@ -503,8 +503,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
               cantidad_sueldo: sueldo ? sueldo.cantidad : 0,
               periodo_sueldo: sueldo
                 ? `${sueldo.periodo.substring(0, 1)}${sueldo.periodo
-                    .substring(1, sueldo.periodo.length)
-                    .toLowerCase()}`
+                  .substring(1, sueldo.periodo.length)
+                  .toLowerCase()}`
                 : `${textos["diario"]}`,
             },
             compensaciones_no_monetarias: compensaciones_no_monetarias.map(
@@ -530,8 +530,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
               : [],
             apariencias_etnias: filtros_demo
               ? filtros_demo.aparencias_etnicas.map(
-                  (a) => a.id_aparencia_etnica
-                )
+                (a) => a.id_aparencia_etnica
+              )
               : [],
             animal: {
               id: animal ? animal.id_animal : 0,
@@ -568,8 +568,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
             habilidades:
               rol.data && rol.data.habilidades
                 ? rol.data.habilidades.habilidades_seleccionadas.map(
-                    (h) => h.id_habilidad
-                  )
+                  (h) => h.id_habilidad
+                )
                 : [],
             especificacion_habilidad:
               rol.data && rol.data.habilidades
@@ -602,11 +602,11 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
             tipo_fecha_selected: `${textos['rango_fechas']}`,
             fechas: rol.data.casting
               ? rol.data.casting.map((c) => {
-                  return {
-                    inicio: c.fecha_inicio,
-                    fin: c.fecha_fin,
-                  };
-                })
+                return {
+                  inicio: c.fecha_inicio,
+                  fin: c.fecha_fin,
+                };
+              })
               : [],
           },
           filmaciones: {
@@ -617,11 +617,11 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
             tipo_fecha_selected: `${textos['rango_fechas']}`,
             fechas: rol.data.filmaciones
               ? rol.data.filmaciones.map((c) => {
-                  return {
-                    inicio: c.fecha_inicio,
-                    fin: c.fecha_fin,
-                  };
-                })
+                return {
+                  inicio: c.fecha_inicio,
+                  fin: c.fecha_fin,
+                };
+              })
               : [],
           },
           requisitos: {
@@ -635,8 +635,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
             id_idioma: rol.data.requisitos ? rol.data.requisitos.id_idioma : 0,
             medios_multimedia_a_incluir: rol.data.requisitos
               ? rol.data.requisitos.medios_multimedia.map(
-                  (m) => m.id_medio_multimedia
-                )
+                (m) => m.id_medio_multimedia
+              )
               : [],
             id_estado_donde_aceptan_solicitudes: rol.data.requisitos
               ? rol.data.requisitos.id_estado_republica
@@ -777,8 +777,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         suma_total_compensaciones_no_monetarias: state.compensacion.compensacion
           .suma_total_compensaciones_no_monetarias
           ? parseFloat(
-              state.compensacion.compensacion.suma_total_compensaciones_no_monetarias.toString()
-            )
+            state.compensacion.compensacion.suma_total_compensaciones_no_monetarias.toString()
+          )
           : 0,
       },
     };
@@ -814,7 +814,11 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       if (state.filtros_demograficos.animal) {
         if (
           state.filtros_demograficos.animal.id <= 0 ||
-          (state.filtros_demograficos.animal &&
+          (
+            state &&
+            state.filtros_demograficos &&
+            state.filtros_demograficos.animal &&
+            state.filtros_demograficos.animal.tamanio &&
             state.filtros_demograficos.animal.tamanio.length === 0)
         ) {
           return { ...form, error: `${textos['animal_invalido']}` };
@@ -861,7 +865,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       descripcion: state.descripcion_rol.descripcion,
       detalles_adicionales:
         state.descripcion_rol.detalles_adicionales &&
-        state.descripcion_rol.detalles_adicionales.length > 0
+          state.descripcion_rol.detalles_adicionales.length > 0
           ? state.descripcion_rol.detalles_adicionales
           : "",
       habilidades: state.descripcion_rol.habilidades,
@@ -1345,8 +1349,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                           style={{ textAlign: "center", width: "inherit" }}
                         >
                           {form_validate.error}
-                          
-                        </Typography>  
+
+                        </Typography>
                       </Typography>
                     </Alert>
                   </MContainer>
@@ -1386,11 +1390,10 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                         type="button"
                       >
                         <Typography>
-                          {`${
-                            form_validate.complete
-                              ? `${textos["guardar_e_ir_a_proyectos"]}`
-                              : `${textos['llenar_campos']}`
-                          }`}{" "}
+                          {`${form_validate.complete
+                            ? `${textos["guardar_e_ir_a_proyectos"]}`
+                            : `${textos['llenar_campos']}`
+                            }`}{" "}
                         </Typography>
                       </Button>
                     )}

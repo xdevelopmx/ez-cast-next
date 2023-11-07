@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { type GetServerSideProps, type NextPage } from "next";
-import { Alertas, FlotantesSinMensajes, MainLayout, MenuLateral, RolCompletoPreview } from '~/components';
+import { Alertas, Flotantes, FlotantesSinMensajes, MainLayout, MenuLateral, RolCompletoPreview } from '~/components';
 import Head from 'next/head'
 import { type User } from "next-auth";
 import { getSession } from "next-auth/react";
-import {  TipoMensajes, TipoUsuario } from '~/enums';
+import { TipoMensajes, TipoUsuario } from '~/enums';
 import Constants from '~/constants';
 import { api, parseErrorBody } from '~/utils/api';
 import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Link, Skeleton, TextField, Typography } from '@mui/material'
@@ -33,7 +33,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
 
     const conversaciones = api.mensajes.getConversaciones.useQuery();
 
-    const [selected_conversacion, setSelectedConversacion] = useState<(Conversaciones & {proyecto: Proyecto | null, emisor: {nombre: string, profile_url: string} | null, receptor: {nombre: string, profile_url: string} | null}) | null>(null);
+    const [selected_conversacion, setSelectedConversacion] = useState<(Conversaciones & { proyecto: Proyecto | null, emisor: { nombre: string, profile_url: string } | null, receptor: { nombre: string, profile_url: string } | null }) | null>(null);
 
     const mensajes = api.mensajes.getMensajesByConversacion.useQuery(selected_conversacion ? selected_conversacion.id : 0);
 
@@ -45,7 +45,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
 
     const router = useRouter();
 
-    const {id_conversacion} = router.query;
+    const { id_conversacion } = router.query;
 
     useEffect(() => {
         if (conversaciones.data && id_conversacion && selected_conversacion === null) {
@@ -75,24 +75,24 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
     })
 
     const proyecto_prewiew = useMemo(() => {
-		if (rol.isFetching) {
-			return <RolPreviewLoader />;
-		} 
-        
+        if (rol.isFetching) {
+            return <RolPreviewLoader />;
+        }
+
         if (rol.data) {
             return (
                 <Box>
-                    <RolPreview 
+                    <RolPreview
                         no_border
                         no_poster
-                        key={rol.data.id} 
-                        rol={rol.data as unknown as RolCompletoPreview} 
+                        key={rol.data.id}
+                        rol={rol.data as unknown as RolCompletoPreview}
                     />
-                </Box>    
+                </Box>
             )
         }
         return [];
-	}, [rol.data]);
+    }, [rol.data]);
 
     useEffect(() => {
         if (msgs_div_ref.current && msgs_div_ref.current.parentElement) {
@@ -105,10 +105,10 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
             if (data) {
                 void conversaciones.refetch();
             }
-		},
-		onError: (error) => {
-			notify('error', parseErrorBody(error.message));
-		}
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
     })
 
     const saveMensaje = api.mensajes.saveMensaje.useMutation({
@@ -118,10 +118,10 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                 void mensajes.refetch();
                 setMsg('');
             }
-		},
-		onError: (error) => {
-			notify('error', parseErrorBody(error.message));
-		}
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
     })
 
     useEffect(() => {
@@ -174,32 +174,40 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             border: '2px solid #B4B5B6',
                                             borderTop: 'none',
                                             overflowY: 'scroll',
-                                            
+
                                         }}>
                                             {conversaciones.isInitialLoading && conversaciones.isFetching &&
                                                 Array.from({ length: 10 }).map((_, i) => (
-                                                    <PreviewConversation 
+                                                    <PreviewConversation
                                                         loading
-                                                        key={i} 
+                                                        key={i}
                                                     />
                                                 ))
                                             }
                                             {conversaciones.isFetched && conversaciones.data && conversaciones.data.length === 0 &&
-                                                 <Typography style={{padding: '10px 20px 0px 20px',}}>{textos['no_conversaciones']}</Typography>  
+                                                <div style={{
+                                                    backgroundColor: '#a8e2ea', textAlign: 'center',
+                                                    maxWidth: '90%',
+                                                    margin: '1rem auto',
+                                                    padding: '1rem 1.5rem'
+
+                                                }}>
+                                                    <Typography style={{ padding: '10px 20px 0px 20px', }}>{textos['no_conversaciones']}</Typography>
+                                                </div>
                                             }
                                             {conversaciones.isFetched && conversaciones.data &&
                                                 conversaciones.data.map((c, i) => {
                                                     const mensaje = c.mensajes[0];
-                                                    return <Box key={i} style={{backgroundColor: (selected_conversacion && selected_conversacion.id === c.id) ? '#e2e2e2' : ''}} onClick={() => {setSelectedConversacion(c)}}>
-                                                        <PreviewConversation 
+                                                    return <Box key={i} style={{ backgroundColor: (selected_conversacion && selected_conversacion.id === c.id) ? '#e2e2e2' : '' }} onClick={() => { setSelectedConversacion(c) }}>
+                                                        <PreviewConversation
                                                             loading={false}
                                                             profile_url={(parseInt(user.id) === c.id_receptor) ? c.emisor?.profile_url : c.receptor?.profile_url}
                                                             nombre={(parseInt(user.id) === c.id_receptor) ? c.emisor?.nombre : c.receptor?.nombre}
-                                                            hora={(mensaje) ? mensaje.hora_envio.toLocaleTimeString('es-mx', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true}) : 'ND'}
+                                                            hora={(mensaje) ? mensaje.hora_envio.toLocaleTimeString('es-mx', { day: 'numeric', month: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true }) : 'ND'}
                                                             visto={(mensaje && parseInt(user.id) === mensaje.id_receptor && user.tipo_usuario === mensaje.tipo_usuario_receptor) ? mensaje.visto : true}
                                                             mensaje={c.latest_message}
                                                             nombre_proyecto={(c.proyecto) ? c.proyecto.nombre : ''}
-                                                            key={i} 
+                                                            key={i}
                                                         />
                                                     </Box>
                                                 })
@@ -218,8 +226,8 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                             }}>
                                                 <Typography fontWeight={600} mr={4}>
                                                     <Image style={{ marginRight: '10px' }}
-                                                    src="/assets/img/iconos/chair_dir_blue.svg" width={20} height={20} alt="icono" />
-                                                   {selected_conversacion ? es_emisor ? selected_conversacion.receptor?.nombre : selected_conversacion.emisor?.nombre : ''}
+                                                        src="/assets/img/iconos/chair_dir_blue.svg" width={20} height={20} alt="icono" />
+                                                    {selected_conversacion ? es_emisor ? selected_conversacion.receptor?.nombre : selected_conversacion.emisor?.nombre : ''}
                                                 </Typography>
                                                 {selected_conversacion && user.tipo_usuario === TipoUsuario.CAZATALENTOS && selected_conversacion.tipo_usuario_receptor === TipoUsuario.TALENTO &&
                                                     <Link href={`${selected_conversacion.receptor_perfil_url}`} >
@@ -259,7 +267,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 borderLeft: 'none',
                                                 borderBottom: '2px solid #069cb1',
                                                 overflowY: 'scroll',
-                                                padding: '10px 20px 0px 20px',
+                                                // padding: '10px 20px 0px 20px',
                                                 backgroundColor: '#F2F2F2',
                                             }}
                                         >
@@ -268,7 +276,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                     mensajes.data.map((m, i) => {
                                                         switch (m.type) {
                                                             case TipoMensajes.TEXT: {
-                                                                const params = JSON.parse(m.mensaje) as {message: string};
+                                                                const params = JSON.parse(m.mensaje) as { message: string };
                                                                 // si el mensaje es un link entonces lo mostramos como mensaje con media
                                                                 if (Constants.PATTERNS.URL.test(params.message)) {
                                                                     return <MediaMessage
@@ -292,7 +300,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 )
                                                             }
                                                             case TipoMensajes.NOTIFICACION_HORARIO_AGENDA_VIRTUAL: {
-                                                                const params = JSON.parse(m.mensaje) as {message: string, id_intervalo: number, id_rol: number, id_talento: number};
+                                                                const params = JSON.parse(m.mensaje) as { message: string, id_intervalo: number, id_rol: number, id_talento: number };
                                                                 if (user.tipo_usuario !== TipoUsuario.TALENTO) return null;
                                                                 return (
                                                                     <MessageNotificacionHorario
@@ -334,14 +342,14 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 width: '60px',
                                                                 aspectRatio: '1/1'
                                                             }}>
-                                                                <Skeleton width={64} height={64} variant='circular'/>
+                                                                <Skeleton width={64} height={64} variant='circular' />
                                                             </Box>
                                                         </Grid>
                                                         <Grid item container xs={10}>
-                                                            <Skeleton width={'100%'}/>
+                                                            <Skeleton width={'100%'} />
                                                         </Grid>
                                                         <Grid item container xs={10}>
-                                                            <Skeleton width={'100%'}/>
+                                                            <Skeleton width={'100%'} />
                                                         </Grid>
                                                         <Grid item xs={2} pl={10}>
                                                             <Box sx={{
@@ -349,21 +357,29 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 width: '60px',
                                                                 aspectRatio: '1/1'
                                                             }}>
-                                                                <Skeleton width={64} height={64} variant='circular'/>
+                                                                <Skeleton width={64} height={64} variant='circular' />
                                                             </Box>
                                                         </Grid>
-                                                        
+
                                                     </Grid >
                                                 ))
                                             }
                                             {mensajes.isFetched && !mensajes.data &&
-                                                <Typography>{textos['no_se_ha_seleccionado_ninguna_conversacion']}</Typography>   
+                                                <div style={{
+                                                    backgroundColor: '#a8e2ea', textAlign: 'center',
+                                                    maxWidth: '90%',
+                                                    margin: '1rem auto',
+                                                    padding: '1rem 1.5rem'
+
+                                                }}>
+                                                    <Typography style={{ padding: '10px 20px 0px 20px', }}>{textos['no_se_ha_seleccionado_ninguna_conversacion']}</Typography>
+                                                </div>
                                             }
                                             {/*
                                             <ConfirmacionDialog />
                                             
                                             */}
-                                            
+
                                         </Grid>
                                         <Grid item xs={12} sx={{
                                             height: '100px',
@@ -457,15 +473,16 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                     </div>
                 </div>
             </MainLayout>
-            <Dialog  maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden'}} open={project_dialog_opened} onClose={() => setProjectDialogOpened(false)}>
-                <DialogTitle align='left' style={{color: '#069cb1'}}>{'Detalles del proyecto'}</DialogTitle>
-                <DialogContent style={{padding: 0, width: 850, overflow: 'hidden'}}>
+            <Flotantes />
+            <Dialog maxWidth={'md'} style={{ padding: 0, margin: 0, overflow: 'hidden' }} open={project_dialog_opened} onClose={() => setProjectDialogOpened(false)}>
+                <DialogTitle align='left' style={{ color: '#069cb1' }}>{'Detalles del proyecto'}</DialogTitle>
+                <DialogContent style={{ padding: 0, width: 850, overflow: 'hidden' }}>
                     <Box px={4}>
                         {proyecto_prewiew}
                     </Box>
                 </DialogContent>
-                <Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-                    <Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setProjectDialogOpened(false)}>Cerrar</Button>
+                <Box style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+                    <Button style={{ marginLeft: 8, marginRight: 8 }} startIcon={<Close />} onClick={() => setProjectDialogOpened(false)}>Cerrar</Button>
                 </Box>
             </Dialog>
             <FlotantesSinMensajes />

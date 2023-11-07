@@ -22,6 +22,7 @@ import {
   MenuLateral,
   type RolCompletoPreview,
   Tag,
+  Flotantes,
 } from "~/components";
 import Constants from "~/constants";
 import { TipoUsuario } from "~/enums";
@@ -1673,6 +1674,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
           opened={dialog.opened && dialog.id === "aplicar_dialog"}
         />
       </MainLayout>
+      <Flotantes />
     </>
   );
 };

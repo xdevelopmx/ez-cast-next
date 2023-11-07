@@ -1736,6 +1736,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             {element.casting && element.casting.length > 0 ? (
                                               <>
                                                 {element.casting.map((c) => (
+                                                  
                                                   <Fragment key={c.id}>
                                                     <Typography
                                                       component={"span"}
@@ -1756,10 +1757,16 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                       component={"span"}
                                                       sx={{ color: "#928F8F" }}
                                                     >
-                                                      {c.fecha_inicio.toString()}
+                                                      
+                                                      {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('es-MX')+ ' - ': new Date(c.fecha_inicio).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})  + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us')+ ' - '  }
+                                                      
+                                                      {ctx.lang === 'es' ? (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('es-MX'):'') : (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us'):'')  }
+
+                                                      
+                                                      {/* {c.fecha_inicio.toString()}
                                                       {c.fecha_fin
                                                         ? `a ${c.fecha_fin.toString()}`
-                                                        : ""}
+                                                        : ""} */}
                                                     </Typography>
                                                   </Fragment>
                                                 ))}
@@ -1821,10 +1828,13 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                       component={"span"}
                                                       sx={{ color: "#928F8F" }}
                                                     >
-                                                      {c.fecha_inicio.toString()}
-                                                      {c.fecha_fin
+                                                      {/* {c.fecha_inicio.toString() + ' -'} */}
+                                                      {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})+ ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-mx') + ' - ': new Date(c.fecha_inicio).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us')+ ' - '  }
+                                                      {ctx.lang === 'es' ? (c.fecha_fin? new Date(c.fecha_fin).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})+ ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-mx'):'') : (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})+ ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us'):'')  }
+                                                      {/* {c.fecha_fin
                                                         ? `a ${c.fecha_fin.toString()}`
-                                                        : ""}
+                                                        : ""} */}
+
                                                     </Typography>
                                                   </Fragment>
                                                 ))}
