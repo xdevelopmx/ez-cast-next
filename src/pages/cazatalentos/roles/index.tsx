@@ -150,6 +150,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
           (p) => p.estatus.toUpperCase() === "ARCHIVADO"
         );
       }
+      console.log('listade roles',roles.data);
       return roles.data.filter((p) => p.estatus.toUpperCase() !== "ARCHIVADO");
     }
     return [];
@@ -1165,9 +1166,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     if (roles.isFetching) {
                       return null;
                     }
+                    
+                    console.log('elindice',element_index);
                     const element = filtered_roles[element_index];
                     if (element) {
-                      console.log(element);
+                      console.log('el elemento',element);
                       return (
                         <div style={{ width: "100%" }}>
                           <Grid container p={2}>
@@ -1758,9 +1761,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                       sx={{ color: "#928F8F" }}
                                                     >
                                                       
-                                                      {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('es-MX')+ ' - ': new Date(c.fecha_inicio).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})  + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us')+ ' - '  }
+                                                      {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}) + ' - ': new Date(c.fecha_inicio).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'})+ ' - '  }
                                                       
-                                                      {ctx.lang === 'es' ? (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('es-MX'):'') : (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us'):'')  }
+                                                      {ctx.lang === 'es' ? (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}) :'') : (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}):'')  }
 
                                                       
                                                       {/* {c.fecha_inicio.toString()}
@@ -1829,8 +1832,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                       sx={{ color: "#928F8F" }}
                                                     >
                                                       {/* {c.fecha_inicio.toString() + ' -'} */}
-                                                      {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})+ ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-mx') + ' - ': new Date(c.fecha_inicio).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',}) + ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us')+ ' - '  }
-                                                      {ctx.lang === 'es' ? (c.fecha_fin? new Date(c.fecha_fin).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})+ ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-mx'):'') : (c.fecha_fin?new Date(c.fecha_fin).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',})+ ' ' + new Date(c.fecha_inicio).toLocaleTimeString('en-us'):'')  }
+                                                      {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric', timeZone: 'UTC'})+ ' - ': new Date(c.fecha_inicio).toLocaleString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}) + ' - '  }
+                                                      {ctx.lang === 'es' ? (c.fecha_fin? new Date(c.fecha_fin).toLocaleString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}):'') : (c.fecha_fin?new Date(c.fecha_fin).toLocaleString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}):'')  }
                                                       {/* {c.fecha_fin
                                                         ? `a ${c.fecha_fin.toString()}`
                                                         : ""} */}

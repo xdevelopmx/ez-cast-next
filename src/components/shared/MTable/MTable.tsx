@@ -254,7 +254,7 @@ export const MTable: FC<MTableProps> = ({
                       }}
                     >
                       <TableCell colSpan={columnsHeader?.length}>
-                        {accordionContent && accordionContent(i)}
+                        {accordionContent && accordionContent((pagination.page * pagination.page_size) + i)}
                       </TableCell>
                     </TableRow>
                   </>
