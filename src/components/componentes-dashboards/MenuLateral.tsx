@@ -1225,8 +1225,8 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "start",
-                      justifyContent: "start",
+                      alignItems: "center",
+                      // justifyContent: "center",
                     }}
                   >
                     <Image
@@ -1236,53 +1236,10 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       height="30"
                       alt=""
                     />
-                    <a
-                      style={{
-                        textDecoration: "underline", color: "#fff",
-                     
-                      }}
-                      href={form.redes_sociales.pagina_web}
-                      target="_blank"
-                    >
-                      <Typography
-                        sx={{
-                          textAlign: "center", fontSize: "0.9rem", color: "#fff",
-                        
-                          [theme.breakpoints.up('xl')]: {
-                            overflowWrap: 'break-word',
-                            maxWidth: '100%'
-                          },
-                          // [theme.breakpoints.down('xl')]: {
-                          //   overflowWrap: 'break-word',
-                          //   maxWidth: '80%'
-                          // },
-                          [theme.breakpoints.up('lg')]: {
-                            overflowWrap: 'break-word',
-                            maxWidth: '70%'
-                          },
-                          [theme.breakpoints.up('md')]: {
-                            overflowWrap: 'break-word',
-                            maxWidth: '50%'
-                          },
-                          [theme.breakpoints.up('sm')]: {
-                            overflowWrap: 'break-word',
-                            maxWidth: '35%'
-                          },
-                          [theme.breakpoints.up('sm')]: {
-                            overflowWrap: 'break-word',
-                            maxWidth: '20%'
-                          },
-                          
-                    
-
-                        }}>
-                        {form.redes_sociales.pagina_web}
-                      </Typography>
+                    <a href={form.redes_sociales.pagina_web}  target="_blank" style={{ textDecoration: "underline",color: '#fff', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%'}}>
+                      {form.redes_sociales.pagina_web}
                     </a>
                   </Box>
-
-
-
                 </>
               )}
 
