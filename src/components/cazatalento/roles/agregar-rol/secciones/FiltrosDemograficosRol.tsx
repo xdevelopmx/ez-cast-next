@@ -64,7 +64,8 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
         case "Grande":
           return ctx.lang === "es" ? state.animal.tamanio : "Large";
       }
-      return `${textos["chico"]}`;
+      // return `${textos["chico"]}`;
+      return ``;
     }
     return "";
   }, [state.animal?.tamanio, ctx.lang]);
@@ -216,15 +217,15 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                   options={
                     generos.data
                       ? generos.data.map((g) =>
-                          ctx.lang === "es" ? g.es : g.en
-                        )
+                        ctx.lang === "es" ? g.es : g.en
+                      )
                       : []
                   }
                   values={
                     generos.data
                       ? generos.data.map((g) => {
-                          return state.generos.includes(g.id);
-                        })
+                        return state.generos.includes(g.id);
+                      })
                       : [false]
                   }
                 />
@@ -279,8 +280,8 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                           apariencia.id
                         )
                           ? state.apariencias_etnias.filter(
-                              (e) => e !== apariencia.id
-                            )
+                            (e) => e !== apariencia.id
+                          )
                           : state.apariencias_etnias.concat([apariencia.id]),
                       });
                     }
@@ -290,15 +291,15 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                   options={
                     apariencias.data
                       ? apariencias.data.map((g) =>
-                          ctx.lang === "es" ? g.es : g.en
-                        )
+                        ctx.lang === "es" ? g.es : g.en
+                      )
                       : []
                   }
                   values={
                     apariencias.data
                       ? apariencias.data.map((g) => {
-                          return state.apariencias_etnias.includes(g.id);
-                        })
+                        return state.apariencias_etnias.includes(g.id);
+                      })
                       : [false]
                   }
                 />
@@ -314,11 +315,11 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                 options={
                   nacionalidades.data
                     ? nacionalidades.data.map((s) => {
-                        return {
-                          value: s.id.toString(),
-                          label: ctx.lang === "es" ? s.es : s.en,
-                        };
-                      })
+                      return {
+                        value: s.id.toString(),
+                        label: ctx.lang === "es" ? s.es : s.en,
+                      };
+                    })
                     : []
                 }
                 value={state.id_pais.toString()}
@@ -359,22 +360,26 @@ export const FiltrosDemograficosRol: FC<Props> = ({ state, onFormChange }) => {
                 options={
                   mascotas.data
                     ? mascotas.data.map((s) => {
-                        // console.log('valor de mascotas',s); 
-                        return {
-                          value: s.id.toString(),
-                          label: ctx.lang === "es" ? s.es : s.en,
-                        };
-                      })
+                      // console.log('valor de mascotas',s); 
+                      return {
+                        value: s.id.toString(),
+                        label: ctx.lang === "es" ? s.es : s.en,
+                      };
+                    })
                     : []
                 }
                 value={state.animal ? state.animal.id.toString() : "0"}
                 className={"form-input-md"}
                 onChange={(e) => {
-                  console.log('target',e.target.value);
+                  console.log('target', e.target.value);
+                  // onFormChange({
+                  //   animal: { id: parseInt(e.target.value) },
+                  // });
+                  const animalId = e.target.value;
                   onFormChange({
-                    animal: { id: parseInt(e.target.value) },
+                   animal: { id: (animalId !== "0" ? parseInt(animalId) : 0)},
                   });
-                  console.log('verificando_animal',state.animal?.id);
+                  console.log('verificando_animal', state.animal?.id);
                 }}
                 labelStyle={estilosBold}
               />

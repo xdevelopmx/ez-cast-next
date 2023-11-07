@@ -770,6 +770,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
           state.compensacion.compensaciones_no_monetarias,
       };
     }
+
     form.data.compensaciones = {
       ...form.data.compensaciones,
       compensacion: {
@@ -810,28 +811,71 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
       };
     }
 
+    // if (state.filtros_demograficos.es_mascota) {
+    //   if (state.filtros_demograficos.animal) {
+    //     if (
+    //       state.filtros_demograficos.animal.id <= 0 ||
+    //       (
+    //         state &&
+    //         state.filtros_demograficos &&
+    //         state.filtros_demograficos.animal &&
+    //         state.filtros_demograficos.animal.tamanio &&
+    //         state.filtros_demograficos.animal.tamanio.length === 0) &&
+    //         (
+    //           state &&
+    //           state.filtros_demograficos &&
+    //           state.filtros_demograficos.animal &&
+    //           state.filtros_demograficos.animal.descripcion &&
+    //           state.filtros_demograficos.animal.descripcion.length === 0)
+    //     ) {
+    //       return { ...form, error: `${textos['animal_invalido']}` };
+    //     }
+    //   } else {
+    //     return { ...form, error: `${textos['animal_invalido']}` };
+    //   }
+    //   console.log("estadodescripcion",state.filtros_demograficos?.animal);
+    //   form.data.filtros_demograficos = {
+    //     ...form.data.filtros_demograficos,
+    //     animal: state.filtros_demograficos.animal,
+    //   };
+    // }
+
     if (state.filtros_demograficos.es_mascota) {
       if (state.filtros_demograficos.animal) {
+        const { animal } = state.filtros_demograficos;
+    
         if (
-          state.filtros_demograficos.animal.id <= 0 ||
-          (
-            state &&
-            state.filtros_demograficos &&
-            state.filtros_demograficos.animal &&
-            state.filtros_demograficos.animal.tamanio &&
-            state.filtros_demograficos.animal.tamanio.length === 0)
+          animal.id <= 0 ||
+          !(animal.tamanio && animal.tamanio.length) ||
+          !(animal.descripcion && animal.descripcion.length)
         ) {
           return { ...form, error: `${textos['animal_invalido']}` };
         }
+    
+        form.data.filtros_demograficos = {
+          ...form.data.filtros_demograficos,
+          animal,
+        };
       } else {
         return { ...form, error: `${textos['animal_invalido']}` };
       }
-
-      form.data.filtros_demograficos = {
-        ...form.data.filtros_demograficos,
-        animal: state.filtros_demograficos.animal,
-      };
     }
+
+    //mejorando validacion de mascota 
+    // if (state.filtros_demograficos.es_mascota && state.filtros_demograficos.animal) {
+    //   const { animal } = state.filtros_demograficos;
+
+    //   if (animal.id <= 0 || !(animal.tamanio && animal.tamanio.length) || !animal.descripcion) {
+    //     return { ...form, error: `${textos['animal_invalido']}` };
+    //   }
+
+    //   form.data.filtros_demograficos = {
+    //     ...form.data.filtros_demograficos,
+    //     animal,
+    //   };
+    // } else {
+    //   return { ...form, error: `${textos['animal_invalido']}` };
+    // }
 
     if (state.filtros_demograficos.id_pais <= 0) {
       return { ...form, error: `${textos['nacionalidad_invalida']}` };
@@ -1290,6 +1334,11 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     );
   }, [state.selftape, rol.isFetching]);
 
+  useEffect(() => {
+    console.log("que hay en form_validate", form_validate);
+    console.log("que hay en form_validate.complete", form_validate.complete);
+  }, [form_validate]);
+
   return (
     <>
       <Head>
@@ -1361,7 +1410,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                     {form_validate.complete && (
                       <Button
                         onClick={() => {
-                          console.log(form_validate.data);
+                          console.log('informacion a guardar', form_validate.data);
                           if (
                             state.informacion_general.nombre.length > 1 &&
                             state.informacion_general.id_tipo_rol > 0

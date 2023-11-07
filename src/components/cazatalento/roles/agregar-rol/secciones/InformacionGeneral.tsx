@@ -174,7 +174,7 @@ export const InformacionGeneralRol: FC<Props> = ({
             });
           }}
           direction="vertical"
-          title={`${textos["tipo_de_trabajo"]}`}
+          title={`${textos["tipo_de_trabajo"]}*`}
           onChange={(e, i) => {
             if (tipos_trabajo.data) {
               const tipo_trabajo = tipos_trabajo.data[i];
@@ -195,6 +195,7 @@ export const InformacionGeneralRol: FC<Props> = ({
           }}
           id="tipo-trabajo"
           labelStyle={{ marginBottom: 0 }}
+          
           options={
             tipos_trabajo.data
               ? tipos_trabajo.data.map((t) => (ctx.lang === "es" ? t.es : t.en))
