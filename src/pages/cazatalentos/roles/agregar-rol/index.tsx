@@ -843,13 +843,20 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     if (state.filtros_demograficos.es_mascota) {
       if (state.filtros_demograficos.animal) {
         const { animal } = state.filtros_demograficos;
-    
         if (
-          animal.id <= 0 ||
-          !(animal.tamanio && animal.tamanio.length) ||
+          animal.id <= 0
+        ) {
+          return { ...form, error: `${textos['animal_invalido_tipo']}` };
+        }
+        if (
           !(animal.descripcion && animal.descripcion.length)
         ) {
-          return { ...form, error: `${textos['animal_invalido']}` };
+          return { ...form, error: `${textos['animal_invalido_descripcion']}` };
+        }
+        if (
+          !(animal.tamanio && animal.tamanio.length)
+        ) {
+          return { ...form, error: `${textos['animal_invalido_tamanio']}` };
         }
     
         form.data.filtros_demograficos = {
