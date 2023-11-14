@@ -11,7 +11,7 @@ import {
 import { GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { Alert, Button, Grid, Typography } from "@mui/material";
+import { Alert, Button, Grid, Typography } from "@mui/material"; 
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import {
   DescripcionDelRol,
@@ -858,7 +858,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         ) {
           return { ...form, error: `${textos['animal_invalido_tamanio']}` };
         }
-    
+
         form.data.filtros_demograficos = {
           ...form.data.filtros_demograficos,
           animal,
@@ -1415,7 +1415,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                 <div className="col d-flex justify-content-center">
                   <div className="mr-3">
                     {form_validate.complete && (
-                      <Button
+                      <button
                         onClick={() => {
                           console.log('informacion a guardar', form_validate.data);
                           if (
@@ -1451,12 +1451,12 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                             : `${textos['llenar_campos']}`
                             }`}{" "}
                         </Typography>
-                      </Button>
+                      </button>
                     )}
                   </div>
                   {form_validate.complete && state.id_rol === 0 && (
                     <div>
-                      <Button
+                      <button
                         onClick={() => {
                           if (
                             state.informacion_general.nombre.length > 1 &&
@@ -1483,7 +1483,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                         type="button"
                       >
                         <Typography>{`${textos["guardar_y_crear_otro_rol"]}`}</Typography>
-                      </Button>
+                      </button>
                     </div>
                   )}
                 </div>

@@ -27,6 +27,7 @@ import { TipoUsuario } from "~/enums";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 export type ProyectoForm = {
   id: number;
@@ -247,7 +248,8 @@ const Proyecto: NextPage = () => {
       if (data) {
         notify("success", `${textos['se_guardo_el_proyecto_con_exito']}`);
         if (redirect === "back") {
-          router.back();
+          void router.push("/cazatalentos/dashboard");
+          // router.back();
         } else {
           void router.push(
             `/cazatalentos/roles/agregar-rol?id-proyecto=${data.id}`
@@ -658,6 +660,9 @@ const Proyecto: NextPage = () => {
           </div>
         </div>
       </MainLayout>
+      <ResourceAlert
+        busy={updateProyecto.isLoading}
+      />
       <Flotantes />
     </>
   );

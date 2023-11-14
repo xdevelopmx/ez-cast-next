@@ -705,7 +705,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     privado: "Privado",
     lineas: "Lineas",
     lineas_self: "Agregar / editar líneas",
-    no_visto: "No Visto",
+    no_visto: "No visto",
     visto: "Visto",
     audicion: "Audición",
     callback: 'Callback',

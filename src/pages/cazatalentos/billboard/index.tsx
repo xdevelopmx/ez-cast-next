@@ -187,21 +187,21 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   //});
 
   /*
-	useEffect(() => {
-		if (!proyectos.data) return;
-		if (proyectos.data.length === 0) return;
-		setProyectoSeleccionado(`${proyectos.data[0]?.id || '0'}` || '0')
-		setIdProyectoSeleccionado(proyectos.data[0]?.id || 0)
-	}, [proyectos.data])
+  useEffect(() => {
+    if (!proyectos.data) return;
+    if (proyectos.data.length === 0) return;
+    setProyectoSeleccionado(`${proyectos.data[0]?.id || '0'}` || '0')
+    setIdProyectoSeleccionado(proyectos.data[0]?.id || 0)
+  }, [proyectos.data])
 
-	useEffect(() => {
-		if (proyectoSeleccionado === '0') return;
-		if (!proyectos.data) return;
-		const idProyecto = proyectos.data.find(p => p.id === parseInt(proyectoSeleccionado))?.id || 0
-		if (!idProyecto) return;
-		setIdProyectoSeleccionado(idProyecto)
-	}, [proyectoSeleccionado, proyectos.data])
-	*/
+  useEffect(() => {
+    if (proyectoSeleccionado === '0') return;
+    if (!proyectos.data) return;
+    const idProyecto = proyectos.data.find(p => p.id === parseInt(proyectoSeleccionado))?.id || 0
+    if (!idProyecto) return;
+    setIdProyectoSeleccionado(idProyecto)
+  }, [proyectoSeleccionado, proyectos.data])
+  */
 
   const rol_applications_content = useMemo(() => {
     if (rol_applications.isFetching && selected_rol > 0) {
@@ -238,10 +238,10 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
               a.talento.info_basica && a.talento.info_basica.union
                 ? a.talento.info_basica.union.id_union === 99
                   ? `${
-                      a.talento.info_basica.union.descripcion
-                        ? a.talento.info_basica.union.descripcion
-                        : "N/D"
-                    }`
+                    a.talento.info_basica.union.descripcion
+                    ? a.talento.info_basica.union.descripcion
+                    : "N/D"
+                  }`
                   : ctx.lang === 'es' ? a.talento.info_basica.union.union.es : a.talento.info_basica.union.union.en
                 : "N/D"
             }
@@ -319,8 +319,8 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                           sx={{
                             p: 0,
                             transform: open_proyecto_select
-                              ? "rotate(0deg)"
-                              : "rotate(180deg)",
+                              ? "rotate(180deg)"
+                              : "rotate(0deg)",
                             marginLeft: "auto",
                             transition: "ease-in-out 0.5s",
                           }}
@@ -395,40 +395,43 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                       lineHeight={1}
                     >
                       {selected_rol > 0 &&
-                      roles_by_proyecto.data &&
-                      roles_by_proyecto.data.length > 0
+                        roles_by_proyecto.data &&
+                        roles_by_proyecto.data.length > 0
                         ? roles_by_proyecto.data.filter(
-                            (r) => selected_rol === r.id
-                          )[0]?.nombre
+                          (r) => selected_rol === r.id
+                        )[0]?.nombre
                         : "No se ha seleccionado ningun rol"}
                     </Typography>
                   </MContainer>
                   <Divider style={{ borderWidth: 1, marginTop: "10px" }} />
                 </Grid>
-                <Grid item xs={12}>
-                  <Grid container item xs={12} mt={1}>
+                <Grid item xs={12} >
+                  <Grid container item xs={12}>
                     <Grid
                       container
                       item
                       xs={20}
-                      sx={{ backgroundColor: "#069cb1", padding: "20px 10px" }}
+                      sx={{ backgroundColor: "#069cb1", padding: "18px 10px", display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center', }}
                       columns={20}
                     >
                       <Grid item xs={4}>
-                        <MContainer direction="horizontal" styles={{ gap: 10 }}>
-                          <Typography>{textos['rol']}</Typography>
+                        <MContainer direction="horizontal" >
+                          <Typography sx={{ paddingRight: 1 }} className="fuente_menor_resolucion">{textos['rol']}</Typography>
                           <MSelect
                             id="nombre-rol-select"
                             loading={roles_by_proyecto.isFetching}
                             options={
                               roles_by_proyecto.data
                                 ? roles_by_proyecto.data.map((r) => ({
-                                    label: r.nombre,
-                                    value: r.id.toString(),
-                                  }))
+                                  label: r.nombre,
+                                  value: r.id.toString(),
+                                }))
                                 : []
                             }
                             className={"form-input-md"}
+                            styleRoot={{ width: "75%"}}
                             value={selected_rol.toString()}
                             onChange={(e) => {
                               setSelectedRol(parseInt(e.target.value));
@@ -438,22 +441,22 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         </MContainer>
                       </Grid>
                       <Grid item xs={4}>
-                        <MContainer direction="horizontal" styles={{ gap: 10 }}>
-                          <Typography sx={{ paddingRight: 1 }}>{textos['ver']}</Typography>
+                        <MContainer direction="horizontal" >
+                          <Typography sx={{ paddingRight: 1 }} className="fuente_menor_resolucion">{textos['ver']}</Typography>
                           <MSelect
                             id="estado-aplicacion-rol-select"
                             loading={estados_aplicaciones_roles.isFetching}
                             options={
                               estados_aplicaciones_roles.data
                                 ? estados_aplicaciones_roles.data.map((e) => {
-                                    return {
-                                      value: e.id.toString(),
-                                      label: ctx.lang === 'es' ? e.es : e.en,
-                                    };
-                                  })
+                                  return {
+                                    value: e.id.toString(),
+                                    label: ctx.lang === 'es' ? e.es : e.en,
+                                  };
+                                })
                                 : []
                             }
-                            styleRoot={{ width: "70%" }}
+                            styleRoot={{ width: "70%"}}
                             value={estado_aplicacion_rol.toString()}
                             disable_default_option
                             onChange={(e) => {
@@ -465,7 +468,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                       </Grid>
 
                       <Grid xs={3}>
-                        <Typography sx={{ color: "#fff", textAlign: "center" }}>
+                        <Typography sx={{ color: "#fff", textAlign: "center" }} className="fuente_menor_resolucion">
                           {`${textos['PAGINADOR_TOTAL']}`.replace('[N1]', rol_applications.data ? rol_applications.data.count_applications.toString() : '0')}
                         </Typography>
                       </Grid>
@@ -476,10 +479,11 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                           styles={{
                             alignItems: "center",
                             justifyContent: "flex-end",
+                            minWidth: "100px" // Ajusta el valor según tus necesidades
                           }}
                         >
                           <>
-                            <Typography>
+                            <Typography className="fuente_menor_resolucion">
                               {textos['ver']}
                               <Typography
                                 onChange={(ev) => {
@@ -492,11 +496,11 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                 }}
                                 component={"select"}
                                 sx={{
-                                  marginLeft: 2,
+                                  marginLeft: 1,
                                   marginRight: 2,
                                   backgroundColor: "#fff",
                                   borderRadius: "1rem",
-                                  padding: "0px 8px",
+                                  // padding: "0px 8px",
                                 }}
                               >
                                 {pagination.page_size}
@@ -524,7 +528,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                 >
                                   16
                                 </option>
-                              </Typography>
+                              </Typography >
                               {textos['resultados']}
                             </Typography>
                             <Button
@@ -534,26 +538,29 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                   return { ...prev, page: prev.page - 1 };
                                 });
                               }}
-                              sx={{ width: "20px", padding: 0 }}
+                              sx={{ minWidth: "50px", padding: 0, margin: 0 }}
                             >
                               <Image
                                 src="/assets/img/iconos/arrow_l_white.svg"
-                                width={20}
-                                height={20}
+                                width={15}
+                                height={15}
                                 alt=""
                               />
                             </Button>
                             {rol_applications.isFetching && <Skeleton />}
                             {!rol_applications.isFetching &&
                               has_applitations && (
-                                <Typography>
+                                <Typography className="fuente_menor_resolucion"
+                                 >
                                   Página{" "}
                                   <Typography
                                     component={"span"}
+                                    className="fuente_menor_resolucion"
                                     sx={{
                                       backgroundColor: "#fff",
                                       borderRadius: "1rem",
                                       padding: "0px 8px",
+                                      // margin:0
                                     }}
                                   >
                                     {pagination.page + 1}
@@ -561,16 +568,17 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                   de{" "}
                                   {rol_applications.data
                                     ? Math.ceil(
-                                        rol_applications.data
-                                          .count_applications /
-                                          pagination.page_size
-                                      )
+                                      rol_applications.data
+                                        .count_applications /
+                                      pagination.page_size
+                                    )
                                     : 0}
                                 </Typography>
                               )}
                             {!rol_applications.isFetching &&
                               !has_applitations && (
-                                <Typography>{textos['sin']} {textos['resultados']}</Typography>
+                                <Typography className="fuente_menor_resolucion">{textos['sin']}  {textos['resultados']}</Typography>
+                                // <Typography >0</Typography>
                               )}
                             <Button
                               disabled={!has_applitations}
@@ -579,12 +587,12 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                   return { ...prev, page: prev.page + 1 };
                                 });
                               }}
-                              sx={{ width: "20px", padding: 0 }}
+                              sx={{ minWidth: "50px", padding: 0, margin: 0 }}
                             >
                               <Image
                                 src="/assets/img/iconos/arrow_r_white.svg"
-                                width={20}
-                                height={20}
+                                width={15}
+                                height={15}
                                 alt=""
                               />
                             </Button>
@@ -792,9 +800,9 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                               {textos['de']} {" "}
                               {rol_applications.data
                                 ? Math.ceil(
-                                    rol_applications.data.count_applications /
-                                      pagination.page_size
-                                  )
+                                  rol_applications.data.count_applications /
+                                  pagination.page_size
+                                )
                                 : 0}
                             </Typography>
                             <Button
@@ -809,7 +817,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                               }}
                               disabled={
                                 pagination.page * pagination.page_size +
-                                  pagination.page_size >=
+                                pagination.page_size >=
                                 rol_applications.data.count_applications
                               }
                               sx={{ textTransform: "none" }}
@@ -822,7 +830,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                                     color:
                                       pagination.page * pagination.page_size +
                                         pagination.page_size >=
-                                      rol_applications.data.count_applications
+                                        rol_applications.data.count_applications
                                         ? "gray"
                                         : "#069cb1",
                                   }}

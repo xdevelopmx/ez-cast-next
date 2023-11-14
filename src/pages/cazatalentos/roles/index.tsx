@@ -214,7 +214,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={1}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -223,7 +223,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={2}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -232,7 +232,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={3}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -241,7 +241,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={4}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -250,7 +250,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={5}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -259,7 +259,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={6}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -268,7 +268,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     <Typography
       key={7}
       sx={{ color: "#000", textAlign: "center !important" }}
-      fontSize={"1.2rem"}
+      fontSize={"1rem"}
       fontWeight={600}
       component={"p"}
     >
@@ -493,7 +493,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`}
                               >
                                 <Button
-                                  className="btn btn-intro btn-price btn_out_line mb-2"
+                                  className="btn btn-intro btn-price btn_out_line "
                                   startIcon={
                                     <Image
                                       src={`/assets/img/iconos/cruz_ye.svg`}
@@ -503,10 +503,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     />
                                   }
                                   style={{
-                                    padding: "8px 40px",
+                                    padding: "4px 35px",
                                     marginTop: 0,
                                     marginRight: 10,
                                     fontWeight: 500,
+                                    textTransform: 'none',
                                   }}
                                 >
                                   {`${textos["nuevo_rol"]}`}
@@ -534,12 +535,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           ),
                                         });
                                       }}
-                                      className="btn btn-sm btn-intro btn-price mb-2"
+                                      className="btn btn-sm btn-intro btn-price "
                                       style={{
-                                        padding: "8px 40px",
+                                        padding: "7px 25px",
                                         marginTop: 0,
-                                        display: "block",
-                                        height: 40,
+                                        // display: "block",
+                                        // height: 40,
                                         fontWeight: 700,
                                         textTransform: "none",
                                         color: "#000",
@@ -573,7 +574,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               color = "tomato";
                               break;
                             case Constants.ESTADOS_PROYECTO.APROBADO:
-                              color = "green";
+                              color = "#8bc34a";
                               break;
                           }
                           return color;
@@ -832,7 +833,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               color: "#000",
                               textAlign: "center !important",
                             }}
-                            fontSize={"1.2rem"}
+                            fontSize={"1rem"}
                             fontWeight={600}
                             component={"p"}
                           >
@@ -1184,7 +1185,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <Typography
                                       component={"span"}
                                       sx={{
-                                        color: "#928F8F",
+                                        color: "#000000",
                                         textTransform: "capitalize",
                                       }}
                                     >
@@ -1192,7 +1193,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </Typography>
                                   ) : (
                                     <>
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         No especificado
                                       </Typography>
                                       <Divider
@@ -1217,7 +1218,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         }}
                                         orientation="vertical"
                                       />
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         {ctx.lang === 'es' ? element.tipo_rol.es : element.tipo_rol.en}
                                       </Typography>
                                       <Divider
@@ -1243,7 +1244,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             >
                                               <Typography
                                                 component={"span"}
-                                                sx={{ color: "#928F8F" }}
+                                                sx={{ color: "#000000" }}
                                               >
                                                 {ctx.lang === 'es' ? c.compensacion.es : c.compensacion.en}
                                               </Typography>
@@ -1268,7 +1269,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   ) : (
                                     <>
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         {textos['no_especificado']}
                                       </Typography>
                                     </>
@@ -1288,7 +1289,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       />
                                       <Typography
                                         component={"span"}
-                                        sx={{ color: "#928F8F" }}
+                                        sx={{ color: "#000000" }}
                                       >
                                         {
                                           ctx.lang === 'es' ? element.proyecto.sindicato.sindicato.es : element.proyecto.sindicato.sindicato.en
@@ -1316,7 +1317,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         }}
                                         orientation="vertical"
                                       />
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
@@ -1342,7 +1343,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                         <Fragment key={g.id_genero}>
                                           <Typography
                                             component={"span"}
-                                            sx={{ color: "#928F8F" }}
+                                            sx={{ color: "#000000" }}
                                           >
                                             {ctx.lang === 'es' ? g.genero.es : g.genero.en}
                                           </Typography>
@@ -1360,7 +1361,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     )
                                   ) : (
                                     <>
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
@@ -1379,7 +1380,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     <>
                                       <Typography
                                         component={"span"}
-                                        sx={{ color: "#928F8F" }}
+                                        sx={{ color: "#000000" }}
                                       >
                                         {
                                           element.filtros_demograficos.rango_edad_inicio
@@ -1401,7 +1402,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   ) : (
                                     <>
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
@@ -1425,7 +1426,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           >
                                             <Typography
                                               component={"span"}
-                                              sx={{ color: "#928F8F" }}
+                                              sx={{ color: "#000000" }}
                                             >
                                               {ctx.lang === 'es' ? ae.aparencia_etnica.es : ae.aparencia_etnica.en}
                                             </Typography>
@@ -1444,7 +1445,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   ) : (
                                     <>
-                                      <Typography sx={{ color: "#928F8F" }}>
+                                      <Typography sx={{ color: "#000000" }}>
                                         {`${textos['no_especificado']}`}
                                       </Typography>
                                       <Divider
@@ -1462,7 +1463,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   {element.filtros_demograficos ? (
                                     <Typography
                                       component={"span"}
-                                      sx={{ color: "#928F8F" }}
+                                      sx={{ color: "#000000" }}
                                     >
                                       {
                                         ctx.lang === 'es' ? element.filtros_demograficos.pais.es : element.filtros_demograficos.pais.en
@@ -1594,7 +1595,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                               component={"span"}
                                                               sx={{
                                                                 color:
-                                                                  "#928F8F",
+                                                                  "#000000",
                                                               }}
                                                             >
                                                               {ctx.lang === 'es' ? h.habilidad.es : h.habilidad.en}

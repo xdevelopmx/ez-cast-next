@@ -16,18 +16,31 @@ export const Flotantes = () => {
     <Box position={"relative"}>
       <div className="fixed_items">
         <div className="container_chat_blue mb-3">
+
+          <div className="image_chat container_calendar_blue"
+            style={{ marginBottom: 15 }}
+          >
+            <motion.img
+              src="/assets/img/iconos/EZ_Claqueta.svg"
+              className="claqueta_black rounded"
+              width={55}
+            />
+          </div>
+
           <div
             className="image_chat"
+
             onClick={() => {
               setShowConversaciones((prev) => !prev);
             }}
           >
+
             {mensajes_no_vistos.data
               ? mensajes_no_vistos.data > 0 && (
-                  <span className="count_msn active">
-                    {mensajes_no_vistos.data}
-                  </span>
-                )
+                <span className="count_msn active">
+                  {mensajes_no_vistos.data}
+                </span>
+              )
               : null}
             <motion.img
               src="/assets/img/iconos/ico_chat_blue.svg"

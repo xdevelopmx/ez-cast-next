@@ -72,23 +72,27 @@ export const Alertas = () => {
         return (
           <div
             key={i}
-            style={{ backgroundColor: a.visto ? "lightgray" : "#4ab7c6" }}
+            // style={{ backgroundColor: a.visto ? "lightgray" : "#4ab7c6", textAlign: 'center', }}
+            style={{ backgroundColor: a.visto ? "lightgray" : "#4ab7c6", textAlign: 'center', display: 'flex', alignItems: 'center' }}
           >
-            {!a.visto && (
-              <Circle
-                style={{
-                  position: "absolute",
-                  color: "tomato",
-                  width: 16,
-                  height: 16,
-                  marginRight: 4,
-                  top: "calc(50% - 8px)",
-                  left: 8,
-                }}
-              />
-            )}
-            <div style={{ padding: 14, marginLeft: 32, width: "85%" }}>
-              <div dangerouslySetInnerHTML={{ __html: a.mensaje }} />
+
+            {/* <div style={{ marginLeft: 'auto', marginRight: 'auto', width: '100%', textAlign: 'justify' }}> */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'justify' }}>
+              <div style={{ margin: 0, paddingLeft: 10, paddingRight: 5, }}>
+                {!a.visto && (
+                  <Circle
+                    style={{
+                      color: "tomato",
+                      width: 16,
+                      height: 16,
+                      marginRight: 4,
+                    }}
+                  />
+                )
+                }
+
+              </div>
+              <div style={{ margin: 0, paddingTop: 20, paddingLeft: 5, paddingRight: 25, paddingBottom: 10 }} dangerouslySetInnerHTML={{ __html: a.mensaje }} />
             </div>
             <IconButton
               onClick={(e) => {
@@ -191,7 +195,7 @@ export const Alertas = () => {
             <div className="box_alert_header mr-4">
               <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
               {alertas.data &&
-              alertas.data.filter((a) => !a.visto).length > 0 ? (
+                alertas.data.filter((a) => !a.visto).length > 0 ? (
                 <span className="count_msn active">
                   {alertas.data.filter((a) => !a.visto).length}
                 </span>
@@ -212,8 +216,8 @@ export const Alertas = () => {
                       : 0,
                   tipo_user:
                     session.data &&
-                    session.data.user &&
-                    session.data.user.tipo_usuario
+                      session.data.user &&
+                      session.data.user.tipo_usuario
                       ? session.data.user.tipo_usuario
                       : "",
                 });
@@ -243,7 +247,7 @@ export const Alertas = () => {
               },
               [theme.breakpoints.up('xs')]: {
                 maxHeight: '25dvh'
-              }, 
+              },
             }}
           >
             {alert_elements.map((r, i) => {

@@ -1059,22 +1059,22 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
 
         {!edit_mode && (
           <>
-            <motion.img
+            {/* <motion.img
               src="/assets/img/iconos/EZ_Claqueta.svg"
               className="mb-3 claqueta_black"
               style={{
                 width: "55px",
                 marginTop: "30px"
               }}
-            />
-            <p
+            /> */}
+            {/* <p
               className="h2 text-uppercase text-white mb-3"
               style={{
                 fontSize: "24px",
               }}
-            >
-              <b>EZ-CAST</b>
-            </p>
+            > */}
+              {/* <b>EZ-CAST</b> */}
+            {/* </p> */}
             {user_info?.tipo_usuario === TipoUsuario.TALENTO && (
               <p
                 className="h2 text-white mb-0"
@@ -1106,13 +1106,16 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
             </Box>
             {is_fetching && <Skeleton className="h2 text-white mb-0" />}
             {!is_fetching && (
-              <p className="h2 text-white mb-0">{user_info?.nombre}</p>
+              <p className="h2 text-white mb-0"  style={{
+                fontSize: "22px",
+              }}>{user_info?.nombre}</p>
             )}
             {is_fetching && (
               <Skeleton className="h2 text-white mb-3 user_lastName" />
             )}
             {!is_fetching && (
-              <p className="h2 text-white mb-3 user_lastName">
+              <p className="h2 text-white mb-3 user_lastName"  style={{
+                fontSize: "22px"}}>
                 {user_info?.apellido}
               </p>
             )}
@@ -1252,7 +1255,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
             {!is_fetching && (
               <p
                 onClick={() => setEditMode((edit) => !edit)}
-                className="mt-2 mb-5 text-white open_popup"
+                className="mt-2 text-white open_popup"
                 data-popup="box_editprofile"
                 style={{
                   textDecoration: "underline",

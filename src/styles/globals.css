@@ -1359,6 +1359,24 @@ footer {
   margin: 0 auto;
 }
 
+/* Estilos para resoluciones menores a 1366px */
+@media screen and (max-width: 1366px) {
+  .seccion_container {
+    padding: 0 4.5rem 5rem;
+    padding-top: 70px;
+    overflow: hidden;
+    /*max-width: 1225px;*/
+    width: 80%;
+    margin: 0 auto;
+  }
+}
+/* Estilos para resoluciones menores a 1366px */
+@media screen and (max-width: 1366px) {
+  .fuente_menor_resolucion {
+    font-size: 14px;
+  }
+}
+
 .container_box_header .avatar {
   border-color: #000000;
   border-width: 1px;
