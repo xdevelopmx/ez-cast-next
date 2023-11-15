@@ -170,6 +170,14 @@ export default function ApiResponses(route: string, lang: string) {
                 error_rol_invalido: 'Solo el rol de cazatalento puede consultar sus talentos destacados.',
             }
         },
+        CazatalentosRouter_updateEstaActivo: {
+            en: {
+                error_update_cazatalentos: 'An error occurred while trying to update the headhunter.'
+            },
+            es: {
+                error_update_cazatalentos: 'Ocurrio un error al tratar de actualizar el cazatalentos',
+            }  
+        },
         CazatalentosRouter_getReporteTalentoByCazatalento: {
             en: {
                 error_rol_invalido: 'Only the talent scout role can access the reports.',

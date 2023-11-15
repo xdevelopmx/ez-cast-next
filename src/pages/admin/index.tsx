@@ -1,9 +1,10 @@
-import { Inbox, Logout, Mail, Movie, PhotoAlbum, VerifiedUserOutlined } from "@mui/icons-material";
+import { Inbox, Logout, Mail, Movie, PhotoAlbum, SupervisedUserCircleOutlined, VerifiedUserOutlined } from "@mui/icons-material";
 import { CssBaseline, Box, AppBar, Toolbar, Typography, Drawer, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Container } from "@mui/material";
 import { motion } from "framer-motion";
 import { GetServerSideProps, NextPage } from "next";
 import { getSession, signOut } from "next-auth/react";
 import { useMemo, useState } from "react";
+import { CatalogoCazatalentos } from "~/components/admin/catalogos/cazatalentos";
 import { CatalogoProyectos } from "~/components/admin/catalogos/proyectos";
 import { CatalogoTalentos } from "~/components/admin/catalogos/talentos";
 import { Banners } from "~/components/admin/contenido/Banners";
@@ -22,7 +23,8 @@ const AdminIndexPage: NextPage = () => {
         switch (option_selected.key) {
             case 'banners': return <Banners/>;
             case 'proyectos': return <CatalogoProyectos/>;
-            case 'talentos': return <CatalogoTalentos/>
+            case 'talentos': return <CatalogoTalentos/>;
+            case 'cazatalentos': return <CatalogoCazatalentos/>;
         }
         return null;
     }, [option_selected]);
@@ -74,6 +76,11 @@ const AdminIndexPage: NextPage = () => {
               title: 'Talentos',
               icon: <VerifiedUserOutlined/>,
               key: 'talentos'
+            },
+            {
+              title: 'Cazatalentos',
+              icon: <SupervisedUserCircleOutlined/>,
+              key: 'cazatalentos'
             }
             ].map((item, index) => (
              <ListItem key={item.key} disablePadding>

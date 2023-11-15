@@ -19,6 +19,33 @@ export const CazatalentosRouter = createTRPCRouter({
 			return await ctx.prisma.cazatalentos.findMany();
 		}
 	),
+	updateEstaActivo: protectedProcedure
+		.input(z.object({
+			id_talento: z.number(),
+			activo: z.boolean()
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updateEstaActivo', lang);
+			const cazatalento_saved = await ctx.prisma.cazatalentos.update({
+				where: {
+					id: input.id_talento
+				},
+				data: {
+					activo: input.activo
+				}
+			});
+
+			if (!cazatalento_saved) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: getResponse('error_update_cazatalentos')
+				});
+			}
+
+			return cazatalento_saved;
+		}
+	),
 	getTalentosDestacadosByCazatalento: protectedProcedure
 		.query(async ({ctx }) => {
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';

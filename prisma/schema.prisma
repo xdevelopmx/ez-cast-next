@@ -147,6 +147,7 @@ model Cazatalentos {
   posicion             String
   compania             String
   biografia            String
+  activo Boolean @default(true)
   proyectos            Proyecto[]
   foto_perfil          Media?                         @relation(fields: [id_foto_perfil_media], references: [id])
   redes_sociales       RedesSocialesPorCazatalentos[]
