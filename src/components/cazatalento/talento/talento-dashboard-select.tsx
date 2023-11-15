@@ -82,7 +82,11 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		onSuccess: (data) => {
 			void talento_stars.refetch();
 			//notify('success', 'Se actualizo la calificacion con exito');
-			notify("success", `${textos['se_actualizo_con_exito']}`);
+			notify("success", `${textos['se_actualizo_calificacion_con_exito']}`);
+			// se_actualizo_calificacion_con_exito: 'se_actualizo_calificacion_con_exito'
+			// se_actualizo_nota_con_exito: 'se_actualizo_calificacion_con_exito'
+			// se_elimino_nota_con_exito: 'se_actualizo_calificacion_con_exito'
+			// se_actualizo_talento_con_exito: 'se_actualizo_calificacion_con_exito'
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
@@ -92,7 +96,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 	const updateNotaTalento = api.cazatalentos.updateNotaTalento.useMutation({
 		onSuccess: (data) => {
 			void talento_nota.refetch();
-			notify("success", `${textos['se_actualizo_con_exito']}`);
+			notify("success", `${textos['se_actualizo_nota_con_exito']}`);
 			//notify('success', 'Se actualizo la nota con exito');
 			setDialog({ ...dialog, open: false });
 		},
@@ -104,7 +108,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 	const deleteNotaTalento = api.cazatalentos.deleteNotaTalento.useMutation({
 		onSuccess: (data) => {
 			void talento_nota.refetch();
-			notify("success", `${textos['se_elimino_con_exito']}`);
+			notify("success", `${textos['se_elimino_nota_con_exito']}`);
 			//notify('success', 'Se elimino la nota con exito');
 			setDialog({ ...dialog, open: false });
 		},
@@ -131,7 +135,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		onSuccess: (data) => {
 			void audicion_talento.refetch();
 			//notify('success', 'Se actualizo la audicion con exito');
-			notify("success", `${textos['se_actualizo_con_exito']}`);
+			notify("success", `${textos['se_actualizo_talento_destacado_con_exito']}`);
 			setDialog({ ...dialog, open: false });
 		},
 		onError: (error) => {
@@ -144,7 +148,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		onSuccess: (data) => {
 			void reporte_talento.refetch();
 			//notify('success', 'Se actualizo el reporte con exito');
-			notify("success", `${textos['se_actualizo_con_exito']}`);
+			notify("success", `${textos['se_actualizo_reporte_talento_con_exito']}`);
 			setDialog({ ...dialog, open: false });
 		},
 		onError: (error) => {
