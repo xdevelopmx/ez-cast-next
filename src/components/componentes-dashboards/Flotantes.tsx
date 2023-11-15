@@ -21,7 +21,7 @@ export const Flotantes = () => {
             style={{ marginBottom: 15 }}
           >
             <motion.img
-              src="/assets/img/iconos/EZ_Claqueta.svg"
+              src="/assets/img/iconos/EZ_Claqueta_N_S.svg"
               className="claqueta_black rounded"
               width={55}
             />
