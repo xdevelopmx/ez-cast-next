@@ -70,6 +70,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		refetchOnWindowFocus: false
 	});
 
+	console.log(audicion_talento.data);
+
 	const talento_nota = api.cazatalentos.getNotaTalentoByCazatalento.useQuery({id_talento: id_talento}, {
 		refetchOnWindowFocus: false
 	});
@@ -279,7 +281,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 							localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
 							slotProps={{ textField: { size: 'small' } }}
 							shouldDisableDate={(date: Dayjs) => {
-								const day = date.date() + 1; //por alguna razon se tiene que poner + 1 :o
+								const day = date.date() + 1; //por alguna razon se tiene que poner + 1 :o : querayos
 								const month = date.month();
 								const year = date.year();
 								return (!fechas_casting_rol.data || !fechas_casting_rol.data.has(`${day < 10 ? `0${day}` : day}/${month < 9 ? `0${month + 1}` : month + 1}/${year}`));

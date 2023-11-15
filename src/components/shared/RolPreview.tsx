@@ -604,7 +604,7 @@ export const RolPreview: FC<PropsRol> = ({
           ) : (
             <>
               <Typography component={"span"} sx={{ color: "#928F8F" }}>
-                {textos["no_especificado"]}
+                {textos["no_especificado_desnudos"]}
               </Typography>
             </>
           )}

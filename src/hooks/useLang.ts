@@ -263,6 +263,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     aplicado: "Applied",
     aplicar: "Apply",
     no_especificado: "Not Specified",
+    no_especificado_desnudos: "No nudity or sexual content.",
     especificado: 'Specified',
     compatibilidad_text: "Compatibility with your profile",
     fecha_limite_entrega_de_aplicaciones: "Application submission deadline",
@@ -742,6 +743,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     aplicado: "Aplicado",
     aplicar: "Aplicar",
     no_especificado: "No Especificado",
+    no_especificado_desnudos: "Sin desnudos ni contenido sexual.",
     especificado: 'Especificado',
     fecha_limite_entrega_de_aplicaciones:
       "Fecha límite entrega de aplicaciones",

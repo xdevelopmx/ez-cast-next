@@ -57,6 +57,8 @@ const DashBoardTalentosPage: NextPage<{
     }
   );
 
+    console.log('eltalento',talento);
+
   useEffect(() => {
     if (talento.data) {
       scrollToSection(props.scroll_section);

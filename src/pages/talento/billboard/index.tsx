@@ -267,7 +267,7 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
                     });
                   }}
                   sx={{
-                    backgroundColor: "#069cb1",
+                    backgroundColor: "#069cb199",
                     borderRadius: "0.5rem",
                     color: "#fff",
                     textTransform: "none",
