@@ -76,6 +76,10 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
     refetchOnWindowFocus: false,
   });
 
+  const banners = api.banners.getBannersByRef.useQuery('banners-cartelera-proyectos', {
+    refetchOnWindowFocus: false
+  });
+
   //const router = useRouter();
 
   const redirect = user.tipo_usuario
@@ -264,8 +268,9 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               slidesPerView={1}
               spaceBetween={0}
             >
-              {urlBanners.map((banner, i) => (
-                <div style={{width: '1000px', margin: '0 auto'}}>
+              {banners.data && banners.data.map((banner, i) => {
+                return (
+                  <div key={i} style={{width: '1000px', margin: '0 auto'}}>
                   <MBanner
                     show_only_media
                     width={1000}
@@ -274,12 +279,12 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                       width: "100%",
                       margin: 0
                     }}
-                    urlImage={banner.url}
-                    identificador="banner-cartelera-proyectos-1"
+                    urlImage={banner.content.url}
+                    identificador={banner.identificador}
                   />
                 </div>
-                ))
-              }
+                )
+              })}
           </Carroucel>
           )}
           <br />

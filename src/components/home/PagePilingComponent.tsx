@@ -70,7 +70,6 @@ export const PagePilingComponent: FC<Props> = ({
 
   const detectarRueda = (e: WheelEvent) => {
     const { deltaY } = e;
-    console.log(deltaY);
     if (scroll_timeout.current) {
       clearTimeout(scroll_timeout.current);
     }
