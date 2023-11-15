@@ -89,6 +89,11 @@ const DashBoardTalentosPage: NextPage<{
                 <br />
               </>
             )}
+              {props.user && (
+                <div className="d-flex justify-content-end align-items-start ">
+                  {<Alertas />}
+                </div>
+              )}
             {props.id_talento > 0 &&
               props.id_rol > 0 &&
               props.user?.tipo_usuario === TipoUsuario.CAZATALENTOS && (
@@ -98,11 +103,7 @@ const DashBoardTalentosPage: NextPage<{
                 />
               )}
             <div className="container_box_header">
-              {props.user && (
-                <div className="d-flex justify-content-end align-items-start py-2">
-                  {<Alertas />}
-                </div>
-              )}
+            
               {props.user && (
                 <>
                   <div className="d-flex justify-content-between">

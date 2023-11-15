@@ -1359,7 +1359,7 @@ footer {
   margin: 0 auto;
 }
 
-/* Estilos para resoluciones menores a 1366px */
+/* Estilos para resoluciones menores a 1366px - ajuste seccion_container en resolucion menor a 1366*/
 @media screen and (max-width: 1366px) {
   .seccion_container {
     padding: 0 4.5rem 5rem;
@@ -1368,12 +1368,24 @@ footer {
     /*max-width: 1225px;*/
     width: 80%;
     margin: 0 auto;
+    padding-left: 2rem; /* Modifica este valor según tus necesidades */
   }
 }
-/* Estilos para resoluciones menores a 1366px */
+/* Estilos para resoluciones menores a 1366px - ajuste de tamaño de fuente en resolucion menor a 1366 */
 @media screen and (max-width: 1366px) {
   .fuente_menor_resolucion {
     font-size: 14px;
+  }
+}
+.tamanio_iconos_resolucion {
+  width: 30px;
+  height: 20px;
+}
+/* Estilos para resoluciones menores a 1366px - ajuste de tamaño de iconos en resolucion menor a 1366 */
+@media screen and (max-width: 1366px) {
+  .tamanio_iconos_resolucion {
+    width:30px;
+    height: 20px;
   }
 }
 

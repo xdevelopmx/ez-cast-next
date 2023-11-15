@@ -20,39 +20,57 @@ export const PreviewConversation = (props: {
 }) => {
     return (
         <Grid container xs={12} sx={{
-            padding: '10px 20px',
+            padding: '10px 10px',
             borderBottom: '2px solid #B4B5B6',
-            height: '100px'
+            height: '100px',
         }}>
-            <Grid item xs={2}>
-                <Box sx={{
-                    position: 'relative',
-                    width: '60px',
-                    aspectRatio: '1/1'
-                }}>
+            <Grid item xs={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {props.loading &&
                         <Skeleton width={64} height={64} variant='circular'/>
                     }
                     {!props.loading && 
-                        <Box position={'relative'}>
+                        <Box  
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center', // Alinea verticalmente al centro
+                            position: 'relative', // Añade esta línea para que el posicionamiento sea relativo al contenedor
+                            width: '60px',
+                            aspectRatio: '1/1',
+                          }}
+                        >
+                            {/* {!props.visto && <Circle style={{ position: 'absolute', color: '#069cb1', width: 16, height: 16, top: '50%', right: '100%' }} />} */}
+                            <Circle 
+                            style={{
+                                position: 'absolute',
+                                color: '#069cb1',
+                                width: 16,
+                                height: 16,
+                                top: 0,
+                                left: 0, // Ajusta la posición según tus necesidades
+                                transform: 'translateY(-50%)', // Centra verticalmente el círculo
+                              }}
+                            />
 
-                            {!props.visto && <Circle style={{ position: 'absolute', color: '#069cb1', width: 16, height: 16, top: '50%', right: '100%' }} />}
-                            <Image style={{
+                            <Image 
+
+                            style={{
                                 borderRadius: '100%',
                                 padding: '4px',
-                                objectFit: 'cover'
-                            }} src={`${props.profile_url}`} width={64} height={64} alt="" />
-                        
+                                objectFit: 'cover',
+                                width: '100%', // Añade esta línea para que la imagen ocupe el 100% del contenedor
+                              }}
+                            src={`${props.profile_url}`} width={64} height={64} alt="" />
                         </Box>
-                    
                     }
-                </Box>
+             
             </Grid>
-            <Grid item container xs={10}>
-                <Grid item xs={12}>
+            <Grid item container xs={10} >
+                <Grid item xs={12} >
                     <Box sx={{
                         display: 'flex',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        
                     }}>
                         <Box sx={{
                             width: '57%',
@@ -84,7 +102,7 @@ export const PreviewConversation = (props: {
                     </Box>
                 </Grid>
                 <Grid item xs={12}>
-                    <Box>
+                    <Box >
                         {props.loading &&
                             <Skeleton width={200}/>
                         }

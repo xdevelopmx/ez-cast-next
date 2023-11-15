@@ -10,6 +10,7 @@ import useNotify from "~/hooks/useNotify";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 import { useTheme } from '@mui/material/styles';
+
 export const Alertas = () => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
@@ -18,6 +19,8 @@ export const Alertas = () => {
   const session = useSession();
   const [show_alertas, setShowAlertas] = useState(false);
   const theme = useTheme();
+
+
   const [anchorEl, setAnchorEl] = useState<{
     el: null | HTMLElement;
     id_alerta: number;
@@ -151,118 +154,122 @@ export const Alertas = () => {
 
   return (
     <>
+    { show_alertas &&
       <div style={{ position: "relative", width: "100%" }}>
-        <motion.div
+      <motion.div
+        style={{
+          padding: 32,
+          position: "absolute",
+          width: "50%",
+          right: -32,
+          maxHeight: "75vh",
+          boxShadow:
+            "rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+          top: -64,
+          borderRadius: 4,
+          zIndex: 99,
+          backgroundColor: "#dff8fc",
+        }}
+        initial={{ opacity: 0, y: -100 }}
+        animate={
+          show_alertas ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 }
+        }
+        exit={{ opacity: 0, y: -100 }}
+        transition={{
+          ease: "linear",
+          duration: 0.4,
+          opacity: { duration: 0.4 },
+          y: { duration: 0.4 },
+        }}
+      >
+        <IconButton
           style={{
-            padding: 32,
             position: "absolute",
-            width: "50%",
-            right: -32,
-            maxHeight: "75vh",
-            boxShadow:
-              "rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-            top: -64,
-            borderRadius: 4,
-            zIndex: show_alertas ? 99 : 0,
-            backgroundColor: "#dff8fc",
+            right: 0,
+            color: "#069cb1",
           }}
-          initial={{ opacity: 0, y: -100 }}
-          animate={
-            show_alertas ? { opacity: 1, y: 0 } : { opacity: 0, y: -100 }
-          }
-          exit={{ opacity: 0, y: -100 }}
-          transition={{
-            ease: "linear",
-            duration: 0.4,
-            opacity: { duration: 0.4 },
-            y: { duration: 0.4 },
+          aria-label="Cancelar edicion usuario"
+          onClick={() => {
+            setShowAlertas((show) => !show);
           }}
         >
-          <IconButton
-            style={{
-              position: "absolute",
-              right: 0,
-              color: "#069cb1",
-            }}
-            aria-label="Cancelar edicion usuario"
-            onClick={() => {
-              setShowAlertas((show) => !show);
-            }}
-          >
-            <Close />
-          </IconButton>
-          <div className="d-flex justify-content-end btn_alerts_header">
-            <div className="box_alert_header mr-4">
-              <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
-              {alertas.data &&
-                alertas.data.filter((a) => !a.visto).length > 0 ? (
-                <span className="count_msn active">
-                  {alertas.data.filter((a) => !a.visto).length}
-                </span>
-              ) : null}
-            </div>
-            <p className="font-weight-bold h4 mr-5 mb-0 color_a">
-              {textos["talertas"]}
-            </p>
+          <Close />
+        </IconButton>
+        <div className="d-flex justify-content-end btn_alerts_header">
+          <div className="box_alert_header mr-4">
+            <motion.img src="/assets/img/iconos/bell_blue.svg" alt="" />
+            {alertas.data &&
+              alertas.data.filter((a) => !a.visto).length > 0 ? (
+              <span className="count_msn active">
+                {alertas.data.filter((a) => !a.visto).length}
+              </span>
+            ) : null}
           </div>
-          <Box textAlign={"end"}>
-            <Button>{textos["vt"]}</Button>
-            <Button
-              onClick={() => {
-                markAllAsSeen.mutate({
-                  id_user:
-                    session.data && session.data.user
-                      ? parseInt(session.data.user.id)
-                      : 0,
-                  tipo_user:
-                    session.data &&
-                      session.data.user &&
-                      session.data.user.tipo_usuario
-                      ? session.data.user.tipo_usuario
-                      : "",
-                });
-              }}
-            >
-              {textos["mtcl"]}
-            </Button>
-          </Box>
-          <Grid
-            container
-            gap={2}
-            justifyContent="center"
-            overflow={"auto"}
-            className="grid-scroll"
-            sx={{
-              [theme.breakpoints.up('xl')]: {
-                maxHeight: '60dvh'
-              },
-              [theme.breakpoints.up('lg')]: {
-                maxHeight: '55dvh'
-              },
-              [theme.breakpoints.up('md')]: {
-                maxHeight: '40dvh'
-              },
-              [theme.breakpoints.up('sm')]: {
-                maxHeight: '35dvh'
-              },
-              [theme.breakpoints.up('xs')]: {
-                maxHeight: '25dvh'
-              },
+          <p className="font-weight-bold h4 mr-5 mb-0 color_a">
+            {textos["talertas"]}
+          </p>
+        </div>
+        <Box textAlign={"end"}>
+          <Button>{textos["vt"]}</Button>
+          <Button
+            onClick={() => {
+              markAllAsSeen.mutate({
+                id_user:
+                  session.data && session.data.user
+                    ? parseInt(session.data.user.id)
+                    : 0,
+                tipo_user:
+                  session.data &&
+                    session.data.user &&
+                    session.data.user.tipo_usuario
+                    ? session.data.user.tipo_usuario
+                    : "",
+              });
             }}
           >
-            {alert_elements.map((r, i) => {
-              return (
-                <Grid key={i} item xs={12}>
-                  <Box
-                  >
-                    {r}
-                  </Box>
-                </Grid>
-              );
-            })}
-          </Grid>
-        </motion.div>
-      </div>
+            {textos["mtcl"]}
+          </Button>
+        </Box>
+        <Grid
+          container
+          gap={2}
+          justifyContent="center"
+          overflow={"auto"}
+          className="grid-scroll"
+          sx={{
+            [theme.breakpoints.up('xl')]: {
+              maxHeight: '60dvh'
+            },
+            [theme.breakpoints.up('lg')]: {
+              maxHeight: '55dvh'
+            },
+            [theme.breakpoints.up('md')]: {
+              maxHeight: '40dvh'
+            },
+            [theme.breakpoints.up('sm')]: {
+              maxHeight: '35dvh'
+            },
+            [theme.breakpoints.up('xs')]: {
+              maxHeight: '25dvh'
+            },
+          }}
+        >
+          {alert_elements.map((r, i) => {
+            return (
+              <Grid key={i} item xs={12}>
+                <Box
+                >
+                  {r}
+                </Box>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </motion.div>
+    </div>
+    }
+    
+
       <div className="pt-5 container_alerts_header">
         <div className="d-flex justify-content-end btn_alerts_header">
           <div className="box_alert_header mr-4">
@@ -289,6 +296,7 @@ export const Alertas = () => {
           </p>
         </div>
       </div>
+
     </>
   );
 };

@@ -16,6 +16,7 @@ import {DatePicker, DesktopDatePicker, esES, jaJP } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import AppContext from '~/context/app';
 import useLang from '~/hooks/useLang';
+import React from 'react';
 
 interface Props {
     id_talento: number,
@@ -26,7 +27,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 	const ctx = useContext(AppContext);
     const textos = useLang(ctx.lang);
 
-    const [dialog, setDialog] = useState<{open: boolean, title: string, id: 'agregar_nota_talento' | 'reportar_talento' | 'elegir_talento' }>({ open: false, title: '', id: 'elegir_talento' });
+    const [dialog, setDialog] = useState<{open: boolean, title: string, id: 'agregar_nota_talento' | 'reportar_talento' | 'elegir_talento' | '0' }>({ open: false, title: '', id: '0' });
 	
     const { notify } = useNotify();
 
@@ -401,7 +402,12 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                     </Button>
 				</Box>
 			</Dialog>
-			<Dialog maxWidth={'xs'} style={{ padding: 0, margin: 0 }} open={dialog.id === 'agregar_nota_talento'  && dialog.open} onClose={() => setDialog({ ...dialog, open: false })}>
+			<Dialog 
+			maxWidth={'xs'} style={{ padding: 0, margin: 0 }} 
+			open={dialog.id === 'agregar_nota_talento' && dialog.open} 
+			keepMounted
+			onClose={() => setDialog({ ...dialog, open: false })}
+			>
 				<DialogTitle align="center" style={{color: '#069cb1'}}>{dialog.title}</DialogTitle>
 				<DialogContent style={{padding: 0}}>
 					<DialogContentText fontSize={14} px={4} textAlign={'justify'}>
@@ -430,6 +436,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 					}}>Enviar</Button>
 				</Box>
 			</Dialog>
+
         </>
     )
 }

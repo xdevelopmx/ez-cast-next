@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { Box, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography, useMediaQuery } from "@mui/material";
 import { Carroucel } from "~/components/shared/Carroucel";
 import { MTooltip } from "~/components/shared/MTooltip";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import Constants from "~/constants";
-
+import { useTheme } from '@mui/material/styles';
 export const TalentoTableItem = (props: {
   id_talento: number;
   id_rol: number;
@@ -18,13 +18,20 @@ export const TalentoTableItem = (props: {
   altura: number;
   images_urls: string[];
 }) => {
+  const theme = useTheme();
+  //para ver si la pantalla es gandre o no 
+  const isLgScreen = useMediaQuery(theme.breakpoints.up('xl'));
   const router = useRouter();
+
   const images = useMemo(() => {
     if (props.images_urls.length === 0) {
       return [
         <Image
           key={1}
-          style={{ objectFit: "cover" }}
+          style={{
+            objectFit: "cover",
+            objectPosition: 'center', // Centra la imagen  
+          }}
           src={"/assets/img/no-image.png"}
           fill
           alt=""
@@ -33,7 +40,15 @@ export const TalentoTableItem = (props: {
     }
     return props.images_urls.map((url, i) => {
       return (
-        <Image key={i} style={{ objectFit: "cover" }} src={url} fill alt="" />
+        <Image key={i}
+          style={{
+            objectFit: "cover",
+            objectPosition: 'center', // Centra la imagen  
+            
+          }}
+          src={url}
+          fill
+          alt="" />
       );
     });
   }, [props.images_urls]);
@@ -55,14 +70,14 @@ export const TalentoTableItem = (props: {
           placement="top"
           icon={
             <Image
-              src={`/assets/img/iconos/${
-                props.id_estado_aplicacion_rol ===
+              src={`/assets/img/iconos/${props.id_estado_aplicacion_rol ===
                 Constants.ESTADOS_APLICACION_ROL.NO_VISTO
-                  ? "icon_no_vistos_highlited"
-                  : "icon_no_vistos"
-              }.svg`}
-              width={30}
-              height={20}
+                ? "icon_no_vistos_highlited"
+                : "icon_no_vistos"
+                }.svg`}
+              // className="tamanio_iconos_resolucion"
+              width={isLgScreen ? 30 : 15}
+              height={isLgScreen ? 20 : 15}
               alt="no vistos"
             />
           }
@@ -73,14 +88,13 @@ export const TalentoTableItem = (props: {
           placement="top"
           icon={
             <Image
-              src={`/assets/img/iconos/${
-                props.id_estado_aplicacion_rol ===
+              src={`/assets/img/iconos/${props.id_estado_aplicacion_rol ===
                 Constants.ESTADOS_APLICACION_ROL.VISTO
-                  ? "icon_vistos_highlited"
-                  : "icon_vistos"
-              }.svg`}
-              width={30}
-              height={20}
+                ? "icon_vistos_highlited"
+                : "icon_vistos"
+                }.svg`}
+              width={isLgScreen ? 30 : 15}
+              height={isLgScreen ? 20 : 15}
               alt="Vistos"
             />
           }
@@ -91,14 +105,13 @@ export const TalentoTableItem = (props: {
           placement="top"
           icon={
             <Image
-              src={`/assets/img/iconos/${
-                props.id_estado_aplicacion_rol ===
+              src={`/assets/img/iconos/${props.id_estado_aplicacion_rol ===
                 Constants.ESTADOS_APLICACION_ROL.DESTACADO
-                  ? "icon_estrella_dorada"
-                  : "icono_star_blue"
-              }.svg`}
-              width={30}
-              height={20}
+                ? "icon_estrella_dorada"
+                : "icono_star_blue"
+                }.svg`}
+              width={isLgScreen ? 30 : 15}
+              height={isLgScreen ? 20 : 15}
               alt="Destacado"
             />
           }
@@ -112,13 +125,13 @@ export const TalentoTableItem = (props: {
               style={{
                 filter:
                   props.id_estado_aplicacion_rol ===
-                  Constants.ESTADOS_APLICACION_ROL.AUDICION
+                    Constants.ESTADOS_APLICACION_ROL.AUDICION
                     ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
                     : "",
               }}
               src={"/assets/img/iconos/icono_lampara_blue.svg"}
-              width={30}
-              height={20}
+              width={isLgScreen ? 30 : 15}
+              height={isLgScreen ? 20 : 15}
               alt="Audicion"
             />
           }
@@ -132,13 +145,13 @@ export const TalentoTableItem = (props: {
               style={{
                 filter:
                   props.id_estado_aplicacion_rol ===
-                  Constants.ESTADOS_APLICACION_ROL.CALLBACK
+                    Constants.ESTADOS_APLICACION_ROL.CALLBACK
                     ? "brightness(0) saturate(100%) invert(85%) sepia(21%) saturate(2191%) hue-rotate(331deg) brightness(99%) contrast(97%)"
                     : "",
               }}
               src={"/assets/img/iconos/icono_claqueta_blue.svg"}
-              width={30}
-              height={20}
+              width={isLgScreen ? 30 : 15}
+              height={isLgScreen ? 20 : 15}
               alt="callback"
             />
           }
@@ -150,10 +163,19 @@ export const TalentoTableItem = (props: {
             <Box
               key={i}
               sx={{
-                position: "relative",
-                width: "100%",
-                height: "350px",
-                aspectRatio: "9/13",
+                position: 'relative',
+                width: '100%',
+                height: '350px',
+                aspectRatio: '9/13',
+                display: 'flex',
+                justifyContent: 'center', // Centra horizontalmente
+                alignItems: 'center', // Centra verticalmente
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                void router.push(
+                  `/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`
+                );
               }}
             >
               {img}
@@ -162,7 +184,12 @@ export const TalentoTableItem = (props: {
         })}
       </Carroucel>
       <Box sx={{ padding: "10px" }}>
-        <Typography fontWeight={800} sx={{ color: "#069cb1" }}>
+        <Typography fontWeight={800} sx={{ color: "#069cb1",cursor: 'pointer' }}
+          onClick={() => {
+            void router.push(
+              `/talento/dashboard?id_talento=${props.id_talento}&id_rol=${props.id_rol}`
+            );
+          }}>
           {props.nombre}
         </Typography>
         <Box sx={{ display: "flex", gap: 0.5 }}>

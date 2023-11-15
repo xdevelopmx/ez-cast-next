@@ -600,6 +600,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         </MContainer>
                       </Grid>
                     </Grid>
+                    
                     <Grid
                       xs={12}
                       sx={{ backgroundColor: "#EBEBEB", padding: "10px" }}

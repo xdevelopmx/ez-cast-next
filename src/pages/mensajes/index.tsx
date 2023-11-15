@@ -222,7 +222,8 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                         }}>
                                             <Box sx={{
                                                 display: 'flex',
-                                                alignItems: 'center'
+                                                alignItems: 'center',
+                                           
                                             }}>
                                                 <Typography fontWeight={600} mr={4}>
                                                     <Image style={{ marginRight: '10px' }}
@@ -267,7 +268,8 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                 borderLeft: 'none',
                                                 borderBottom: '2px solid #069cb1',
                                                 overflowY: 'scroll',
-                                                // padding: '10px 20px 0px 20px',
+                                                padding: '0px 20px 0px 10px',
+                                                    //  padding: '16px',
                                                 backgroundColor: '#F2F2F2',
                                             }}
                                         >
