@@ -800,24 +800,26 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         {`${textos["roles_actuales"]}`}
                       </a>
                     </li>
-                    <li className="nav-item">
-                      <a
-                        onClick={() => {
-                          setTabSelected("ARCHIVADOS");
-                        }}
-                        className={`nav-link ${
-                          tabSelected === "ARCHIVADOS" ? "active" : ""
-                        }`}
-                        id="archivados-tab"
-                        data-toggle="tab"
-                        href="#archivados"
-                        role="tab"
-                        aria-controls="archivados"
-                        aria-selected="false"
-                      >
-                        {`${textos["roles_archivados"]}`}
-                      </a>
-                    </li>
+                    {!IS_ADMIN &&
+                      <li className="nav-item">
+                        <a
+                          onClick={() => {
+                            setTabSelected("ARCHIVADOS");
+                          }}
+                          className={`nav-link ${
+                            tabSelected === "ARCHIVADOS" ? "active" : ""
+                          }`}
+                          id="archivados-tab"
+                          data-toggle="tab"
+                          href="#archivados"
+                          role="tab"
+                          aria-controls="archivados"
+                          aria-selected="false"
+                        >
+                          {`${textos["roles_archivados"]}`}
+                        </a>
+                      </li>
+                    }
                   </ul>
                 </div>
                 <MTable

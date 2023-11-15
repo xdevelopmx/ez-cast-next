@@ -76,6 +76,10 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
     refetchOnWindowFocus: false,
   });
 
+  const banners = api.banners.getBannersByRef.useQuery('banners-cartelera-proyectos', {
+    refetchOnWindowFocus: false
+  });
+
   //const router = useRouter();
 
   const redirect = user.tipo_usuario
@@ -193,7 +197,10 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
-              slidesPerView={6}
+              autoplay={{
+                delay: 2500
+              }}
+              slidesPerView={destacados.data.length >= 6 ? 6 : destacados.data.length}
               spaceBetween={30}
             >
               {destacados.data.map((proyecto) => (
@@ -262,10 +269,17 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigation={false}
               arrowsColor="#F9B233"
               slidesPerView={1}
+              autoplay={{
+                delay: 2000
+              }}
+              forceFirstSwap={{
+                delay: 2000
+              }}
               spaceBetween={0}
             >
-              {urlBanners.map((banner, i) => (
-                <div style={{width: '1000px', margin: '0 auto'}}>
+              {banners.data && banners.data.map((banner, i) => {
+                return (
+                  <div key={i} style={{width: '1000px', margin: '0 auto'}}>
                   <MBanner
                     show_only_media
                     width={1000}
@@ -274,12 +288,12 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                       width: "100%",
                       margin: 0
                     }}
-                    urlImage={banner.url}
-                    identificador="banner-cartelera-proyectos-1"
+                    urlImage={banner.content.url}
+                    identificador={banner.identificador}
                   />
                 </div>
-                ))
-              }
+                )
+              })}
           </Carroucel>
           )}
           <br />
@@ -297,7 +311,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
           </p>
           <hr className="hr_blue" style={{ margin: "0px 0 40px 0" }} />
 
-          {destacados.isLoading && (
+          {proyectos.isLoading && (
             <Carroucel
               navigationNew
               navigation={false}
@@ -315,8 +329,11 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#069cb1"
-              slidesPerView={6}
+              slidesPerView={proyectos.data.length >= 6 ? 6 : proyectos.data.length}
               spaceBetween={30}
+              autoplay={{
+                delay: 1500
+              }}
             >
               {proyectos.data.map((proyecto, i) => (
                 <MContainer key={i} direction="vertical">

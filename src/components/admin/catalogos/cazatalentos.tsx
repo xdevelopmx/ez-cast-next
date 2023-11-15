@@ -3,6 +3,7 @@ import { Alert, AlertTitle, Box, Button, Card, CardActions, CardContent, CardMed
 import { ReporteTalentos } from "@prisma/client"
 import Image from "next/image"
 import { useEffect, useMemo, useState } from "react"
+import { CazatalentosPreview } from "~/components/cazatalento/dialogs/cazatalentos-preview"
 import { MContainer } from "~/components/layout/MContainer"
 import MotionDiv from "~/components/layout/MotionDiv"
 import { DetallesProyecto } from "~/components/proyecto/detalles"
@@ -18,72 +19,29 @@ import { Archivo } from "~/server/api/root"
 import { api, parseErrorBody } from "~/utils/api"
 import { FileManager } from "~/utils/file-manager"
 
-export const CatalogoTalentos = () => {
+export const CatalogoCazatalentos = () => {
 	const { notify } = useNotify();
     
-    const [dialog, setDialog] = useState<{open: boolean, id_talento: number}>({open: false, id_talento: 0});
-
-    const [reportes_dialog, setReportesDialog] = useState<{open: boolean, id_talento: number}>({open: false, id_talento: 0});
-
+    const [dialog, setDialog] = useState<{open: boolean, id_cazatalentos: number}>({open: false, id_cazatalentos: 0});
 
     const [confirmation_dialog, setConfirmationDialog] = useState<{ opened: boolean, title: string, content: JSX.Element, action: 'BLOQUEAR', data: Map<string, unknown> }>({ opened: false, title: '', content: <></>, action: 'BLOQUEAR', data: new Map });
 
     const [data, setData] = useState<any[]>([]);
 
-    const [estatus, setEstatus] = useState<'' | 'destacados' | 'reportados'>('');
-
     const [search_text, setSearchText] = useState('');
 
-    const getQueryParams = () => {
-        switch (estatus) {
-            case 'destacados': return {
-                where: { es_destacado: true },
-                include: { reportes: true },
-                order_by: null
-            }
-            case 'reportados': return {
-                where: {reportes: { some: {} }},
-                include: { reportes: true },
-                order_by: null
-            }
-            default: return {
-                where: null,
-                include: { reportes: true },
-                order_by: [ {es_destacado: 'desc'}, {id: 'asc'} ]
-            } 
-        }
-    }
-
-    const talentos = api.talentos.getAll.useQuery(getQueryParams(), {
+    const cazatalentos = api.cazatalentos.getAll.useQuery(undefined, {
 		refetchOnWindowFocus: false,
         keepPreviousData: true
 	});
 
-
-    console.log(talentos.data);
-
     useEffect(() => {
-        if (talentos.data) {
-            setData(talentos.data);
+        if (cazatalentos.data) {
+            setData(cazatalentos.data);
         }
-    }, [talentos.data]);
-
-    const update_destacado = api.talentos.updateDestacado.useMutation({
-        onSuccess: (data) => {
-			setData(prev => { return prev.map(p => {
-                if (p.id === data.id) {
-                    p.es_destacado = data.es_destacado;
-                }
-                return p;
-            })})
-            notify('success', 'Se actualizo el talento con exito');
-		},
-		onError: (error) => {
-			notify('error', parseErrorBody(error.message));
-		}
-    })
-
-    const update_esta_activo = api.talentos.updateEstaActivo.useMutation({
+    }, [cazatalentos.data])
+    
+    const update_esta_activo = api.cazatalentos.updateEstaActivo.useMutation({
         onSuccess: (data) => {
 			setData(prev => { return prev.map(p => {
                 if (p.id === data.id) {
@@ -91,24 +49,23 @@ export const CatalogoTalentos = () => {
                 }
                 return p;
             })})
-            notify('success', 'Se actualizo el talento con exito');
+            notify('success', 'Se actualizo el cazatalentos con exito');
 		},
 		onError: (error) => {
 			notify('error', parseErrorBody(error.message));
 		}
     })
 	
-
     const table_data = useMemo(() => {
-        if (!data) {
+        if (!cazatalentos.data) {
             return [];
         }
         if (search_text.length === 0) {
-            return data;
+            return cazatalentos.data;
         }
         const s_text = search_text.toLowerCase();
-        return data.filter( t => {
-            const activo = (t.activo ) ? 'activo' : 'bloqueado';
+        return cazatalentos.data.filter( t => {
+            const activo = (t.activo) ? 'activo' : 'bloqueado';
             return t.id.toString().includes(s_text) || t.email.toLowerCase().includes(s_text) || t.usuario.toLowerCase().includes(s_text) || t.nombre.toLowerCase().includes(s_text) || t.apellido.toLowerCase().includes(s_text) || t.tipo_membresia.toLowerCase().includes(s_text) || activo.includes(s_text)
         })
     }, [search_text, data]);
@@ -116,15 +73,10 @@ export const CatalogoTalentos = () => {
 	return (
 		<Box>
 			<SectionTitle titleSx={{marginTop: 2, marginBottom: 4}}
-				title='Catalogo de Talentos en EZCast'
+				title='Catalogo de Cazatalentos en EZCast'
 			/>
-            <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'} alignItems={'center'}>
-                <Tabs sx={{ my: 2 }} value={estatus} onChange={(e, tab) => {setEstatus(tab)}} aria-label="basic tabs example">
-                    <Tab label="Todos" value={''}/>
-                    <Tab label="Destacados" value={'destacados'}/>
-                    <Tab label="Reportados" value={'reportados'}/>
-                </Tabs>
-                <MSearchInput placeholder="Buscar talentos" onChange={(value) => { setSearchText(value) }}/>
+            <Box display={'flex'} flexDirection={'row'} justifyContent={'end'} marginTop={2} marginBottom={2} alignItems={'center'}>
+                <MSearchInput placeholder="Buscar cazatalentos" onChange={(value) => { setSearchText(value) }}/>
             </Box>
 			<MTable
                 columnsHeader={[
@@ -152,9 +104,8 @@ export const CatalogoTalentos = () => {
                 ]}
                 backgroundColorHeader='#069cb1'
                 styleHeaderTableCell={{ padding: '5px !important' }}
-                loading={talentos.isFetching}
+                loading={cazatalentos.isFetching}
                 data={table_data.map(p => {
-                    const reportes: ReporteTalentos[] | null = p.reportes as unknown as ReporteTalentos[];
                     return {
                         id: p.id,
                         usuario: <Typography variant="subtitle2">{p.usuario}</Typography>, 
@@ -165,26 +116,6 @@ export const CatalogoTalentos = () => {
                         acciones: <MContainer direction="horizontal" justify='center'>
                             <>
                                 <IconButton
-                                    style={{ color: (p.es_destacado) ? 'gold' : 'gray' }}
-                                    aria-label="marcar como destacado"
-                                    onClick={() => {
-                                        update_destacado.mutate({id_talento: p.id, destacado: !p.es_destacado});
-                                    }}
-                                >
-                                    <Star />
-                                </IconButton>
-                                {reportes && reportes.length > 0 &&
-                                    <IconButton
-                                        style={{ color: 'tomato' }}
-                                        aria-label="Reporte Usuario"
-                                        onClick={() => {
-                                            setReportesDialog({id_talento: p.id, open: true});
-                                        }}
-                                    >
-                                        <Report />
-                                    </IconButton>                                
-                                }
-                                <IconButton
                                     aria-label={`${p.activo ? 'Bloquear' : 'Desbloquear'} talento`}
                                     onClick={() => {
                                         const params = new Map<string, unknown>();
@@ -194,9 +125,9 @@ export const CatalogoTalentos = () => {
                                             action: 'BLOQUEAR', 
                                             data: params, 
                                             opened: true, 
-                                            title: `${(p.activo) ? 'Bloquear' : 'Desbloquear'} Talento`, 
+                                            title: `${(p.activo) ? 'Bloquear' : 'Desbloquear'} Cazatalentos`, 
                                             content: <Box>
-                                                <Typography variant="body2">Seguro que deseas {(p.activo) ? 'bloquear' : 'desbloquear'} este talento?</Typography>
+                                                <Typography variant="body2">Seguro que deseas {(p.activo) ? 'bloquear' : 'desbloquear'} este cazatalentos?</Typography>
                                             </Box>
                                         })
                                     }}
@@ -205,7 +136,7 @@ export const CatalogoTalentos = () => {
                                 </IconButton> 
                                 <IconButton 
                                     onClick={(e) => {
-                                        setDialog({open: true, id_talento: p.id});
+                                        setDialog({open: true, id_cazatalentos: p.id});
                                         e.stopPropagation();
                                     }} 
                                     color="primary" 
@@ -220,32 +151,25 @@ export const CatalogoTalentos = () => {
                 })}
                 noDataContent={
                     (table_data.length > 0) ? undefined :
-                    (talentos.isFetching) ? undefined :
+                    (cazatalentos.isFetching) ? undefined :
                     <div className="box_message_blue">
                         <p className="h3">
                             {   
                                 (() => {
                                     if (search_text.length > 0) {
-                                        return 'No se encontro ningun talento.';
+                                        return 'No se encontro ningun cazatalento.';
                                     }
-                                    if (estatus === 'destacados') {
-                                        return 'No hay ningun talento destacado.'
-                                    }
-                                    if (estatus === 'reportados') {
-                                        return 'No hay ningun talento reportado.'
-                                    }
-                                    return 'No se ha registrado ningun talento aun.';
+                                    return 'No se ha registrado ningun cazatalento aun.';
                                 })()
                             }
                         </p>
                     </div>
                 }
             />
-            <ReportesDialog 
-                readonly={false}
-                id_talento={reportes_dialog.id_talento} 
-                opened={reportes_dialog.open}
-                onClose={(changed: boolean) => { setReportesDialog(prev => { return { ...prev, open: false } }) }} 
+            <CazatalentosPreview
+                onClose={() => setDialog({ ...dialog, open: false })}
+                open={dialog.open}
+                id_cazatalentos={dialog.id_cazatalentos}
             />
             <ConfirmationDialog
                 opened={confirmation_dialog.opened}
@@ -270,22 +194,6 @@ export const CatalogoTalentos = () => {
                 title={confirmation_dialog.title}
                 content={confirmation_dialog.content}
             />
-            <Dialog
-                style={{
-                    marginTop: 56
-                }}
-                fullWidth={true}
-                maxWidth={'xl'}
-                open={dialog.open}
-                onClose={() => { setDialog({...dialog, open: false}) }}
-            >
-                <DialogContent>
-                    <DashBoardTalentosPage id_talento={dialog.id_talento} id_rol={0} scroll_section={""} can_edit={false} />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => { setDialog({...dialog, open: false}) }}>Cerrar</Button>
-                </DialogActions>
-            </Dialog>
 		</Box>
 	)
 }

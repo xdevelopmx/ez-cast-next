@@ -306,7 +306,7 @@ export const RolPreview: FC<PropsRol> = ({
                   />
 
                   <Typography sx={{ fontSize: "0.82rem", fontWeight: 400 }}>
-                    {textos["proyecto_por"]}: {rol.proyecto.productor}
+                    {textos["proyecto_por"]}: {rol.proyecto.cazatalentos.nombre + " " + rol.proyecto.cazatalentos.apellido}
                   </Typography>
 
                   <Box
@@ -359,7 +359,7 @@ export const RolPreview: FC<PropsRol> = ({
                   rol.compensaciones.compensaciones_no_monetarias.map(
                     (c, i) => (
                       <Fragment key={c.id}>
-                        <Typography>{c.compensacion.es}</Typography>
+                        <Typography>{c.compensacion.es} {c.id_compensacion === 99 ? ` - ${c.descripcion_compensacion}` : ''}</Typography>
                         <Divider
                           style={{
                             borderWidth: 1,
@@ -387,7 +387,7 @@ export const RolPreview: FC<PropsRol> = ({
                   </>
                 )}
 
-                <Typography>{rol.proyecto.sindicato.sindicato.es}</Typography>
+                <Typography>{rol.proyecto.sindicato.sindicato.id === 99 ? `${rol.proyecto.sindicato.sindicato.es} - ${rol.proyecto.sindicato.descripcion}` : rol.proyecto.sindicato.sindicato.es}</Typography>
                 <Divider
                   style={{
                     borderWidth: 1,

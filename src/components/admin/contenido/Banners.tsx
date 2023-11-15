@@ -57,11 +57,24 @@ export const Banners = () => {
         }
 	})
 
-	const seccion_cartelera_has_banners = (banners.data) ? banners.data.filter(b => b.identificador === 'banner-cartelera-proyectos-1').length > 0 : false;
+	const seccion_cartelera_has_banners = (banners.data) ? banners.data.filter(b => b.ref === 'banners-cartelera-proyectos').length > 0 : false;
 	return (
 		<Box>
 			<SectionTitle
-				title='Banner Seccion Cartelera De Proyectos'
+				title='Banners Seccion Cartelera De Proyectos'
+				textButton="Agregar Banner"
+				onClickButton={() => {
+					if (banners.data) {
+						setBanner({
+							position: ' ',
+							isButton: false,
+							text: '',
+							redirect_url: '',
+							archivo: null
+						});
+						setDialog({...dialog, open: true, title: 'Agregar Banner', identificador: 'banner-cartelera-proyectos-' + banners.data.length + 1, ref: 'banners-cartelera-proyectos'}) 
+					}
+				}}
 			/>
 			<MotionDiv show={!banners.isFetching && !seccion_cartelera_has_banners} animation="fade">
 				<Alert style={{ marginTop: 16, marginBottom: 16 }} severity="info">
@@ -72,7 +85,7 @@ export const Banners = () => {
 			<MotionDiv style={{marginTop: 16}} show={!banners.isFetching && seccion_cartelera_has_banners} animation="fade">
 				<>
 					{banners.data && banners.data.map((b, i) => {
-						return <Card key={i} style={{width: 970}} >
+						return <Card key={i} style={{width: 970, boxShadow: '0px 0px'}} >
 							{b.type.includes('video') &&
 								<video autoPlay style={{ width: 970, height: 250 }}>
 									<source src={b.content.url} type="video/mp4" />

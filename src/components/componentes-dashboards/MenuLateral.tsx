@@ -1232,8 +1232,6 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                       justifyContent: "center",
                     }}
                   >
-          
-
                       <a href={form.redes_sociales.pagina_web} target="_blank" style={{ textDecoration: "underline", color: '#fff', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%' }}>
                         <Image
                           src="/assets/img/iconos/icon_website.svg"

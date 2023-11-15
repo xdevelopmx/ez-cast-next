@@ -90,17 +90,31 @@ export const CazatalentosPreview = (props: {open: boolean, onClose: () => void, 
                     </Box>
                     {cazatalento && cazatalento.redes_sociales.filter(r => r.nombre === 'pagina_web').length > 0 &&
                         cazatalento.redes_sociales.filter(r => r.nombre === 'pagina_web').map((r, i) => {
-                            return <MContainer key={i}>
-                                <Link href={r.url}  style={{ display: 'flex', padding: '3px 0'}}>
+                            return <MContainer key={i} direction={"horizontal"}>
+                                <Link 
+                                    href={r.url}  style={{ display: 'flex', padding: '3px 0'}}
+                                >
                                     <motion.img width={24} height={24} src="/assets/img/iconos/icono_web_site_blue.svg" alt="icono" />
-                                    <Typography style={{
-                                        display: 'block',
-                                        overflow: 'hidden',
-                                        whiteSpace: 'nowrap',
-                                        textOverflow: 'ellipsis',
-                                        maxWidth: '280px',
-                                        paddingLeft: '10px'
-                                    }}>{r.url}</Typography>
+                                    <Link 
+                                        legacyBehavior
+                                        href={r.url}
+                                    >
+                                        <a
+                                            style={{
+                                                display: 'block',
+                                                overflow: 'hidden',
+                                                whiteSpace: 'nowrap',
+                                                textOverflow: 'ellipsis',
+                                                maxWidth: '280px',
+                                                paddingLeft: '10px',
+                                                color: '#069cb1'
+                                            }} 
+                                            target="_blank" rel="noopener noreferrer"
+                                        >
+                                            {r.url}
+                                        </a>
+                                    </Link>
+                                    
                                 </Link>
                             </MContainer>
                         })

@@ -66,31 +66,36 @@ export const PagePilingComponent: FC<Props> = ({
   const animando = useRef(false);
   const hijos = Children.map(children, (child) => child);
   const [cambioRealizado, setCambioRealizado] = useState(false);
+  const scroll_timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const detectarRueda = (e: WheelEvent) => {
     const { deltaY } = e;
-
-
-    if (!cambioRealizado && !animando.current) {
-      animando.current = true;
-      setPagina((pagina) => {
-        let nuevaPagina = pagina;
-        if (deltaY > 0) {
-          nuevaPagina = pagina + 1;
-        } else {
-          nuevaPagina = pagina - 1;
-        }
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        nuevaPagina = Math.max(0, Math.min(hijos!.length - 1, nuevaPagina));
-        if (nuevaPagina === pagina) {
-          animando.current = false;
-          return pagina;
-        } else {
-          setDireccion(deltaY > 0 ? "incrementando" : "decrementando");
-          setCambioRealizado(true); // Marcar el cambio como realizado
-          return nuevaPagina;
-        }
-      });
+    if (scroll_timeout.current) {
+      clearTimeout(scroll_timeout.current);
     }
+    scroll_timeout.current = setTimeout(() => {
+      if (!cambioRealizado && !animando.current) {
+        animando.current = true;
+        setPagina((pagina) => {
+          let nuevaPagina = pagina;
+          if (deltaY > 0) {
+            nuevaPagina = pagina + 1;
+          } else {
+            nuevaPagina = pagina - 1;
+          }
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          nuevaPagina = Math.max(0, Math.min(hijos!.length - 1, nuevaPagina));
+          if (nuevaPagina === pagina) {
+            animando.current = false;
+            return pagina;
+          } else {
+            setDireccion(deltaY > 0 ? "incrementando" : "decrementando");
+            setCambioRealizado(true); // Marcar el cambio como realizado
+            return nuevaPagina;
+          }
+        });
+      }
+    }, 200);
   };
 
   // Reiniciar cambioRealizado a su estado inicial cuando finalice el evento de scroll

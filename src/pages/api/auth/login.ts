@@ -54,7 +54,9 @@ export default async function handler(req: Request, res: NextApiResponse) {
 			if (cazatalentos) {
 				const correct_pass = await bcrypt.compare(form.password, cazatalentos.contrasenia);
 				if (correct_pass) {
-
+					if (!cazatalentos.activo) {
+						return res.status(401).json({status: 'error', message: 'Tu usuario ha sido bloqueado por el administrador, por favor comunicate con soporte para saber mas.'});
+					}
 					// revisar si tiene proyectos que no se han enviado a revision
 					const proyectos_pendientes_a_revisar = await prisma.proyecto.findMany({
 						where: {
