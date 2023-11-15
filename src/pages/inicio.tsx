@@ -197,6 +197,9 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
+              autoplay={{
+                delay: 2500
+              }}
               slidesPerView={destacados.data.length >= 6 ? 6 : destacados.data.length}
               spaceBetween={30}
             >
@@ -266,6 +269,12 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigation={false}
               arrowsColor="#F9B233"
               slidesPerView={1}
+              autoplay={{
+                delay: 2000
+              }}
+              forceFirstSwap={{
+                delay: 2000
+              }}
               spaceBetween={0}
             >
               {banners.data && banners.data.map((banner, i) => {
@@ -302,7 +311,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
           </p>
           <hr className="hr_blue" style={{ margin: "0px 0 40px 0" }} />
 
-          {destacados.isLoading && (
+          {proyectos.isLoading && (
             <Carroucel
               navigationNew
               navigation={false}
@@ -322,6 +331,9 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               arrowsColor="#069cb1"
               slidesPerView={proyectos.data.length >= 6 ? 6 : proyectos.data.length}
               spaceBetween={30}
+              autoplay={{
+                delay: 1500
+              }}
             >
               {proyectos.data.map((proyecto, i) => (
                 <MContainer key={i} direction="vertical">

@@ -1,8 +1,8 @@
-import { type ReactNode, type FC, Children, useRef } from "react";
+import { type ReactNode, type FC, Children, useRef, useEffect } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { Navigation, Pagination } from "swiper";
+import { Navigation, Pagination, Autoplay } from "swiper";
 
 /* Cosas  Flechas */
 import type SwiperCore from "swiper";
@@ -24,6 +24,12 @@ interface Props {
   className?: string;
   arrowsColor?: string;
   navigationNew?: boolean;
+  autoplay?: {
+    delay: number
+  },
+  forceFirstSwap?: {
+    delay: number
+  }
 }
 
 export const Carroucel: FC<Props> = ({
@@ -33,12 +39,28 @@ export const Carroucel: FC<Props> = ({
   spaceBetween = 0,
   navigation = true,
   navigationNew = false,
+  autoplay,
+  forceFirstSwap
 }) => {
   const swiperRef = useRef<SwiperCore>();
+  const swap_timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const slides = Children.map(children, (child, i) => (
     <SwiperSlide key={i}>{child}</SwiperSlide>
   ));
+  
+  useEffect(() => {
+    if (forceFirstSwap) {
+      swap_timeout.current = setTimeout(() => {
+        swiperRef.current?.slideNext();
+      }, forceFirstSwap.delay);
+    }
+    return () => {
+      if (swap_timeout.current) {
+        clearTimeout(swap_timeout.current);
+      }
+    }
+  }, [forceFirstSwap]);
 
   return (
     <div className="d-flex carrusel-personalizado" style={{maxWidth: '100%'}}>
@@ -63,7 +85,8 @@ export const Carroucel: FC<Props> = ({
           "--swiper-theme-color": arrowsColor,
           maxWidth: '100%'
         }}
-        modules={[Navigation, Pagination]}
+        autoplay={autoplay ? {...autoplay, disableOnInteraction: false} : false}
+        modules={autoplay ? [Autoplay, Navigation, Pagination] : [Navigation, Pagination]}
         spaceBetween={spaceBetween}
         slidesPerView={slidesPerView}
         navigation={
