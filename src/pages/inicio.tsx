@@ -197,7 +197,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
-              slidesPerView={6}
+              slidesPerView={destacados.data.length >= 6 ? 6 : destacados.data.length}
               spaceBetween={30}
             >
               {destacados.data.map((proyecto) => (
@@ -320,7 +320,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#069cb1"
-              slidesPerView={6}
+              slidesPerView={proyectos.data.length >= 6 ? 6 : proyectos.data.length}
               spaceBetween={30}
             >
               {proyectos.data.map((proyecto, i) => (

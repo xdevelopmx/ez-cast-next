@@ -22,7 +22,9 @@ export const ProyectosRouter = createTRPCRouter({
 	getProyectosEnCartelera: publicProcedure
 		.query(async ({ctx}) => {
 			const proyectos = await ctx.prisma.proyecto.findMany({
-				where: { en_casting: true },
+				where: { en_casting: true, estatus: {
+					notIn: ['ARCHIVADO', 'ENVIADO_A_APROBACION', 'RECHAZADO', 'POR_VALIDAR']
+				} },
 				//take: input,
 				include: {
 					tipo: {

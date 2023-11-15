@@ -169,7 +169,7 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                                     {talento.data && talento.data.media.filter(m => m.media.type.includes('video')).length === 0 &&
                                         <Typography>{textos['no_tienes_elementos']?.replace('[N]', `${textos['video']}`)}</Typography>
                                     }
-                                    {talento.data && talento.data.media.filter(m => m.media.type.includes('video')).map((m, i) => {
+                                    {talento.data && talento.data.media.filter(m => m.media.type.includes('video') && m.media.public).map((m, i) => {
                                         return (
                                             <div key={i} style={{border: '1px solid #069CB1', padding: '10px' }}>
                                                 <video controls style={{ width: '200px', height: 164 }}>
