@@ -36,7 +36,7 @@ export const Header: FC<Props> = ({
   const isInLogin = router.pathname.includes("/login");
   const isActiveEzCast = router.pathname.includes("/inicio");
 
-  const isExcludeEzCast = router.pathname.includes("/inicio") || router.pathname.includes("/admin") || router.pathname.includes("/login");
+  const isExcludeEzCast = router.pathname === "/" || router.pathname.includes("/inicio") || router.pathname.includes("/admin") || router.pathname.includes("/login") ;
 
   useEffect(() => {
     if (!menuSiempreBlanco) {
@@ -118,8 +118,7 @@ export const Header: FC<Props> = ({
               </Link>
             </li>
             <li
-              className={`nav-item ml-lg-3 mr-lg-3 ${router.pathname === "/login" ? "active" : ""
-                } ${!isExcludeEzCast ? "active" : ""}`}
+                    className={`nav-item ml-lg-3 mr-lg-3 ${!isExcludeEzCast ? "active" : ""}`}
             >
               {/*eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
               <Link

@@ -504,60 +504,62 @@ export const RolesRouter = createTRPCRouter({
           },
         });
         if (talento && rol) {
-          let conversacion = await ctx.prisma.conversaciones.findFirst({
-            where: {
-              id_emisor: input.id_talento,
-              tipo_usuario_emisor: TipoUsuario.TALENTO,
-              id_receptor: rol.proyecto.id_cazatalentos,
-              tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
-              id_proyecto: rol.id_proyecto,
-            },
-          });
-          if (!conversacion) {
-            conversacion = await ctx.prisma.conversaciones.findFirst({
-              where: {
-                id_emisor: rol.proyecto.id_cazatalentos,
-                tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
-                id_receptor: input.id_talento,
-                tipo_usuario_receptor: TipoUsuario.TALENTO,
-                id_proyecto: rol.id_proyecto,
-              },
-            });
-          }
-          if (!conversacion) {
-            conversacion = await ctx.prisma.conversaciones.create({
-              data: {
-                receptor_perfil_url: `/cazatalentos/dashboard?id_cazatalentos=${rol.proyecto.id_cazatalentos}`,
-                emisor_perfil_url: `/talento/dashboard?id_talento=${talento.id}&id_rol=${rol.id}`,
-                id_proyecto: rol.id_proyecto,
-                id_emisor: input.id_talento,
-                tipo_usuario_emisor: TipoUsuario.TALENTO,
-                id_receptor: rol.proyecto.id_cazatalentos,
-                tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
-              },
-            });
-          }
-          if (conversacion) {
-            await ctx.prisma.mensaje.create({
-              data: {
-                id_conversacion: conversacion.id,
-                id_emisor: input.id_talento,
-                tipo_usuario_emisor: TipoUsuario.TALENTO,
-                id_receptor: rol.proyecto.id_cazatalentos,
-                tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
-                visto: false,
-                hora_envio: dayjs().toDate(),
-                mensaje: JSON.stringify({
-                  message: getResponse("conversacion_message")
-                    .replace("[N1]", `${talento.nombre}`)
-                    .replace("[N2]", `${talento.apellido}`)
-                    .replace("[N3]", `${rol.nombre}`)
-                    .replace("[N4]", `${rol.proyecto.nombre}`),
-                }),
-                type: TipoMensajes.TEXT,
-              },
-            });
-          }
+          //mensaje al crear el rol 
+          // let conversacion = await ctx.prisma.conversaciones.findFirst({
+          //   where: {
+          //     id_emisor: input.id_talento,
+          //     tipo_usuario_emisor: TipoUsuario.TALENTO,
+          //     id_receptor: rol.proyecto.id_cazatalentos,
+          //     tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+          //     id_proyecto: rol.id_proyecto,
+          //   },
+          // });
+
+          // if (!conversacion) {
+          //   conversacion = await ctx.prisma.conversaciones.findFirst({
+          //     where: {
+          //       id_emisor: rol.proyecto.id_cazatalentos,
+          //       tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
+          //       id_receptor: input.id_talento,
+          //       tipo_usuario_receptor: TipoUsuario.TALENTO,
+          //       id_proyecto: rol.id_proyecto,
+          //     },
+          //   });
+          // }
+          // if (!conversacion) {
+          //   conversacion = await ctx.prisma.conversaciones.create({
+          //     data: {
+          //       receptor_perfil_url: `/cazatalentos/dashboard?id_cazatalentos=${rol.proyecto.id_cazatalentos}`,
+          //       emisor_perfil_url: `/talento/dashboard?id_talento=${talento.id}&id_rol=${rol.id}`,
+          //       id_proyecto: rol.id_proyecto,
+          //       id_emisor: input.id_talento,
+          //       tipo_usuario_emisor: TipoUsuario.TALENTO,
+          //       id_receptor: rol.proyecto.id_cazatalentos,
+          //       tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+          //     },
+          //   });
+          // }
+          // if (conversacion) {
+          //   await ctx.prisma.mensaje.create({
+          //     data: {
+          //       id_conversacion: conversacion.id,
+          //       id_emisor: input.id_talento,
+          //       tipo_usuario_emisor: TipoUsuario.TALENTO,
+          //       id_receptor: rol.proyecto.id_cazatalentos,
+          //       tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+          //       visto: false,
+          //       hora_envio: dayjs().toDate(),
+          //       mensaje: JSON.stringify({
+          //         message: getResponse("conversacion_message")
+          //           .replace("[N1]", `${talento.nombre}`)
+          //           .replace("[N2]", `${talento.apellido}`)
+          //           .replace("[N3]", `${rol.nombre}`)
+          //           .replace("[N4]", `${rol.proyecto.nombre}`),
+          //       }),
+          //       type: TipoMensajes.TEXT,
+          //     },
+          //   });
+          // }
           const cazatalentos = await ctx.prisma.cazatalentos.findFirst({
             where: {
               id: rol.proyecto.id_cazatalentos,
