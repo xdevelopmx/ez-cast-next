@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    talento_elegido: "¡Chosen talent!",
     estado_donde_aceptan_solicitudes_invalido: "State where to accept applications was not specified",
     idioma_rol_invalido: "Role language was not specified",
     uso_horario_rol_invalido: "Role time zone usage was not specified",
@@ -482,6 +483,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    talento_elegido: "¡Talento elegido!",
     estado_donde_aceptan_solicitudes_invalido: "No se especifico estado donde aceptar las solicitudes",
     idioma_rol_invalido: "No se especifico el idioma del rol",
     uso_horario_rol_invalido: "No se especifico el uso de horario del rol",

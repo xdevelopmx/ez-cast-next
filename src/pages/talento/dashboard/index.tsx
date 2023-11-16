@@ -57,7 +57,13 @@ const DashBoardTalentosPage: NextPage<{
     }
   );
 
-    console.log('eltalento',talento);
+  const audicion_talento = api.cazatalentos.getAudicionTalentoByRol.useQuery({ id_talento: props.id_talento, id_rol: props.id_rol }, {
+    refetchOnWindowFocus: false
+  });
+
+  console.log(audicion_talento.data);
+
+  console.log('eltalento', talento);
 
   useEffect(() => {
     if (talento.data) {
@@ -91,11 +97,11 @@ const DashBoardTalentosPage: NextPage<{
                 <br />
               </>
             )}
-              {props.user && (
-                <div className="d-flex justify-content-end align-items-start ">
-                  {<Alertas />}
-                </div>
-              )}
+            {props.user && (
+              <div className="d-flex justify-content-end align-items-start ">
+                {<Alertas />}
+              </div>
+            )}
             {props.id_talento > 0 &&
               props.id_rol > 0 &&
               props.user?.tipo_usuario === TipoUsuario.CAZATALENTOS && (
@@ -105,11 +111,11 @@ const DashBoardTalentosPage: NextPage<{
                 />
               )}
             <div className="container_box_header">
-            
+
               {props.user && (
                 <>
                   <div className="d-flex justify-content-between">
-                    <div className="d-flex">
+                    <div className="">
                       {talento.isFetching && (
                         <Skeleton
                           style={{ marginLeft: 16 }}
@@ -118,8 +124,13 @@ const DashBoardTalentosPage: NextPage<{
                         />
                       )}
                       {!talento.isFetching && talento.data && (
-                        <p className="h3 font-weight-bold mb-0 ml-2">
+                        <p className="h3 font-weight-bold mb-0 ">
                           {talento.data.nombre} {talento.data.apellido}
+                        </p>
+                      )}
+                      {!audicion_talento.isFetching && audicion_talento.data && (
+                        <p  className=" mb-0 " style={{ color: '#069cb1' }} >
+                          {textos["talento_elegido"]}
                         </p>
                       )}
                     </div>
