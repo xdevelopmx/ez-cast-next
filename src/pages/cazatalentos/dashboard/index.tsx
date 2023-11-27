@@ -304,7 +304,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                       fontWeight={600}
                       component={"p"}
                     >
-                      
+                      {textos['acciones']}
                     </Typography>,
                   ]}
                   backgroundColorHeader="#069cb1"
@@ -473,67 +473,68 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                 justify="end"
                               >
                                 <>
+                                  <MTooltip
+                                    color="orange"
+                                    placement="top"
+                                    text="Archivar"
+                                    icon={
+                                      <IconButton
+                                        sx={{ padding: "0!important" }}
+                                        onClick={(e) => {
+                                          const params = new Map<
+                                            string,
+                                            unknown
+                                          >();
+                                          params.set("id", p.id);
+                                          params.set(
+                                            "state",
+                                            p.estatus.toUpperCase() ===
+                                              "ARCHIVADO"
+                                              ? "POR_VALIDAR"
+                                              : "ARCHIVADO"
+                                          );
+                                          setConfirmationDialog({
+                                            action: "STATE_CHANGE",
+                                            data: params,
+                                            opened: true,
+                                            title:
+                                              p.estatus.toUpperCase() ===
+                                              "ARCHIVADO"
+                                                ? `${textos['desarchivar_proyecto']}`
+                                                : `${textos['archivar_proyecto']}`,
+                                            content: (
+                                              <Typography variant="body2">{`${
+                                                p.estatus.toUpperCase() ===
+                                                "ARCHIVADO"
+                                                  ? `${textos['desarchivar_proyecto_message']}`
+                                                  : `${textos['archivar_proyecto_message']}`
+                                              }`}</Typography>
+                                            ),
+                                          });
+                                          e.stopPropagation();
+                                        }}
+                                        color="primary"
+                                        aria-label="archivar"
+                                        component="label"
+                                      >
+                                        <Image
+                                          src={
+                                            "/assets/img/iconos/archivar_blue.svg"
+                                          }
+                                          width={16}
+                                          height={16}
+                                          alt="archivar"
+                                        />
+                                      </IconButton>
+                                    }
+                                  />
                                   {[
                                     Constants.ESTADOS_PROYECTO.POR_VALIDAR,
                                     Constants.ESTADOS_PROYECTO.ARCHIVADO,
                                     Constants.ESTADOS_PROYECTO.RECHAZADO,
+                                    
                                   ].includes(p.estatus.toUpperCase()) && (
                                     <>
-                                      <MTooltip
-                                        color="orange"
-                                        placement="top"
-                                        text="Archivar"
-                                        icon={
-                                          <IconButton
-                                            sx={{ padding: "0!important" }}
-                                            onClick={(e) => {
-                                              const params = new Map<
-                                                string,
-                                                unknown
-                                              >();
-                                              params.set("id", p.id);
-                                              params.set(
-                                                "state",
-                                                p.estatus.toUpperCase() ===
-                                                  "ARCHIVADO"
-                                                  ? "POR_VALIDAR"
-                                                  : "ARCHIVADO"
-                                              );
-                                              setConfirmationDialog({
-                                                action: "STATE_CHANGE",
-                                                data: params,
-                                                opened: true,
-                                                title:
-                                                  p.estatus.toUpperCase() ===
-                                                  "ARCHIVADO"
-                                                    ? `${textos['desarchivar_proyecto']}`
-                                                    : `${textos['archivar_proyecto']}`,
-                                                content: (
-                                                  <Typography variant="body2">{`${
-                                                    p.estatus.toUpperCase() ===
-                                                    "ARCHIVADO"
-                                                      ? `${textos['desarchivar_proyecto_message']}`
-                                                      : `${textos['archivar_proyecto_message']}`
-                                                  }`}</Typography>
-                                                ),
-                                              });
-                                              e.stopPropagation();
-                                            }}
-                                            color="primary"
-                                            aria-label="archivar"
-                                            component="label"
-                                          >
-                                            <Image
-                                              src={
-                                                "/assets/img/iconos/archivar_blue.svg"
-                                              }
-                                              width={16}
-                                              height={16}
-                                              alt="archivar"
-                                            />
-                                          </IconButton>
-                                        }
-                                      />
                                       <MTooltip
                                         color="orange"
                                         placement="top"

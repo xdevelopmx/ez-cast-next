@@ -6,12 +6,13 @@ import { Box } from "@mui/material";
 import { ConversacionesPreview } from "../shared/ConversacionesPreview";
 import { CalendarPreview } from "../shared/CalendarPreview";
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
 export const Flotantes = () => {
   const [show_conversaciones, setShowConversaciones] = useState(false);
   const [show_calendar, setShowCalendar] = useState(false);
   const mensajes_no_vistos = api.mensajes.getCountMensajesNoVistos.useQuery();
-
+  const router = useRouter();
   return (
     <Box position={"relative"}>
       <div className="fixed_items">
@@ -19,6 +20,16 @@ export const Flotantes = () => {
 
           <div className="image_chat container_calendar_blue"
             style={{ marginBottom: 15 }}
+            onClick={() => {
+              if (location.pathname.includes('/cazatalentos/')) {
+                router.replace('/cazatalentos/dashboard');
+                return;
+              }
+              if (location.pathname.includes('/talento/')) {
+                router.replace('/talento/dashboard');
+                return;
+              }
+            }}
           >
             <motion.img
               src="/assets/img/iconos/EZ_Claqueta_N_S.svg"

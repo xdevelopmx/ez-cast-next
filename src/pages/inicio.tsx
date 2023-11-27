@@ -76,6 +76,8 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
     refetchOnWindowFocus: false,
   });
 
+  console.log(proyectos.data);
+
   const banners = api.banners.getBannersByRef.useQuery('banners-cartelera-proyectos', {
     refetchOnWindowFocus: false
   });
@@ -197,9 +199,6 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#F9B233"
-              autoplay={{
-                delay: 2500
-              }}
               slidesPerView={destacados.data.length >= 6 ? 6 : destacados.data.length}
               spaceBetween={30}
             >
@@ -270,10 +269,10 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               arrowsColor="#F9B233"
               slidesPerView={1}
               autoplay={{
-                delay: 2000
+                delay: 5000
               }}
               forceFirstSwap={{
-                delay: 2000
+                delay: 5000
               }}
               spaceBetween={0}
             >
@@ -331,9 +330,6 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               arrowsColor="#069cb1"
               slidesPerView={proyectos.data.length >= 6 ? 6 : proyectos.data.length}
               spaceBetween={30}
-              autoplay={{
-                delay: 1500
-              }}
             >
               {proyectos.data.map((proyecto, i) => (
                 <MContainer key={i} direction="vertical">

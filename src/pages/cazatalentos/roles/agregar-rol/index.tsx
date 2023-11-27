@@ -848,11 +848,11 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
         ) {
           return { ...form, error: `${textos['animal_invalido_tipo']}` };
         }
-        if (
-          !(animal.descripcion && animal.descripcion.length)
-        ) {
-          return { ...form, error: `${textos['animal_invalido_descripcion']}` };
-        }
+        // if (
+        //   !(animal.descripcion && animal.descripcion.length)
+        // ) {
+        //   return { ...form, error: `${textos['animal_invalido_descripcion']}` };
+        // }
         if (
           !(animal.tamanio && animal.tamanio.length)
         ) {

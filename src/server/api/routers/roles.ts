@@ -1152,7 +1152,7 @@ export const RolesRouter = createTRPCRouter({
             animal: z
               .object({
                 id: z.number(),
-                descripcion: z.string(),
+                descripcion: z.string().optional(),
                 tamanio: z.string(),
               })
               .nullish(),
@@ -1482,7 +1482,7 @@ export const RolesRouter = createTRPCRouter({
             data: {
               id_filtro_demo_por_rol: filtros_demograficos.id,
               id_animal: input.filtros_demograficos.animal.id,
-              descripcion: input.filtros_demograficos.animal.descripcion,
+              descripcion: input.filtros_demograficos.animal.descripcion ? input.filtros_demograficos.animal.descripcion : '' ,
               tamanio: input.filtros_demograficos.animal.tamanio,
             },
           });

@@ -52,7 +52,7 @@ export const TalentosDestacados = ({ slidesPerView = 3 }: Props) => {
                       height: 'calc( 100% - 50px )',
                       margin: '0 auto'
                     }}>
-                      <Image fill src={d.img_profile} style={{objectFit: 'contain', backgroundColor: '#fff'}} alt="talento" />
+                      <Image fill src={d.img_profile.length === 0 ? '/assets/img/no-image.png' : d.img_profile} style={{objectFit: 'contain', backgroundColor: '#fff'}} alt="talento" />
                     </div>
                     <div className=""
                       style={{ backgroundColor: 'white', overflow: 'hidden', margin: '-10px 0 0 0', height: '60px', zIndex: '99', position: 'relative', display: 'flex', alignItems: 'center' }}>

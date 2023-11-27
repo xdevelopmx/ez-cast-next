@@ -477,6 +477,7 @@ export const CazatalentosRouter = createTRPCRouter({
 							})
 						}
 					} else {
+						console.log('entro aca');
 						if (aplicacion_rol_por_talento && [Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(aplicacion_rol_por_talento.id_estado_aplicacion)) {
 							await ctx.prisma.aplicacionRolPorTalento.update({
 								where: {
@@ -730,7 +731,10 @@ export const CazatalentosRouter = createTRPCRouter({
 							identificador: `foto-perfil-cazatalentos-${user.id}`
 						}
 					})
-					if (foto_perfil) {
+					// if (foto_perfil && input.foto_perfil && input.foto_perfil.clave !== foto_perfil.clave) {
+					// 	await FileManager.deleteFiles([foto_perfil.clave]);
+					// }
+					if (foto_perfil && input.foto_perfil) {
 						await FileManager.deleteFiles([foto_perfil.clave]);
 					}
 					const saved_foto = await ctx.prisma.media.upsert({

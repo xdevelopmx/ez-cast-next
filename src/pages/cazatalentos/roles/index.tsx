@@ -210,6 +210,20 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
 
   const IS_ADMIN = user && user.tipo_usuario === TipoUsuario.ADMIN;
 
+  let status_color = 'grey';
+  switch (proyecto.data?.estatus.toUpperCase()) {
+    case Constants.ESTADOS_PROYECTO
+      .ENVIADO_A_APROBACION:
+      status_color = "gold";
+      break;
+    case Constants.ESTADOS_PROYECTO.RECHAZADO:
+      status_color = "tomato";
+      break;
+    case Constants.ESTADOS_PROYECTO.APROBADO:
+      status_color = "#8bc34a";
+      break;
+  }
+
   const table_actions = [
     <Typography
       key={1}
@@ -563,22 +577,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   <MContainer direction="horizontal" styles={{}}>
                     <CircleIcon
                       style={{
-                        color: (() => {
-                          let color = "grey";
-                          switch (proyecto.data?.estatus.toUpperCase()) {
-                            case Constants.ESTADOS_PROYECTO
-                              .ENVIADO_A_APROBACION:
-                              color = "gold";
-                              break;
-                            case Constants.ESTADOS_PROYECTO.RECHAZADO:
-                              color = "tomato";
-                              break;
-                            case Constants.ESTADOS_PROYECTO.APROBADO:
-                              color = "#8bc34a";
-                              break;
-                          }
-                          return color;
-                        })(),
+                        color: status_color,
                         width: 12,
                         height: 12,
                         marginRight: 5,
@@ -864,10 +863,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               <MContainer direction="horizontal">
                                 <CircleIcon
                                   style={{
-                                    color:
-                                      r.estatus.toUpperCase() === "ACTIVO"
-                                        ? "green"
-                                        : "grey",
+                                    color: status_color,
                                     width: 12,
                                     height: 12,
                                     marginTop: 6,
