@@ -200,6 +200,20 @@ export const MTable: FC<MTableProps> = ({
                               </TableCell>
                             );
                           }
+                          if (['ACTIONS', 'ACCIONES'].includes(val[0]?.toString().toUpperCase())) {
+                            return (
+                              <TableCell
+                                key={i}
+                                align="left"
+                                style={{
+                                  ...dataStylesRow,
+                                  width: 176
+                                }}
+                              >
+                                {val[1]}
+                              </TableCell>
+                            );
+                          }
                           return (
                             <TableCell
                               key={i}

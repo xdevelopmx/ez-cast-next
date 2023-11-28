@@ -299,7 +299,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                     </Typography>,
                     <Typography
                       key={4}
-                      sx={{ color: "#000" }}
+                      sx={{ color: "#000", textAlign: 'center'}}
                       fontSize={"1.2rem"}
                       fontWeight={600}
                       component={"p"}
@@ -470,7 +470,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                             acciones: (
                               <MContainer
                                 direction="horizontal"
-                                justify="end"
+                                justify="start"
                               >
                                 <>
                                   <MTooltip

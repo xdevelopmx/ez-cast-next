@@ -8,16 +8,18 @@ import { CalendarPreview } from "../shared/CalendarPreview";
 import { api } from "~/utils/api";
 import { useRouter } from "next/router";
 
-export const Flotantes = () => {
+export const Flotantes = (props: {hide?: boolean}) => {
   const [show_conversaciones, setShowConversaciones] = useState(false);
   const [show_calendar, setShowCalendar] = useState(false);
   const mensajes_no_vistos = api.mensajes.getCountMensajesNoVistos.useQuery();
   const router = useRouter();
+  if (Boolean(props.hide)) {
+    return null;
+  }
   return (
     <Box position={"relative"}>
       <div className="fixed_items">
         <div className="container_chat_blue mb-3">
-
           <div className="image_chat container_calendar_blue"
             style={{ marginBottom: 15 }}
             onClick={() => {

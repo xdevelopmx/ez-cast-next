@@ -209,12 +209,18 @@ export const CatalogoProyectos = () => {
             value={Constants.ESTADOS_PROYECTO.ARCHIVADO}
           />
         </Tabs>
-        <MSearchInput
-          placeholder="Buscar proyectos"
-          onChange={(value) => {
-            setSearchText(value);
-          }}
-        />
+        
+      </Box>
+      <Box sx={{width: '100%', margin: 2}}>
+        <Box sx={{marginLeft: 'calc(100% - 416px)'}}>
+          <MSearchInput
+            w={400}
+            placeholder="Buscar proyectos"
+            onChange={(value) => {
+              setSearchText(value);
+            }}
+          />
+        </Box>
       </Box>
       <MTable
         columnsHeader={[
@@ -314,7 +320,7 @@ export const CatalogoProyectos = () => {
                 case Constants.ESTADOS_PROYECTO.ARCHIVADO:
                   return "Archivado";
                 case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION:
-                  return "Enviado a aprobacion";
+                  return "Enviado a aprobación";
                 case Constants.ESTADOS_PROYECTO.RECHAZADO:
                   return "Inactivo";
                 case Constants.ESTADOS_PROYECTO.APROBADO:

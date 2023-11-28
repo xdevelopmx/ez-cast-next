@@ -83,7 +83,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     opened: boolean;
     title: string;
     content: JSX.Element;
-    action: "STATE_CHANGE" | "DELETE" | "PROYECTO_ENVIADO_A_APROBACION";
+    action: "STATE_CHANGE" | "DELETE" | "PROYECTO_ENVIADO_A_APROBACION" | "MODIFICACION_ROL_EN_PROYECTO_APROBADO";
     data: Map<string, unknown>;
   }>({
     opened: false,
@@ -222,6 +222,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
     case Constants.ESTADOS_PROYECTO.APROBADO:
       status_color = "#8bc34a";
       break;
+  }
+
+  let proyecto_status = `${textos['cargando']}...`;
+  if (proyecto.data) {
+    switch (proyecto.data.estatus) {
+      case Constants.ESTADOS_PROYECTO.APROBADO: proyecto_status = 'Aprobado'; break;
+      case Constants.ESTADOS_PROYECTO.ARCHIVADO: proyecto_status = 'Archivado'; break;
+      case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: proyecto_status = 'Enviado a aprobación'; break;
+      case Constants.ESTADOS_PROYECTO.POR_VALIDAR: proyecto_status = 'Pendiente a validar'; break;
+      case Constants.ESTADOS_PROYECTO.RECHAZADO: proyecto_status = 'Rechazado'; break;
+    } 
   }
 
   const table_actions = [
@@ -492,12 +503,42 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                           </>
                         )}
                       {!IS_ADMIN &&
-                        proyecto.data &&
-                        [
-                          Constants.ESTADOS_PROYECTO.RECHAZADO,
-                          Constants.ESTADOS_PROYECTO.ARCHIVADO,
-                          Constants.ESTADOS_PROYECTO.POR_VALIDAR,
-                        ].includes(proyecto.data.estatus) && (
+                        proyecto.data && proyecto.data.estatus === Constants.ESTADOS_PROYECTO.APROBADO ? 
+                        <Button
+                          onClick={() => {
+                            const params = new Map<string, unknown>();
+                            params.set('url', `/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`);
+                            setConfirmationDialog({
+                              action: 'MODIFICACION_ROL_EN_PROYECTO_APROBADO',
+                              data: params,
+                              opened: true,
+                              title: `${textos["agregar_rol_en_proyecto_aprobado_title"]}`,
+                              content: (
+                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_title_body"]}`}</Typography>
+                              ),
+                            });
+                          }}
+                          className="btn btn-intro btn-price btn_out_line "
+                          startIcon={
+                            <Image
+                              src={`/assets/img/iconos/cruz_ye.svg`}
+                              height={16}
+                              width={16}
+                              alt={"agregar-rol"}
+                            />
+                          }
+                          style={{
+                            padding: "4px 35px",
+                            marginTop: 0,
+                            marginRight: 10,
+                            fontWeight: 500,
+                            textTransform: 'none',
+                          }}
+                        >
+                          {`${textos["nuevo_rol"]}`} 
+                      </Button>
+                      :
+                        (
                           <>
                             <MContainer
                               direction="horizontal"
@@ -587,15 +628,10 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                     <Typography
                       variant="subtitle2"
                       sx={{
-                        textTransform: "capitalize !important",
                         fontSize: "1.1rem",
                       }}
                     >
-                      {proyecto.data
-                        ? proyecto.data?.estatus
-                            .replaceAll("_", " ")
-                            .toLocaleLowerCase()
-                        : "ND"}
+                      {proyecto_status}
                     </Typography>
                   </MContainer>
                   <Divider
@@ -1068,43 +1104,55 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       </IconButton>
                                     }
                                   />
-                                  {![
-                                    Constants.ESTADOS_PROYECTO.APROBADO,
-                                    Constants.ESTADOS_PROYECTO
-                                      .ENVIADO_A_APROBACION,
+
+                                  <MTooltip
+                                    color="orange"
+                                    placement="top"
+                                    text="Editar Rol"
+                                    icon={
+                                      <IconButton
+                                        onClick={(e) => {
+                                          if (proyecto.data && proyecto.data.estatus === Constants.ESTADOS_PROYECTO.APROBADO) {
+                                            const params = new Map<string, unknown>();
+                                            params.set('url', `/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`);
+                                            setConfirmationDialog({
+                                              action: 'MODIFICACION_ROL_EN_PROYECTO_APROBADO',
+                                              data: params,
+                                              opened: true,
+                                              title: `${textos["agregar_rol_en_proyecto_aprobado_title"]}`,
+                                              content: (
+                                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_title_body"]}`}</Typography>
+                                              ),
+                                            });
+                                          } else {
+                                            void router.push(
+                                              `/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`
+                                            );
+                                          }
+                                          e.stopPropagation();
+                                        }}
+                                        color="primary"
+                                        aria-label="editar"
+                                        component="label"
+                                      >
+                                        <Image
+                                          src={
+                                            "/assets/img/iconos/edit_icon_blue.png"
+                                          }
+                                          width={16}
+                                          height={16}
+                                          alt="archivar"
+                                        />
+                                      </IconButton>
+                                    }
+                                  />
+                                  {[
+                                    Constants.ESTADOS_ROLES.ARCHIVADO
                                   ].includes(
-                                    proyecto.data
-                                      ? proyecto.data.estatus.toUpperCase()
-                                      : ""
+                                    r.estatus
                                   ) && (
                                     <>
-                                      <MTooltip
-                                        color="orange"
-                                        placement="top"
-                                        text="Editar Rol"
-                                        icon={
-                                          <IconButton
-                                            onClick={(e) => {
-                                              void router.push(
-                                                `/cazatalentos/roles/agregar-rol?id-proyecto=${r.id_proyecto}&id-rol=${r.id}`
-                                              );
-                                              e.stopPropagation();
-                                            }}
-                                            color="primary"
-                                            aria-label="editar"
-                                            component="label"
-                                          >
-                                            <Image
-                                              src={
-                                                "/assets/img/iconos/edit_icon_blue.png"
-                                              }
-                                              width={16}
-                                              height={16}
-                                              alt="archivar"
-                                            />
-                                          </IconButton>
-                                        }
-                                      />
+                                      
                                       <MTooltip
                                         color="orange"
                                         placement="top"
@@ -1268,7 +1316,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#000000" }}>
-                                        {textos['no_especificado']}
+                                        {`${textos['compensations']}`} {textos['no_especificado']?.toLocaleLowerCase()}
                                       </Typography>
                                     </>
                                   )}
@@ -1360,7 +1408,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#000000" }}>
-                                        {`${textos['no_especificado']}`}
+                                        {`${textos['genero_rol']}`} {`${textos['no_especificado']}`.toLowerCase()}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1444,7 +1492,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   ) : (
                                     <>
                                       <Typography sx={{ color: "#000000" }}>
-                                        {`${textos['no_especificado']}`}
+                                        {`${textos['apariencia_etnica']}`} {`${textos['no_especificado']}`.toLowerCase()}
                                       </Typography>
                                       <Divider
                                         style={{
@@ -1627,7 +1675,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  {`${textos['no_especificado']}`}
+                                                  {`${textos['no_hay_habilidades_especificadas']}`}
                                                 </Typography>
                                               </>
                                             )}
@@ -1707,7 +1755,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   component={"span"}
                                                   sx={{ color: "#928F8F" }}
                                                 >
-                                                  {`${textos['no_especificado']}`}
+                                                  {`${textos['no_hay_desnudos']}`}
                                                 </Typography>
                                               </>
                                             )}
@@ -2116,7 +2164,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
           </div>
         </div>
       </MainLayout>
-      <Flotantes />
+      <Flotantes hide={IS_ADMIN} />
       <ConfirmationDialog
         opened={confirmation_dialog.opened}
         onOptionSelected={(confirmed: boolean) => {
@@ -2135,6 +2183,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION,
                 });
                 setModalConfirmacion(true);
+                break;
+              }
+              case "MODIFICACION_ROL_EN_PROYECTO_APROBADO": {
+                const url = confirmation_dialog.data.get("url");
+                router.push(`${url}`);
                 break;
               }
               case "STATE_CHANGE": {
@@ -2165,6 +2218,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
       >
         <div className={estilos.modal}>
           <Button
+            sx={{ position: 'absolute'}}
             className={estilos["modal-cerrar"]}
             onClick={() => setModalConfirmacion(false)}
           >
@@ -2179,12 +2233,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
             Se ha enviado tu proyecto para aprobación
           </h3>
           <p className={estilos["modal-p"]}>
-            Latino/Hispano Nacionalidad al pendiente de tu correo electrónico,
+            Mantente pendiente de tu correo electrónico,
             ya que ahí recibirás respuesta a tu proyecto.
           </p>
           <p>
             ¿Dudas? Visita nuestro centro de ayuda{" "}
-            <a className={estilos["modal-a"]} href={"/"} target="_blank">
+            <a className={estilos["modal-a"]} href={"/ayuda-ezcast"} target="_blank">
               {" "}
               aquí.
             </a>{" "}

@@ -1731,6 +1731,23 @@ export const RolesRouter = createTRPCRouter({
         });
       }
 
+      const proyecto = await ctx.prisma.proyecto.findFirst({
+        where: {
+          id: rol.id_proyecto
+        }
+      });
+      // si un proyecto que ya fue aprobado agrega otro rol, se debe regresar a revision
+      if (proyecto && proyecto.estatus === Constants.ESTADOS_PROYECTO.APROBADO) {
+        await ctx.prisma.proyecto.update({
+          where: {
+            id: proyecto.id
+          },
+          data: {
+            estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION
+          }
+        })
+      }
+
       return rol;
     }),
   saveInfoGral: publicProcedure

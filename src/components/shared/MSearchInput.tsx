@@ -1,11 +1,11 @@
 import { Search } from "@mui/icons-material"
 import { Paper, IconButton, InputBase, Divider, Menu } from "@mui/material"
 
-export const MSearchInput = (props: {placeholder: string, onChange: (value: string) => void}) => {
+export const MSearchInput = (props: {placeholder: string, onChange: (value: string) => void, w?: number | string}) => {
     return (
         <Paper
             component="form"
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, height: 40 }}
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: (Boolean(props.w)) ? props.w : 400, height: 40 }}
         >
             <InputBase
                 onChange={(e) => { props.onChange(e.target.value) }}

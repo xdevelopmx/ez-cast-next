@@ -801,7 +801,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     if (
       state.filtros_demograficos.apariencia_etnica_del_rol === `${textos['especificado']}`
     ) {
-      if (state.filtros_demograficos.generos.length === 0) {
+      if (state.filtros_demograficos.apariencias_etnias.length === 0) {
         return { ...form, error: `${textos['etnias_invalidas']}` };
       }
 

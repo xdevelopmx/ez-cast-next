@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    compensations: 'Compensations',
     talento_elegido: "¡Chosen talent!",
     estado_donde_aceptan_solicitudes_invalido: "State where to accept applications was not specified",
     idioma_rol_invalido: "Role language was not specified",
@@ -156,6 +157,8 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     no_roles_archivados_body: "Here you will find all the roles you have marked as archived.",
     enviar_proyecto_a_aprobacion_title: "Send project for approval",
     enviar_proyecto_a_aprobacion_body: "Are you sure you want to send this project for approval?",
+    agregar_rol_en_proyecto_aprobado_title: 'Modify roles in approved project',
+    agregar_rol_en_proyecto_aprobado_title_body: 'Are you sure you want to modify the roles in this approved project? If you decide to continue the project it will be sent for review again',
     se_pagara_un_sueldo: 'A salary will be paid',
     se_otorgaran_compensaciones: 'Compensations will be granted',
     suma_compensaciones: 'Total of the compensations',
@@ -371,6 +374,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     creditos_destacados: "Featureds",
     habilidades: "Skills",
     habilidad: "Skill",
+    no_hay_habilidades_especificadas: 'There is no captured skills',
     medidas: "Measurements",
     activos: "Assets",
     preferencias_roles: "Role preferences",
@@ -483,6 +487,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    compensations: 'Compensaciones',
     talento_elegido: "¡Talento elegido!",
     estado_donde_aceptan_solicitudes_invalido: "No se especifico estado donde aceptar las solicitudes",
     idioma_rol_invalido: "No se especifico el idioma del rol",
@@ -636,6 +641,8 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     no_roles_archivados_body: "Aquí aparecerán todos los roles que hayas colocado como archivados",
     enviar_proyecto_a_aprobacion_title: 'Enviar proyecto a aprobación',
     enviar_proyecto_a_aprobacion_body: '¿Seguro que deseas mandar este proyecto a aprobación?',
+    agregar_rol_en_proyecto_aprobado_title: 'Modificar roles en proyecto aprobado',
+    agregar_rol_en_proyecto_aprobado_title_body: '¿Seguro que deseas modificar este rol en este proyecto aprobado? Si decides continuar el proyecto sera enviado a revision de nuevo',
     se_pagara_un_sueldo: 'Se pagará un sueldo',
     se_otorgaran_compensaciones: 'Se otorgarán compensaciones',
     suma_compensaciones: 'Suma de las compensaciones',
@@ -852,6 +859,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     credito_destacado: "Destacado",
     creditos_destacados: "Créditos destacados",
     habilidades: "Habilidades",
+    no_hay_habilidades_especificadas: 'No hay tiene hablidades especificadas',
     habilidad: "Habilidad",
     medidas: "Medidas",
     activos: "Activos",
