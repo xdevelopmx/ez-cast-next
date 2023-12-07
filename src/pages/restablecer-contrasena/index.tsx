@@ -214,6 +214,9 @@ const RestablecerContrasena: NextPage = () => {
                     {!requested_code && !valid_code &&
                       <div className="text-center mt-3 pl-2 pr-2">
                           <Button 
+                            sx={{
+                              backgroundColor: '#069cb1'
+                            }}
                             onClick={() => {
                               if (Boolean(user_exists.data)) {
                                 sendCode.mutate({
@@ -237,6 +240,9 @@ const RestablecerContrasena: NextPage = () => {
                     {requested_code &&
                       <div className="text-center mt-3 pl-2 pr-2">
                           <Button 
+                            sx={{
+                              backgroundColor: '#069cb1'
+                            }}
                             onClick={async () => {
                               verifyCode.mutate({
                                   code: code
@@ -262,6 +268,9 @@ const RestablecerContrasena: NextPage = () => {
                               } else {
                                 notify('warning', `${textos['contrasena_invalida']}`);
                               }
+                            }}
+                            sx={{
+                              backgroundColor: '#069cb1'
                             }}
                             className="btn btn-intro btn-confirm mt-0">
                               {`${textos['guardar_cambios']}`}
