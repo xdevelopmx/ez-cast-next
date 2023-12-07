@@ -458,6 +458,13 @@ model AplicacionRolPorTalento {
   estado_republica CatalogoEstadosRepublica @relation(fields: [id_ubicacion], references: [id])
 }
 
+model CodigosRecuperacionPassword {
+  id Int @id @default(autoincrement())
+  code String
+  valid_until DateTime
+  for_user_with_email String
+}
+
 model NotasTalentos {
   id              Int          @id @default(autoincrement())
   id_cazatalentos Int

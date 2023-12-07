@@ -544,6 +544,12 @@ export const ProyectosRouter = createTRPCRouter({
 						message: getResponse('error_save_sindicato')
 					});
 				}
+				if (proyecto.estatus === Constants.ESTADOS_PROYECTO.APROBADO) {
+					await ctx.prisma.proyecto.update({
+						where: { id: proyecto.id },
+						data: {estatus: Constants.ESTADOS_PROYECTO.POR_VALIDAR}
+					});
+				}
 				return proyecto;
 			}
 			throw new TRPCError({

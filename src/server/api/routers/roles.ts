@@ -1743,7 +1743,7 @@ export const RolesRouter = createTRPCRouter({
             id: proyecto.id
           },
           data: {
-            estatus: Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION
+            estatus: Constants.ESTADOS_PROYECTO.POR_VALIDAR
           }
         })
       }

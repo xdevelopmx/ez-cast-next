@@ -46,7 +46,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
     opened: boolean;
     title: string;
     content: JSX.Element;
-    action: "STATE_CHANGE" | "DELETE";
+    action: "STATE_CHANGE" | "DELETE" | 'MODIFICACION_PROYECTO_APROBADO';
     data: Map<string, unknown>;
   }>({
     opened: false,
@@ -528,71 +528,76 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       </IconButton>
                                     }
                                   />
-                                  {[
-                                    Constants.ESTADOS_PROYECTO.POR_VALIDAR,
-                                    Constants.ESTADOS_PROYECTO.ARCHIVADO,
-                                    Constants.ESTADOS_PROYECTO.RECHAZADO,
-                                    
-                                  ].includes(p.estatus.toUpperCase()) && (
-                                    <>
-                                      <MTooltip
-                                        color="orange"
-                                        placement="top"
-                                        text="Editar proyecto"
-                                        icon={
-                                          <IconButton
-                                            sx={{ padding: "0!important" }}
-                                            onClick={(e) => {
-                                              void router.push(
-                                                `/cazatalentos/proyecto?id_proyecto=${p.id}`
-                                              );
-                                              e.stopPropagation();
-                                            }}
-                                            color="primary"
-                                            aria-label="editar"
-                                            component="label"
-                                          >
-                                            <Image
-                                              src={
-                                                "/assets/img/iconos/edit_icon_blue.png"
-                                              }
-                                              width={16}
-                                              height={16}
-                                              alt="archivar"
-                                            />
-                                          </IconButton>
-                                        }
-                                      />
-                                      <MTooltip
-                                        color="orange"
-                                        placement="top"
-                                        text="Editar rol"
-                                        icon={
-                                          <IconButton
-                                            sx={{ padding: "0!important" }}
-                                            onClick={(e) => {
-                                              void router.push(
-                                                `/cazatalentos/roles?id_proyecto=${p.id}`
-                                              );
-                                              e.stopPropagation();
-                                            }}
-                                            color="primary"
-                                            aria-label="consultar"
-                                            component="label"
-                                          >
-                                            <Image
-                                              src={
-                                                "/assets/img/iconos/edit_icon_blue.png"
-                                              }
-                                              width={16}
-                                              height={16}
-                                              alt="archivar"
-                                            />
-                                          </IconButton>
-                                        }
-                                      />
-                                    </>
-                                  )}
+                                  <>
+                                    <MTooltip
+                                      color="orange"
+                                      placement="top"
+                                      text="Editar proyecto"
+                                      icon={
+                                        <IconButton
+                                          sx={{ padding: "0!important" }}
+                                          onClick={(e) => {
+                                            if (p.estatus === Constants.ESTADOS_PROYECTO.APROBADO) {
+                                              const params = new Map<string, unknown>();
+                                              params.set('url', `/cazatalentos/proyecto?id_proyecto=${p.id}`);
+                                              setConfirmationDialog({
+                                                action: 'MODIFICACION_PROYECTO_APROBADO',
+                                                data: params,
+                                                opened: true,
+                                                title: `${textos["modificar_proyecto_aprobado_title"]}`,
+                                                content: (
+                                                  <Typography variant="body2">{`${textos["modificar_proyecto_aprobado_body"]}`}</Typography>
+                                                ),
+                                              });
+                                            } else {
+                                              router.push(`/cazatalentos/proyecto?id_proyecto=${p.id}`);
+                                            }
+                                            e.stopPropagation();
+                                          }}
+                                          color="primary"
+                                          aria-label="editar"
+                                          component="label"
+                                        >
+                                          <Image
+                                            src={
+                                              "/assets/img/iconos/edit_icon_blue.png"
+                                            }
+                                            width={16}
+                                            height={16}
+                                            alt="archivar"
+                                          />
+                                        </IconButton>
+                                      }
+                                    />
+                                    <MTooltip
+                                      color="orange"
+                                      placement="top"
+                                      text="Editar rol"
+                                      icon={
+                                        <IconButton
+                                          sx={{ padding: "0!important" }}
+                                          onClick={(e) => {
+                                            void router.push(
+                                              `/cazatalentos/roles?id_proyecto=${p.id}`
+                                            );
+                                            e.stopPropagation();
+                                          }}
+                                          color="primary"
+                                          aria-label="consultar"
+                                          component="label"
+                                        >
+                                          <Image
+                                            src={
+                                              "/assets/img/iconos/edit_icon_blue.png"
+                                            }
+                                            width={16}
+                                            height={16}
+                                            alt="archivar"
+                                          />
+                                        </IconButton>
+                                      }
+                                    />
+                                  </>
                                 </>
                                 <>
                                   {[Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.RECHAZADO, Constants.ESTADOS_PROYECTO.POR_VALIDAR].includes(
@@ -706,6 +711,11 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                 if (id) {
                   deleteProyecto.mutate({ id: id as number });
                 }
+                break;
+              }
+              case "MODIFICACION_PROYECTO_APROBADO": {
+                const url = confirmation_dialog.data.get("url");
+                router.push(`${url}`);
                 break;
               }
               case "STATE_CHANGE": {

@@ -3,6 +3,18 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    contrasena_invalida: 'Invalid password',
+    codigo_invalido: 'Invalid code',
+    codigo_valido: 'Valid code',
+    guardar_cambios: 'Save changes',
+    confirmar_nueva_contrasena: 'Confirm new password',
+    codigo: 'Code',
+    nueva_contrasena: 'New password',
+    enviar_codigo: 'Send code',
+    verificar_codigo: 'Verify code',
+    obten_tu_codigo: 'Get your code here',
+    tienes_codigo: '¿Do you have a code?',
+    user_dont_exists: 'User dont exists on the platform',
     compensations: 'Compensations',
     talento_elegido: "¡Chosen talent!",
     estado_donde_aceptan_solicitudes_invalido: "State where to accept applications was not specified",
@@ -124,8 +136,11 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_guardaron_permisos_con_exito: 'Permissions saved successfully',
     se_guardo_validacion_con_exito: 'Validation saved successfully',
     invitacion_unirte_a_ezcast: 'Invitation to join EZ-CAST',
+    password_recovery: 'Password Recovery EZ-CAST',
     error_envio_invitacion: 'An error occurred while trying to send the invitation',
     se_envio_la_invitacion: 'Invitation sent successfully',
+    error_envio_codigo_restablecer_password: 'An error occurred while trying to send the code',
+    se_envio_codigo_restablecer_password: 'Code sent successfully',
     talento_removido: 'Talent removed successfully',
     link_copiado: 'The link has been copied',
     locacion: 'Location',
@@ -157,8 +172,10 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     no_roles_archivados_body: "Here you will find all the roles you have marked as archived.",
     enviar_proyecto_a_aprobacion_title: "Send project for approval",
     enviar_proyecto_a_aprobacion_body: "Are you sure you want to send this project for approval?",
+    modificar_proyecto_aprobado_title: 'Modify approved project',
+    modificar_proyecto_aprobado_body: 'Are you sure you want to modify this approved project? If you decide to continue you will have to send the project for review again',
     agregar_rol_en_proyecto_aprobado_title: 'Modify roles in approved project',
-    agregar_rol_en_proyecto_aprobado_title_body: 'Are you sure you want to modify the roles in this approved project? If you decide to continue the project it will be sent for review again',
+    agregar_rol_en_proyecto_aprobado_body: 'Are you sure you want to modify the roles in this approved project? If you decide to continue you will have to send the project for review again',
     se_pagara_un_sueldo: 'A salary will be paid',
     se_otorgaran_compensaciones: 'Compensations will be granted',
     suma_compensaciones: 'Total of the compensations',
@@ -487,6 +504,18 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    contrasena_invalida: 'Contraseña invalida',
+    codigo_invalido: 'Codigo invalido',
+    codigo_valido: 'Codigo valido',
+    guardar_cambios: 'Guardar cambios',
+    confirmar_nueva_contrasena: 'Confirmar nueva contraseña',
+    codigo: 'Codigo',
+    nueva_contrasena: 'Nueva contraseña',
+    enviar_codigo: 'Enviar codigo',
+    verificar_codigo: 'Verificar codigo',
+    obten_tu_codigo: 'Obten tu codigo aqui',
+    tienes_codigo: '¿tienes tu codigo?',
+    user_dont_exists: 'No existe ningun usuario con ese correo en la plataforma',
     compensations: 'Compensaciones',
     talento_elegido: "¡Talento elegido!",
     estado_donde_aceptan_solicitudes_invalido: "No se especifico estado donde aceptar las solicitudes",
@@ -608,8 +637,11 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_guardaron_permisos_con_exito: "Se guardaron los permisos con exito.",
     se_guardo_validacion_con_exito: "Se guardo la validacion con exito.",
     invitacion_unirte_a_ezcast: `Invitacion para unirte a EZ-CAST`,
+    password_recovery: 'Recuperacion de clave EZ-CAST',
     error_envio_invitacion: 'Ocurrio un problema al tratar de enviar la invitacion',
     se_envio_la_invitacion: 'Se envio la invitacion con exito',
+    error_envio_codigo_restablecer_password: 'Ocurrio un problema al tratar de enviar la el codigo de recuperacion',
+    se_envio_codigo_restablecer_password: 'Se envio el codigo de recuperacion con exito',
     talento_removido: "Se removio el talento con exito",
     link_copiado: 'Se copio el link',
     locacion: 'Locación',
@@ -1759,6 +1791,32 @@ const TEXTS_BY_PATHNAME: {
     en: {},
     es: {},
   },
+  "/restablecer-contrasena": {
+    en: {
+      necesitas_ayuda: "Need help?",
+      accede_a: "Access our",
+      tutoriales: 'Tutorials',
+      descripcion_cazatalentos:
+        'Profile for the person who seeks to "hunt" a person who meets the requirements and the talent that he needs.',
+      descripcion_talento:
+        "Profile for the person looking to appear on screen and film projects.",
+      descripcion_representante:
+        "Profile for the person who seeks to facilitate the connection with their talents and find more opportunities for them.",
+      
+    },
+    es: {
+      necesitas_ayuda: "Necesitas ayuda?",
+      accede_a: "Accede a nuestros",
+      tutoriales: 'Tutoriales',
+      descripcion_cazatalentos:
+        "Perfil para la persona que busca “cazar” a una persona que cumpla con los requerimientos y el talento que éste necesita.",
+      descripcion_talento:
+        "Perfil para la persona que busca aparecer en pantalla y proyectos de filmación.",
+      descripcion_representante:
+        "Perfil para la persona que busca facilitar la conexión con sus talentos y encontrar más oportunidades para los mismos.",
+      
+    }
+  }
 };
 
 const useLang = (lang: string) => {

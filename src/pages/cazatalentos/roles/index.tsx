@@ -514,7 +514,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               opened: true,
                               title: `${textos["agregar_rol_en_proyecto_aprobado_title"]}`,
                               content: (
-                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_title_body"]}`}</Typography>
+                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_body"]}`}</Typography>
                               ),
                             });
                           }}
@@ -537,7 +537,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         >
                           {`${textos["nuevo_rol"]}`} 
                       </Button>
-                      :
+                      : IS_ADMIN ? null :
                         (
                           <>
                             <MContainer
@@ -911,10 +911,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 </Typography>
                               </MContainer>
                             ),
-                            estado:
-                              r.estatus === "SIN_FINALIZAR"
-                                ? "Pendiente"
-                                : "Archivado",
+                            estado: proyecto_status,
                             no_vistos: (
                               <MContainer
                                 direction="horizontal"
@@ -1225,7 +1222,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               <Grid item xs={7}>
                                 <MContainer
                                   direction="horizontal"
-                                  styles={{ gap: 10 }}
+                                  styles={{ gap: 0 }}
                                 >
                                   {roles.data ? (
                                     <Typography
@@ -1377,12 +1374,6 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       />
                                     </>
                                   )}
-                                </MContainer>
-
-                                <MContainer
-                                  direction="horizontal"
-                                  styles={{ gap: 10 }}
-                                >
                                   {element.filtros_demograficos && element.filtros_demograficos.generos.length > 0 ? (
                                     element.filtros_demograficos.generos.map(
                                       (g) => (
@@ -1523,6 +1514,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     </>
                                   )}
                                 </MContainer>
+
                               </Grid>
                               <Grid item xs={5}>
                                 <Typography
@@ -2098,7 +2090,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           </Typography>
                                           <MContainer
                                             direction="horizontal"
-                                            styles={{ gap: 10 }}
+                                            styles={{ gap: 8 }}
                                           >
                                             {element.lineas && (
                                               <Typography

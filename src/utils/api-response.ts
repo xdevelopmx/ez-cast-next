@@ -132,6 +132,30 @@ export default function ApiResponses(route: string, lang: string) {
                 error_solo_cazatalento: 'Solo el rol de cazatalento puede guardar localizaciones.'
             }
         },
+        AuthRouter_verifyCode: {
+            en: {
+                error_codigo_no_existe: 'The code doesnt exists',
+                error_code_expired: 'The code has expired',
+            },
+            es: {
+                error_codigo_no_existe: 'El codigo no existe',
+                error_code_expired: 'El codigo ha expirado',
+            }
+        },
+        AuthRouter_updatePasswordByCode: {
+            en: {
+                error_codigo_no_existe: 'The code doesnt exists',
+                error_code_expired: 'The code has expired',
+                error_no_cifro_contrasena: 'The server couldnt generate the password',
+                error: 'There was a problem trying to update the password',
+            },
+            es: {
+                error_codigo_no_existe: 'El codigo no existe',
+                error_code_expired: 'El codigo ha expirado',
+                error_no_cifro_contrasena: 'No se pudo generar la contraseña',
+                error: 'Ocurrio un problema al tratar de actualizar la contraseña',
+            }
+        },
         AuthRouter_createUser: {
             en: {
                 error_no_cifro_contrasena: 'The password could not be encrypted.',
