@@ -18,9 +18,14 @@ export const OptionsGroup: FC<Props> = ({ id, labels, onOptionClick, styleContai
             <div className="form-group" style={styleContainer}>
                 {labels.filter(l => l.length > 0).map((label, index) => {
                     return <Button
-                        sx={styleButton}
+                        sx={{...styleButton, 
+                            '&:hover': {
+                                backgroundColor: '#069db164'
+                            },
+                            backgroundColor: seleccionado === index ? '#069db164' : ''
+                        }}
                         size='small'
-                        className={`fw-500 color_a fs-20px hover-bg-blue ${(seleccionado === index? 'seleccionado' : '')}`}
+                        className={`fw-500 color_a fs-20px`}
                         key={label}
                         onClick={() => { 
                             onOptionClick(id, label),

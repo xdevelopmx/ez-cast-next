@@ -692,7 +692,11 @@ export default function ApiResponses(route: string, lang: string) {
                 error_menor_edad_representante: 'If you are a minor, the representative is mandatory.',
                 error_biografia_invalida: 'The maximum allowed characters is 500.',
                 error_union_invalida: 'You must select a valid union type.',
-                error_locacion_invalida: 'You must select a valid state.'
+                error_locacion_invalida: 'You must select a valid state.',
+                error_nombre_representante: 'Representative name is invalid, it has to be at least two characters long',
+				error_email_representante: 'Representative email is invalid',
+				error_agencia_representante: 'Representative agency name is invalid, it has to be at least two characters long',
+				error_telefono_representante: 'Representative phone number is invalid'
             },
             es: {
                 error_delete_representante: 'Ocurrio un problema al tratar de eliminar el representante.',
@@ -706,7 +710,11 @@ export default function ApiResponses(route: string, lang: string) {
                 error_menor_edad_representante: 'Si se es menor de edad el representante es obligatorio.',
                 error_biografia_invalida: 'El maximo de caracteres permitido es 500.',
                 error_union_invalida: 'Debes seleccionar un tipo de union valida.',
-                error_locacion_invalida: 'Debes seleccionar un estado valido.'
+                error_locacion_invalida: 'Debes seleccionar un estado valido.',
+                error_nombre_representante: 'Nombre representante invalido debe ser mayor a 2 caracteres',
+				error_email_representante: 'Email representante invalido',
+				error_agencia_representante: 'Nombre agencia del representante invalida debe ser mayor a dos caracteres',
+				error_telefono_representante: 'Telefono del representante invalido'
             }
         },
         TalentosRouter_updateEstaActivo: {

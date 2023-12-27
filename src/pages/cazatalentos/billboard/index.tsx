@@ -37,6 +37,7 @@ import MotionDiv from "~/components/layout/MotionDiv";
 import { ExpandMoreOutlined } from "@mui/icons-material";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { useRouter } from "next/router";
 
 type BillboardCazaTalentosPageProps = {
   user: User;
@@ -69,6 +70,12 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   const [open_proyecto_select, setOpenProyectoSelect] = useState(false);
   const [selected_rol, setSelectedRol] = useState<number>(0);
   const [estado_aplicacion_rol, setEstadoAplicacionRol] = useState<number>(0);
+  const router = useRouter();
+
+  useEffect(() => {
+    const id = router.query["id-estado-aplicacion"] as string;
+    setEstadoAplicacionRol(id ? +id : Constants.ESTADOS_APLICACION_ROL.NO_VISTO);
+  }, [router.query]);
 
   const estados_aplicaciones_roles =
     api.catalogos.getEstadosAplicacionesRoles.useQuery(undefined, {
@@ -91,9 +98,11 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
 
   useEffect(() => {
     if (estados_aplicaciones_roles.data) {
-      const id = estados_aplicaciones_roles.data[0]?.id;
-      if (id) {
-        setEstadoAplicacionRol(id);
+      if (estado_aplicacion_rol === 0) {
+        const id = estados_aplicaciones_roles.data[0]?.id;
+        if (id) {
+          setEstadoAplicacionRol(id);
+        }
       }
     }
   }, [estados_aplicaciones_roles.data]);
@@ -231,6 +240,12 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
             id_talento={a.talento.id}
             id_estado_aplicacion_rol={a.id_estado_aplicacion}
             nombre={`${a.talento.nombre} ${a.talento.apellido}`}
+            has_content={{
+              videos: a.talento.media.filter(m => m.media.type.includes('video')).length > 0,
+              photos: a.talento.media.filter(m => m.media.type.includes('image')).length > 0,
+              website: a.talento.redes_sociales.filter(r => r.nombre.toLowerCase() === 'website' && r.url.length > 0).length > 0,
+              document: Boolean(a.talento.info_basica?.id_media_cv)
+            }}
             rating={
               a.talento.destacados[0] ? a.talento.destacados[0].calificacion : 0
             }
@@ -262,14 +277,24 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
       });
     }
     if (selected_rol > 0) {
+      let msg = '';
+      console.log(estado_aplicacion_rol);
+      switch (estado_aplicacion_rol) {
+         case Constants.ESTADOS_APLICACION_ROL.NO_VISTO: msg = `${textos['aun_no_hay_aplicaciones_para_este_rol']}`.replace('[ESTADO]', `${textos['no_visto']}`); break;
+         case Constants.ESTADOS_APLICACION_ROL.VISTO: msg = `${textos['aun_no_hay_aplicaciones_para_este_rol']}`.replace('[ESTADO]', `${textos['visto']}`); break;
+         case Constants.ESTADOS_APLICACION_ROL.DESTACADO: msg = `${textos['aun_no_hay_aplicaciones_para_este_rol']}`.replace('[ESTADO]', `${textos['destacado']}`); break;
+         case Constants.ESTADOS_APLICACION_ROL.AUDICION: msg = `${textos['aun_no_hay_aplicaciones_para_este_rol']}`.replace('[ESTADO]', `${textos['audicion']}`); break;
+         case Constants.ESTADOS_APLICACION_ROL.CALLBACK: msg = `${textos['aun_no_hay_aplicaciones_para_este_rol']}`.replace('[ESTADO]', `${textos['callback']}`); break;
+      }
       return [
         <Typography
           key={"no-events"}
           sx={{
+            position: 'absolute',
             width: "100%",
           }}
         >
-          {textos['aun_no_hay_aplicaciones_para_este_rol']}
+          {msg}
         </Typography>,
       ];
     }

@@ -11,6 +11,7 @@ import { FileManager } from "~/utils/file-manager";
 import { TipoUsuario } from "~/enums";
 import { prisma } from '../../db';
 import ApiResponses from "~/utils/api-response";
+import Constants from "~/constants";
 
 function exclude<Talentos, Key extends keyof Talentos>(
 	talento: Talentos,
@@ -912,7 +913,7 @@ export const TalentosRouter = createTRPCRouter({
 				id_carta_responsiva: z.number().nullish()
 			}),
 			representante: z.object({
-				nombre: z.string().min(2),
+				nombre: z.string(),
 				email: z.string().email(),
 				agencia: z.string().min(2),
 				telefono: z.string().min(10).max(12)
@@ -932,6 +933,32 @@ export const TalentosRouter = createTRPCRouter({
 					code: 'PRECONDITION_FAILED',
 					message: getResponse('error_locacion_invalida')
 				});
+			}
+			if (input.representante) {
+				if (input.representante.nombre.length <= 2) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('error_nombre_representante')
+					});
+				}
+				if (!Constants.PATTERNS.EMAIL.test(input.representante.email)) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('error_email_representante')
+					});
+				}
+				if (input.representante.agencia.length <= 2) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('error_agencia_representante')
+					});
+				}
+				if (input.representante.telefono.length < 10 || input.representante.telefono.length > 12) {
+					throw new TRPCError({
+						code: 'PRECONDITION_FAILED',
+						message: getResponse('error_telefono_representante')
+					});
+				}
 			}
 			if (input.union.id <= 0) {
 				throw new TRPCError({

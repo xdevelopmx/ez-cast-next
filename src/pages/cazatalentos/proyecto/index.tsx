@@ -585,7 +585,7 @@ const Proyecto: NextPage = () => {
             <br />
             <br />
             <div className="container_box_header">
-              <div className="d-flex justify-content-end align-items-start pb-2">
+              <div className="d-flex justify-content-end align-items-start py-2">
                 <Alertas />
               </div>
               <div className="d-flex" style={{ margin: '-30px 0 50px 0' }}>

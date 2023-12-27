@@ -223,6 +223,7 @@ export const RolesRouter = createTRPCRouter({
             include: {
               talento: {
                 include: {
+                  redes_sociales: true,
                   media: {
                     include: {
                       media: true,
@@ -2632,6 +2633,16 @@ export const RolesRouter = createTRPCRouter({
                   },
                 },
               },
+              foto_referencia: {
+                include: {
+                  MediaPorTalentos: true
+                }
+              },
+              lineas: {
+                include: {
+                  MediaPorTalentos: true
+                }
+              },
               tipo_trabajos: true,
               filtros_demograficos: {
                 include: {
@@ -2695,9 +2706,16 @@ export const RolesRouter = createTRPCRouter({
                   estado_republica: true,
                 },
               },
-              selftape: true,
+              selftape: {
+                include: {
+                  lineas: {
+                    include: {
+                      MediaPorTalentos: true
+                    }
+                  }
+                }
+              },
               tipo_rol: true,
-
               proyecto: {
                 include: {
                   tipo: {

@@ -105,7 +105,7 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
 
   return (
     <Grid  container sx={{ mt: 10 }}>
-      <div id="media" style={{margin: '-100px 0 100px 0'}}>
+      <div id={`${textos['media']}`} style={{margin: '-100px 0 100px 0'}}>
 
       </div>
       <Grid item xs={12}>

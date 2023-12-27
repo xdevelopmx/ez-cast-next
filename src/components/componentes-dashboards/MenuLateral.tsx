@@ -1338,7 +1338,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                   <Link
                     href="/cazatalentos/dashboard"
                     className={
-                      router.pathname === "/cazatalentos/dashboard"
+                      (router.pathname === "/cazatalentos/dashboard" || router.pathname.includes('/cazatalentos/roles'))
                         ? "active"
                         : ""
                     }

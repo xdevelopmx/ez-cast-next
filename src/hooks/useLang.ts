@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    archivados: 'Archived',
     contrasena_invalida: 'Invalid password',
     codigo_invalido: 'Invalid code',
     codigo_valido: 'Valid code',
@@ -104,7 +105,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     audicion_programada: 'Scheduled Audition',
     modal_comentario_talento: 'Leave a comment for your selection process. These will not be visible to the Talent.',
     escribir_un_comentario_sobre_talento: 'Write a comment about the Talent',
-    aun_no_hay_aplicaciones_para_este_rol: 'There are no applications for this role yet',
+    aun_no_hay_aplicaciones_para_este_rol: 'There are no applications in state [ESTADO] for this role yet',
     fecha_final_menor_a_inicial: 'The end date cannot be earlier than the start date',
     no_se_ha_seleccionado_un_proyecto: 'No project has been selected',
     no_se_ha_seleccionado_el_uso_de_horario: 'The use of schedule has not been selected',
@@ -504,6 +505,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    archivados: 'Archivado',
     contrasena_invalida: 'Contraseña invalida',
     codigo_invalido: 'Codigo invalido',
     codigo_valido: 'Codigo valido',
@@ -605,7 +607,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     audicion_programada: 'Audicion Programada',
     modal_comentario_talento: 'Deja un comentario para recordar en tu proceso de selección Estos no serán vistos por el Talento.',
     escribir_un_comentario_sobre_talento: 'Escribir un comentario sobre el Talento',
-    aun_no_hay_aplicaciones_para_este_rol: 'Aun no hay aplicaciones para este rol',
+    aun_no_hay_aplicaciones_para_este_rol: 'Aun no hay aplicaciones en estado [ESTADO] para este rol',
     fecha_final_menor_a_inicial: 'La fecha final no puede ser menor a la fecha inicial',
     no_se_ha_seleccionado_un_proyecto: 'No se ha seleccionado ningun proyecto',
     no_se_ha_seleccionado_el_uso_de_horario: 'No se ha seleccionado el uso de horario',

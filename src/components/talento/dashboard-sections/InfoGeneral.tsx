@@ -83,7 +83,7 @@ export const InfoGeneral = (props: {
 
   return (
     <>
-      <Grid id="informacion-basica" container>
+      <Grid id={`${textos['info_basica']}`} container>
         <Grid item xs={12} md={4} sx={{ paddingTop: 2 }}>
           <div
             style={{

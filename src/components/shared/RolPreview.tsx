@@ -26,6 +26,7 @@ import { Check } from "@mui/icons-material";
 import { CazatalentosPreview } from "../cazatalento/dialogs/cazatalentos-preview";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import Link from "next/link";
 
 interface PropsIndividualData {
   title: ReactNode;
@@ -123,13 +124,13 @@ export const RolPreview: FC<PropsRol> = ({
     >
       <GridMotion container item xs={12} sx={{ alignItems: "flex-start" }}>
         {!no_poster && (
-          <Grid item xs={4}>
+          <Grid height={'100%'} item xs={4}>
             <Box
               sx={{
                 position: "relative",
                 width: "100%",
+                height: '100%',
                 aspectRatio: "16/12",
-                marginTop: "10px",
                 marginBottom: "50px",
               }}
             >
@@ -789,36 +790,79 @@ export const RolPreview: FC<PropsRol> = ({
             </>
           )}
         </IndividualData>
-
-        <IndividualData
-          title={`${textos["archivos_adicionales"] ?? ""}:`}
-          stylesContainerData={{ gap: 10 }}
-        >
-          <Typography
-            component={"span"}
-            sx={{ color: "#069cb1", textDecoration: "underline" }}
+        {(rol.selftape.lineas || rol.lineas || rol.foto_referencia) &&
+        
+          <IndividualData
+            title={`${textos["archivos_adicionales"] ?? ""}:`}
+            stylesContainerData={{ gap: 10 }}
           >
-            lineas.pdf
-          </Typography>
-          <Typography
-            component={"span"}
-            sx={{ color: "#069cb1", textDecoration: "underline" }}
-          >
-            headshot.jpg
-          </Typography>
-          <Typography
-            component={"span"}
-            sx={{ color: "#069cb1", textDecoration: "underline" }}
-          >
-            referencia1.jpg
-          </Typography>
-          <Typography
-            component={"span"}
-            sx={{ color: "#069cb1", textDecoration: "underline" }}
-          >
-            referencia2.jpg
-          </Typography>
-        </IndividualData>
+            {rol.selftape.lineas &&
+            
+              <Link 
+                  legacyBehavior
+                  href={rol.selftape.lineas.url}
+              >
+                  <a
+                      style={{
+                          display: 'block',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap',
+                          textOverflow: 'ellipsis',
+                          maxWidth: '280px',
+                          paddingLeft: '10px',
+                          color: '#069cb1'
+                      }} 
+                      target="_blank" rel="noopener noreferrer"
+                  >
+                      {rol.selftape.lineas.nombre}
+                  </a>
+              </Link>
+            }
+            {rol.lineas &&
+            
+            <Link 
+                legacyBehavior
+                href={rol.lineas.url}
+            >
+                <a
+                    style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '280px',
+                        paddingLeft: '10px',
+                        color: '#069cb1'
+                    }} 
+                    target="_blank" rel="noopener noreferrer"
+                >
+                    {rol.lineas.nombre}
+                </a>
+            </Link>
+          }
+            {rol.foto_referencia &&
+            <Link 
+                legacyBehavior
+                href={rol.foto_referencia.url}
+            >
+                <a
+                    style={{
+                        display: 'block',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '280px',
+                        paddingLeft: '10px',
+                        color: '#069cb1'
+                    }} 
+                    target="_blank" rel="noopener noreferrer"
+                >
+                    {rol.foto_referencia.nombre}
+                </a>
+            </Link>
+          }
+          </IndividualData>
+        } 
       </GridMotion>
       <CazatalentosPreview
         onClose={() =>

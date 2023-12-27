@@ -288,7 +288,7 @@ export const CatalogoProyectos = () => {
               let color = "grey";
               switch (p.estatus.toUpperCase()) {
                 case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION:
-                  color = "gold";
+                  color = "#f9b233";
                   break;
                 case Constants.ESTADOS_PROYECTO.RECHAZADO:
                   color = "tomato";
@@ -339,7 +339,7 @@ export const CatalogoProyectos = () => {
                 <>
                   {p.estatus === Constants.ESTADOS_PROYECTO.APROBADO && (
                     <IconButton
-                      style={{ color: p.destacado ? "gold" : "gray" }}
+                      style={{ color: p.destacado ? "#f9b233" : "gray" }}
                       aria-label="marcar como destacado"
                       onClick={() => {
                         update_destacado.mutate({

@@ -193,7 +193,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                                         id_talento: id_talento,
                                         nota: form_nota_talento.nota
                                     });
-                                }}>{textos['guardar']}</Button>
+                                }}>{textos['actualizar']}</Button>
                             </MContainer>
                         </MotionDiv>
                         {(talento_nota.isFetching || !talento_nota.data) && <Box></Box>}
@@ -224,7 +224,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 										deleteNotaTalento.mutate({
 											id_talento: id_talento
 										});
-									}}>Eliminar</Button>
+									}}>{`${textos['eliminar']}`}</Button>
 								</>
 								
                             </MotionDiv>
@@ -432,14 +432,14 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 					</Box>
 				</DialogContent>
 				<Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>Cancelar</Button>
+					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>{`${textos['cancelar']}`}</Button>
 					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Image src={'/assets/img/iconos/check_blue.svg'} height={16} width={16} alt=""/>} onClick={() => {
 						updateNotaTalento.mutate({
 							id_talento: id_talento,
 							nota: form_nota_talento.nota
 						});
 						
-					}}>Enviar</Button>
+					}}>{`${textos['guardar']}`}</Button>
 				</Box>
 			</Dialog>
 

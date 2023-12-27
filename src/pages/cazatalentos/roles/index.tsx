@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import React, { Fragment, useContext, useMemo, useState } from "react";
-import { Acordeon, Flotantes, MainLayout, MenuLateral } from "~/components";
+import { Acordeon, Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import { AnimatePresence, type Variants, motion } from "framer-motion";
 import UpIcon from "@mui/icons-material/KeyboardArrowUp";
 import DownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -29,7 +29,6 @@ import { MTable } from "~/components/shared/MTable/MTable";
 import { MContainer } from "~/components/layout/MContainer";
 import MotionDiv from "~/components/layout/MotionDiv";
 import { TipoUsuario } from "~/enums";
-import { Alertas } from "~/components/componentes-dashboards/Alertas copy";
 //import useDelay from "~/hooks/useDelay";
 import estilos from "./estilos.module.css";
 import AppContext from "~/context/app";
@@ -214,7 +213,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   switch (proyecto.data?.estatus.toUpperCase()) {
     case Constants.ESTADOS_PROYECTO
       .ENVIADO_A_APROBACION:
-      status_color = "gold";
+      status_color = "#f9b233";
       break;
     case Constants.ESTADOS_PROYECTO.RECHAZADO:
       status_color = "tomato";
@@ -348,21 +347,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       <>{`${textos["regresar_vista_general"]}`}</>
                     </p>
                   </Button>
-                  {!IS_ADMIN && (
-                    <div className="d-flex justify-content-end align-items-start py-2">
-                      <Alertas
-                        style={{
-                          position: "static",
-                          padding: "0 !important",
-                        }}
-                        messageProps={{
-                          style: {
-                            marginRight: "0px !important",
-                          },
-                        }}
-                      />
-                    </div>
-                  )}
+                  
+                </div>
+              )}
+              {!IS_ADMIN && (
+                <div className="d-flex justify-content-end align-items-start py-2">
+                  <Alertas />
                 </div>
               )}
               <br />
@@ -861,6 +851,22 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                   style={{ overflowX: "hidden" }}
                   styleTableRow={{ cursor: "pointer" }}
                   alternate_colors={false}
+                  headerStyles={{
+                    width: 100,
+                    textAlignLast: 'center',
+                    "&:nth-child(1)": {
+                      width: 300,
+                      textAlignLast: 'start',
+                    },
+                    "&:nth-child(2)": {
+                      width: 200,
+                      textAlignLast: 'start',
+                      paddingLeft: 8
+                    },
+                    "&:nth-last-child(1)": {
+                      width: 300
+                    }
+                  }}
                   columnsHeader={
                     can_edit
                       ? table_actions.concat(
@@ -918,6 +924,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <Image
+                                  onClick={() => {
+                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.NO_VISTO}`)
+                                  }}
                                   src={"/assets/img/iconos/icon_no_vistos.svg"}
                                   width={16}
                                   height={16}
@@ -943,6 +952,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <Image
+                                   onClick={() => {
+                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.VISTO}`)
+                                  }}
                                   src={"/assets/img/iconos/icon_vistos.svg"}
                                   width={16}
                                   height={16}
@@ -968,6 +980,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <Image
+                                   onClick={() => {
+                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.DESTACADO}`)
+                                  }}
                                   src={"/assets/img/iconos/icono_star_blue.svg"}
                                   width={16}
                                   height={16}
@@ -993,6 +1008,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <Image
+                                   onClick={() => {
+                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.AUDICION}`)
+                                  }}
                                   src={
                                     "/assets/img/iconos/icono_lampara_blue.svg"
                                   }
@@ -1020,6 +1038,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                 justify="center"
                               >
                                 <Image
+                                  onClick={() => {
+                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.CALLBACK}`)
+                                  }}
                                   src={
                                     "/assets/img/iconos/icono_claqueta_blue.svg"
                                   }
@@ -1118,7 +1139,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               opened: true,
                                               title: `${textos["agregar_rol_en_proyecto_aprobado_title"]}`,
                                               content: (
-                                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_title_body"]}`}</Typography>
+                                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_body"]}`}</Typography>
                                               ),
                                             });
                                           } else {
@@ -2092,43 +2113,69 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             direction="horizontal"
                                             styles={{ gap: 8 }}
                                           >
-                                            {element.lineas && (
-                                              <Typography
-                                                component={"span"}
-                                                sx={{
-                                                  color: "#069cb1",
-                                                  textDecoration: "underline",
-                                                }}
+                                            {element.lineas &&
+                                              <Link 
+                                                legacyBehavior
+                                                href={element.lineas.url}
                                               >
-                                                {element.lineas.nombre}
-                                              </Typography>
-                                            )}
-                                            {element.selftape &&
-                                              element.selftape.lineas && (
-                                                <Typography
-                                                  component={"span"}
-                                                  sx={{
-                                                    color: "#069cb1",
-                                                    textDecoration: "underline",
-                                                  }}
+                                                <a
+                                                    style={{
+                                                        display: 'block',
+                                                        overflow: 'hidden',
+                                                        whiteSpace: 'nowrap',
+                                                        textOverflow: 'ellipsis',
+                                                        maxWidth: '280px',
+                                                        paddingLeft: '10px',
+                                                        color: '#069cb1'
+                                                    }} 
+                                                    target="_blank" rel="noopener noreferrer"
                                                 >
-                                                  {
-                                                    element.selftape.lineas
-                                                      .nombre
-                                                  }
-                                                </Typography>
-                                              )}
-                                            {element.foto_referencia && (
-                                              <Typography
-                                                component={"span"}
-                                                sx={{
-                                                  color: "#069cb1",
-                                                  textDecoration: "underline",
-                                                }}
+                                                    {element.lineas.nombre}
+                                                </a>
+                                              </Link>
+                                            }
+                                            {(element.selftape && element.selftape.lineas) &&
+                                              <Link 
+                                                legacyBehavior
+                                                href={element.selftape.lineas.url}
                                               >
-                                                {element.foto_referencia.nombre}
-                                              </Typography>
-                                            )}
+                                                <a
+                                                    style={{
+                                                        display: 'block',
+                                                        overflow: 'hidden',
+                                                        whiteSpace: 'nowrap',
+                                                        textOverflow: 'ellipsis',
+                                                        maxWidth: '280px',
+                                                        paddingLeft: '10px',
+                                                        color: '#069cb1'
+                                                    }} 
+                                                    target="_blank" rel="noopener noreferrer"
+                                                >
+                                                    {element.selftape.lineas.nombre}
+                                                </a>
+                                              </Link>
+                                            }
+                                            {element.foto_referencia &&
+                                              <Link 
+                                                legacyBehavior
+                                                href={element.foto_referencia.url}
+                                              >
+                                                <a
+                                                    style={{
+                                                        display: 'block',
+                                                        overflow: 'hidden',
+                                                        whiteSpace: 'nowrap',
+                                                        textOverflow: 'ellipsis',
+                                                        maxWidth: '280px',
+                                                        paddingLeft: '10px',
+                                                        color: '#069cb1'
+                                                    }} 
+                                                    target="_blank" rel="noopener noreferrer"
+                                                >
+                                                    {element.foto_referencia.nombre}
+                                                </a>
+                                              </Link>
+                                            }
                                           </MContainer>
                                         </MContainer>
                                       </Grid>

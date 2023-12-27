@@ -165,7 +165,7 @@ export const CatalogoTalentos = () => {
                         acciones: <MContainer direction="horizontal" justify='center'>
                             <>
                                 <IconButton
-                                    style={{ color: (p.es_destacado) ? 'gold' : 'gray' }}
+                                    style={{ color: (p.es_destacado) ? '#f9b233' : 'gray' }}
                                     aria-label="marcar como destacado"
                                     onClick={() => {
                                         update_destacado.mutate({id_talento: p.id, destacado: !p.es_destacado});

@@ -207,6 +207,9 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                   <Link
                     href="/cazatalentos/proyecto"
                     className="btn btn-intro btn-price mb-2 nuevo-proyecto-btn"
+                    style={{
+                      backgroundColor: '#f9b233'
+                    }}
                   >
                     {textos["nuevo_proyecto"]?? ""}
                   </Link>
@@ -323,7 +326,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                               switch (p.estatus.toUpperCase()) {
                                 case Constants.ESTADOS_PROYECTO
                                   .ENVIADO_A_APROBACION:
-                                  color = "gold";
+                                  color = "#f9b233";
                                   break;
                                 case Constants.ESTADOS_PROYECTO.RECHAZADO:
                                   color = "tomato";
@@ -356,6 +359,19 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                             })(),
                             estado: (() => {
                               switch (p.estatus.toUpperCase()) {
+                                case Constants.ESTADOS_PROYECTO.ARCHIVADO: 
+                                  return (
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{
+                                        fontSize: "1.1rem",
+                                        padding: "0px",
+                                        color: 'gray'
+                                      }}
+                                    >
+                                      {textos["archivados"]?? ""}
+                                    </Typography>
+                                  );
                                 case Constants.ESTADOS_PROYECTO.POR_VALIDAR:
                                   return (
                                     <Typography
@@ -389,7 +405,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       sx={{
                                         fontSize: "1.1rem",
                                         padding: "0px",
-                                        color: 'gold'
+                                        color: '#f9b233'
                                       }}
                                     >
                                       {textos["enviado_aprobacion"]?? ""}

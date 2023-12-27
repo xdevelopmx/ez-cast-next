@@ -71,7 +71,7 @@ export const Habilidades = (props: {
 
   return (
     <Grid  container sx={{ mt: 10 }}>
-      <div id="habilidades" style={{margin: '-100px 0 100px 0'}}>
+      <div id={`${textos['habilidades']}`} style={{margin: '-100px 0 100px 0'}}>
 
       </div>
       <Grid item xs={12}>

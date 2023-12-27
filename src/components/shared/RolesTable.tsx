@@ -39,10 +39,13 @@ import type {
   Media,
   Cazatalentos,
   RedesSocialesPorCazatalentos,
+  SelftapePorRoles,
 } from "@prisma/client";
 import { RolPreviewLoader } from "./RolPreviewLoader";
 
 export interface RolCompletoPreview extends Roles {
+  foto_referencia: Media | null;
+  lineas: Media | null;
   proyecto: Proyecto & {
     tipo: TipoProyectoPorProyecto & {
       tipo_proyecto: CatalogoTipoProyectos;
@@ -70,6 +73,9 @@ export interface RolCompletoPreview extends Roles {
       aparencia_etnica: CatalogoAparenciasEtnicas;
     })[];
     pais: CatalogoPaises;
+  };
+  selftape: SelftapePorRoles & {
+    lineas: Media | null;
   };
   habilidades: HabilidadesPorTalentos & {
     habilidades_seleccionadas: (HabilidadesSelecPorRoles & {

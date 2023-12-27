@@ -327,7 +327,7 @@ export const EditarCreditosTalento: FC<Props> = ({
                       <TableRow style={{ display: 'flex', justifyContent: 'center' }}>
                         <IconButton
                           style={{ 
-                            color: credito.destacado ? "gold" : "gray", 
+                            color: credito.destacado ? "#f9b233" : "gray", 
                             alignContent: "center",
                             margin: "0px auto",
                           }}

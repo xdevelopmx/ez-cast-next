@@ -9,6 +9,7 @@ import {
   TablePagination,
   Skeleton,
   Typography,
+  SxProps,
 } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -32,7 +33,7 @@ interface MTableProps {
   loading?: boolean;
   style?: CSSProperties;
   columnsHeader?: JSX.Element[];
-  headerStyles?: CSSProperties;
+  headerStyles?: SxProps;
   headerClassName?: string;
   backgroundColorHeader?: string;
   backgroundColorData?: string;
@@ -134,16 +135,22 @@ export const MTable: FC<MTableProps> = ({
             <TableHead
               className={classes[headerClassName ? headerClassName : ""]}
               style={{
-                ...headerStyles,
+                textAlign: 'left',
                 backgroundColor: backgroundColorHeader,
               }}
+              sx={headerStyles}
             >
               <TableRow sx={{ styleHeaderRow }}>
                 {columnsHeader &&
                   columnsHeader.map((c, i) => (
                     <TableCell
+
                       align="left"
-                      sx={{ ...styleHeaderTableCell, color: "#000" }}
+                      sx={{ 
+                        ...styleHeaderTableCell, 
+                        ...headerStyles,
+                        color: "#000",
+                      }}
                       key={i}
                     >
                       {c}

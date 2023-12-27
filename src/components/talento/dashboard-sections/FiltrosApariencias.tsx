@@ -276,7 +276,7 @@ export const FiltrosApariencias = (props: {
 
   return (
     <>
-      <Grid container sx={{ mt: 10 }}>
+      <Grid id={`${textos['medidas']}`} container sx={{ mt: 10 }}>
         <Grid item xs={12}>
           <SectionTitle
             title={

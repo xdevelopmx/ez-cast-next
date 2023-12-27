@@ -46,7 +46,9 @@ const DashBoardTalentosPage: NextPage<{
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
   const scrollToSection = (sectionId: string) => {
+    console.log(sectionId);
     const section = document.getElementById(sectionId);
+    console.log(section);
     section?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -196,9 +198,9 @@ const DashBoardTalentosPage: NextPage<{
                   }}
                   id="opciones-usuario"
                   onOptionClick={(id: string, label: string) => {
-                    const id_section = label.toLowerCase().replace(/\s+/g, "-");
-                    console.log(id_section);
-                    scrollToSection(id_section);
+                    //const id_section = label.toLowerCase().replace(/\s+/g, "-");
+                    console.log(label);
+                    scrollToSection(label);
                   }}
                   labels={[
                     textos["info_basica"] ? textos["info_basica"] : "",

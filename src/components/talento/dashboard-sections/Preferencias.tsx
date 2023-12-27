@@ -78,7 +78,7 @@ export const Preferencias = (props: {id_talento: number, read_only: boolean}) =>
 
     return (
         <Grid container sx={{ mt: 10 }}>
-            <div id="preferencia-de-roles" style={{margin: '-100px 0 100px 0'}}>
+            <div id={`${textos['preferencias_roles']}`} style={{margin: '-100px 0 100px 0'}}>
 
             </div>
             <Grid item xs={12}>
