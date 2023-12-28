@@ -305,7 +305,7 @@ export const DescripcionDelRol: FC<Props> = ({ state, onFormChange }) => {
               files={
                 state.files.foto_referencia ? [state.files.foto_referencia] : []
               }
-              filetypes={["JPG", "PNG", "GIF"]}
+              filetypes={["jpg", "jpeg", "png", "gif"]}
               text_button={`${textos["agregar"]} ${textos["foto"]}`}
               tooltip={{
                 color: "orange",

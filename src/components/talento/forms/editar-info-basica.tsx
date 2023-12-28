@@ -108,10 +108,10 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
               textos["union"] ? textos["union"] : "Texto No Definido"
             }*`}
           />
-          <MotionDiv show={union_selected.id === 99} animation="fade">
+          {union_selected.id === 99 &&
             <FormGroup
               rootStyle={{ marginTop: 16 }}
-              className={"form-input-md"}
+              className={"form-input-md form-input-small"}
               labelClassName={"form-input-label"}
               value={union_selected.descripcion}
               onChange={(e) => {
@@ -125,7 +125,7 @@ export const EditarInfoBasicaTalento: FC<Props> = ({
                   : "Texto No Definido"
               }`}
             />
-          </MotionDiv>
+          }
         </MContainer>
       </Grid>
       <Grid item xs={12} md={4}>

@@ -66,7 +66,7 @@ export const PublicarProyecto: FC<Props> = ({ state, onFormChange }) => {
           max_file_size={5120}
           download_url={state.files.foto_portada?.url}
           files={state.files.foto_portada ? [state.files.foto_portada] : []}
-          filetypes={["png", "jpg", "jpeg"]}
+          filetypes={["png", "jpg", "jpeg", "gif"]}
           maxWidth={400}
           //height={100}
 

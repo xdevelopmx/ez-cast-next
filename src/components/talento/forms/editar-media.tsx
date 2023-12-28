@@ -124,7 +124,7 @@ export const EditarMediaTalento: FC<Props> = ({
           )}
           <DragNDrop
             id="id-drag-n-drop-fotos"
-            filetypes={["PNG", "JPG", "JPEG"]}
+            filetypes={["jpg", "jpeg", "png", "gif"]}
             max_files={5}
             maxWidth={"80%"}
             files={state.fotos}

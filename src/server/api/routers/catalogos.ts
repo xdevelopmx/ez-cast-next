@@ -32,7 +32,16 @@ export const CatalogosRouter = createTRPCRouter({
 	),
 	getEstadosRepublica: publicProcedure
 		.query(async ({ ctx }) => {
-			return await ctx.prisma.catalogoEstadosRepublica.findMany();
+			return (await ctx.prisma.catalogoEstadosRepublica.findMany()).sort((e, e2) => {
+				if (ctx.session?.user?.lang === 'en') {
+					if (e.en > e2.en) return 1;
+					if (e.en < e2.en) return -1;
+					return 0; 
+				}
+				if (e.es > e2.es) return 1;
+				if (e.es < e2.es) return -1;
+				return 0; 
+			});
 		}
 	),
 	getTipoProyectos: publicProcedure

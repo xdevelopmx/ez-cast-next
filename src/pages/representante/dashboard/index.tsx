@@ -185,7 +185,7 @@ const DashboardPage: NextPage<DashboardRepresentante> = ({ user }) => {
                       }
                     }}
                     name="file"
-                    types={["jpg", "png", "gif"]}
+                    types={["jpg", "jpeg", "png", "gif"]}
                   >
                     <Button sx={{ textTransform: "none" }}>
                       <Typography

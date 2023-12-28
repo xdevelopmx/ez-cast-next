@@ -383,7 +383,7 @@ export const MenuLateral = ({ stylesRoot }: Props) => {
                     }
                   }}
                   hidden
-                  accept="image/png, image/jpg, image/jpeg"
+                  accept="image/png, image/jpg, image/jpeg, image/gif"
                   type="file"
                 />
               </Button>
