@@ -877,7 +877,7 @@ footer {
 
 .btn-price {
   border: 0;
-  background: var(--btn_price_bg, #f9b233);
+  background: var(--btn_price_bg, #fff);
   color: var(--btn_price_color, #000);
   padding-left: 80px;
   padding-right: 80px;
@@ -2822,8 +2822,14 @@ p.edo_pendiente {
 }
 
 .container_top_pro .btn-price:hover {
+  /*
   background: #fff;
   border: solid 2px #f9b233;
+  */
+  background: #f9b233;
+  border: solid 2px #f2f2f2;
+  color: #000 !important;
+  
 }
 
 .box_list_proyects .iconos_roll_edo a {
@@ -3629,6 +3635,10 @@ p.edo_pendiente {
   border-style: solid;
   border-color: black;
   border-radius: 8px;
+}
+
+.text-blue {
+  color: #4ab7c6 !important;
 }
 
 .label-blue-lg>span {

@@ -248,7 +248,8 @@ const Proyecto: NextPage = () => {
       if (data) {
         notify("success", `${textos['se_guardo_el_proyecto_con_exito']}`);
         if (redirect === "back") {
-          void router.push("/cazatalentos/dashboard");
+          //void router.push("/cazatalentos/dashboard");
+          void router.push(`/cazatalentos/roles?id_proyecto=${data.id}`);
           // router.back();
         } else {
           void router.push(

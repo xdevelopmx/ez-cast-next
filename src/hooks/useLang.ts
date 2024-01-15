@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    rechazado: 'Refused',
     archivados: 'Archived',
     contrasena_invalida: 'Invalid password',
     codigo_invalido: 'Invalid code',
@@ -198,6 +199,8 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     regresar_vista_general: 'Go back to general view',
     regresar_billboard: 'Go back to Billboard',
     archivar_proyecto: 'File project',
+    archivar: 'File',
+    desarchivar: 'Unfile',
     archivar_proyecto_message: 'Are you sure, you want to file this project?',
     desarchivar_proyecto: 'Unfile project',
     desarchivar_proyecto_message: 'Are you sure, you want to unfile this project?',
@@ -505,6 +508,9 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    rechazado: 'Rechazado',
+    archivar: 'Archivar',
+    desarchivar: 'Desarchivar',
     archivados: 'Archivado',
     contrasena_invalida: 'Contraseña invalida',
     codigo_invalido: 'Codigo invalido',
@@ -676,7 +682,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     enviar_proyecto_a_aprobacion_title: 'Enviar proyecto a aprobación',
     enviar_proyecto_a_aprobacion_body: '¿Seguro que deseas mandar este proyecto a aprobación?',
     agregar_rol_en_proyecto_aprobado_title: 'Modificar roles en proyecto aprobado',
-    agregar_rol_en_proyecto_aprobado_title_body: '¿Seguro que deseas modificar este rol en este proyecto aprobado? Si decides continuar el proyecto sera enviado a revision de nuevo',
+    agregar_rol_en_proyecto_aprobado_body: '¿Seguro que deseas modificar este rol en este proyecto aprobado? Si decides continuar el proyecto sera enviado a revision de nuevo',
     se_pagara_un_sueldo: 'Se pagará un sueldo',
     se_otorgaran_compensaciones: 'Se otorgarán compensaciones',
     suma_compensaciones: 'Suma de las compensaciones',
@@ -1540,7 +1546,7 @@ const TEXTS_BY_PATHNAME: {
       activo: "Active",
       inactivo: "Inactive",
       pendiente: "Pending",
-      enviado_aprobacion: "Sent for approval",
+      enviado_aprobacion: "To be approved",
       no_creado: "You have not created any project",
       al_crear: "When creating a project, here you will have an overview of your active and inactive projects.",
       recuerda_crear: "Remember to create all your roles and read the approval requirements before finishing and sending them.",
@@ -1572,7 +1578,7 @@ const TEXTS_BY_PATHNAME: {
       activo: "Activo",
       inactivo: "Inactivo",
       pendiente: "Pendiente",
-      enviado_aprobacion: "Enviado a aprobación",
+      enviado_aprobacion: "Por aprobar",
       no_creado: "No has creado ningún proyecto",
       al_crear: "Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.",
       comienza: "¡Comienza ahora mismo!",

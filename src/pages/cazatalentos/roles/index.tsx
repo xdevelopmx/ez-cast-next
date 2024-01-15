@@ -226,11 +226,11 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
   let proyecto_status = `${textos['cargando']}...`;
   if (proyecto.data) {
     switch (proyecto.data.estatus) {
-      case Constants.ESTADOS_PROYECTO.APROBADO: proyecto_status = 'Aprobado'; break;
-      case Constants.ESTADOS_PROYECTO.ARCHIVADO: proyecto_status = 'Archivado'; break;
-      case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: proyecto_status = 'Enviado a aprobación'; break;
-      case Constants.ESTADOS_PROYECTO.POR_VALIDAR: proyecto_status = 'Pendiente a validar'; break;
-      case Constants.ESTADOS_PROYECTO.RECHAZADO: proyecto_status = 'Rechazado'; break;
+      case Constants.ESTADOS_PROYECTO.APROBADO: proyecto_status = `${textos['aprobado']}`; break;
+      case Constants.ESTADOS_PROYECTO.ARCHIVADO: proyecto_status = `${textos['archivados']}`; break;
+      case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: proyecto_status = `${textos['enviado_aprobacion']}`; break;
+      case Constants.ESTADOS_PROYECTO.POR_VALIDAR: proyecto_status = `${textos['inactivo']}`; break;
+      case Constants.ESTADOS_PROYECTO.RECHAZADO: proyecto_status = `${textos['rechazado']}`; break;
     } 
   }
 
@@ -494,7 +494,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         )}
                       {!IS_ADMIN &&
                         proyecto.data && proyecto.data.estatus === Constants.ESTADOS_PROYECTO.APROBADO ? 
-                        <Button
+                        <button
                           onClick={() => {
                             const params = new Map<string, unknown>();
                             params.set('url', `/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`);
@@ -509,14 +509,6 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             });
                           }}
                           className="btn btn-intro btn-price btn_out_line "
-                          startIcon={
-                            <Image
-                              src={`/assets/img/iconos/cruz_ye.svg`}
-                              height={16}
-                              width={16}
-                              alt={"agregar-rol"}
-                            />
-                          }
                           style={{
                             padding: "4px 35px",
                             marginTop: 0,
@@ -525,8 +517,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                             textTransform: 'none',
                           }}
                         >
+                            <Image
+                              src={`/assets/img/iconos/cruz_ye.svg`}
+                              height={16}
+                              width={16}
+                              style={{marginRight: 8}}
+                              alt={"agregar-rol"}
+                            />
                           {`${textos["nuevo_rol"]}`} 
-                      </Button>
+                      </button>
                       : IS_ADMIN ? null :
                         (
                           <>
@@ -537,16 +536,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               <Link
                                 href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`}
                               >
-                                <Button
-                                  className="btn btn-intro btn-price btn_out_line "
-                                  startIcon={
-                                    <Image
-                                      src={`/assets/img/iconos/cruz_ye.svg`}
-                                      height={16}
-                                      width={16}
-                                      alt={"agregar-rol"}
-                                    />
-                                  }
+                                <button
+                                  className="btn btn-intro btn-price btn_out_line text-blue"
                                   style={{
                                     padding: "4px 35px",
                                     marginTop: 0,
@@ -555,10 +546,17 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                     textTransform: 'none',
                                   }}
                                 >
-                                  {`${textos["nuevo_rol"]}`}
-                                </Button>
+                                  <Image
+                                      src={`/assets/img/iconos/cruz_ye.svg`}
+                                      height={16}
+                                      width={16}
+                                      style={{marginRight: 8}}
+                                      alt={"agregar-rol"}
+                                    /> 
+                                    {`${textos["nuevo_rol"]}`}
+                                </button>
                               </Link>
-                              <MContainer direction="vertical">
+                              <MContainer direction="vertical" className="container_top_pro">
                                 <>
                                   {![
                                     Constants.ESTADOS_PROYECTO.APROBADO,
@@ -567,7 +565,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   ].includes(
                                     proyecto.data ? proyecto.data.estatus : ""
                                   ) && (
-                                    <Button
+                                    <button
                                       onClick={() => {
                                         setConfirmationDialog({
                                           action:
@@ -580,7 +578,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           ),
                                         });
                                       }}
-                                      className="btn btn-sm btn-intro btn-price "
+                                      className="btn btn-sm btn-intro btn-price btn_out_line text-blue"
                                       style={{
                                         padding: "7px 25px",
                                         marginTop: 0,
@@ -592,7 +590,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                       }}
                                     >
                                       {`${textos["enviar_proyecto_para_aprobacion"]}`}
-                                    </Button>
+                                    </button>
                                   )}
                                 </>
                               </MContainer>
@@ -1071,7 +1069,12 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                   <MTooltip
                                     color="orange"
                                     placement="top"
-                                    text="Archivar"
+                                    text={
+                                      r.estatus.toUpperCase() ===
+                                                "ARCHIVADO"
+                                                ? `${textos["desarchivar"]}`
+                                                : `${textos["archivar"]}`
+                                    }
                                     icon={
                                       <IconButton
                                         onClick={(e) => {
@@ -1084,8 +1087,8 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             "state",
                                             r.estatus.toUpperCase() ===
                                               "ARCHIVADO"
-                                              ? "Pendiente"
-                                              : "Archivado"
+                                              ? `${textos["inactivo"]}`
+                                              : `${textos["archivados"]}`
                                           );
                                           setConfirmationDialog({
                                             action: "STATE_CHANGE",
@@ -1094,14 +1097,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                             title:
                                               r.estatus.toUpperCase() ===
                                               "ARCHIVADO"
-                                                ? "Desarchivar"
-                                                : "Archivar",
+                                              ? `${textos["desarchivar"]}`
+                                              : `${textos["archivar"]}`
+                                            ,
                                             content: (
                                               <Typography variant="body2">{`Seguro que deseas ${
                                                 r.estatus.toUpperCase() ===
                                                 "ARCHIVADO"
-                                                  ? "desarchivar"
-                                                  : "archivar"
+                                                ? `${textos["desarchivar"]}`
+                                                : `${textos["archivar"]}`
                                               } este rol?`}</Typography>
                                             ),
                                           });

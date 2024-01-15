@@ -348,12 +348,15 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                       marginRight: 4,
                                     }}
                                   />
-                                  <Typography
-                                    variant="subtitle2"
-                                    sx={{ fontSize: "1.1rem" }}
-                                  >
-                                    {p.nombre}
-                                  </Typography>
+                                  <Link href={`/cazatalentos/roles?id_proyecto=${p.id}`}>
+                                    <Typography
+                                      variant="subtitle2"
+                                      sx={{ fontSize: "1.1rem" }}
+                                    >
+                                      {p.nombre}
+                                    </Typography>
+                                  
+                                  </Link>
                                 </MContainer>
                               );
                             })(),
@@ -382,21 +385,10 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         color: 'gray'
                                       }}
                                     >
-                                      {textos["pendiente"]?? ""}
+                                      {textos["inactivo"]?? ""}
                                     </Typography>
                                   );
-                                case Constants.ESTADOS_PROYECTO.ARCHIVADO:
-                                  return (
-                                    <Typography
-                                      variant="subtitle2"
-                                      sx={{
-                                        fontSize: "1.1rem",
-                                        padding: "0px",
-                                      }}
-                                    >
-                                      {textos["archivado"]?? ""}
-                                    </Typography>
-                                  );
+                                
                                 case Constants.ESTADOS_PROYECTO
                                   .ENVIADO_A_APROBACION:
                                   return (
@@ -420,7 +412,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         padding: "0px",
                                       }}
                                     >
-                                      {textos["inactivo"]?? ""}
+                                      {textos["rechazado"]?? ""}
                                     </Typography>
                                   );
                                 case Constants.ESTADOS_PROYECTO.APROBADO:
@@ -492,7 +484,12 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                   <MTooltip
                                     color="orange"
                                     placement="top"
-                                    text="Archivar"
+                                    text={
+                                      p.estatus.toUpperCase() ===
+                                      "ARCHIVADO"
+                                        ? `${textos['desarchivar_proyecto']}`
+                                        : `${textos['archivar_proyecto']}`
+                                    }
                                     icon={
                                       <IconButton
                                         sx={{ padding: "0!important" }}
@@ -585,10 +582,10 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         </IconButton>
                                       }
                                     />
-                                    <MTooltip
+                                    {/* <MTooltip
                                       color="orange"
                                       placement="top"
-                                      text="Editar rol"
+                                      text="Ir a rol"
                                       icon={
                                         <IconButton
                                           sx={{ padding: "0!important" }}
@@ -604,7 +601,7 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                         >
                                           <Image
                                             src={
-                                              "/assets/img/iconos/edit_icon_blue.png"
+                                              "/assets/img/iconos/search_blue.png"
                                             }
                                             width={16}
                                             height={16}
@@ -612,8 +609,38 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                           />
                                         </IconButton>
                                       }
-                                    />
-                                  </>
+                                    />*/}
+                                  </> 
+                                </>
+                                <>
+                                  <MTooltip
+                                    color="orange"
+                                    placement="top"
+                                    text="Ir al rol"
+                                    icon={
+                                      <IconButton
+                                        sx={{ padding: "0!important" }}
+                                        onClick={(e) => {
+                                          void router.push(
+                                            `/cazatalentos/roles?id_proyecto=${p.id}`
+                                          );
+                                          e.stopPropagation();
+                                        }}
+                                        color="primary"
+                                        aria-label="consultar"
+                                        component="label"
+                                      >
+                                        <Image
+                                          src={
+                                            "/assets/img/iconos/search_blue.png"
+                                          }
+                                          width={16}
+                                          height={16}
+                                          alt="archivar"
+                                        />
+                                      </IconButton>
+                                    }
+                                  />
                                 </>
                                 <>
                                   {[Constants.ESTADOS_PROYECTO.ARCHIVADO, Constants.ESTADOS_PROYECTO.RECHAZADO, Constants.ESTADOS_PROYECTO.POR_VALIDAR].includes(
@@ -659,42 +686,6 @@ const DashBoardCazaTalentosPage: NextPage<DashBoardCazaTalentosPageProps> = ({
                                           </IconButton>
                                         }
                                       />
-                                  )}
-                                </>
-                                <>
-                                  {[
-                                    Constants.ESTADOS_PROYECTO.APROBADO,
-                                    Constants.ESTADOS_PROYECTO
-                                      .ENVIADO_A_APROBACION,
-                                  ].includes(p.estatus.toUpperCase()) && (
-                                    <MTooltip
-                                      color="orange"
-                                      placement="top"
-                                      text="Ir al rol"
-                                      icon={
-                                        <IconButton
-                                          sx={{ padding: "0!important" }}
-                                          onClick={(e) => {
-                                            void router.push(
-                                              `/cazatalentos/roles?id_proyecto=${p.id}`
-                                            );
-                                            e.stopPropagation();
-                                          }}
-                                          color="primary"
-                                          aria-label="consultar"
-                                          component="label"
-                                        >
-                                          <Image
-                                            src={
-                                              "/assets/img/iconos/search_blue.png"
-                                            }
-                                            width={16}
-                                            height={16}
-                                            alt="archivar"
-                                          />
-                                        </IconButton>
-                                      }
-                                    />
                                   )}
                                 </>
                               </MContainer>

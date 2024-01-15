@@ -491,6 +491,7 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 			});
 		},
 		onError: (error) => {
+			setSaveType(undefined);
 			notify("error", parseErrorBody(error.message));
 		},
 	});
@@ -510,11 +511,14 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 				});
 				void talento.refetch();
 			}
-			setSaveType(undefined);
 		},
 		onError: (error) => {
+			console.log(error);
 			notify("error", parseErrorBody(error.message));
 		},
+		onSettled: () => {
+			setSaveType(undefined);
+		}
 	});
 
 	const saveMedios = api.talentos.saveMedios.useMutation({
@@ -533,11 +537,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 				});
 				void talento.refetch();
 			}
-			setSaveType(undefined);
 		},
 		onError: (error) => {
 			notify("error", parseErrorBody(error.message));
 		},
+		onSettled: () => {
+			setSaveType(undefined);
+		}
 	});
 
 	const saveCreditos = api.talentos.saveCreditos.useMutation({
@@ -555,11 +561,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 				});
 				void talento.refetch();
 			}
-			setSaveType(undefined);
 		},
 		onError: (error) => {
 			notify("error", parseErrorBody(error.message));
 		},
+		onSettled: () => {
+			setSaveType(undefined);
+		}
 	});
 
 	const saveHabilidades = api.talentos.saveHabilidades.useMutation({
@@ -577,11 +585,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 				});
 				void talento.refetch();
 			}
-			setSaveType(undefined);
 		},
 		onError: (error) => {
 			notify("error", parseErrorBody(error.message));
 		},
+		onSettled: () => {
+			setSaveType(undefined);
+		}
 	});
 
 	const saveActivos = api.talentos.saveActivos.useMutation({
@@ -599,11 +609,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 				});
 				void talento.refetch();
 			}
-			setSaveType(undefined);
 		},
 		onError: (error) => {
 			notify("error", parseErrorBody(error.message));
 		},
+		onSettled: () => {
+			setSaveType(undefined);
+		}
 	});
 
 	const savePreferencias = api.talentos.savePreferencias.useMutation({
@@ -621,11 +633,13 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 				});
 				void talento.refetch();
 			}
-			setSaveType(undefined);
 		},
 		onError: (error) => {
 			notify("error", parseErrorBody(error.message));
 		},
+		onSettled: () => {
+			setSaveType(undefined);
+		}
 	});
 
 	const saveFiltrosApariencias =
@@ -654,6 +668,9 @@ const EditarTalentoPage: NextPage<EditarTalentoPageProps> = ({
 			onError: (error) => {
 				notify("error", parseErrorBody(error.message));
 			},
+			onSettled: () => {
+				setSaveType(undefined);
+			}
 		});
 
 	const handleInfoGral = async () => {
