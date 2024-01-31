@@ -212,6 +212,27 @@ export const CazatalentosRouter = createTRPCRouter({
 			});
 		}
 	),
+	getAudicionTalentoById: protectedProcedure
+		.input(z.number())
+		.query(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_getAudicionTalentoById', lang);
+
+			const user = ctx.session.user;
+			if (input && !isNaN(input)) {
+				const audicion = await ctx.prisma.audicionTalento.findFirst({
+					where: {
+						id: input
+					}
+				});
+				return audicion;
+			}
+			throw new TRPCError({
+				code: 'UNAUTHORIZED',
+				message: getResponse('error_id_invalido'),
+			});
+		}
+		),
 	getAudicionTalentoByRol: protectedProcedure
 		.input(z.object({ 
 			id_talento: z.number(),
@@ -553,7 +574,8 @@ export const CazatalentosRouter = createTRPCRouter({
 							data: {
 								fecha_audicion: fecha_audicion,
 								tipo_audicion: input.tipo_audicion,
-								mensaje: input.mensaje
+								mensaje: input.mensaje,
+								estado: input.tipo_audicion.toLocaleLowerCase() === 'callback' ? Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_PENDIENTE : Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_PENDIENTE
 							}
 						})
 					} else {
@@ -563,18 +585,19 @@ export const CazatalentosRouter = createTRPCRouter({
 								tipo_audicion: input.tipo_audicion,
 								mensaje: input.mensaje,
 								id_rol: input.id_rol,
-								id_talento: input.id_talento
+								id_talento: input.id_talento,
+								estado: input.tipo_audicion.toLocaleLowerCase() === 'callback' ? Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_PENDIENTE : Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_PENDIENTE
 							}
 						})
 					}
-					const aplicacion_rol_por_talento = await ctx.prisma.aplicacionRolPorTalento.findFirst({
+					let aplicacion_rol_por_talento = await ctx.prisma.aplicacionRolPorTalento.findFirst({
 						where: {
 							id_rol: input.id_rol,
 							id_talento: input.id_talento
 						}
 					})
 					if (aplicacion_rol_por_talento) {
-						await ctx.prisma.aplicacionRolPorTalento.update({
+						aplicacion_rol_por_talento = await ctx.prisma.aplicacionRolPorTalento.update({
 							where: {
 								id: aplicacion_rol_por_talento.id
 							},
@@ -639,9 +662,14 @@ export const CazatalentosRouter = createTRPCRouter({
 									mensaje: JSON.stringify({
 										message: getResponse('cazatalento_message').replace('[N1]', `${rol.proyecto.cazatalentos.nombre}`).replace('[N2]', `${rol.proyecto.cazatalentos.apellido}`)
 										.replace('[N3]', `${input.tipo_audicion}`).replace('[N4]', `${rol.nombre}`)
-										.replace('[N5]', `${rol.proyecto.nombre}`).replace('[N6]', `${input.fecha_audicion}`)
+										.replace('[N5]', `${rol.proyecto.nombre}`).replace('[N6]', `${input.fecha_audicion}`),
+										id_aplicacion_rol: aplicacion_rol_por_talento ? aplicacion_rol_por_talento.id : 0,
+										id_audicion: audicion.id,
+										id_talento: talento.id,
+										id_cazatalentos: rol.proyecto.cazatalentos.id,
+										id_conversacion: conversacion.id,
 									}),
-									type: TipoMensajes.TEXT
+									type: TipoMensajes.NOTIFICACION_AUDICION_AGENDADA
 								}
 							})
 							if (input.mensaje.length > 0) {
@@ -692,6 +720,91 @@ export const CazatalentosRouter = createTRPCRouter({
 			});
 		}
     ),
+	updateSeleccionTalentoResponse: protectedProcedure
+		.input(z.object({
+			id_audicion_talento: z.number(),
+			estado: z.string(),
+			id_cazatalentos: z.number(),
+			id_conversacion: z.number(),
+			id_talento: z.number()
+
+		}))
+		.mutation(async ({ input, ctx }) => {
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('CazatalentosRouter_updateSeleccionTalentoResponse', lang);
+
+			if (input.id_audicion_talento <= 0 || input.estado.length <= 0) return null;
+
+			const audicion = await ctx.prisma.audicionTalento.update({
+				where: {
+					id: input.id_audicion_talento
+				},
+				data: {
+					estado: input.estado
+				}
+			});
+			const talento = await ctx.prisma.talentos.findFirst({
+				where: {id: input.id_talento}
+			})
+			let response = '';
+			switch (input.estado) {
+				case Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_CONFIRMADO: {
+					response = `${getResponse('confirmar')} ${getResponse('la_audicion')}`;
+					break;
+				}
+				case Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_RECHAZADO: {
+					response = `${getResponse('rechazar')} ${getResponse('la_audicion')}`;
+					break;
+				}
+				case Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_CONFIRMADO: {
+					response = `${getResponse('confirmar')} ${getResponse('el_callback')}`;
+
+					break;
+				}
+				case Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_RECHAZADO: {
+					response = `${getResponse('rechazar')} ${getResponse('el_callback')}`;
+					break;
+				}
+			}
+			const rol = await ctx.prisma.roles.findFirst({
+				where: {
+					id: audicion.id_rol
+				},
+				include: {
+					proyecto: true
+				}
+			})
+			//El talento [N1] [N2], ha decidido [N3] para el rol [N4] del proyecto [N5], puedes ver los detalles en el casting billboard
+
+			const message = getResponse('confirmation_message')
+			.replace('[N1]', `${talento?.nombre}`).replace('[N2]', `${talento?.apellido}`)
+				.replace('[N3]', `${response}`).replace('[N4]', `${rol?.nombre}`).replace('[N5]', `${rol?.proyecto.nombre}`);
+
+			await ctx.prisma.mensaje.create({
+				data: {
+					id_conversacion: input.id_conversacion,
+					id_emisor: input.id_talento,
+					tipo_usuario_emisor: TipoUsuario.TALENTO,
+					id_receptor: input.id_cazatalentos,
+					tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
+					visto: false,
+					hora_envio: dayjs().toDate(),
+					mensaje: JSON.stringify({
+						message: message
+					}),
+					type: TipoMensajes.TEXT
+				}
+			})
+			await ctx.prisma.alertas.create({
+				data: {
+					id_usuario: input.id_cazatalentos,
+					tipo_usuario: TipoUsuario.CAZATALENTOS,
+					visto: false,
+					mensaje: message
+				}
+			})
+			return audicion;
+	}),
 	updatePerfil: protectedProcedure
     	.input(z.object({ 
 			foto_perfil: z.object({

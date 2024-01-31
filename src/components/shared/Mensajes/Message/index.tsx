@@ -1,5 +1,5 @@
 import { Box, Button, ButtonGroup, Link, Typography } from '@mui/material'
-import React, { useContext, type CSSProperties } from 'react'
+import React, { useContext, type CSSProperties, useMemo } from 'react'
 import Image from 'next/image'
 import { api, parseErrorBody } from '~/utils/api'
 import Constants from '~/constants'
@@ -248,6 +248,126 @@ export const MessageNotificacionHorario = ({ imagen, mensaje, esMensajePropio, n
                         >
                             {textos['rechazar']}
                         </Button> 
+                    </ButtonGroup>
+                </Box>
+            </Box>
+        </Box>
+    )
+}
+
+export const MessageAgendaAudicion = ({ imagen, mensaje, esMensajePropio, id_talento, id_audicion, id_aplicacion_rol, id_conversacion, id_cazatalentos, onChange }: (Props & { id_audicion: number, id_aplicacion_rol: number, id_talento: number, id_conversacion: number, id_cazatalentos: number, onChange: () => void  })) => {
+    //const intervalo = api.agenda_virtual.getIntervaloById.useQuery({ id_intervalo: id_intervalo });
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    const { notify } = useNotify();
+    const audicion_talento = api.cazatalentos.getAudicionTalentoById.useQuery(id_audicion, {
+        refetchOnWindowFocus: false
+    });
+
+    const audicion_state = useMemo(() => {
+        if (audicion_talento.data) {
+            if (audicion_talento.data.tipo_audicion.toLocaleLowerCase() === 'callback') {
+                return {
+                    rechazado: audicion_talento.data.estado === Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_RECHAZADO,
+                    confirmado: audicion_talento.data.estado === Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_CONFIRMADO,
+                }
+            } else {
+                return {
+                    rechazado: audicion_talento.data.estado === Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_RECHAZADO,
+                    confirmado: audicion_talento.data.estado === Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_CONFIRMADO,
+                }
+            }
+        }
+        return {
+            rechazado: null,
+            confirmado: null,
+        }
+    }, [audicion_talento.data]);
+
+    console.log('audicion_state', audicion_state);
+
+    const updateSeleccionTalentoResponse = api.cazatalentos.updateSeleccionTalentoResponse.useMutation({
+        onSuccess: (data) => {
+            audicion_talento.refetch();
+            //onChange();
+            //notify('success', 'Se asigno el intervalo con exito');
+            notify("success", `${textos['se_actualizo_con_exito']}`);
+            onChange();
+        },
+        onError: (error) => {
+            notify('error', parseErrorBody(error.message));
+        }
+    })
+    return (
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                margin: '25px 0px',
+                flexDirection: esMensajePropio ? 'row-reverse' : 'row'
+            }}
+        >
+            <Box sx={{
+                position: 'relative',
+                width: '60px',
+                aspectRatio: '1/1',
+                marginRight: esMensajePropio ? '0px' : '20px',
+                marginLeft: esMensajePropio ? '20px' : '0px',
+            }}>
+                <Image src={imagen} style={{
+                    borderRadius: '100%'
+                }} fill alt="" />
+            </Box>
+
+            <Box sx={{
+                width: 'calc( 100% - 80px )',
+                minWidth: '50%',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+                borderRadius: '10px',
+            }}>
+                <Box sx={{
+                    backgroundColor: 'white',
+                    border: 'solid',
+                    borderColor: '#069cb1',
+                }}>
+                    <p color='red'>{esMensajePropio}</p>
+                    <Typography fontWeight={800} p={2}>
+                        {mensaje}
+                    </Typography>
+                    <ButtonGroup fullWidth>
+                        
+                        
+                        <Button
+                            variant={Boolean(audicion_state.confirmado) ? 'contained' : 'outlined'}
+                            disabled={!esMensajePropio || Boolean(audicion_state.confirmado) || Boolean(audicion_state.rechazado)}
+                            onClick={() => {
+                                updateSeleccionTalentoResponse.mutate({
+                                    id_audicion_talento: id_audicion,
+                                    estado: audicion_talento.data?.tipo_audicion.toLocaleLowerCase() === 'callback' ? Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_CONFIRMADO : Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_CONFIRMADO,
+                                    id_cazatalentos: id_cazatalentos,
+                                    id_conversacion: id_conversacion,
+                                    id_talento: id_talento
+                                })
+                            }}
+                        >
+                            {textos['confirmar']}
+                        </Button>
+                        <Button
+                            variant={Boolean(audicion_state.rechazado) ? 'contained' : 'outlined'}
+                            disabled={!esMensajePropio || Boolean(audicion_state.confirmado) || Boolean(audicion_state.rechazado)}
+                            onClick={() => {
+                                updateSeleccionTalentoResponse.mutate({
+                                    id_audicion_talento: id_audicion,
+                                    estado: audicion_talento.data?.tipo_audicion.toLocaleLowerCase() === 'callback' ? Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_RECHAZADO : Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_RECHAZADO,
+                                    id_cazatalentos: id_cazatalentos,
+                                    id_conversacion: id_conversacion,
+                                    id_talento: id_talento
+                                })
+                            }}
+                        >
+                            {textos['rechazar']}
+                        </Button>
+                        
                     </ButtonGroup>
                 </Box>
             </Box>

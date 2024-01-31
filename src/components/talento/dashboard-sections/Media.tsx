@@ -12,6 +12,7 @@ import { Navigation } from "swiper";
 
 import "swiper/css";
 import "swiper/css/navigation";
+import MAlert from "~/components/shared/MAlert";
 
 export const Media = (props: { id_talento: number; read_only: boolean }) => {
   const ctx = useContext(AppContext);
@@ -200,18 +201,15 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
         </Swiper>
         {!media ||
           (media.fotos.length === 0 && (
-            <Typography
-              fontSize={"1.3rem"}
-              sx={{ color: "#F9B233" }}
-              fontWeight={400}
-            >
-              {textos["usuario_no_ha_capturado"]
-                ? textos["usuario_no_ha_capturado"].replace(
-                    "[TYPE]",
-                    `${textos["imagen"] ?? ""}`
-                  )
-                : "Texto No definido"}
-            </Typography>
+            <MAlert
+              title={`${textos['imagen']}`}
+            body={textos["usuario_no_ha_capturado"]
+              ? textos["usuario_no_ha_capturado"].replace(
+                "[TYPE]",
+                `${textos["imagen"] ?? ""}`
+              )
+              : "Texto No definido"}
+            />
           ))}
         <Divider
           sx={{ mt: 3, borderTop: "2px solid #807D7D", marginBottom: 3 }}
@@ -321,18 +319,15 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             )}
             {!media ||
               (media.videos.length === 0 && (
-                <Typography
-                  fontSize={"1.3rem"}
-                  sx={{ color: "#F9B233" }}
-                  fontWeight={400}
-                >
-                  {textos["usuario_no_ha_capturado"]
+                <MAlert
+                title={`${textos["video"]}`}
+                  body={textos["usuario_no_ha_capturado"]
                     ? textos["usuario_no_ha_capturado"].replace(
                         "[TYPE]",
                         `${textos["video"] ?? ""}`
                       )
                     : "Texto No definido"}
-                </Typography>
+                />
               ))}
           </MContainer>
         </MContainer>
@@ -392,18 +387,15 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
               })}
             {!media ||
               (media.audios.length === 0 && (
-                <Typography
-                  fontSize={"1.3rem"}
-                  sx={{ color: "#F9B233" }}
-                  fontWeight={400}
-                >
-                  {textos["usuario_no_ha_capturado"]
+                <MAlert
+                  title={`${textos["audio"] ?? ""}`}
+                  body={textos["usuario_no_ha_capturado"]
                     ? textos["usuario_no_ha_capturado"].replace(
                         "[TYPE]",
                         `${textos["audio"] ?? ""}`
                       )
                     : "Texto No definido"}
-                </Typography>
+                />
               ))}
           </MContainer>
         </MContainer>
@@ -510,18 +502,15 @@ export const Media = (props: { id_talento: number; read_only: boolean }) => {
             )}
             {!media ||
               (media.selftapes.length === 0 && (
-                <Typography
-                  fontSize={"1.3rem"}
-                  sx={{ color: "#F9B233" }}
-                  fontWeight={400}
-                >
-                  {textos["usuario_no_ha_capturado"]
+                <MAlert
+                  title={`${textos["selftape"] ?? ""}`}
+                  body={textos["usuario_no_ha_capturado"]
                     ? textos["usuario_no_ha_capturado"].replace(
                         "[TYPE]",
                         `${textos["selftape"] ?? ""}`
                       )
                     : "Texto No definido"}
-                </Typography>
+                />
               ))}
           </MContainer>
         </MContainer>

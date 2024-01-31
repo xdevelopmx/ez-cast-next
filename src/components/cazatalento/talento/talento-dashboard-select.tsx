@@ -1,6 +1,6 @@
 import { Close, MessageOutlined } from '@mui/icons-material';
 import { Box, Button, Checkbox, Dialog, DialogContent, DialogContentText, DialogTitle, Divider, FormControlLabel, Grid, Typography } from '@mui/material'
-import { type FC, useReducer, useState, useEffect, useRef, useContext } from 'react';
+import { type FC, useReducer, useState, useEffect, useRef, useContext, useMemo } from 'react';
 import { MContainer } from '~/components/layout/MContainer'
 import MotionDiv from '~/components/layout/MotionDiv';
 import { FormGroup, MCheckboxGroup, MRadioGroup, SectionTitle } from '~/components/shared'
@@ -17,6 +17,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import AppContext from '~/context/app';
 import useLang from '~/hooks/useLang';
 import React from 'react';
+import Constants from '~/constants';
 
 interface Props {
     id_talento: number,
@@ -170,6 +171,61 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
         }
     }, [reporte_talento.data]);
 
+	const auditions_expired = useMemo(() => {
+		let expired = true;
+		if (fechas_casting_rol.data) {
+			const today = new Date();
+			today.setHours(0, 0, 0, 0);
+			fechas_casting_rol.data.forEach((date: string) => {
+				const d1 = new Date(date);
+				d1.setHours(0, 0, 0, 0);
+				if (d1 >= today) {
+					expired = false;
+				}
+			});
+		}
+		return expired;
+	}, [fechas_casting_rol.data]);
+
+	const disable_button_select_talent = useMemo(() => {
+		if (audicion_talento.data) {
+			if (audicion_talento.data.tipo_audicion.toLocaleLowerCase() === 'callback') {
+				return ![Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_CONFIRMADO, Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_RECHAZADO].includes(audicion_talento.data.estado);
+			} else {
+				// audicion
+				return ![Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_RECHAZADO].includes(audicion_talento.data.estado);
+			}
+		}
+		return false;
+	}, [audicion_talento.data]);
+
+	console.log('disable_button_select_talent', disable_button_select_talent);
+
+	useEffect(() => {
+		setFormSelectTalento(prev => {
+			return {
+				...prev,
+				tipo_audicion: (auditions_expired) ? 'callback' : 'audicion'
+			}
+		})
+	}, [auditions_expired]);
+
+	const getAuditionLabel = () => {
+		if (audicion_talento.data) {
+			switch (audicion_talento.data.estado) {
+				case Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_CONFIRMADO: return `${textos['audicion_confirmada']}`;
+				case Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_RECHAZADO: return `${textos['audicion_rechazada']}`;
+				case Constants.ESTADOS_ASIGNACION_AUDICION.AUDICION_PENDIENTE: return `${textos['audicion_programada']}`;
+				case Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_CONFIRMADO: return `${textos['callback_confirmado']}`;
+				case Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_RECHAZADO: return `${textos['callback_rechazado']}`;
+				case Constants.ESTADOS_ASIGNACION_AUDICION.CALLBACK_PENDIENTE: return `${textos['callback_programado']}`;
+			}
+		}
+		return '';
+	}
+
+	console.log(audicion_talento.data);
+
     return (
         <>
             <MContainer direction='horizontal' justify='space-between'>
@@ -230,9 +286,9 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                             </MotionDiv>
                         </Box>
                         <Box>
-                            <Button disabled={!audicion_talento.isFetching && audicion_talento.data != null} variant='contained' onClick={() => { setDialog({ open: true, title: 'Elegir Talento', id: 'elegir_talento' }) }} style={{ borderRadius: 16, width: '100%', maxWidth: 280 }}>
+							<Button disabled={disable_button_select_talent} variant='contained' onClick={() => { setDialog({ open: true, title: `${textos['elegir_talento']}`, id: 'elegir_talento' }) }} style={{ borderRadius: 16, width: '100%', maxWidth: 280 }}>
                                 {audicion_talento.isFetching && <Typography>Cargando...</Typography>}
-								{!audicion_talento.isFetching && audicion_talento.data != null && <Typography>{textos['audicion_programada']}</Typography>}
+								{!audicion_talento.isFetching && audicion_talento.data != null && <Typography>{getAuditionLabel()}</Typography>}
 								{!audicion_talento.isFetching && !audicion_talento.data && <Typography>{textos['elegir_talento']}</Typography>}
                             </Button>
                             <Button disabled={!reporte_talento.isFetching && reporte_talento.data != null} variant={(!reporte_talento.isFetching && reporte_talento.data != null) ? 'contained' : 'text'} color="error" onClick={() => { setDialog({ open: true, title: 'Reportar', id: 'reportar_talento' }) }} style={{ borderRadius: 16, width: '100%', marginTop: 8, textDecoration: 'underline', maxWidth: 280 }}>
@@ -251,15 +307,16 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 						{textos['modal_elegir_talento_body']}
 					</DialogContentText>
 					<Typography variant="body2" px={4} py={2}>
-						Elige el tipo de audición del Talento
+						{textos['elige_tipo_audicion_talento']}
 					</Typography>
 					<MContainer styles={{paddingLeft: 24, paddingRight: 24, marginBottom: 8}} direction='horizontal'>
 						<Button 
 							onClick={() => {setFormSelectTalento(prev => { return {...prev, tipo_audicion: 'audicion'} })}} 
 							variant='outlined' 
+							disabled={auditions_expired}
 							style={{color: (form_select_talento.tipo_audicion === 'audicion') ? '#069cb1' : 'gray', borderColor: (form_select_talento.tipo_audicion === 'audicion') ? '#069cb1' : 'gray'}}
 							startIcon={<Image style={{filter: (form_select_talento.tipo_audicion === 'callback') ? 'brightness(0) saturate(100%) invert(51%) sepia(0%) saturate(0%) hue-rotate(142deg) brightness(98%) contrast(83%)' : ''}} width={32} height={32} alt="" src={"/assets/img/iconos/icono_lampara_blue.svg"}/>}>
-							Audición
+							{textos['audicion']}
 						</Button>
 						<Button 
 							onClick={() => {setFormSelectTalento(prev => { return {...prev, tipo_audicion: 'callback'} })}} 
@@ -275,12 +332,19 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 							style={{ fontWeight: 600, width: '100%', marginTop: 10 }}
 							className={'form-input-label'}
 						>
-							Elige la fecha de la audición
+							{textos['elige_fecha_audición']}
 						</label>
 						<DatePicker
 							localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}
 							slotProps={{ textField: { size: 'small' } }}
 							shouldDisableDate={(date: Dayjs) => {
+								if (auditions_expired) {
+									const d1 = date.toDate();
+									d1.setHours(0, 0, 0, 0);
+									const today = new Date();
+									today.setHours(0, 0, 0, 0);
+									return d1 < today;
+								}
 								const day = date.date() + 1; //por alguna razon se tiene que poner + 1 :o : querayos
 								const month = date.month();
 								const year = date.year();
@@ -306,14 +370,14 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 							onChange={(e) => {
 								setFormSelectTalento(prev => { return { ...prev, mensaje: e.target.value } })
 							}}
-							label='Agrega un mensaje'
+							label={`${textos['agrega_un_mensaje']}`}
 						/>
 					</Box>
 					<Box p={4} style={{display: 'flex', flexDirection: 'row'}} sx={{backgroundColor: 'gray'}}>
 						<Image style={{marginTop: 8}} width={32} height={32} alt="" src={"/assets/img/iconos/agenda_white.svg"}/>
 						<Box>
-							<Typography variant="subtitle1" color={'white'}>Agregar a Agenda Virtual</Typography>
-							<Typography variant="body2" color='white'>Disponible en membresías Premium y Ejecutiva</Typography>
+							<Typography variant="subtitle1" color={'white'}>{textos['agregar_a_agenda_virtual']}</Typography>
+							<Typography variant="body2" color='white'>{textos['disponible_para_membresias_premium']}</Typography>
 						</Box>
 					</Box>
 				</DialogContent>
@@ -336,7 +400,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 						} else {
 							notify('warning', `${textos['no_haz_seleccionado_ninguna_fecha']}`);
 						}
-					}}>Enviar</Button>
+					}}>{textos['enviar']}</Button>
 				</Box>
 			</Dialog>
 			<Dialog maxWidth={'md'} style={{ padding: 0, margin: 0 }} open={dialog.id === 'reportar_talento' && dialog.open} onClose={() => setDialog({ ...dialog, open: false })}>
@@ -386,7 +450,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 					/>
 				</DialogContent>
 				<Box style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
-					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>Cancelar</Button>
+					<Button style={{marginLeft: 8, marginRight: 8}} startIcon={<Close />} onClick={() => setDialog({ ...dialog, open: false })}>{textos['cancelar']}</Button>
 					<Button 
                         style={{marginLeft: 8, marginRight: 8}} 
                         startIcon={<Image src={'/assets/img/iconos/check_blue.svg'} height={16} width={16} alt=""/>} 
@@ -404,7 +468,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
                             }
                         }
                     }>
-                        Enviar
+                        {textos['enviar']}
                     </Button>
 				</Box>
 			</Dialog>

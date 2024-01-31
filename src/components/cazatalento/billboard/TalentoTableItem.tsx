@@ -77,7 +77,7 @@ export const TalentoTableItem = (props: {
                 : "icon_no_vistos"
                 }.svg`}
               // className="tamanio_iconos_resolucion"
-              width={isLgScreen ? 24 : 12}
+              width={isLgScreen ? 16 : 12}
               height={isLgScreen ? 16 : 12}
               alt="no vistos"
             />
@@ -89,12 +89,11 @@ export const TalentoTableItem = (props: {
           placement="top"
           icon={
             <Image
-              src={`/assets/img/iconos/${props.id_estado_aplicacion_rol ===
-                Constants.ESTADOS_APLICACION_ROL.VISTO
+              src={`/assets/img/iconos/${[Constants.ESTADOS_APLICACION_ROL.VISTO, Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(props.id_estado_aplicacion_rol) && props.rating === 0
                 ? "icon_vistos_highlited"
                 : "icon_vistos"
                 }.svg`}
-                width={isLgScreen ? 24 : 12}
+                width={isLgScreen ? 16 : 12}
                 height={isLgScreen ? 16 : 12}
               alt="Vistos"
             />
@@ -106,12 +105,11 @@ export const TalentoTableItem = (props: {
           placement="top"
           icon={
             <Image
-              src={`/assets/img/iconos/${props.id_estado_aplicacion_rol ===
-                Constants.ESTADOS_APLICACION_ROL.DESTACADO
+              src={`/assets/img/iconos/${[Constants.ESTADOS_APLICACION_ROL.VISTO, Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(props.id_estado_aplicacion_rol) && props.rating > 0
                 ? "icon_estrella_dorada"
                 : "icono_star_blue"
                 }.svg`}
-                width={isLgScreen ? 24 : 12}
+                width={isLgScreen ? 16 : 12}
                 height={isLgScreen ? 16 : 12}
               alt="Destacado"
             />
@@ -131,7 +129,7 @@ export const TalentoTableItem = (props: {
                     : "",
               }}
               src={"/assets/img/iconos/icono_lampara_blue.svg"}
-              width={isLgScreen ? 24 : 12}
+              width={isLgScreen ? 16 : 12}
               height={isLgScreen ? 16 : 12}
               alt="Audicion"
             />
@@ -151,7 +149,7 @@ export const TalentoTableItem = (props: {
                     : "",
               }}
               src={"/assets/img/iconos/icono_claqueta_blue.svg"}
-              width={isLgScreen ? 24 : 12}
+              width={isLgScreen ? 16 : 12}
               height={isLgScreen ? 16 : 12}
               alt="callback"
             />

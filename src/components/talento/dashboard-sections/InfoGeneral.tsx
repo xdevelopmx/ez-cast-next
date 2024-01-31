@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import MotionDiv from "~/components/layout/MotionDiv";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import MAlert from "~/components/shared/MAlert";
 
 export const InfoGeneral = (props: {
   id_talento: number;
@@ -411,36 +412,32 @@ export const InfoGeneral = (props: {
             <div style={{ marginTop: 32 }}>
               {creditos.isFetching && <Skeleton className="md-skeleton" />}
               {!creditos.isFetching && !creditos.data && (
-                <Typography
-                  fontSize={"1.3rem"}
-                  sx={{ color: "#F9B233" }}
-                  fontWeight={400}
-                >
-                  {textos["usuario_no_ha_capturado"]
-                    ? textos["usuario_no_ha_capturado"].replace(
+                <MAlert
+                  title={`${textos['credito']}s`}
+                  body={
+                    textos["usuario_no_ha_capturado"]
+                      ? textos["usuario_no_ha_capturado"].replace(
                         "[TYPE]",
                         `${textos["credito"] ?? ""}`
                       )
                     : "Texto No definido"}
-                </Typography>
+                />
               )}
               {!creditos.isFetching &&
                 creditos.data &&
                 creditos.data.creditos.length > 0 &&
                 creditos.data.creditos.filter((c) => c.destacado).length ===
                   0 && (
-                  <Typography
-                    fontSize={"1.3rem"}
-                    sx={{ color: "#F9B233" }}
-                    fontWeight={400}
-                  >
-                    {textos["usuario_no_ha_capturado"]
+                    <MAlert
+                  title={`${textos['credito']}s ${textos['credito_destacado']}`}
+                  body={
+                    textos["usuario_no_ha_capturado"]
                       ? textos["usuario_no_ha_capturado"].replace(
-                          "[TYPE]",
-                          `${textos["credito_destacado"] ?? ""}`
-                        )
-                      : "Texto No definido"}
-                  </Typography>
+                        "[TYPE]",
+                        `${textos["credito_destacado"] ?? ""}`
+                      )
+                    : "Texto No definido"}
+                />
                 )}
               {!creditos.isFetching &&
                 creditos.data &&

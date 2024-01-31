@@ -189,7 +189,7 @@ const DashBoardTalentosPage: NextPage<{
                 <OptionsGroup
                   styleContainer={{
                     display: "flex",
-                    gap: "40px",
+                    gap: "24px",
                     marginBottom: 0,
                   }}
                   styleButton={{
@@ -209,6 +209,7 @@ const DashBoardTalentosPage: NextPage<{
                     textos["habilidades"] ? textos["habilidades"] : "",
                     textos["medidas"] ? textos["medidas"] : "",
                     textos["activos"] ? textos["activos"] : "",
+                    textos["apariencia"] ? textos["apariencia"] : "",
                     textos["preferencias_roles"]
                       ? textos["preferencias_roles"]
                       : "",

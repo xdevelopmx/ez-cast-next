@@ -35,6 +35,7 @@ import { type Media } from "@prisma/client";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 import { ResourceAlert } from "~/components/shared/ResourceAlert";
+import MAlert from "~/components/shared/MAlert";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -394,18 +395,15 @@ export const MediaBank = (props: {
                       </MContainer>
                       {!media ||
                         (media.fotos.length === 0 && (
-                          <Typography
-                            fontSize={"1.3rem"}
-                            sx={{ color: "#F9B233" }}
-                            fontWeight={400}
-                          >
-                            {textos["usuario_no_ha_capturado"]
+                          <MAlert
+                          title={`${textos["imagen"] ?? ""}`}
+                            body={textos["usuario_no_ha_capturado"]
                               ? textos["usuario_no_ha_capturado"].replace(
                                   "[TYPE]",
                                   `${textos["imagen"] ?? ""}`
                                 )
                               : "Texto No definido"}
-                          </Typography>
+                          />
                         ))}
                       {media &&
                         media.fotos.map((image, i) => {
@@ -562,18 +560,15 @@ export const MediaBank = (props: {
                             )}
                             {!media ||
                               (media.videos.length === 0 && (
-                                <Typography
-                                  fontSize={"1.3rem"}
-                                  sx={{ color: "#F9B233" }}
-                                  fontWeight={400}
-                                >
-                                  {textos["usuario_no_ha_capturado"]
+                                <MAlert
+                                  title={`${textos["video"] ?? ""}`}
+                                  body={textos["usuario_no_ha_capturado"]
                                     ? textos["usuario_no_ha_capturado"].replace(
                                         "[TYPE]",
                                         `${textos["video"] ?? ""}`
                                       )
                                     : "Texto No definido"}
-                                </Typography>
+                                />
                               ))}
                           </MContainer>
                         </MContainer>
@@ -638,18 +633,15 @@ export const MediaBank = (props: {
                             })}
                           {!media ||
                             (media.audios.length === 0 && (
-                              <Typography
-                                fontSize={"1.3rem"}
-                                sx={{ color: "#F9B233" }}
-                                fontWeight={400}
-                              >
-                                {textos["usuario_no_ha_capturado"]
+                              <MAlert
+                                title={`${textos["audio"] ?? ""}`}
+                                body={textos["usuario_no_ha_capturado"]
                                   ? textos["usuario_no_ha_capturado"].replace(
                                       "[TYPE]",
                                       `${textos["audio"] ?? ""}`
                                     )
                                   : "Texto No definido"}
-                              </Typography>
+                              />
                             ))}
                         </MContainer>
                       </MContainer>
@@ -778,18 +770,15 @@ export const MediaBank = (props: {
                           )}
                           {!media ||
                             (media.selftapes.length === 0 && (
-                              <Typography
-                                fontSize={"1.3rem"}
-                                sx={{ color: "#F9B233" }}
-                                fontWeight={400}
-                              >
-                                {textos["usuario_no_ha_capturado"]
+                              <MAlert
+                              title={`${textos["selftape"] ?? ""}`}
+                                body={textos["usuario_no_ha_capturado"]
                                   ? textos["usuario_no_ha_capturado"].replace(
                                       "[TYPE]",
                                       `${textos["selftape"] ?? ""}`
                                     )
                                   : "Texto No definido"}
-                              </Typography>
+                              />
                             ))}
                         </MContainer>
                       </MContainer>

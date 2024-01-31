@@ -7,6 +7,7 @@ import MotionDiv from "~/components/layout/MotionDiv";
 import { useRouter } from "next/router";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import MAlert from "~/components/shared/MAlert";
 
 export const Habilidades = (props: {
   id_talento: number;
@@ -103,18 +104,15 @@ export const Habilidades = (props: {
 
       <Grid item xs={12}>
         {!loading && habilidades.data?.length === 0 && (
-          <Typography
-            fontSize={"1.3rem"}
-            sx={{ color: "#F9B233" }}
-            fontWeight={400}
-          >
-            {textos["usuario_no_ha_capturado"]
+          <MAlert
+            title={`${textos['habilidades']}`}
+            body={textos["usuario_no_ha_capturado"]
               ? textos["usuario_no_ha_capturado"].replace(
-                  "[TYPE]",
-                  `${textos["habilidad"] ?? ""}`
-                )
+                "[TYPE]",
+                `${textos["habilidad"] ?? ""}`
+              )
               : "Texto No definido"}
-          </Typography>
+          />
         )}
 
         <MotionDiv show={loading} animation={"fade"}>

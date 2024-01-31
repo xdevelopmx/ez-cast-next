@@ -164,24 +164,11 @@ export const RolesRouter = createTRPCRouter({
         end: z.number(),
         id_rol: z.number(),
         id_estado_aplicacion: z.number(),
+        order: z.string()
       })
     )
     .query(async ({ input, ctx }) => {
       if (input.id_rol <= 0) return null;
-      const applications_where: {
-        id_rol: number;
-        id_estado_aplicacion?: number;
-      } = {
-        id_rol: input.id_rol,
-      };
-      if (input.id_estado_aplicacion > 0) {
-        applications_where.id_estado_aplicacion = input.id_estado_aplicacion;
-      }
-      const count_applications = await ctx.prisma.aplicacionRolPorTalento.count(
-        {
-          where: applications_where,
-        }
-      );
       const rol_con_cazatalento = await ctx.prisma.roles.findUnique({
         where: { id: input.id_rol },
         include: {
@@ -192,6 +179,42 @@ export const RolesRouter = createTRPCRouter({
       if (rol_con_cazatalento) {
         id_cazatalento = rol_con_cazatalento.proyecto.id_cazatalentos;
       }
+      // const all_applications = await ctx.prisma.aplicacionRolPorTalento.findMany(
+      //   {
+      //     where: {
+      //       id_estado_aplicacion: [Constants.ESTADOS_APLICACION_ROL.VISTO, Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(input.id_estado_aplicacion) ? {
+      //         in: [Constants.ESTADOS_APLICACION_ROL.VISTO, Constants.ESTADOS_APLICACION_ROL.DESTACADO]
+      //       } : input.id_estado_aplicacion,
+      //       rol: {
+      //         proyecto: {
+      //           id_cazatalentos: id_cazatalento
+      //         }
+      //       }
+      //     },
+      //     include: {
+      //       talento: {
+      //         include: {
+      //           destacados: true
+      //         }
+      //       }
+      //     }
+      //   }
+      // );
+      // console.log(all_applications.length);
+
+      // const count_applications = all_applications.filter(a => {
+      //   const destacados = a.talento.destacados.filter(d => d.id_cazatalentos === id_cazatalento)[0];
+      //   if (input.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.VISTO) {
+      //     return !destacados || destacados.calificacion === 0;
+      //   }
+      //   console.log(input);
+      //   if (input.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.DESTACADO) {
+      //     return destacados && destacados.calificacion > 0;
+      //   }
+      //   return true;
+      // }).length;
+
+      // console.log(count_applications);
       const rol = await ctx.prisma.roles.findUnique({
         where: { id: input.id_rol },
         include: {
@@ -217,9 +240,14 @@ export const RolesRouter = createTRPCRouter({
           },
           tipo_rol: true,
           aplicaciones_por_talento: {
-            skip: input.start,
-            take: input.end,
-            where: applications_where,
+            //skip: input.start,
+            //take: input.end,
+            where: {
+              id_rol: input.id_rol,
+              id_estado_aplicacion: [Constants.ESTADOS_APLICACION_ROL.VISTO, Constants.ESTADOS_APLICACION_ROL.DESTACADO].includes(input.id_estado_aplicacion) ? {
+                in: [Constants.ESTADOS_APLICACION_ROL.VISTO, Constants.ESTADOS_APLICACION_ROL.DESTACADO]
+              } : input.id_estado_aplicacion
+            },
             include: {
               talento: {
                 include: {
@@ -250,8 +278,34 @@ export const RolesRouter = createTRPCRouter({
           },
         },
       });
-      if (count_applications && rol) {
-        return { count_applications: count_applications, rol: rol };
+      console.log(input);
+      if (rol) {
+        const applications = rol.aplicaciones_por_talento.filter(a => {
+          const destacados = a.talento.destacados.filter(d => d.id_cazatalentos === id_cazatalento)[0];
+          console.log(destacados);
+          if (input.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.VISTO) {
+            return !destacados || destacados.calificacion === 0;
+          }
+          if (input.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.DESTACADO) {
+            return destacados && destacados.calificacion > 0;
+          }
+          return true;
+        }).sort((a, b) => {
+          const destacados_a = a.talento.destacados.filter(d => d.id_cazatalentos === id_cazatalento)[0];
+          const destacados_b = b.talento.destacados.filter(d => d.id_cazatalentos === id_cazatalento)[0];
+          if (destacados_a && destacados_b) {
+            if (input.order === 'asc') {
+              return destacados_a.calificacion - destacados_b.calificacion;
+            } else {
+              return destacados_b.calificacion - destacados_a.calificacion;
+            }
+          }
+          return 0;
+        });
+
+        return {
+          count_applications: applications.length, 
+          rol: { ...rol, aplicaciones_por_talento: applications.slice(input.start, input.end)} };
       }
       return null;
     }),
@@ -660,7 +714,7 @@ export const RolesRouter = createTRPCRouter({
     .input(z.number())
     .query(async ({ input, ctx }) => {
       if (input <= 0) return null;
-      return await ctx.prisma.roles.findMany({
+      const roles = await ctx.prisma.roles.findMany({
         where: {
           id_proyecto: input,
         },
@@ -767,6 +821,36 @@ export const RolesRouter = createTRPCRouter({
           tipo_rol: true,
         },
       });
+      return await Promise.all(roles.map(async (rol) => {
+        return {...rol, aplicaciones_por_talento: await Promise.all(rol.aplicaciones_por_talento.map(async (apt) => {
+          if ([Constants.ESTADOS_APLICACION_ROL.AUDICION, Constants.ESTADOS_APLICACION_ROL.CALLBACK].includes(apt.id_estado_aplicacion)) {
+              const audicion_talento = await ctx.prisma.audicionTalento.findFirst({
+                where: {
+                  id_talento: apt.id_talento,
+                  id_rol: apt.id_rol
+                }
+              });
+            if (audicion_talento) {
+              if (audicion_talento.estado.toLocaleLowerCase().includes('confirm')) {
+                return {...apt, confirmed: true};
+              }
+            } else {
+              const audicion_talento_agenda_virtual = await ctx.prisma.intervaloBloqueHorario.findFirst({
+                where: {
+                  id_talento: apt.id_talento,
+                  id_rol: apt.id_rol
+                }
+              });
+              if (audicion_talento_agenda_virtual) {
+                if (audicion_talento_agenda_virtual.estado === Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO) {
+                  return { ...apt, confirmed: true };
+                }
+              }
+            }
+          }
+          return {...apt, confirmed: false};
+        }))}
+      }));
     }),
   getAllByProyecto: publicProcedure
     .input(z.number())

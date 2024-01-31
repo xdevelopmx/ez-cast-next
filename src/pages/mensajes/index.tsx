@@ -10,7 +10,7 @@ import { api, parseErrorBody } from '~/utils/api';
 import { Box, Button, Dialog, DialogContent, DialogTitle, Grid, Link, Skeleton, TextField, Typography } from '@mui/material'
 import Image from 'next/image'
 import { PreviewConversation } from '~/components/shared/Mensajes/PreviewConversation';
-import { MediaMessage, Message, MessageNotificacionHorario } from '~/components/shared/Mensajes/Message';
+import { MediaMessage, Message, MessageAgendaAudicion, MessageNotificacionHorario } from '~/components/shared/Mensajes/Message';
 import { Conversaciones, Proyecto } from '@prisma/client';
 import useNotify from '~/hooks/useNotify';
 import { RolPreviewLoader } from '~/components/shared/RolPreviewLoader';
@@ -282,7 +282,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 // si el mensaje es un link entonces lo mostramos como mensaje con media
                                                                 if (Constants.PATTERNS.URL.test(params.message)) {
                                                                     return <MediaMessage
-                                                                        fecha={'5/7/2023, 1:11 p. m.'}
+                                                                        fecha={m.hora_envio.toLocaleString('es-mx')}
                                                                         key={i}
                                                                         nombre={`${m.emisor?.nombre}`}
                                                                         mensaje={params.message}
@@ -292,7 +292,7 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                 }
                                                                 return (
                                                                     <Message
-                                                                        fecha={'5/7/2023, 1:11 p. m.'}
+                                                                        fecha={m.hora_envio.toLocaleString('es-mx')}
                                                                         key={i}
                                                                         nombre={`${m.emisor?.nombre}`}
                                                                         mensaje={params.message}
@@ -323,6 +323,27 @@ const MensajesPage: NextPage<DashBoardCazaTalentosPageProps> = ({ user }) => {
                                                                         nombre={`${m.emisor?.nombre}`}
                                                                         mensaje={params.message}
                                                                         imagen={`${m.emisor?.profile_url}`}
+                                                                        esMensajePropio={params.id_talento === parseInt(user.id) && user.tipo_usuario === TipoUsuario.TALENTO}
+                                                                    />
+                                                                )
+                                                            }
+                                                            case TipoMensajes.NOTIFICACION_AUDICION_AGENDADA: {
+                                                                const params = JSON.parse(m.mensaje) as { message: string, id_audicion: number, id_aplicacion_rol: number, id_talento: number, id_cazatalentos: number, id_conversacion: number };
+                                                                if (user.tipo_usuario !== TipoUsuario.TALENTO) return null;
+                                                                return (
+                                                                    <MessageAgendaAudicion
+                                                                        key={i}
+                                                                        id_aplicacion_rol={params.id_aplicacion_rol}
+                                                                        id_audicion={params.id_audicion}
+                                                                        id_cazatalentos={params.id_cazatalentos}
+                                                                        id_talento={params.id_talento}
+                                                                        id_conversacion={params.id_conversacion}
+                                                                        nombre={`${m.emisor?.nombre}`}
+                                                                        mensaje={params.message}
+                                                                        imagen={`${m.emisor?.profile_url}`}
+                                                                        onChange={() => {
+                                                                            mensajes.refetch();
+                                                                        }}
                                                                         esMensajePropio={params.id_talento === parseInt(user.id) && user.tipo_usuario === TipoUsuario.TALENTO}
                                                                     />
                                                                 )

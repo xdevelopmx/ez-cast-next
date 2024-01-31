@@ -3,8 +3,10 @@ import {
   Box,
   Button,
   Divider,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
   MenuItem,
   Select,
   Skeleton,
@@ -38,6 +40,7 @@ import { ExpandMoreOutlined } from "@mui/icons-material";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 import { useRouter } from "next/router";
+import MAlert from "~/components/shared/MAlert";
 
 type BillboardCazaTalentosPageProps = {
   user: User;
@@ -70,6 +73,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   const [open_proyecto_select, setOpenProyectoSelect] = useState(false);
   const [selected_rol, setSelectedRol] = useState<number>(0);
   const [estado_aplicacion_rol, setEstadoAplicacionRol] = useState<number>(0);
+  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const router = useRouter();
 
   useEffect(() => {
@@ -95,6 +99,10 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
       refetchOnWindowFocus: false,
     }
   );
+
+  useEffect(() => {
+    setPagination(prev => { return {...prev, page: 0}});
+  }, [estado_aplicacion_rol]);
 
   useEffect(() => {
     if (estados_aplicaciones_roles.data) {
@@ -141,9 +149,10 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   const rol_applications = api.roles.getRolWithApplicationsById.useQuery(
     {
       start: pagination.page * pagination.page_size,
-      end: pagination.page_size,
+      end: (pagination.page * pagination.page_size) + pagination.page_size,
       id_rol: selected_rol,
       id_estado_aplicacion: estado_aplicacion_rol,
+      order: order
     },
     {
       refetchOnWindowFocus: false,
@@ -287,15 +296,10 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
          case Constants.ESTADOS_APLICACION_ROL.CALLBACK: msg = `${textos['aun_no_hay_aplicaciones_para_este_rol']}`.replace('[ESTADO]', `${textos['callback']}`); break;
       }
       return [
-        <Typography
-          key={"no-events"}
-          sx={{
-            position: 'absolute',
-            width: "100%",
-          }}
-        >
-          {msg}
-        </Typography>,
+        <MAlert
+          title={`${textos['aplicaciones']}`}
+          body={msg}
+        />
       ];
     }
     return [];
@@ -625,7 +629,6 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         </MContainer>
                       </Grid>
                     </Grid>
-                    
                     <Grid
                       xs={12}
                       sx={{ backgroundColor: "#EBEBEB", padding: "10px" }}
@@ -753,6 +756,24 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         </Box>
                       )}
                     </Grid>
+                    {!rol_applications.isFetching && rol_applications.data && rol_applications.data.count_applications > 0 && 
+                      <Grid
+                        sx={{textAlign: 'end'}}
+                        xs={12}
+                      >
+                        <FormControl variant="standard" sx={{ m: 1, minWidth: 120, justifyContent: 'end' }}>
+                          <InputLabel id="demo-simple-select-standard-label">Ordenar por valoracion</InputLabel>
+                          <Select
+                            value={order}
+                            onChange={(value) => { setOrder(`${value.target.value}` === 'asc' ? 'asc' : 'desc') }}
+                          >
+                            <MenuItem value={'asc'}>Ascendente</MenuItem>
+                            <MenuItem value={'desc'}>Descendente</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    
+                    }
                     {rol_applications_content.map((e, i) => {
                       return (
                         <Grid key={i} item xs={12} md={3} p={1} mt={1}>

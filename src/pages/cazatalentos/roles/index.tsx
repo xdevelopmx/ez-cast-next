@@ -128,11 +128,15 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
               break;
             }
             case Constants.ESTADOS_APLICACION_ROL.AUDICION: {
-              handleRolApplication(map, `${apt.id_rol}-audicion`);
+              if (apt.confirmed) {
+                handleRolApplication(map, `${apt.id_rol}-audicion`);
+              }
               break;
             }
             case Constants.ESTADOS_APLICACION_ROL.CALLBACK: {
-              handleRolApplication(map, `${apt.id_rol}-callback`);
+              if (apt.confirmed) {
+                handleRolApplication(map, `${apt.id_rol}-callback`);
+              }
               break;
             }
           }
@@ -1807,7 +1811,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   <Fragment key={c.id}>
                                                     <Typography
                                                       component={"span"}
-                                                      sx={{ color: "#928F8F" }}
+                                                      sx={{ color: "#069cb1" }}
                                                     >
                                                       {ctx.lang === 'es' ? c.estado_republica.es : c.estado_republica.en}
                                                     </Typography>
@@ -1822,7 +1826,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                     />
                                                     <Typography
                                                       component={"span"}
-                                                      sx={{ color: "#928F8F" }}
+                                                      sx={{ color: "#069cb1" }}
                                                     >
                                                       
                                                       {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleDateString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}) + ' - ': new Date(c.fecha_inicio).toLocaleDateString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'})+ ' - '  }
@@ -1842,7 +1846,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                               <>
                                                 <Typography
                                                   component={"span"}
-                                                  sx={{ color: "#928F8F" }}
+                                                    sx={{ color: "#928F8F" }}
                                                 >
                                                   {`${textos['no_especificado']}`}
                                                 </Typography>
@@ -1878,7 +1882,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                   <Fragment key={c.id}>
                                                     <Typography
                                                       component={"span"}
-                                                      sx={{ color: "#928F8F" }}
+                                                      sx={{ color: "#069cb1" }}
                                                     >
                                                       {ctx.lang === 'es' ? c.estado_republica.es : c.estado_republica.en}
                                                     </Typography>
@@ -1893,7 +1897,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                                     />
                                                     <Typography
                                                       component={"span"}
-                                                      sx={{ color: "#928F8F" }}
+                                                      sx={{ color: "#069cb1" }}
                                                     >
                                                       {/* {c.fecha_inicio.toString() + ' -'} */}
                                                       {ctx.lang === 'es' ? new Date(c.fecha_inicio).toLocaleString('es-mx',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric', timeZone: 'UTC'})+ ' - ': new Date(c.fecha_inicio).toLocaleString('en-us',{weekday: 'long',year: 'numeric',month: 'long',day: 'numeric',timeZone: 'UTC'}) + ' - '  }

@@ -247,6 +247,40 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   </Typography>
                 </MContainer>
               ))}
+              {destacados.data.length < 6 &&
+                Array.from({ length: 6 - destacados.data.length }).map((_, i) => (
+                  <MContainer key={i} direction="vertical">
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "90%",
+                        aspectRatio: "9/13",
+                        margin: "auto",
+                      }}
+                    >
+                      <Image
+                        style={{ cursor: "pointer", border: "1px solid #bababa" }}
+                        fill
+                        src={"/assets/img/no-image.png"}
+                        alt=""
+                      />
+                    </div>
+                    <Typography
+                      sx={{
+                        padding: "40px 0 0 0",
+                        fontWeight: "800",
+                        lineHeight: "1.2",
+                        fontSize: "18px",
+                      }}
+                      style={{ cursor: "pointer" }}
+                      align="center"
+                      variant="subtitle1"
+                    >
+                      {'Proximamente'}
+                    </Typography>
+                  </MContainer>
+                ))
+              }
             </Carroucel>
           )}
           <hr className="hr_gold" style={{ margin: "30px 0 40px 0" }} />
@@ -328,7 +362,7 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
               navigationNew
               navigation={false}
               arrowsColor="#069cb1"
-              slidesPerView={proyectos.data.length >= 6 ? 6 : proyectos.data.length}
+              slidesPerView={6}
               spaceBetween={30}
             >
               {proyectos.data.map((proyecto, i) => (
@@ -371,6 +405,40 @@ const InicioPage: NextPage<InicioPageProps> = ({ user }) => {
                   </Typography>
                 </MContainer>
               ))}
+              {proyectos.data.length < 6 &&
+                Array.from({ length: 6 - proyectos.data.length }).map((_, i) => (
+                  <MContainer key={i} direction="vertical">
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "90%",
+                        aspectRatio: "9/13",
+                        margin: "auto",
+                      }}
+                    >
+                      <Image
+                        style={{ cursor: "pointer", border: "1px solid #bababa" }}
+                        fill
+                        src={"/assets/img/no-image.png"}
+                        alt=""
+                      />
+                    </div>
+                    <Typography
+                      sx={{
+                        padding: "40px 0 0 0",
+                        fontWeight: "800",
+                        lineHeight: "1.2",
+                        fontSize: "18px",
+                      }}
+                      style={{ cursor: "pointer" }}
+                      align="center"
+                      variant="subtitle1"
+                    >
+                      {'Proximamente'}
+                    </Typography>
+                  </MContainer>
+                ))
+              }
             </Carroucel>
           )}
           <hr className="hr_blue" style={{ margin: "20px 0 20px 0" }} />

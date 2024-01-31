@@ -234,6 +234,14 @@ export default function ApiResponses(route: string, lang: string) {
                 error_rol_invalido: 'Solo el rol de cazatalento puede consultar las audiciones de los talentos.',
             }
         },
+        CazatalentosRouter_getAudicionTalentoById: {
+            en: {
+                error_id_invalido: 'The ID of the audition is invalid.',
+            },
+            es: {
+                error_id_invalido: 'El id de la audicion es invalido.',
+            }
+        },
         CazatalentosRouter_updateReporteTalento: {
             en: {
                 error_rol_invalido: `Only the talent scout role can modify the talent's report.`,
@@ -280,6 +288,24 @@ export default function ApiResponses(route: string, lang: string) {
                 id_role_not_found: 'No se encontro el rol con ese id',
                 error_rol_invalido: 'Solo el rol de cazatalento puede modificar la calificacion del talento.',
                 different_cazatalento: 'Solo el cazatalento que creo el rol puede modificar el talento.'
+            }
+        },
+        CazatalentosRouter_updateSeleccionTalentoResponse: {
+            en: {
+                confirmation_message: `Talent scout [N1] [N2] has decided to [N3] for the role of [N4] in the project [N5]. You can see the details on the casting billboard.`,
+                confirmar: 'Confirm',
+                audicion: 'Audition',
+                rechazar: 'Discard',
+                el_callback: 'the callback',
+                la_audicion: 'the audition'
+            },
+            es: {
+                confirmation_message: `El talento [N1] [N2], ha decidido [N3] para el rol [N4] del proyecto [N5], puedes ver los detalles en el casting billboard.`,
+                confirmar: 'Confirmar',
+                audicion: 'Audicion',
+                rechazar: 'Rechazar',
+                el_callback: 'el callback',
+                la_audicion: 'la audicion'
             }
         },
         CazatalentosRouter_updateSeleccionTalento: {

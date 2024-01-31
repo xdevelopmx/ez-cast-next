@@ -40,17 +40,20 @@ export const PreviewConversation = (props: {
                           }}
                         >
                             {/* {!props.visto && <Circle style={{ position: 'absolute', color: '#069cb1', width: 16, height: 16, top: '50%', right: '100%' }} />} */}
-                            <Circle 
-                            style={{
-                                position: 'absolute',
-                                color: '#069cb1',
-                                width: 16,
-                                height: 16,
-                                top: 0,
-                                left: 0, // Ajusta la posición según tus necesidades
-                                transform: 'translateY(-50%)', // Centra verticalmente el círculo
-                              }}
-                            />
+                            {!Boolean(props.visto) &&
+                                <Circle 
+                                style={{
+                                    position: 'absolute',
+                                    color: '#069cb1',
+                                    width: 16,
+                                    height: 16,
+                                    top: 0,
+                                    left: 0, // Ajusta la posición según tus necesidades
+                                    transform: 'translateY(-50%)', // Centra verticalmente el círculo
+                                }}
+                                />
+                            
+                            }
 
                             <Image 
 

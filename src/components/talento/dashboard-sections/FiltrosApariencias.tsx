@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { MedidasDialog } from "../dialogs/MedidasDialog";
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import MAlert from "~/components/shared/MAlert";
 
 export const FiltrosApariencias = (props: {
   id_talento: number;
@@ -276,7 +277,7 @@ export const FiltrosApariencias = (props: {
 
   return (
     <>
-      <Grid id={`${textos['medidas']}`} container sx={{ mt: 10 }}>
+      <Grid id={`${textos['apariencia']}`} container sx={{ mt: 10 }}>
         <Grid item xs={12}>
           <SectionTitle
             title={
@@ -764,7 +765,7 @@ export const FiltrosApariencias = (props: {
           <Divider />
         </Grid>
         <Grid my={6} item xs={12}>
-          <div id="medidas" style={{margin: '-100px 0 100px 0'}}>
+          <div id={`${textos['medidas']}`} style={{margin: '-100px 0 100px 0'}}>
 
           </div>
           <SectionTitle
@@ -796,13 +797,15 @@ export const FiltrosApariencias = (props: {
             <Skeleton className="md-skeleton" />
           )}
           {!medidas.isFetching && !medidas_grouped && (
-            <Typography
-              fontSize={"1.3rem"}
-              sx={{ color: "#F9B233" }}
-              fontWeight={400}
-            >
-              No haz capturado aun las medidas
-            </Typography>
+            <MAlert
+                  title={`${textos["medidas"] ?? ""}`}
+                  body={textos["usuario_no_ha_capturado"]
+                    ? textos["usuario_no_ha_capturado"].replace(
+                        "[TYPE]",
+                        `${textos["medidas"] ?? ""}`
+                      )
+                    : "Texto No definido"}
+                />
           )}
           {medidas_grouped && medidas_grouped.length > 0 && (
             <Grid container>
