@@ -177,7 +177,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 			const today = new Date();
 			today.setHours(0, 0, 0, 0);
 			fechas_casting_rol.data.forEach((date: string) => {
-				const d1 = new Date(date);
+				const d1 = dayjs(date, 'DD/MM/YYYY').toDate();
 				d1.setHours(0, 0, 0, 0);
 				if (d1 >= today) {
 					expired = false;
@@ -186,6 +186,8 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		}
 		return expired;
 	}, [fechas_casting_rol.data]);
+
+	console.log(auditions_expired);
 
 	const disable_button_select_talent = useMemo(() => {
 		if (audicion_talento.data) {
