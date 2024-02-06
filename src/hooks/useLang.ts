@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    enviado_aprobacion: "To be approved",
     FILE_COMPRESSORS_SITES: 'Please use a compression tool like https://www.freeconvert.com/video-compressor or https://www.iloveimg.com/compress-image to reduce the file size.',
     agregar_a_agenda_virtual: 'Add to the virtual diary',
     disponible_para_membresias_premium: 'Available only for premium memberships',
@@ -521,6 +522,7 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    enviado_aprobacion: "Por aprobar",
     FILE_COMPRESSORS_SITES: 'Por favor, utiliza una herramienta de compresión como https://www.freeconvert.com/video-compressor o https://www.iloveimg.com/compress-image para reducir el tamaño de los archivos.',
     modificar_proyecto_aprobado_title: 'Modificar proyecto aprobado',
     modificar_proyecto_aprobado_body: 'Estas seguro que deseas modificar este proyecto aprobado? Si decides continuar tendras que enviar el proyecto a revision de nuevo',
@@ -1574,7 +1576,6 @@ const TEXTS_BY_PATHNAME: {
       activo: "Active",
       inactivo: "Inactive",
       pendiente: "Pending",
-      enviado_aprobacion: "To be approved",
       no_creado: "You have not created any project",
       al_crear: "When creating a project, here you will have an overview of your active and inactive projects.",
       recuerda_crear: "Remember to create all your roles and read the approval requirements before finishing and sending them.",
@@ -1606,7 +1607,6 @@ const TEXTS_BY_PATHNAME: {
       activo: "Activo",
       inactivo: "Inactivo",
       pendiente: "Pendiente",
-      enviado_aprobacion: "Por aprobar",
       no_creado: "No has creado ningún proyecto",
       al_crear: "Al crear un proyecto, aquí tendrás una vista general de tus proyectos activos e inactivos.",
       comienza: "¡Comienza ahora mismo!",
