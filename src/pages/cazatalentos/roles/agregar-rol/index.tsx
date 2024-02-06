@@ -11,7 +11,7 @@ import {
 import { GetServerSideProps, type NextPage } from "next";
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { Alert, Button, Grid, Typography } from "@mui/material"; 
+import { Alert, Box, Button, Grid, Typography } from "@mui/material"; 
 import { Alertas, Flotantes, MainLayout, MenuLateral } from "~/components";
 import {
   DescripcionDelRol,
@@ -327,7 +327,7 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
   const router = useRouter();
 
   const [on_save_action, setOnSaveAction] = useState<
-    "redirect-to-proyectos" | "reset-form" | null
+    "redirect-to-roles" | "reset-form" | null
   >(null);
   const [state, dispatch] = useReducer(reducerRol, initialState);
   const { notify } = useNotify();
@@ -1060,8 +1060,8 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
     onSuccess: (data) => {
       if (on_save_action) {
         switch (on_save_action) {
-          case "redirect-to-proyectos": {
-            void router.push("/cazatalentos/dashboard");
+          case "redirect-to-roles": {
+            void router.push(`/cazatalentos/roles?id_proyecto=${router.query["id-proyecto"] as string}`);
             break;
           }
           case "reset-form": {
@@ -1415,47 +1415,50 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                 <div className="col d-flex justify-content-center">
                   <div className="mr-3">
                     {form_validate.complete && (
-                      <button
-                        onClick={() => {
-                          console.log('informacion a guardar', form_validate.data);
-                          if (
-                            state.informacion_general.nombre.length > 1 &&
-                            state.informacion_general.id_tipo_rol > 0
-                          ) {
-                            if (!form_validate.error) {
-                              setOnSaveAction("redirect-to-proyectos");
-                              saveRol.mutate({
-                                ...form_validate.data,
-                                info_gral: {
-                                  ...form_validate.data.info_gral,
-                                  id_proyecto: state.id_proyecto
-                                },
-                                compensaciones: form_validate.data.compensaciones
-                              });
+                      <Box className="container_top_pro">
+                        <button
+                          onClick={() => {
+                            console.log('informacion a guardar', form_validate.data);
+                            if (
+                              state.informacion_general.nombre.length > 1 &&
+                              state.informacion_general.id_tipo_rol > 0
+                            ) {
+                              if (!form_validate.error) {
+                                setOnSaveAction("redirect-to-roles");
+                                saveRol.mutate({
+                                  ...form_validate.data,
+                                  info_gral: {
+                                    ...form_validate.data.info_gral,
+                                    id_proyecto: state.id_proyecto
+                                  },
+                                  compensaciones: form_validate.data.compensaciones
+                                });
+                              } else {
+                                notify("warning", form_validate.error);
+                              }
                             } else {
-                              notify("warning", form_validate.error);
+                              notify(
+                                "warning",
+                                `${textos['ingresa_nombre_y_tipo_de_rol']}`
+                              );
                             }
-                          } else {
-                            notify(
-                              "warning",
-                              `${textos['ingresa_nombre_y_tipo_de_rol']}`
-                            );
-                          }
-                        }}
-                        className="btn btn-intro btn-price btn_out_line mb-2"
-                        type="button"
-                      >
-                        <Typography>
-                          {`${form_validate.complete
-                            ? `${textos["guardar_e_ir_a_proyectos"]}`
-                            : `${textos['llenar_campos']}`
-                            }`}{" "}
-                        </Typography>
-                      </button>
+                          }}
+                          className="btn btn-intro btn-price btn_out_line mb-2"
+                          type="button"
+                        >
+                          <Typography>
+                            {`${form_validate.complete
+                              ? `${textos["guardar_e_ir_a_roles"]}`
+                              : `${textos['llenar_campos']}`
+                              }`}{" "}
+                          </Typography>
+                        </button>
+                        </Box>
+                      
                     )}
                   </div>
                   {form_validate.complete && state.id_rol === 0 && (
-                    <div>
+                    <Box className="container_top_pro">
                       <button
                         onClick={() => {
                           if (
@@ -1479,12 +1482,12 @@ const AgregarRolPage: NextPage<{ user: User }> = ({ user }) => {
                             );
                           }
                         }}
-                        className="btn btn-intro btn-price mb-2"
+                        className="btn btn-intro btn-price btn_out_line mb-2"
                         type="button"
                       >
                         <Typography>{`${textos["guardar_y_crear_otro_rol"]}`}</Typography>
                       </button>
-                    </div>
+                    </Box>
                   )}
                 </div>
               </div>

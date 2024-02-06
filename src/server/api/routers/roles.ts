@@ -280,7 +280,37 @@ export const RolesRouter = createTRPCRouter({
       });
       console.log(input);
       if (rol) {
-        const applications = rol.aplicaciones_por_talento.filter(a => {
+        let applications = await Promise.all(rol.aplicaciones_por_talento.map(async (apt) => {
+          if ([Constants.ESTADOS_APLICACION_ROL.AUDICION, Constants.ESTADOS_APLICACION_ROL.CALLBACK].includes(apt.id_estado_aplicacion)) {
+            const audicion_talento = await ctx.prisma.audicionTalento.findFirst({
+              where: {
+                id_talento: apt.id_talento,
+                id_rol: apt.id_rol
+              }
+            });
+            console.log(audicion_talento);
+            if (audicion_talento) {
+              if (audicion_talento.estado.toLocaleLowerCase().includes('confirm')) {
+                return { ...apt, confirmed: true };
+              }
+            } else {
+              const audicion_talento_agenda_virtual = await ctx.prisma.intervaloBloqueHorario.findFirst({
+                where: {
+                  id_talento: apt.id_talento,
+                  id_rol: apt.id_rol
+                }
+              });
+              if (audicion_talento_agenda_virtual) {
+                if (audicion_talento_agenda_virtual.estado === Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO) {
+                  return { ...apt, confirmed: true };
+                }
+              }
+            }
+            return { ...apt, confirmed: false };
+          }
+          return { ...apt, confirmed: true };
+        }));
+        applications = applications.filter(a => a.confirmed).filter(a => {
           const destacados = a.talento.destacados.filter(d => d.id_cazatalentos === id_cazatalento)[0];
           console.log(destacados);
           if (input.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.VISTO) {
@@ -725,6 +755,7 @@ export const RolesRouter = createTRPCRouter({
             include: {
               talento: {
                 include: {
+                  destacados: true,
                   media: {
                     include: {
                       media: true,
@@ -823,6 +854,13 @@ export const RolesRouter = createTRPCRouter({
       });
       return await Promise.all(roles.map(async (rol) => {
         return {...rol, aplicaciones_por_talento: await Promise.all(rol.aplicaciones_por_talento.map(async (apt) => {
+          console.log(apt.talento.destacados);
+          if (apt.id_estado_aplicacion === Constants.ESTADOS_APLICACION_ROL.VISTO) {
+            const destacado = apt.talento.destacados[0];
+            if (destacado && destacado.calificacion > 0) {
+              apt.id_estado_aplicacion = Constants.ESTADOS_APLICACION_ROL.DESTACADO;
+            }
+          }
           if ([Constants.ESTADOS_APLICACION_ROL.AUDICION, Constants.ESTADOS_APLICACION_ROL.CALLBACK].includes(apt.id_estado_aplicacion)) {
               const audicion_talento = await ctx.prisma.audicionTalento.findFirst({
                 where: {

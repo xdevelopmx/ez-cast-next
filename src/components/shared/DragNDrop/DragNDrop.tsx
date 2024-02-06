@@ -86,7 +86,7 @@ function DragNDrop(props: Props) {
     }
     hide_error_time_ref.current = setTimeout(() => {
       setError(null);
-    }, 2500);
+    }, 10000);
   }, [error]);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ function DragNDrop(props: Props) {
               ? textos["FILES_ERRORS_FILE_TOO_BIG"].replace(
                   "[SIZE]",
                   `${max_size ? max_size : 0}`
-                )
+              ) + `. ${textos['FILE_COMPRESSORS_SITES']}`
               : "Texto No Definido",
           });
           return false;

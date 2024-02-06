@@ -229,14 +229,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
 
   let proyecto_status = `${textos['cargando']}...`;
   if (proyecto.data) {
+    console.log(proyecto.data.estatus);
     switch (proyecto.data.estatus) {
       case Constants.ESTADOS_PROYECTO.APROBADO: proyecto_status = `${textos['aprobado']}`; break;
       case Constants.ESTADOS_PROYECTO.ARCHIVADO: proyecto_status = `${textos['archivados']}`; break;
       case Constants.ESTADOS_PROYECTO.ENVIADO_A_APROBACION: proyecto_status = `${textos['enviado_aprobacion']}`; break;
       case Constants.ESTADOS_PROYECTO.POR_VALIDAR: proyecto_status = `${textos['inactivo']}`; break;
       case Constants.ESTADOS_PROYECTO.RECHAZADO: proyecto_status = `${textos['rechazado']}`; break;
+      default: proyecto_status = proyecto.data.estatus;
     } 
   }
+
+  console.log(proyecto_status);
 
   const table_actions = [
     <Typography
@@ -498,52 +502,55 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                         )}
                       {!IS_ADMIN &&
                         proyecto.data && proyecto.data.estatus === Constants.ESTADOS_PROYECTO.APROBADO ? 
-                        <button
-                          onClick={() => {
-                            const params = new Map<string, unknown>();
-                            params.set('url', `/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`);
-                            setConfirmationDialog({
-                              action: 'MODIFICACION_ROL_EN_PROYECTO_APROBADO',
-                              data: params,
-                              opened: true,
-                              title: `${textos["agregar_rol_en_proyecto_aprobado_title"]}`,
-                              content: (
-                                <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_body"]}`}</Typography>
-                              ),
-                            });
-                          }}
-                          className="btn btn-intro btn-price btn_out_line "
-                          style={{
-                            padding: "4px 35px",
-                            marginTop: 0,
-                            marginRight: 10,
-                            fontWeight: 500,
-                            textTransform: 'none',
-                          }}
-                        >
-                            <Image
-                              src={`/assets/img/iconos/cruz_ye.svg`}
-                              height={16}
-                              width={16}
-                              style={{marginRight: 8}}
-                              alt={"agregar-rol"}
-                            />
-                          {`${textos["nuevo_rol"]}`} 
-                      </button>
+                        <Box className="container_top_pro">
+                            <button
+                              onClick={() => {
+                                const params = new Map<string, unknown>();
+                                params.set('url', `/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`);
+                                setConfirmationDialog({
+                                  action: 'MODIFICACION_ROL_EN_PROYECTO_APROBADO',
+                                  data: params,
+                                  opened: true,
+                                  title: `${textos["agregar_rol_en_proyecto_aprobado_title"]}`,
+                                  content: (
+                                    <Typography variant="body2">{`${textos["agregar_rol_en_proyecto_aprobado_body"]}`}</Typography>
+                                  ),
+                                });
+                              }}
+                              className="btn btn-intro btn-price btn_out_line"
+                              style={{
+                                padding: "5px 35px",
+                                marginTop: 0,
+                                marginRight: 10,
+                                fontWeight: 500,
+                                textTransform: 'none',
+                              }}
+                            >
+                                <Image
+                                  src={`/assets/img/iconos/cruz_ye.svg`}
+                                  height={16}
+                                  width={16}
+                                  style={{marginRight: 8}}
+                                  alt={"agregar-rol"}
+                                />
+                              {`${textos["nuevo_rol"]}`} 
+                          </button>
+                        </Box>
                       : IS_ADMIN ? null :
                         (
                           <>
                             <MContainer
                               direction="horizontal"
+                              className="container_top_pro"
                               styles={{ alignItems: "start" }}
                             >
                               <Link
                                 href={`/cazatalentos/roles/agregar-rol?id-proyecto=${id_proyecto}`}
                               >
                                 <button
-                                  className="btn btn-intro btn-price btn_out_line text-blue"
+                                  className="btn btn-intro btn-price btn_out_line"
                                   style={{
-                                    padding: "4px 35px",
+                                    padding: "5px 35px",
                                     marginTop: 0,
                                     marginRight: 10,
                                     fontWeight: 500,
@@ -582,9 +589,9 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                                           ),
                                         });
                                       }}
-                                      className="btn btn-sm btn-intro btn-price btn_out_line text-blue"
+                                      className="btn btn-sm btn-intro btn-price btn_out_line"
                                       style={{
-                                        padding: "7px 25px",
+                                        padding: "6.5px 25px",
                                         marginTop: 0,
                                         // display: "block",
                                         // height: 40,
@@ -641,13 +648,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       fontSize: "1.1rem",
                     }}
                   >
-                    {proyecto.data && proyecto.data.tipo
+                    {proyecto.isFetching &&
+                      `${textos['cargando']}...`
+                    }
+                    {!proyecto.isFetching && 
+                      proyecto.data && proyecto.data.tipo
                       ? proyecto.data.tipo.id_tipo_proyecto === 99
                         ? proyecto.data.tipo.descripcion
                         : ctx.lang === "es"
-                        ? proyecto.data.tipo.tipo_proyecto.es
-                        : proyecto.data.tipo.tipo_proyecto.en
-                      : "ND"}
+                          ? proyecto.data.tipo.tipo_proyecto.es
+                          : proyecto.data.tipo.tipo_proyecto.en
+                      : null
+                    }
                   </Typography>
                   <Divider
                     style={{
@@ -664,13 +676,18 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                       fontSize: "1.1rem",
                     }}
                   >
-                    {proyecto.data && proyecto.data.sindicato
+                    {proyecto.isFetching &&
+                      `${textos['cargando']}...`
+                    }
+                    {!proyecto.isFetching &&
+                      proyecto.data && proyecto.data.sindicato
                       ? proyecto.data.sindicato.id_sindicato === 99
                         ? proyecto.data.sindicato.descripcion
                         : ctx.lang === "es"
-                        ? proyecto.data.sindicato.sindicato.es
-                        : proyecto.data.sindicato.sindicato.en
-                      : "ND"}
+                          ? proyecto.data.sindicato.sindicato.es
+                          : proyecto.data.sindicato.sindicato.en
+                      : null
+                    }
                   </Typography>
                 </MContainer>
                 <Divider style={{ borderWidth: 2 }} />
@@ -927,7 +944,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               >
                                 <Image
                                   onClick={() => {
-                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.NO_VISTO}`)
+                                    router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.data?.id}&id-rol=${r.id}&id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.NO_VISTO}`)
                                   }}
                                   src={"/assets/img/iconos/icon_no_vistos.svg"}
                                   width={16}
@@ -955,7 +972,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               >
                                 <Image
                                    onClick={() => {
-                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.VISTO}`)
+                                    router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.data?.id}&id-rol=${r.id}&id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.VISTO}`)
                                   }}
                                   src={"/assets/img/iconos/icon_vistos.svg"}
                                   width={16}
@@ -983,7 +1000,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               >
                                 <Image
                                    onClick={() => {
-                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.DESTACADO}`)
+                                    router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.data?.id}&id-rol=${r.id}&id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.DESTACADO}`)
                                   }}
                                   src={"/assets/img/iconos/icono_star_blue.svg"}
                                   width={16}
@@ -1011,7 +1028,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               >
                                 <Image
                                    onClick={() => {
-                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.AUDICION}`)
+                                    router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.data?.id}&id-rol=${r.id}&id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.AUDICION}`)
                                   }}
                                   src={
                                     "/assets/img/iconos/icono_lampara_blue.svg"
@@ -1041,7 +1058,7 @@ const RolesIndexPage: NextPage<RolesIndexPageProps> = ({
                               >
                                 <Image
                                   onClick={() => {
-                                    router.push(`/cazatalentos/billboard?id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.CALLBACK}`)
+                                    router.push(`/cazatalentos/billboard?id-proyecto=${proyecto.data?.id}&id-rol=${r.id}&id-estado-aplicacion=${Constants.ESTADOS_APLICACION_ROL.CALLBACK}`)
                                   }}
                                   src={
                                     "/assets/img/iconos/icono_claqueta_blue.svg"

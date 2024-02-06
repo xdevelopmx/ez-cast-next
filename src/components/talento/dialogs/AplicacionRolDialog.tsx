@@ -11,6 +11,7 @@ import { api, parseErrorBody } from "~/utils/api";
 import Image from 'next/image';
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 
 
 export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: number, id_rol?: number, id_talento?: number, opened: boolean, onClose: (changed: boolean) => void }) => {
@@ -288,7 +289,9 @@ export const AplicacionRolDialog = (props: { readonly: boolean, id_aplicacion: n
                     </Button>
                 }
 			</DialogActions>
-
+            <ResourceAlert
+                busy={createAplicacionTalento.isLoading}
+            />
 		</Dialog>
 	)
 

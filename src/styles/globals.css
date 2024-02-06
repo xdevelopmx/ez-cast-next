@@ -2828,9 +2828,14 @@ p.edo_pendiente {
   */
   background: #f9b233;
   border: solid 2px #f2f2f2;
-  color: #000 !important;
-  
+  color: #f2f2f2 !important;
 }
+
+.container_top_pro .btn-price:hover > img {
+  filter: brightness(10);
+}
+
+
 
 .box_list_proyects .iconos_roll_edo a {
   color: var(--ezcast);

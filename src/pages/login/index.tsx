@@ -74,6 +74,7 @@ const LoginPage: NextPage = () => {
       }
     } else {
       if (sess.status === "authenticated") {
+        localStorage.removeItem('BILLBOARD-CAZATALENTOS-LATEST-CHANGE-PROYECTO-ID');
         if (!sess.data.user?.tipo_usuario) {
           if (sess.data.user?.email) {
             const tipo_usuario = localStorage.getItem("TIPO_USUARIO");

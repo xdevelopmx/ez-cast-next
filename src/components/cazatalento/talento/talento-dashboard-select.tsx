@@ -334,7 +334,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 							style={{ fontWeight: 600, width: '100%', marginTop: 10 }}
 							className={'form-input-label'}
 						>
-							{textos['elige_fecha_audición']}
+							{textos['elige_fecha']} {form_select_talento.tipo_audicion === 'callback' ? `${textos['el_callback']}` : `${textos['la_audicion']}`}
 						</label>
 						<DatePicker
 							localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}

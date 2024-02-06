@@ -76,11 +76,6 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const router = useRouter();
 
-  useEffect(() => {
-    const id = router.query["id-estado-aplicacion"] as string;
-    setEstadoAplicacionRol(id ? +id : Constants.ESTADOS_APLICACION_ROL.NO_VISTO);
-  }, [router.query]);
-
   const estados_aplicaciones_roles =
     api.catalogos.getEstadosAplicacionesRoles.useQuery(undefined, {
       refetchOnWindowFocus: false,
@@ -107,9 +102,14 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   useEffect(() => {
     if (estados_aplicaciones_roles.data) {
       if (estado_aplicacion_rol === 0) {
-        const id = estados_aplicaciones_roles.data[0]?.id;
-        if (id) {
-          setEstadoAplicacionRol(id);
+        const id_estado_aplicacion = router.query["id-estado-aplicacion"] as string;
+        if (id_estado_aplicacion) {
+          setEstadoAplicacionRol(+id_estado_aplicacion);
+        } else {
+          const id = estados_aplicaciones_roles.data[0]?.id;
+          if (id) {
+            setEstadoAplicacionRol(id);
+          }
         }
       }
     }
@@ -117,12 +117,20 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
 
   useEffect(() => {
     if (proyectos.data && proyectos.data.length > 0) {
-      const latest_proyecto_touched = localStorage.getItem(
-        "BILLBOARD-CAZATALENTOS-LATEST-CHANGE-PROYECTO-ID"
-      );
-      if (latest_proyecto_touched) {
+      let id_proyecto = 0;
+      if (router.query["id-proyecto"]) {
+        id_proyecto = +`${router.query["id-proyecto"] as string}`;
+      } else {
+        const latest_proyecto_touched = localStorage.getItem(
+          "BILLBOARD-CAZATALENTOS-LATEST-CHANGE-PROYECTO-ID"
+        );
+        if (latest_proyecto_touched) {
+          id_proyecto = parseInt(latest_proyecto_touched);
+        }
+      }
+      if (id_proyecto > 0) {
         const proyecto = proyectos.data.filter(
-          (p) => p.id === parseInt(latest_proyecto_touched)
+          (p) => p.id === id_proyecto
         )[0];
         if (proyecto) {
           setSelectedProyecto(proyecto.id);
@@ -135,16 +143,24 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
         setSelectedProyecto(proyecto.id);
       }
     }
-  }, [proyectos.data]);
+  }, [proyectos.data, router.query]);
 
   useEffect(() => {
     if (roles_by_proyecto.data && roles_by_proyecto.data.length > 0) {
+      let id_rol = 0;
+      if (router.query["id-rol"]) {
+        id_rol = +`${router.query["id-rol"] as string}`;
+      }
+      if (id_rol > 0) {
+        setSelectedRol(id_rol);
+        return;
+      }
       const first_rol = roles_by_proyecto.data[0];
       setSelectedRol(first_rol ? first_rol.id : 0);
     } else {
       setSelectedRol(0);
     }
-  }, [roles_by_proyecto.data]);
+  }, [roles_by_proyecto.data, router.query]);
 
   const rol_applications = api.roles.getRolWithApplicationsById.useQuery(
     {

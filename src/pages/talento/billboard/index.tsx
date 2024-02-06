@@ -38,6 +38,7 @@ import { TalentoAplicacionesRepresentante } from "~/components/representante/tal
 import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 import { Buscador } from "~/components/shared/Buscador";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 const filtros_initial_state = {
   tipo_busqueda: "todos",
   id_estado_republica: [],
@@ -1672,6 +1673,9 @@ const BillboardPage: NextPage<BillboardTalentosPageProps> = ({
             });
           }}
           opened={dialog.opened && dialog.id === "aplicar_dialog"}
+        />
+        <ResourceAlert
+          busy={aplicaciones_por_talento.isFetching}
         />
       </MainLayout>
       <Flotantes />
