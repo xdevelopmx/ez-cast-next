@@ -59,7 +59,7 @@ export const TalentoDashBoardSelect: FC<Props> = ({ id_talento, id_rol }) => {
 		refetchOnWindowFocus: false
 	});
 
-    const talento_stars = api.cazatalentos.getTalentoRatingByCazatalento.useQuery({id_talento: id_talento}, {
+    const talento_stars = api.cazatalentos.getTalentoRatingByCazatalento.useQuery({id_talento: id_talento, id_rol: id_rol}, {
 		refetchOnWindowFocus: false
 	});
 

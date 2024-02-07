@@ -478,6 +478,7 @@ model TalentosDestacados {
   id              Int          @id @default(autoincrement())
   id_cazatalentos Int
   id_talento      Int
+  id_rol Int
   calificacion    Int
   cazatalentos    Cazatalentos @relation(fields: [id_cazatalentos], references: [id], onDelete: Cascade)
   talento         Talentos     @relation(fields: [id_talento], references: [id], onDelete: Cascade)

@@ -102,8 +102,18 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
   useEffect(() => {
     if (estados_aplicaciones_roles.data) {
       if (estado_aplicacion_rol === 0) {
-        const id_estado_aplicacion = router.query["id-estado-aplicacion"] as string;
-        if (id_estado_aplicacion) {
+        let id_estado_aplicacion = 0;
+        if (router.query["id-estado-aplicacion"]) {
+          id_estado_aplicacion = parseInt(router.query["id-estado-aplicacion"] as string);
+        } else {
+          const latest_status_application_touched = localStorage.getItem(
+            "BILLBOARD-CAZATALENTOS-LATEST-CHANGE-STATUS-APPLICATION-ID"
+          );
+          if (latest_status_application_touched) {
+            id_estado_aplicacion = parseInt(latest_status_application_touched);
+          }
+        }
+        if (estados_aplicaciones_roles.data.filter(ear => ear.id === id_estado_aplicacion).length > 0) {
           setEstadoAplicacionRol(+id_estado_aplicacion);
         } else {
           const id = estados_aplicaciones_roles.data[0]?.id;
@@ -128,7 +138,7 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
           id_proyecto = parseInt(latest_proyecto_touched);
         }
       }
-      if (id_proyecto > 0) {
+      if (proyectos.data.filter((p) => p.id === id_proyecto).length > 0) {
         const proyecto = proyectos.data.filter(
           (p) => p.id === id_proyecto
         )[0];
@@ -150,8 +160,15 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
       let id_rol = 0;
       if (router.query["id-rol"]) {
         id_rol = +`${router.query["id-rol"] as string}`;
+      } else {
+        const latest_role_touched = localStorage.getItem(
+          "BILLBOARD-CAZATALENTOS-LATEST-CHANGE-ROL-ID"
+        );
+        if (latest_role_touched) {
+          id_rol = parseInt(latest_role_touched);
+        }
       }
-      if (id_rol > 0) {
+      if (roles_by_proyecto.data.filter(r => r.id === id_rol).length > 0) {
         setSelectedRol(id_rol);
         return;
       }
@@ -479,6 +496,10 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                             styleRoot={{ width: "75%"}}
                             value={selected_rol.toString()}
                             onChange={(e) => {
+                              localStorage.setItem(
+                                "BILLBOARD-CAZATALENTOS-LATEST-CHANGE-ROL-ID",
+                                e.target.value
+                              );
                               setSelectedRol(parseInt(e.target.value));
                             }}
                             label=""
@@ -505,6 +526,10 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                             value={estado_aplicacion_rol.toString()}
                             disable_default_option
                             onChange={(e) => {
+                              localStorage.setItem(
+                                "BILLBOARD-CAZATALENTOS-LATEST-CHANGE-STATUS-APPLICATION-ID",
+                                e.target.value
+                              );
                               setEstadoAplicacionRol(parseInt(e.target.value));
                             }}
                             label=""

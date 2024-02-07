@@ -56,7 +56,10 @@ export const CazatalentosRouter = createTRPCRouter({
 				const talentos_destacados = await ctx.prisma.talentosDestacados.findMany({
 					where: {
 						id_cazatalentos: parseInt(user.id),
-						calificacion: 5
+						//calificacion: 5
+						calificacion: {
+							gt: 0
+						}
 					},
 					include: {
 						talento: {
@@ -191,6 +194,7 @@ export const CazatalentosRouter = createTRPCRouter({
 	getTalentoRatingByCazatalento: protectedProcedure
 		.input(z.object({ 
 			id_talento: z.number(),
+			id_rol: z.number()
 		}))
 		.query(async ({ input, ctx }) => {
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
@@ -201,7 +205,8 @@ export const CazatalentosRouter = createTRPCRouter({
 				const destacado = await ctx.prisma.talentosDestacados.findFirst({
 					where: {
 						id_cazatalentos: parseInt(user.id),
-						id_talento: input.id_talento
+						id_talento: input.id_talento,
+						id_rol: input.id_rol
 					}
 				});
 				return (destacado) ? destacado.calificacion : 0;
@@ -459,7 +464,8 @@ export const CazatalentosRouter = createTRPCRouter({
 					let destacado = await ctx.prisma.talentosDestacados.findFirst({
 						where: {
 							id_cazatalentos: parseInt(user.id),
-							id_talento: input.id_talento
+							id_talento: input.id_talento,
+							id_rol: input.id_rol
 						}
 					});
 					if (destacado) {
@@ -476,7 +482,8 @@ export const CazatalentosRouter = createTRPCRouter({
 							data: {
 								calificacion: input.calificacion,
 								id_cazatalentos: parseInt(user.id),
-								id_talento: input.id_talento
+								id_talento: input.id_talento,
+								id_rol: input.id_rol
 							}
 						})
 					}

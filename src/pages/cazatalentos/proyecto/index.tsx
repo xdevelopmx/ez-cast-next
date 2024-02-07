@@ -16,7 +16,7 @@ import { LocacionProyecto } from "~/components/cazatalento/proyecto/crear/Locaci
 import { PublicarProyecto } from "~/components/cazatalento/proyecto/crear/PublicarProyecto";
 import { api, parseErrorBody } from "~/utils/api";
 import useNotify from "~/hooks/useNotify";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Constants from "~/constants";
 import { useRouter } from "next/router";
 import { FileManager } from "~/utils/file-manager";
@@ -630,7 +630,8 @@ const Proyecto: NextPage = () => {
 
               <div className="row mt-lg-4">
                 <div className="col d-flex justify-content-center">
-                  <div className="mr-3">
+                  <Box className="container_top_pro mr-3">
+
                     <button
                       // eslint-disable-next-line @typescript-eslint/no-misused-promises
                       onClick={() => {
@@ -643,18 +644,19 @@ const Proyecto: NextPage = () => {
                         {textos["guardar_y_terminar_mas_tarde"]}
                       </Typography>
                     </button>
-                  </div>
-                  <div>
+                  </Box>
+                    <Box className="container_top_pro">
                     <button
                       onClick={() => {
                         handleSave("roles");
                       }}
-                      className="btn btn-intro btn-price mb-2"
+                      className="btn btn-intro btn-price btn_out_line mb-2"
                       type="submit"
                     >
                       <Typography>{textos["save_y_add"]}</Typography>
                     </button>
-                  </div>
+
+                    </Box>
                 </div>
               </div>
             </div>

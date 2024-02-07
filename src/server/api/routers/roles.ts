@@ -260,6 +260,7 @@ export const RolesRouter = createTRPCRouter({
                   destacados: {
                     where: {
                       id_cazatalentos: id_cazatalento,
+                      id_rol: input.id_rol
                     },
                   },
                   info_basica: {
