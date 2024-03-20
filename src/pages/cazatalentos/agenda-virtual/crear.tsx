@@ -14,6 +14,7 @@ import { MContainer } from "~/components/layout/MContainer";
 import MotionDiv from "~/components/layout/MotionDiv";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import { MTooltip } from "~/components/shared/MTooltip";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 import AppContext from "~/context/app";
 import { TipoUsuario } from "~/enums";
 import useLang from "~/hooks/useLang";
@@ -32,7 +33,7 @@ const NuevoHorarioAgendaVirtual = () => {
 	const { notify } = useNotify();
 
 	const [tipoAudicion, setTipoAudicion] = useState<{value: 'CALLBACK' | 'AUDICION', label: string}>({value: 'AUDICION', label: ``});
-	const [tipoFechas, setTipoFechas] = useState<{value: 'NUEVAS' | 'ESTABLECIDAS', label: string}>({value: 'ESTABLECIDAS', label: ''});
+	const [tipoFechas, setTipoFechas] = useState<{value: 'NUEVAS' | 'ESTABLECIDAS', label: string}>({value: 'NUEVAS', label: ''});
 	const [tipoLocacion, setTipoLocacion] = useState<{value: 'PRESENCIAL' | 'VIRTUAL', label: string}>({value: 'PRESENCIAL', label: ''});
 	const [checkbox_tipo_fecha, setCheckboxTipoFecha] = useState<{value: 'INDIVIDUALES' | 'RANGO_FECHAS', label: string}>({value: 'INDIVIDUALES', label: ''});
 	const [selected_proyecto, setSelectedProyecto] = useState<number>(0);
@@ -195,6 +196,8 @@ const NuevoHorarioAgendaVirtual = () => {
 		setTipoLocacion({value: tipoLocacion.value, label: tipoLocacion.value === 'PRESENCIAL' ? `${textos['presencial']}` : `${textos['virtual']}`});
 	}, [textos]);
 
+	const is_loading = proyectos.isFetching || localizaciones_guardadas.isFetching || horario.isFetching || estados_republica.isFetching || usos_horarios.isFetching;
+
 	return (
 		<>
 			
@@ -294,7 +297,7 @@ const NuevoHorarioAgendaVirtual = () => {
 										<Grid xs={12}>
 											<Divider />
 										</Grid>
-										<Grid xs={12}>
+										{/* <Grid xs={12}>
 											<ButtonGroup sx={{ mt: 2, mb: 4 }} variant="contained" aria-label="outlined primary button group">
 												<Button
 													style={{
@@ -316,7 +319,7 @@ const NuevoHorarioAgendaVirtual = () => {
 													{textos['definir_nuevas_fechas']}
 												</Button>
 											</ButtonGroup>
-										</Grid>
+										</Grid> */}
 										<Grid item xs={12} sx={{ padding: '5px 10px', margin: '4px 0' }}>
 											<MotionDiv show={tipoFechas.value === 'NUEVAS'} animation="fade">
 
@@ -410,9 +413,9 @@ const NuevoHorarioAgendaVirtual = () => {
 																			text={(() => {
 																				if (fecha[1].fecha_inicio) {
 																					if (fecha[1].fecha_fin) {
-																						return `${fecha[1].fecha_inicio.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'})} - ${fecha[1].fecha_fin.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'})}`
+																						return `${fecha[1].fecha_inicio.toLocaleDateString('es-mx', { day: '2-digit', month: '2-digit', year: '2-digit'})} - ${fecha[1].fecha_fin.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'})}`
 																					}
-																					return fecha[1].fecha_inicio.toLocaleDateString('es-mx', {day: 'numeric', month: 'numeric', year: '2-digit'});
+																					return new Date(fecha[1].fecha_inicio).toLocaleDateString('es-mx', {day: '2-digit', month: '2-digit', year: '2-digit'});
 																				}
 																				return 'ND';
 																				})()
@@ -441,7 +444,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																	{
 																		e[1].map((fecha, i) => (
 																			<Tag styles={{ margin: 0.5, padding: 0.35 }} key={i}
-																				text={(!fecha.fecha_fin) ? fecha.fecha_inicio.toLocaleDateString('es-mx',  {day: 'numeric', month: 'numeric', year: '2-digit'}) : `${fecha.fecha_inicio.toLocaleDateString('es-mx',  {day: 'numeric', month: 'numeric', year: '2-digit'})} - ${fecha.fecha_fin.toLocaleDateString('es-mx',  {day: 'numeric', month: 'numeric', year: '2-digit'})}`}
+																				text={(!fecha.fecha_fin) ? fecha.fecha_inicio.toLocaleDateString('es-mx', { day: '2-digit', month: '2-digit', year: '2-digit' }) : `${fecha.fecha_inicio.toLocaleDateString('es-mx', { day: '2-digit', month: '2-digit', year: '2-digit' })} - ${fecha.fecha_fin.toLocaleDateString('es-mx', { day: '2-digit', month: '2-digit', year: '2-digit'})}`}
 																				onRemove={() => console.log('click')}
 																			/>
 																		))
@@ -721,6 +724,9 @@ const NuevoHorarioAgendaVirtual = () => {
 							}));
 						}
 					}}
+				/>
+				<ResourceAlert
+					busy={is_loading}
 				/>
 			</MainLayout>
 		</>

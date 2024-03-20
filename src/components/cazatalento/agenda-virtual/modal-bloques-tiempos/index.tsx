@@ -5,7 +5,7 @@ import { FormGroup, MRadioGroup, MSelect } from '~/components/shared';
 import { DesktopTimePicker, MobileTimePicker, StaticTimePicker, TimeField, TimePicker, esES } from '@mui/x-date-pickers';
 import dayjs from 'dayjs';
 import useNotify from '~/hooks/useNotify';
-import { calculateIntervalos, formatDate } from '~/utils/dates';
+import { formatDate } from '~/utils/dates';
 import { MContainer } from '~/components/layout/MContainer';
 import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client';
 import { Add, AddCircle } from '@mui/icons-material';
@@ -15,7 +15,7 @@ import useLang from '~/hooks/useLang';
 
 interface Props {
     locaciones: LocalizacionesPorHorarioAgenda[];
-    roles: Roles[];
+    id_role: number;
     isOpen: boolean;
     date: string;
     id_horario_agenda: number;
@@ -23,7 +23,7 @@ interface Props {
     onChange: () => void;
 }
 
-export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles, locaciones, id_horario_agenda, onChange }) => {
+export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, id_role, locaciones, id_horario_agenda, onChange }) => {
 
     const {notify} = useNotify();
     const ctx = useContext(AppContext);
@@ -33,7 +33,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
         id_horario_agenda: id_horario_agenda, fecha: dayjs(date, "DD/MM/YYYY").toDate()
     }, {
         refetchOnWindowFocus: false
-    })
+    });
 
     const updateBloqueHorario = api.agenda_virtual.updateBloqueHorario.useMutation({
         onSuccess: (data) => {
@@ -50,23 +50,19 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
         }
     })
 
-    const [minutos_por_talento, setMinutosPorTalento] = useState(0);
+    // const [minutos_por_talento, setMinutosPorTalento] = useState(0);
 
     const [inicio_casting, setInicioCasting] = useState('12:00');
 
     const [fin_casting, setFinCasting] = useState('13:00');
 
-    const [inicio_descanso, setInicioDescanso] = useState('00:00');
+    const [duracion_descanso, setDuracionDescanso] = useState(0);
 
-    const [fin_descanso, setFinDescanso] = useState('00:00');
+    const [count_intervalos, setCountIntervalos] = useState(1);
 
     const [usar_descanso, setUsarDescanso] = useState('No');
 
     const [administrar_intervalos, setAdministrarIntervalos] = useState<string>('');
-
-    const [asignaciones_intervalos_por_rol, setAsignacionesIntervalosPorRol] = useState<number[]>(roles.map((r, i) => r.id));
-
-    const [roles_selects, setRolesSelects] = useState<JSX.Element[]>([]);
 
     const [selected_locacion, setSelectedLocacion] = useState('');
 
@@ -77,12 +73,11 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
 
     useEffect(() => {
         if (bloque.data && estados_republica.data) {
-            setMinutosPorTalento(bloque.data.minutos_por_talento);
+            //setMinutosPorTalento(bloque.data.minutos_por_talento);
             setInicioCasting(bloque.data.hora_inicio);
             setFinCasting(bloque.data.hora_fin);
-            setInicioDescanso((bloque.data.hora_descanso_inicio) ? bloque.data.hora_descanso_inicio : '00:00');
-            setFinDescanso((bloque.data.hora_descanso_fin) ? bloque.data.hora_descanso_fin : '00:00');
-            setUsarDescanso(bloque.data.hora_descanso_inicio != null && bloque.data.hora_descanso_inicio !== '00:00' ? 'Si' : 'No');
+            setDuracionDescanso((bloque.data.duracion_descanso) ? bloque.data.duracion_descanso : 0);
+            setUsarDescanso(bloque.data.duracion_descanso != null && bloque.data.duracion_descanso > 0 ? `${textos['si']}` : `${textos['no']}`);
             setAdministrarIntervalos(bloque.data.tipo_administracion_intervalo.toLowerCase() === 'automaticamente' ? `${textos['automaticamente']}` : `${textos['manualmente']}`);
             const locacion = locaciones.map(l => `${l.direccion}, ${estados_republica.data.filter(er => er.id === l.id_estado_republica)[0]?.es}`)[0];
             if (locacion) {
@@ -91,9 +86,9 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
         }
     }, [bloque.data, estados_republica.data, textos]);
 
-    const intervalos = useMemo(() => {
-        return calculateIntervalos(minutos_por_talento, inicio_casting, fin_casting, (usar_descanso) ? {inicio_tiempo: inicio_descanso, fin_tiempo: fin_descanso} : undefined);
-    }, [minutos_por_talento, inicio_descanso, fin_descanso, inicio_casting, fin_casting]);
+    // const intervalos = useMemo(() => {
+    //     return calculateIntervalos(inicio_casting, fin_casting, (usar_descanso) ? {inicio_tiempo: inicio_descanso, fin_tiempo: fin_descanso} : undefined);
+    // }, [inicio_descanso, fin_descanso, inicio_casting, fin_casting]);
 
     return (
         <Dialog
@@ -158,7 +153,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                         setInicioCasting(e.target.value);
                                     }}
                                 />
-                                <FormGroup
+                                {/* <FormGroup
                                     className={'form-input-md'}
                                     style={{ width: 175 }}
                                     type='number'
@@ -170,7 +165,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     onChange={(e) => {
                                         setMinutosPorTalento(parseInt(e.target.value));
                                     }}
-                                />
+                                /> */}
                                 <FormGroup
                                     className={'form-input-md'}
                                     style={{ width: 150 }}
@@ -185,10 +180,31 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                 />
                             </Box>
                         </Grid>
-                        <Grid xs={12}>
+                        {/* <Grid xs={12}>
                             <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                                {intervalos} {textos['intervalos']}
+                                {bloque.data?.intervalos.length} {textos['intervalos']}
                             </Typography>
+                        </Grid> */}
+                        <Grid xs={12}>
+                            <Box sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                flexWrap: 'wrap'
+                            }}>
+                                <FormGroup
+                                    className={'form-input-md'}
+                                    style={{ width: 150 }}
+                                    type='number'
+                                    labelStyle={{ fontWeight: 600, width: '100%' }}
+                                    labelClassName={'form-input-label'}
+                                    value={count_intervalos.toString()}
+                                    label={`${textos['intervalos']}`}
+                                    onChange={(e) => {
+                                        setCountIntervalos(+e.target.value);
+                                    }}
+                                />
+                            </Box>
                         </Grid>
                         <Grid xs={12}>
                             <MRadioGroup
@@ -206,13 +222,6 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                         </Grid>
                         <Grid xs={12}>
                             {usar_descanso === `${textos['si']}` &&
-                                <Typography fontWeight={600} sx={{ color: '#069cb1' }}>
-                                    {textos['crear']} {textos['descanso']}
-                                </Typography>
-                            }
-                        </Grid>
-                        <Grid xs={12}>
-                            {usar_descanso === `${textos['si']}` &&
                             
                                 <Box sx={{
                                     display: 'flex',
@@ -223,16 +232,16 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     <FormGroup
                                         className={'form-input-md'}
                                         style={{ width: 150 }}
-                                        type='time'
+                                        type='number'
                                         labelStyle={{ fontWeight: 600, width: '100%' }}
                                         labelClassName={'form-input-label'}
-                                        value={inicio_descanso}
-                                        label={`${textos['hora_inicio']}`}
+                                        value={duracion_descanso.toString()}
+                                        label={`${textos['duracion']}`}
                                         onChange={(e) => {
-                                            setInicioDescanso(e.target.value);
+                                            setDuracionDescanso(+e.target.value);
                                         }}
                                     />
-                                    <FormGroup
+                                    {/* <FormGroup
                                         className={'form-input-md'}
                                         style={{ width: 150 }}
                                         type='time'
@@ -246,7 +255,7 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                     />
                                     <Box sx={{ width: 150 }}>
 
-                                    </Box>
+                                    </Box> */}
                                 </Box>
                             }
                         </Grid>
@@ -336,10 +345,10 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                             <MContainer direction='vertical' justify='center' styles={{textAlign: 'center', alignContent: 'center', marginTop: 16}}>
                                 <Button
                                     onClick={() => {
-                                        if (intervalos === 0) {
-                                            notify('warning', `${textos['no_se_han_definido_los_intervalos']}`);
-                                            return;
-                                        }
+                                        // if (bloque.data?.intervalos.length === 0) {
+                                        //     notify('warning', `${textos['no_se_han_definido_los_intervalos']}`);
+                                        //     return;
+                                        // }
                                         let loc = 0;
                                         if (estados_republica.data) {
                                             const locacion = locaciones.filter(l => `${l.direccion}, ${estados_republica.data.filter(er => er.id === l.id_estado_republica)[0]?.es}` === selected_locacion)[0];
@@ -358,10 +367,9 @@ export const ModalBloquesTiempos: FC<Props> = ({ isOpen, setIsOpen, date, roles,
                                             fecha: dayjs(date, "DD/MM/YYYY").toDate(),
                                             hora_inicio: inicio_casting,
                                             hora_fin: fin_casting,
-                                            minutos_por_talento: minutos_por_talento,
-                                            hora_descanso_inicio: (usar_descanso) ? inicio_descanso : null,
-                                            hora_descanso_fin: (usar_descanso) ? fin_descanso : null,
-                                            id_locacion: loc		
+                                            duracion_descanso: usar_descanso === `${textos['si']}` ? duracion_descanso : 0,
+                                            id_locacion: loc,
+                                            intervalos_count: count_intervalos
                                         });
                                     }}
                                     sx={{

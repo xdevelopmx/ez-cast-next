@@ -47,6 +47,7 @@ import {
 import { DraggableHorarioContainer } from "~/components/cazatalento/agenda-virtual/horarios-tabla/DraggableHorarioContainer";
 import { TalentoReclutadoListCard } from "~/components/cazatalento/agenda-virtual/talento-reclutado-card/list-card";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
+import { ResourceAlert } from "~/components/shared/ResourceAlert";
 import Constants from "~/constants";
 import AppContext from "~/context/app";
 import { TipoUsuario } from "~/enums";
@@ -118,11 +119,13 @@ const AudicionPorId = (props: {
 
   const { id, ask_for_callback } = router.query;
 
+  const [opcionSelected, setOpcionSelected] = useState<string>("");
+
   const [confirmation_dialog, setConfirmationDialog] = useState<{
     opened: boolean;
     title: string;
     content: JSX.Element;
-    action: "CALLBACK" | "SEND_HORARIOS";
+    action: "CALLBACK" | "SEND_HORARIOS" | 'UPDATE_BLOQUE';
     data: Map<string, unknown>;
   }>({
     opened: false,
@@ -131,6 +134,18 @@ const AudicionPorId = (props: {
     action: "CALLBACK",
     data: new Map(),
   });
+
+  const updateBloqueHorario = api.agenda_virtual.updateBloqueHorario.useMutation({
+    onSuccess: (data) => {
+      talentos_asignados_por_horario.refetch();
+      bloque.refetch();
+      //notify('success', 'Se actualizo el bloque de horario con exito');
+      notify('success', `${textos['se_actualizo_con_exito']}`);
+    },
+    onError: (err) => {
+      notify('error', parseErrorBody(err.message));
+    }
+  })
 
   const horario = api.agenda_virtual.getHorarioAgendaById.useQuery(
     parseInt(id as string),
@@ -146,13 +161,21 @@ const AudicionPorId = (props: {
     }
   );
 
-  const ordered_dates = Array.from(
-    expandDates(horario.data ? horario.data.fechas : [])
-  ).sort((a, b) => {
-    const d_1 = dayjs(a, "DD/MM/YYYY");
-    const d_2 = dayjs(b, "DD/MM/YYYY");
-    return d_1.toDate().getTime() - d_2.toDate().getTime();
-  });
+  const ordered_dates = useMemo(() => {
+    if (horario.data) {
+      const dates = Array.from(
+        expandDates(horario.data.fechas)
+      ).sort((a, b) => {
+        const d_1 = dayjs(a, "DD/MM/YYYY");
+        const d_2 = dayjs(b, "DD/MM/YYYY");
+        return d_1.toDate().getTime() - d_2.toDate().getTime();
+      });
+      setOpcionSelected(`${dates[0]}`);
+      return dates;
+    }
+    return [];
+  }, [horario.data]);
+
 
   // para las aplicaciones de talentos a roles
   const roles = api.roles.getAllAplicacionesTalentoByProyecto.useQuery(
@@ -171,8 +194,18 @@ const AudicionPorId = (props: {
     }
   );
 
+  console.log(roles.data);
+
+  const roles_select_data = useMemo(() => {
+    if (roles.data) {
+      return [{ value: '0', label: 'Todos' }].concat(roles.data.filter(r => r.estatus.toUpperCase() !== Constants.ESTADOS_ROLES.ARCHIVADO).map(r => { return { value: r.id.toString(), label: r.nombre } }));
+    }
+    return [];
+  }, [roles.data]);
+
   const [talentos, setTalentos] = useState<
     (Talentos & {
+      id_rol_application: number,
       destacado: TalentosDestacados[];
       notas?: NotasTalentos[];
       media: (MediaPorTalentos & { media: Media })[];
@@ -186,10 +219,6 @@ const AudicionPorId = (props: {
   );
 
   const [tipo_nota_selected, setTipoNotaSelected] = useState<string>("ninguna");
-
-  // para la lista de intervalos
-
-  const [opcionSelected, setOpcionSelected] = useState<string>("");
 
   const [isOpendModal, setIsOpendModal] = useState(false);
 
@@ -215,13 +244,13 @@ const AudicionPorId = (props: {
     const ids_talentos_not_null: { id_talento: number; id_rol: number }[] = [];
     if (talentos_asignados_por_horario.data) {
       const ids_talentos = talentos_asignados_por_horario.data.filter(
-        (t) => t.estado.toLowerCase() === "aprobado" && t.id_talento != null
+        (t) => t.estado.toLowerCase() === "aprobado" && t.aplicacion_rol?.id_talento != null
       );
       ids_talentos.forEach((i) => {
-        if (i.id_talento && i.id_rol) {
+        if (i.aplicacion_rol?.id_talento && i.aplicacion_rol?.id_rol) {
           ids_talentos_not_null.push({
-            id_talento: i.id_talento,
-            id_rol: i.id_rol,
+            id_talento: i.aplicacion_rol?.id_talento,
+            id_rol: i.aplicacion_rol?.id_rol,
           });
         }
       });
@@ -248,6 +277,17 @@ const AudicionPorId = (props: {
     btn_callback_ref.current,
     props.can_start_callback,
   ]);
+
+  const removeTalentoFromIntervaloHorario = api.agenda_virtual.removeTalentoFromIntervaloHorario.useMutation({
+    onSuccess: (data) => {
+      talentos_asignados_por_horario.refetch();
+      bloque.refetch();
+      notify("success", `${textos['se_asigno_el_intervalo_con_exito']}`);
+    },
+    onError: (error) => {
+      notify("error", parseErrorBody(error.message));
+    },
+  });
 
   const updateIntervaloHorario =
     api.agenda_virtual.updateIntervaloHorario.useMutation({
@@ -301,33 +341,36 @@ const AudicionPorId = (props: {
     },
   });
 
-  useEffect(() => {
-    if (roles.data && selected_rol === 0) {
-      const rol = roles.data[0];
-      if (rol) {
-        setSelectedRol(rol.id);
-      }
-    }
-  }, [roles.data]);
+  const loading = updateHorario.isLoading || sendHorarios.isLoading || updateAplicacionesTalentoByIdRolAndIdTalento.isLoading || updateIntervaloHorario.isLoading || talentos_asignados_por_horario.isLoading || updateBloqueHorario.isLoading || horario.isFetching || proyecto.isLoading || roles.isFetching || bloque.isFetching;
+
+  // useEffect(() => {
+  //   if (roles.data && selected_rol === 0) {
+  //     const rol = roles.data[0];
+  //     if (rol) {
+  //       setSelectedRol(rol.id);
+  //     }
+  //   }
+  // }, [roles.data]);
 
   useEffect(() => {
     if (roles.data && talentos_asignados_por_horario.data) {
       roles.data.map((rol, i) => {
-        if (rol.id === selected_rol) {
+        if (rol.id === selected_rol || selected_rol === 0) {
           setTalentos(
             rol.aplicaciones_por_talento
               .filter((aplicacion) => {
                 return (
                   talentos_asignados_por_horario.data.filter(
                     (ta) =>
-                      ta.id_rol === aplicacion.id_rol &&
-                      ta.id_talento === aplicacion.id_talento
+                      ta.aplicacion_rol?.id_rol === aplicacion.id_rol &&
+                      ta.aplicacion_rol?.id_talento === aplicacion.id_talento
                   ).length === 0
                 );
               })
               .map((aplicacion, j) => {
                 return {
                   ...aplicacion.talento,
+                  id_rol_application: aplicacion.id,
                   notas: aplicacion.talento.notas,
                   destacado: aplicacion.talento.destacados,
                 };
@@ -338,6 +381,34 @@ const AudicionPorId = (props: {
     }
   }, [roles.data, selected_rol, talentos_asignados_por_horario.data]);
   // end
+
+  const bloques_length = () => {
+    if (bloque.data) {
+      const horas = bloque.data.intervalos[0]?.hora
+        .split("-")
+        .map((s) => s.trim());
+      console.log(horas);
+      if (horas) {
+        const hora_inicio = horas[0]?.split(":").map((h) => parseInt(h));
+        const hora_fin = horas[1]?.split(":").map((h) => parseInt(h));
+        console.log(hora_inicio, hora_fin);
+        if (hora_inicio && hora_fin) {
+          const hora_i = hora_inicio[0];
+          const minutos_i = hora_inicio[1];
+          const hora_f = hora_fin[0];
+          const minutos_f = hora_fin[1];
+          let diff = 0;
+          if (hora_f) diff += hora_f * 60;
+          if (minutos_f) diff += minutos_f;
+          if (hora_i) diff -= hora_i * 60;
+          if (minutos_i) diff -= minutos_i;
+          console.log(diff);
+          return diff;
+        }
+      }
+    }
+    return 0;
+  }
 
   const info_horario = bloque.data ? (
     <div
@@ -363,32 +434,12 @@ const AudicionPorId = (props: {
             day: "numeric",
           })}
         </Typography>
-        <Typography>
-          {textos['bloques_de']} {" "}
-          {(() => {
-            const horas = bloque.data.intervalos[0]?.hora
-              .split("-")
-              .map((s) => s.trim());
-            if (horas) {
-              const hora_inicio = horas[0]?.split(":").map((h) => parseInt(h));
-              const hora_fin = horas[1]?.split(":").map((h) => parseInt(h));
-              if (hora_inicio && hora_fin) {
-                const hora_i = hora_inicio[0];
-                const minutos_i = hora_inicio[1];
-                const hora_f = hora_fin[0];
-                const minutos_f = hora_fin[1];
-                let diff = 0;
-                if (hora_f) diff += hora_f * 60;
-                if (minutos_f) diff += minutos_f;
-                if (hora_i) diff -= hora_i * 60;
-                if (minutos_i) diff -= minutos_i;
-                return diff;
-              }
-            }
-            return 0;
-          })()}{" "}
-          {textos['minutos']}
-        </Typography>
+        {bloques_length() > 0 &&
+          <Typography>
+            
+            {textos['bloques_de']} {" "} {bloques_length()} {" "} {textos['minutos']}
+          </Typography>
+        }
       </Box>
       <Typography>
         {textos['del']} {bloque.data.hora_inicio} {textos['a']} {bloque.data.hora_fin}
@@ -420,7 +471,7 @@ const AudicionPorId = (props: {
       <MainLayout menuSiempreBlanco={true}>
         <div className="d-flex wrapper_ezc">
           <MenuLateral />
-          <div className="seccion_container col" style={{ paddingTop: 0 }}>
+          <div className="seccion_container col" style={{ padding: 16 }}>
             <br />
             <br />
             <div className="container_box_header">
@@ -476,7 +527,7 @@ const AudicionPorId = (props: {
                     />
                     <Grid container xs={12} mt={4}>
                       {!props.disable_actions && (
-                        <Grid xs={3} mr={"16px"}>
+                        <Grid xs={4} mr={"16px"}>
                           <Grid xs={12}>
                             <Grid
                               container
@@ -565,23 +616,7 @@ const AudicionPorId = (props: {
                                     labelStyle={{ fontWeight: 600 }}
                                     labelClassName={"form-input-label"}
                                     label={`${textos['rol']}`}
-                                    options={
-                                      roles.data
-                                        ? roles.data
-                                            .filter(
-                                              (r) =>
-                                                r.estatus.toUpperCase() !==
-                                                Constants.ESTADOS_ROLES
-                                                  .ARCHIVADO
-                                            )
-                                            .map((r) => {
-                                              return {
-                                                label: r.nombre,
-                                                value: r.id.toString(),
-                                              };
-                                            })
-                                        : []
-                                    }
+                                    options={roles_select_data}
                                     value={selected_rol.toString()}
                                     className={"form-input-md"}
                                     disable_default_option
@@ -662,6 +697,7 @@ const AudicionPorId = (props: {
                                             ? horario.data.tipo_agenda.toLowerCase()
                                             : undefined
                                         }
+                                        id_rol_application={t.id_rol_application}
                                         profile_url={
                                           profile
                                             ? profile.media.url
@@ -733,6 +769,7 @@ const AudicionPorId = (props: {
                                             ? profile.media.url
                                             : "/assets/img/no-image.png"
                                         }
+                                        id_rol_application={t.id_rol_application}
                                         nombre={`${t.nombre} ${t.apellido}`}
                                         union={"ND"}
                                         estado=""
@@ -796,7 +833,7 @@ const AudicionPorId = (props: {
                         </Grid>
                       )}
                       <Grid
-                        xs={props.disable_actions ? 12 : 8.5}
+                        xs={props.disable_actions ? 12 : 7.5}
                         overflow={"auto"}
                       >
                         <Grid xs={12}>
@@ -833,14 +870,11 @@ const AudicionPorId = (props: {
                                 {!props.disable_actions && (
                                   <Button
                                     onClick={() => {
-                                      if (opcionSelected !== "") {
-                                        setIsOpendModal(true);
-                                      } else {
-                                        notify(
-                                          "warning",
-                                          `${textos['no_haz_seleccionado_ninguna_fecha']}`
-                                        );
+                                      if (opcionSelected === "") {
+                                        notify("warning", `${textos['no_haz_seleccionado_ninguna_fecha']}`);
+                                        return;
                                       }
+                                      setIsOpendModal(true);
                                     }}
                                     sx={{
                                       display: "flex",
@@ -885,7 +919,20 @@ const AudicionPorId = (props: {
                             }}
                           >
                             <Grid xs={12}>
-                              <ButtonGroup
+                              <MSelect
+                                id="fechas-select"
+                                labelStyle={{ fontWeight: 600 }}
+                                labelClassName={"form-input-label ml-4"}
+                                label={`${textos['fechas_disponibles']}`}
+                                options={ordered_dates.map(d => {return {value: d, label: d}})}
+                                value={opcionSelected}
+                                className={"form-input-md ml-4"}
+                                disable_default_option
+                                onChange={(e) => {
+                                  setOpcionSelected(e.target.value);
+                                }}
+                              />
+                              {/* <ButtonGroup
                                 sx={{
                                   mt: 2,
                                   mb: 0,
@@ -921,7 +968,7 @@ const AudicionPorId = (props: {
                                     </Button>
                                   );
                                 })}
-                              </ButtonGroup>
+                              </ButtonGroup> */}
                             </Grid>
                             <Grid xs={12} maxHeight={420} overflow={"auto"}>
                               <Box
@@ -934,23 +981,23 @@ const AudicionPorId = (props: {
                                 }}
                               >
                                 {proyecto.data &&
-                                  proyecto.isFetched &&
+                                  !proyecto.isFetching &&
                                   bloque.data &&
-                                  bloque.isFetched && (
+                                  !bloque.isFetching && (
                                     <>
                                       {info_horario}
                                       {bloque.data.intervalos.map((i) => {
                                         //const talento_asignado = talentos_asignados_a_horario.filter(t => t.intervalo === intervalo)[0];
-                                        if (i.talento) {
+                                        if (i.aplicacion_rol?.talento) {
                                           const foto_perfil_talento =
-                                            i.talento.media.filter((m) =>
+                                            i.aplicacion_rol?.talento.media.filter((m) =>
                                               m.media.identificador
                                                 .toUpperCase()
                                                 .includes("FOTO-PERFIL")
                                             )[0]?.media.url;
-                                          const calificacion_talento = i.talento
+                                          const calificacion_talento = i.aplicacion_rol?.talento
                                             .destacados
-                                            ? i.talento.destacados.filter(
+                                            ? i.aplicacion_rol?.talento.destacados.filter(
                                                 (d) =>
                                                   d.id_cazatalentos ===
                                                   proyecto.data?.id_cazatalentos
@@ -974,7 +1021,7 @@ const AudicionPorId = (props: {
                                                 {i.hora}
                                               </p>
                                               <p style={{ margin: 4 }}>
-                                                Rol - {i.rol?.nombre}
+                                                Rol - {i.aplicacion_rol?.rol?.nombre}
                                               </p>
                                               {[
                                                 Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO,
@@ -1001,11 +1048,8 @@ const AudicionPorId = (props: {
                                                         onChange={() => {
                                                           updateIntervaloHorario.mutate(
                                                             {
-                                                              id_intervalo:
-                                                                i.id,
-                                                              id_rol: i.id_rol,
-                                                              id_talento:
-                                                                i.id_talento,
+                                                              id_intervalo: i.id,
+                                                              id_aplicacion_rol: i.id_aplicacion_rol,
                                                               estado: Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO ? Constants.ESTADOS_ASIGNACION_HORARIO.APROBADO : Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO
                                                             }
                                                           );
@@ -1030,7 +1074,7 @@ const AudicionPorId = (props: {
                                                       ? foto_perfil_talento
                                                       : "/assets/img/no-image.png"
                                                   }
-                                                  nombre={`${i.talento.nombre} ${i.talento.apellido}`}
+                                                  nombre={`${i.aplicacion_rol?.talento.nombre} ${i.aplicacion_rol?.talento.apellido}`}
                                                   union={"ND"}
                                                   estado={i.estado}
                                                   calificacion={
@@ -1038,10 +1082,11 @@ const AudicionPorId = (props: {
                                                       ? calificacion_talento.calificacion
                                                       : 0
                                                   }
-                                                  id_talento={i.talento.id}
+                                                  id_talento={i.aplicacion_rol?.talento.id}
+                                                  id_rol_application={i.id_aplicacion_rol ?? 0}
                                                   ubicacion={
-                                                    i.talento.info_basica
-                                                      ? i.talento.info_basica
+                                                    i.aplicacion_rol?.talento.info_basica
+                                                      ? i.aplicacion_rol?.talento.info_basica
                                                           .estado_republica.es
                                                       : `${textos['sin_locacion']}`
                                                   }
@@ -1051,14 +1096,7 @@ const AudicionPorId = (props: {
                                                   action={
                                                     <IconButton
                                                       onClick={() => {
-                                                        updateIntervaloHorario.mutate(
-                                                          {
-                                                            id_intervalo: i.id,
-                                                            id_rol: null,
-                                                            id_talento: null,
-                                                            estado: Constants.ESTADOS_ASIGNACION_HORARIO.PENDIENTE,
-                                                          }
-                                                        );
+                                                        removeTalentoFromIntervaloHorario.mutate(i.id);
                                                       }}
                                                       style={{
                                                         color: "white",
@@ -1076,67 +1114,84 @@ const AudicionPorId = (props: {
                                             </div>
                                           );
                                         }
-                                        return (
-                                          <div
+                                        const has_descanso = i.tipo === 'descanso' && bloque.data && bloque.data.duracion_descanso && bloque.data.duracion_descanso > 0 ? <div
+                                          style={{
+                                            backgroundColor: "#94f0d1",
+                                            width: "90%",
+                                            height: 88,
+                                            margin: 8,
+                                            position: "relative",
+                                          }}
+                                        >
+                                          <p
                                             style={{
-                                              backgroundColor:
-                                                i.tipo === "intervalo"
-                                                  ? input_background_hover_color
-                                                  : "#94f0d1",
-                                              width: "90%",
-                                              height: 88,
-                                              margin: 8,
-                                              position: "relative",
+                                              position: "absolute",
+                                              top: 8,
+                                              left: 8,
                                             }}
                                           >
-                                            <p
-                                              style={{
-                                                position: "absolute",
-                                                top: 8,
-                                                left: 8,
-                                              }}
+                                            {i.hora}  - {i.id}
+                                          </p>
+                                          <div
+                                            style={{
+                                              position: "absolute",
+                                              width: "100%",
+                                              top: 56,
+                                            }}
+                                          >
+                                            <Typography
+                                              fontWeight={800}
+                                              textAlign={"center"}
                                             >
-                                              {i.hora}
-                                            </p>
+                                              {"Descanso"}
+                                            </Typography>
+                                          </div>
+                                        </div> : null;
+                                        return (
+                                          <>
+                                            {has_descanso}
                                             {i.tipo !== "descanso" && (
-                                              <DraggableHorarioContainer
-                                                onDrop={(item) => {
-                                                  const { id_talento } =
-                                                    item as {
-                                                      id_talento: number;
-                                                    };
-
-                                                  updateIntervaloHorario.mutate(
-                                                    {
-                                                      id_intervalo: i.id,
-                                                      id_rol: selected_rol,
-                                                      id_talento: id_talento,
-                                                      estado: i.estado,
-                                                    }
-                                                  );
-                                                }}
-                                                id_rol={selected_rol}
-                                                fecha={opcionSelected}
-                                                allowedDropEffect="any"
-                                              />
-                                            )}
-                                            {i.tipo === "descanso" && (
                                               <div
                                                 style={{
-                                                  position: "absolute",
-                                                  width: "100%",
-                                                  top: 56,
+                                                  backgroundColor: input_background_hover_color,
+                                                  width: "90%",
+                                                  height: 88,
+                                                  margin: 8,
+                                                  position: "relative",
                                                 }}
                                               >
-                                                <Typography
-                                                  fontWeight={800}
-                                                  textAlign={"center"}
+                                                <p
+                                                  style={{
+                                                    position: "absolute",
+                                                    top: 8,
+                                                    left: 8,
+                                                  }}
                                                 >
-                                                  {"Descanso"}
-                                                </Typography>
+                                                  {i.hora}  - {i.id}
+                                                </p>
+                                                <DraggableHorarioContainer
+                                                  onDrop={(item) => {
+                                                    const { id_talento, id_rol_application } =
+                                                      item as {
+                                                        id_talento: number;
+                                                        id_rol_application: number;
+                                                      };
+
+                                                    updateIntervaloHorario.mutate(
+                                                      {
+                                                        id_intervalo: i.id,
+                                                        id_aplicacion_rol: id_rol_application,
+                                                        estado: i.estado,
+                                                      }
+                                                    );
+                                                  }}
+                                                  id_rol={selected_rol}
+                                                  fecha={opcionSelected}
+                                                  allowedDropEffect="any"
+                                                />
                                               </div>
                                             )}
-                                          </div>
+                                          </>
                                         );
                                       })}
                                       {info_horario}
@@ -1175,14 +1230,11 @@ const AudicionPorId = (props: {
                                             color: "#000",
                                           }}
                                           onClick={() => {
-                                            if (opcionSelected !== "") {
-                                              setIsOpendModal(true);
-                                            } else {
-                                              notify(
-                                                "warning",
-                                                `${textos['no_haz_seleccionado_ninguna_fecha']}`
-                                              );
+                                            if (opcionSelected === "") {
+                                              notify("warning", `${textos['no_haz_seleccionado_ninguna_fecha']}`);
+                                              return;
                                             }
+                                            setIsOpendModal(true);
                                           }}
                                         >
                                           <Image
@@ -1212,9 +1264,7 @@ const AudicionPorId = (props: {
                             locaciones={
                               horario.data ? horario.data.localizaciones : []
                             }
-                            roles={
-                              horario.data ? horario.data.proyecto.rol : []
-                            }
+                            id_role={selected_rol}
                             date={opcionSelected}
                             isOpen={isOpendModal}
                             setIsOpen={setIsOpendModal}
@@ -1346,9 +1396,8 @@ const AudicionPorId = (props: {
                                                     ? calificacion_talento.calificacion
                                                     : 0
                                                 }
-                                                id_talento={
-                                                  aplicacion.talento.id
-                                                }
+                                                id_talento={aplicacion.talento.id}
+                                                id_rol_application={aplicacion.id_rol}
                                                 ubicacion={""}
                                                 onDrop={(id_talento) => {
                                                   //alert('SE DROPEO ESTE WEON' + id_talento);
@@ -1445,6 +1494,9 @@ const AudicionPorId = (props: {
         content={confirmation_dialog.content}
       />
       <Flotantes />
+      <ResourceAlert
+        busy={loading}
+      />
     </>
   );
 };

@@ -21,21 +21,21 @@ interface DropResult {
   name: string
 }
 
-export const TalentoReclutadoListCard: FC<(TalentoReclutadoCardProps & {action: JSX.Element, tipo_agenda?: string, ubicacion: string, notas?: { talento?: string, cazatalentos?: string }})> = ({ id_talento, onDrop, profile_url, nombre, union, ubicacion, calificacion, estado, action, notas, tipo_agenda}) => {
+export const TalentoReclutadoListCard: FC<(TalentoReclutadoCardProps & { action: JSX.Element, tipo_agenda?: string, ubicacion: string, notas?: { talento?: string, cazatalentos?: string } })> = ({ id_talento, id_rol_application, onDrop, profile_url, nombre, union, ubicacion, calificacion, estado, action, notas, tipo_agenda}) => {
   const input_background_color = (tipo_agenda === 'callback') ? '#F9B233' : '#069cb1';
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: 'ELEMENT',
-      item: { id_talento },
+      item: { id_talento, id_rol_application },
       end(item, monitor) {
         const dropResult = monitor.getDropResult() as DropResult
         if (item && dropResult) {
           const isDropAllowed = dropResult.allowedDropEffect === 'any' || dropResult.allowedDropEffect === dropResult.dropEffect;
 
           if (isDropAllowed) {
-            onDrop(item.id_talento);
+            onDrop({ id_talento: item.id_talento, id_rol_application: id_rol_application});
           }
         }
       },
@@ -43,7 +43,7 @@ export const TalentoReclutadoListCard: FC<(TalentoReclutadoCardProps & {action: 
         opacity: monitor.isDragging() ? 0.4 : 1,
       }),
     }),
-    [name, id_talento],
+    [name, id_talento, id_rol_application],
   )
 
   const estado_label = useMemo(() => {

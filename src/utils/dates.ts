@@ -43,85 +43,133 @@ export function formatDate(date: Date) {
     return formatter.format(date);
 }
 
-export function calculateIntervalos(duracion_minutos: number, inicio_tiempo: string, fin_tiempo: string, pausa?: {inicio_tiempo: string, fin_tiempo: string}) {
-    let intervalos = 0;
-    if (duracion_minutos > 0) {
-        const inicio = inicio_tiempo.split(':');
-        const fin = fin_tiempo.split(':');
-        const i_descanso = (pausa) ? pausa.inicio_tiempo.split(':') : ['00', '00'];
-        const f_descanso = (pausa) ? pausa.fin_tiempo.split(':') : ['00', '00'];
-        const hora_inicio = inicio[0];
-        const minutos_inicio = inicio[1];
-        const hora_fin = fin[0];
-        const minutos_fin = fin[1];
-        const hora_descanso_inicio = i_descanso[0];
-        const minutos_descanso_inicio = i_descanso[1];
-        const hora_descanso_fin = f_descanso[0];
-        const minutos_descanso_fin = f_descanso[1];
-        let diff = 0;
-        if (hora_fin && minutos_fin && hora_inicio && minutos_inicio && hora_descanso_inicio && minutos_descanso_inicio && hora_descanso_fin && minutos_descanso_fin) {
-            const hora_inicio_con_minutos = (parseInt(hora_inicio) * 60) + parseFloat(minutos_inicio);
-            const hora_fin_con_minutos = (parseInt(hora_fin) * 60) + parseFloat(minutos_fin);
-            if (pausa) {
-                const hora_incio_descanso_con_minutos = (parseInt(hora_descanso_inicio) * 60) + parseFloat(minutos_descanso_inicio);
-                const hora_fin_descanso_con_minutos = (parseInt(hora_descanso_fin) * 60) + parseFloat(minutos_descanso_fin); 
-                if (hora_fin_descanso_con_minutos < hora_incio_descanso_con_minutos) {
-                    return 0;
-                }
-                const diff_primera_mitad = hora_incio_descanso_con_minutos - hora_inicio_con_minutos;
-                const diff_segunda_mitad = hora_fin_con_minutos - hora_fin_descanso_con_minutos;
-                diff = diff_primera_mitad + diff_segunda_mitad;
+// export function calculateIntervalos(talentos_count: number, inicio_tiempo: string, fin_tiempo: string, pausa?: {inicio_tiempo: string, fin_tiempo: string}) {
+//     let intervalos = 0;
+//     if (talentos_count > 0) {
+//         const inicio = inicio_tiempo.split(':');
+//         const fin = fin_tiempo.split(':');
+//         const i_descanso = (pausa) ? pausa.inicio_tiempo.split(':') : ['00', '00'];
+//         const f_descanso = (pausa) ? pausa.fin_tiempo.split(':') : ['00', '00'];
+//         const hora_inicio = inicio[0];
+//         const minutos_inicio = inicio[1];
+//         const hora_fin = fin[0];
+//         const minutos_fin = fin[1];
+//         const hora_descanso_inicio = i_descanso[0];
+//         const minutos_descanso_inicio = i_descanso[1];
+//         const hora_descanso_fin = f_descanso[0];
+//         const minutos_descanso_fin = f_descanso[1];
+//         let diff = 0;
+//         if (hora_fin && minutos_fin && hora_inicio && minutos_inicio && hora_descanso_inicio && minutos_descanso_inicio && hora_descanso_fin && minutos_descanso_fin) {
+//             const hora_inicio_con_minutos = (parseInt(hora_inicio) * 60) + parseFloat(minutos_inicio);
+//             const hora_fin_con_minutos = (parseInt(hora_fin) * 60) + parseFloat(minutos_fin);
+//             if (pausa) {
+//                 const hora_incio_descanso_con_minutos = (parseInt(hora_descanso_inicio) * 60) + parseFloat(minutos_descanso_inicio);
+//                 const hora_fin_descanso_con_minutos = (parseInt(hora_descanso_fin) * 60) + parseFloat(minutos_descanso_fin); 
+//                 if (hora_fin_descanso_con_minutos < hora_incio_descanso_con_minutos) {
+//                     return 0;
+//                 }
+//                 const diff_primera_mitad = hora_incio_descanso_con_minutos - hora_inicio_con_minutos;
+//                 const diff_segunda_mitad = hora_fin_con_minutos - hora_fin_descanso_con_minutos;
+//                 diff = diff_primera_mitad + diff_segunda_mitad;
                 
-            } else {
-                diff = hora_fin_con_minutos - hora_inicio_con_minutos;
-            }
-            if (diff >= duracion_minutos) {
-                return Math.floor(diff / duracion_minutos);
-            }
-        }
-    }
+//             } else {
+//                 diff = hora_fin_con_minutos - hora_inicio_con_minutos;
+//             }
+//             if (diff >= duracion_minutos) {
+//                 return Math.floor(diff / duracion_minutos);
+//             }
+//         }
+//     }
+// }
+
+// export function generateIntervalos(duracion_minutos: number, inicio_tiempo: string, fin_tiempo: string, pausa?: {inicio_tiempo: string, fin_tiempo: string}) {
+//     const intervalos: {inicio: string, fin: string, tipo: 'intervalo' | 'descanso'}[] = [];
+//     const inicio = inicio_tiempo.split(':');
+//     const fin = fin_tiempo.split(':');
+//     const i_descanso = (pausa) ? pausa.inicio_tiempo.split(':') : ['00', '00'];
+//     const f_descanso = (pausa) ? pausa.fin_tiempo.split(':') : ['00', '00'];
+//     const hora_inicio = inicio[0];
+//     const minutos_inicio = inicio[1];
+//     const hora_fin = fin[0];
+//     const minutos_fin = fin[1];
+//     const hora_descanso_inicio = i_descanso[0];
+//     const minutos_descanso_inicio = i_descanso[1];
+//     const hora_descanso_fin = f_descanso[0];
+//     const minutos_descanso_fin = f_descanso[1];
+//     if (!pausa) {
+//         if (hora_inicio && minutos_inicio && hora_fin && minutos_fin) {
+//             const inicio_for = (parseInt(hora_inicio) * 60) + parseInt(minutos_inicio);
+//             const fin_for = (parseInt(hora_fin) * 60) + parseInt(minutos_fin);
+//             for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
+//                 intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
+//             }
+//         }
+//     } else {
+//         if (hora_inicio && minutos_inicio && hora_descanso_inicio && minutos_descanso_inicio) {
+//             const inicio_for = (parseInt(hora_inicio) * 60) + parseInt(minutos_inicio);
+//             const fin_for = (parseInt(hora_descanso_inicio) * 60) + parseInt(minutos_descanso_inicio);
+//             for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
+//                 intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
+//             }
+//         }
+//         intervalos.push({inicio: pausa.inicio_tiempo, fin: pausa.fin_tiempo, tipo: 'descanso'});
+//         if (hora_descanso_fin && minutos_descanso_fin && hora_fin && minutos_fin) {
+//             const inicio_for = (parseInt(hora_descanso_fin) * 60) + parseInt(minutos_descanso_fin);
+//             const fin_for = (parseInt(hora_fin) * 60) + parseInt(minutos_fin);
+//             for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
+//                 if (x + duracion_minutos < fin_for) {
+//                     intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
+//                 }
+//             }
+//         }
+//     }
+//     return intervalos;
+// }
+
+
+function convertirAHorasMinutos(minutosTotales: number) {
+    const horas = Math.floor(minutosTotales / 60);
+    const minutos = minutosTotales % 60;
+    return `${horas.toString().padStart(2, '0')}:${Math.floor(minutos).toString().padStart(2, '0')}`;
 }
 
-export function generateIntervalos(duracion_minutos: number, inicio_tiempo: string, fin_tiempo: string, pausa?: {inicio_tiempo: string, fin_tiempo: string}) {
-    const intervalos: {inicio: string, fin: string, tipo: 'intervalo' | 'descanso'}[] = [];
-    const inicio = inicio_tiempo.split(':');
-    const fin = fin_tiempo.split(':');
-    const i_descanso = (pausa) ? pausa.inicio_tiempo.split(':') : ['00', '00'];
-    const f_descanso = (pausa) ? pausa.fin_tiempo.split(':') : ['00', '00'];
-    const hora_inicio = inicio[0];
-    const minutos_inicio = inicio[1];
-    const hora_fin = fin[0];
-    const minutos_fin = fin[1];
-    const hora_descanso_inicio = i_descanso[0];
-    const minutos_descanso_inicio = i_descanso[1];
-    const hora_descanso_fin = f_descanso[0];
-    const minutos_descanso_fin = f_descanso[1];
-    if (!pausa) {
-        if (hora_inicio && minutos_inicio && hora_fin && minutos_fin) {
-            const inicio_for = (parseInt(hora_inicio) * 60) + parseInt(minutos_inicio);
-            const fin_for = (parseInt(hora_fin) * 60) + parseInt(minutos_fin);
-            for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
-                intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
-            }
+function convertirAMinutos(hora: string) {
+    const partes = hora.split(':');
+    return Math.floor(parseInt(`${partes[0]}`) * 60 + parseInt(`${partes[1]}`));
+}
+
+export function generateIntervalos(horaInicio: string, horaFinal: string, K: number, N: number) {
+    const inicio = convertirAMinutos(horaInicio);
+    const final = convertirAMinutos(horaFinal);
+
+    let duracionTotal = final - inicio;
+
+    // Calcular la duración total de los intervalos de trabajo excluyendo el descanso
+    const duracionIntervaloTrabajo = (duracionTotal - K) / N;
+    let intervalos = [];
+
+    // Calcular la posición para insertar el descanso, justo en la mitad
+    const posicionDescanso = Math.floor(N / 2);
+    let momentoActual = inicio;
+
+    for (let i = 0; i < N; i++) {
+        if (i === posicionDescanso) {
+            // Insertar el descanso
+            const inicioDescanso = momentoActual;
+            momentoActual += K;
+            const finDescanso = momentoActual;
+
+            intervalos.push({ inicio: convertirAHorasMinutos(inicioDescanso), fin: convertirAHorasMinutos(finDescanso), tipo: 'descanso' });
         }
-    } else {
-        if (hora_inicio && minutos_inicio && hora_descanso_inicio && minutos_descanso_inicio) {
-            const inicio_for = (parseInt(hora_inicio) * 60) + parseInt(minutos_inicio);
-            const fin_for = (parseInt(hora_descanso_inicio) * 60) + parseInt(minutos_descanso_inicio);
-            for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
-                intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
-            }
-        }
-        intervalos.push({inicio: pausa.inicio_tiempo, fin: pausa.fin_tiempo, tipo: 'descanso'});
-        if (hora_descanso_fin && minutos_descanso_fin && hora_fin && minutos_fin) {
-            const inicio_for = (parseInt(hora_descanso_fin) * 60) + parseInt(minutos_descanso_fin);
-            const fin_for = (parseInt(hora_fin) * 60) + parseInt(minutos_fin);
-            for(let x = inicio_for; x < fin_for; x += duracion_minutos) {
-                if (x + duracion_minutos < fin_for) {
-                    intervalos.push({inicio: `${Math.floor(x / 60)}:${Math.floor(x % 60)}`, fin: `${Math.floor((x + duracion_minutos) / 60)}:${Math.floor((x + duracion_minutos) % 60)}`, tipo: 'intervalo'});
-                }
-            }
-        }
+
+        // Añadir el intervalo de trabajo
+        const inicioIntervalo = momentoActual;
+        momentoActual += duracionIntervaloTrabajo;
+        const finIntervalo = momentoActual;
+
+        intervalos.push({ inicio: convertirAHorasMinutos(inicioIntervalo), fin: convertirAHorasMinutos(finIntervalo), tipo: 'intervalo' });
     }
+
+    // Como insertamos el descanso y los intervalos de trabajo en orden, la lista ya debería estar ordenada.
     return intervalos;
 }

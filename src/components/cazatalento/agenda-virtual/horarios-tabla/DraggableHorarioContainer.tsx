@@ -35,13 +35,14 @@ function selectBackgroundColor(isActive: boolean, canDrop: boolean) {
 }
   
 
-export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ allowedDropEffect, onDrop, fecha, id_rol }) => {
+export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ allowedDropEffect, onDrop, fecha }) => {
   const ctx = useContext(AppContext);
   const textos = useLang(ctx.lang);
   const [{ canDrop, isOver }, drop] = useDrop(
     () => ({
       accept: 'ELEMENT',
       drop: (item, monitor) => {
+        console.log(item);
         onDrop(item);
         return {
             name: `${allowedDropEffect} Dustbin`,
@@ -53,7 +54,7 @@ export const DraggableHorarioContainer: FC<DraggableHorarioContainerProps> = ({ 
         canDrop: monitor.canDrop(),
       }),
     }),
-    [allowedDropEffect, fecha, id_rol],
+    [allowedDropEffect, fecha],
   )
 
   const isActive = canDrop && isOver

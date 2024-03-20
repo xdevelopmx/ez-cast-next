@@ -15,6 +15,7 @@ const style: CSSProperties = {
 
 export interface TalentoReclutadoCardProps {
     id_talento: number,
+    id_rol_application: number,
     profile_url: string,
     nombre: string,
     union: string,
@@ -25,7 +26,7 @@ export interface TalentoReclutadoCardProps {
       talento?: string,
       cazatalentos?: string
     },
-    onDrop: (id_talento: number) => void
+  onDrop: (data: { id_talento: number, id_rol_application: number}) => void
 }
 
 interface DropResult {
@@ -34,19 +35,19 @@ interface DropResult {
   name: string
 }
 
-export const TalentoReclutadoCard: FC<TalentoReclutadoCardProps> = ({ id_talento, onDrop, profile_url, nombre, union, notas, tipo_agenda, calificacion}) => {
+export const TalentoReclutadoCard: FC<TalentoReclutadoCardProps> = ({ id_talento, id_rol_application, onDrop, profile_url, nombre, union, notas, tipo_agenda, calificacion}) => {
   const input_background_color = (tipo_agenda === 'callback') ? '#F9B233' : '#069cb1';
   const [{ opacity }, drag] = useDrag(
     () => ({
       type: 'ELEMENT',
-      item: { id_talento },
+      item: { id_talento, id_rol_application },
       end(item, monitor) {
         const dropResult = monitor.getDropResult() as DropResult
         if (item && dropResult) {
           const isDropAllowed = dropResult.allowedDropEffect === 'any' || dropResult.allowedDropEffect === dropResult.dropEffect;
 
           if (isDropAllowed) {
-            onDrop(item.id_talento);
+            onDrop({ id_talento: item.id_talento, id_rol_application: id_rol_application });
           }
         }
       },
@@ -54,7 +55,7 @@ export const TalentoReclutadoCard: FC<TalentoReclutadoCardProps> = ({ id_talento
         opacity: monitor.isDragging() ? 0.4 : 1,
       }),
     }),
-    [name, id_talento],
+    [name, id_talento, id_rol_application],
   )
 
   return (

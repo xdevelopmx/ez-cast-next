@@ -1,17 +1,22 @@
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import Image from 'next/image'
-import React, { ReactNode, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { FormGroup, MSelect } from '~/components/shared'
 import Constants from '~/constants'
 import { api } from '~/utils/api'
 import { TalentoReclutadoCard } from '../talento-reclutado-card'
 import { Media, MediaPorTalentos, Talentos } from '@prisma/client'
+import AppContext from '~/context/app'
+import useLang from '~/hooks/useLang'
 
 export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
 
+    const ctx = useContext(AppContext);
+    const textos = useLang(ctx.lang);
+    
     const roles = api.roles.getAllCompleteByProyecto.useQuery(props.id_proyecto, {
 		refetchOnWindowFocus: false
-	})
+	});
 
     const [talentos, setTalentos] = useState<(Talentos & { media: (MediaPorTalentos & { media: Media; })[] })[]>([]);
 
@@ -44,7 +49,7 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
             }}>
                 <Grid xs={8}>
                     <Typography fontWeight={600} sx={{ color: '#fff', fontSize: '1.4rem' }}>
-                        Talentos reclutados
+                        {textos['talentos_reclutados']}
                     </Typography>
                 </Grid>
                 <Grid container xs={4}>
@@ -119,6 +124,7 @@ export const TalentosReclutadosGrid = (props: {id_proyecto: number}) => {
                                 nombre={`${t.nombre} ${t.apellido}`}
                                 union={'ND'}
                                 id_talento={t.id}
+                                id_rol_application={0}
                                 onDrop={(index) => {
                                     alert('SE DROPEO ESTE WEON' + index)
                                 } } 

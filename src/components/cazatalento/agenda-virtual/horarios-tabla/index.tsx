@@ -5,16 +5,17 @@ import { ModalBloquesTiempos } from '../modal-bloques-tiempos'
 import useNotify from '~/hooks/useNotify'
 import { LocalizacionesPorHorarioAgenda, Roles } from '@prisma/client'
 import { api } from '~/utils/api'
-import { generateIntervalos } from '~/utils/dates'
 import { DraggableContainer } from '~/components/shared/DraggableList/DraggableContainer'
 import { DraggableHorarioContainer } from './DraggableHorarioContainer'
 import AppContext from '~/context/app'
 import useLang from '~/hooks/useLang'
+import { generateIntervalos } from '~/utils/dates'
 
 export const HorariosTable = (props: {
     id_horario_agenda: number,
     dates: string[],
-    roles: Roles[],
+    id_role: number,
+    talentos_count: number,
     locaciones: LocalizacionesPorHorarioAgenda[]
 }) => {
 
@@ -35,11 +36,11 @@ export const HorariosTable = (props: {
 
     const intervalos = useMemo(() => {
         if (bloque.data) {
-            return generateIntervalos(bloque.data.minutos_por_talento, 
+            return generateIntervalos( 
                 bloque.data.hora_inicio, 
                 bloque.data.hora_fin, 
-                (bloque.data.hora_descanso_inicio && bloque.data.hora_descanso_inicio !== '00:00' && bloque.data.hora_descanso_fin && bloque.data.hora_descanso_fin !== '00:00') ? 
-                {inicio_tiempo: bloque.data.hora_descanso_inicio, fin_tiempo: bloque.data.hora_descanso_fin} : undefined);
+                bloque.data.duracion_descanso ? bloque.data.duracion_descanso : 0,
+                props.talentos_count);
         }
         return [];
     }, [bloque.data]);
@@ -168,7 +169,7 @@ export const HorariosTable = (props: {
             <ModalBloquesTiempos
                 id_horario_agenda={props.id_horario_agenda}
                 locaciones={props.locaciones}
-                roles={props.roles}
+                id_role={props.id_role}
                 date={opcionSelected}
                 isOpen={isOpendModal}
                 setIsOpen={setIsOpendModal} onChange={function (): void {

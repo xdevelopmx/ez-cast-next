@@ -6,7 +6,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import type { BloqueHorariosAgenda, Cazatalentos, HorarioAgenda, IntervaloBloqueHorario, Proyecto, Talentos } from "@prisma/client";
+import type { AplicacionRolPorTalento, BloqueHorariosAgenda, Cazatalentos, HorarioAgenda, IntervaloBloqueHorario, Proyecto, Talentos } from "@prisma/client";
 import { FileManager } from "~/utils/file-manager";
 import { TipoMensajes, TipoUsuario } from "~/enums";
 import Constants from "~/constants";
@@ -34,8 +34,12 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						include: {
 							intervalos: {
 								include: {
-									rol: true,
-									talento: true
+									aplicacion_rol: {
+										include: {
+											rol: true,
+											talento: true
+										}
+									}
 								}
 							}
 						}
@@ -60,24 +64,24 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					})
 					b.intervalos.forEach( async (i) => {
 
-						if (i.rol && i.talento) {
+						if (i.aplicacion_rol?.rol && i.aplicacion_rol?.talento) {
 							let conversacion = await ctx.prisma.conversaciones.findFirst({
 								where: {
 									id_emisor: horario.proyecto.id_cazatalentos,
 									tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
-									id_receptor: i.talento.id,
+									id_receptor: i.aplicacion_rol?.talento.id,
 									tipo_usuario_receptor: TipoUsuario.TALENTO,
-									id_proyecto: i.rol.id_proyecto,
+									id_proyecto: i.aplicacion_rol?.rol.id_proyecto,
 								}
 							});
 							if (!conversacion) {
 								conversacion = await ctx.prisma.conversaciones.findFirst({
 									where: {
-										id_emisor: i.talento.id,
+										id_emisor: i.aplicacion_rol?.talento.id,
 										tipo_usuario_emisor: TipoUsuario.TALENTO,
 										id_receptor: horario.proyecto.id_cazatalentos,
 										tipo_usuario_receptor: TipoUsuario.CAZATALENTOS,
-										id_proyecto: i.rol.id_proyecto,
+										id_proyecto: i.aplicacion_rol?.rol.id_proyecto,
 									}
 								});
 							}
@@ -85,11 +89,11 @@ export const AgendaVirtualRouter = createTRPCRouter({
 								conversacion = await ctx.prisma.conversaciones.create({
 									data: {
 										emisor_perfil_url: `/cazatalentos/dashboard?id_cazatalentos=${horario.proyecto.id_cazatalentos}`,
-										receptor_perfil_url: `/talento/dashboard?id_talento=${i.talento.id}&id_rol=${i.rol.id}`,
-										id_proyecto: i.rol.id_proyecto,
+										receptor_perfil_url: `/talento/dashboard?id_talento=${i.aplicacion_rol?.talento.id}&id_rol=${i.aplicacion_rol?.rol.id}`,
+										id_proyecto: i.aplicacion_rol?.rol.id_proyecto,
 										id_emisor: horario.proyecto.id_cazatalentos,
 										tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
-										id_receptor: i.talento.id,
+										id_receptor: i.aplicacion_rol?.talento.id,
 										tipo_usuario_receptor: TipoUsuario.TALENTO,
 									}
 								})
@@ -101,15 +105,15 @@ export const AgendaVirtualRouter = createTRPCRouter({
 										id_conversacion: conversacion.id,
 										id_emisor: horario.proyecto.id_cazatalentos,
 										tipo_usuario_emisor: TipoUsuario.CAZATALENTOS,
-										id_receptor: i.talento.id,
+										id_receptor: i.aplicacion_rol?.talento.id,
 										tipo_usuario_receptor: TipoUsuario.TALENTO,
 										visto: false,
 										hora_envio: dayjs().toDate(),
 										mensaje: JSON.stringify({
 											message: `${msg_talento.replace('[N1]', `${horario.proyecto?.nombre}`).replace('[N2]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N3]', `${i?.hora}`)}`,
 											id_intervalo: i.id,
-											id_rol: i.rol.id,
-											id_talento: i.talento.id
+											id_rol: i.aplicacion_rol?.rol.id,
+											id_talento: i.aplicacion_rol?.talento.id
 										}),
 										type: TipoMensajes.NOTIFICACION_HORARIO_AGENDA_VIRTUAL
 									}
@@ -121,10 +125,10 @@ export const AgendaVirtualRouter = createTRPCRouter({
 								
 								await ctx.prisma.alertas.create({
 									data: {
-										id_usuario: i.talento.id,
+										id_usuario: i.aplicacion_rol?.talento.id,
 										tipo_usuario: TipoUsuario.TALENTO,
 										visto: false,
-										mensaje: msg_headhunter.replace('[N1]', `${cazatalento.nombre}`).replace('[N2]', `${cazatalento.apellido}`).replace('[N3]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N4]', `${i.hora}`).replace('[N5]', `${i.rol.nombre}`)
+										mensaje: msg_headhunter.replace('[N1]', `${cazatalento.nombre}`).replace('[N2]', `${cazatalento.apellido}`).replace('[N3]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N4]', `${i.hora}`).replace('[N5]', `${i.aplicacion_rol?.rol.nombre}`)
 									}
 								})
 							}
@@ -178,7 +182,11 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				case TipoUsuario.TALENTO: {
 					const intervalos = await ctx.prisma.intervaloBloqueHorario.findMany({
 						where: {
-							id_talento: parseInt(ctx.session.user.id),
+							aplicacion_rol: {
+								talento: {
+									id: parseInt(ctx.session.user.id),
+								}
+							},
 							AND: {
 								estado: {
 									in: [Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO]
@@ -287,11 +295,21 @@ export const AgendaVirtualRouter = createTRPCRouter({
 		.query(async ({ input, ctx }) => {
 			if (input <= 0) return null;
 			const intervalos = await ctx.prisma.intervaloBloqueHorario.findMany({
-				where: { id_talento: input },
+				where: { 
+					aplicacion_rol: {
+						talento: {
+							id: input
+						}
+					}
+				 },
 				include: {
-					rol: {
+					aplicacion_rol: {
 						include: {
-							proyecto: true
+							rol: {
+								include: {
+									proyecto: true
+								}
+							},
 						}
 					},
 					bloque_horario: {
@@ -461,8 +479,12 @@ export const AgendaVirtualRouter = createTRPCRouter({
 							include: {
 								intervalos: {
 									include: {
-										talento: true, 
-										rol: true
+										aplicacion_rol: {
+											include: {
+												talento: true,
+												rol: true
+											}
+										}
 									}
 								}
 							}
@@ -473,15 +495,15 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					// enviamos alerta a los talentos que esten asignados a algun intervalo
 					const alerts = await Promise.all(horario_complete.bloque_horario.map(async (b) => {
 						return b.intervalos.map(async (i) => {
-							if (i.talento) {
+							if (i.aplicacion_rol?.talento) {
 								return await ctx.prisma.alertas.create({
 									data: {
-										id_usuario: (i.id_talento) ? i.id_talento : 0,
+										id_usuario: (i.aplicacion_rol?.id_talento) ? i.aplicacion_rol?.id_talento : 0,
 										tipo_usuario: TipoUsuario.TALENTO,
 										visto: false,
-										mensaje: getResponse('message_create').replace('[N1]', `${i.talento?.nombre}`).replace('[N2]', `${i.talento?.apellido}`)
+										mensaje: getResponse('message_create').replace('[N1]', `${i.aplicacion_rol?.talento?.nombre}`).replace('[N2]', `${i.aplicacion_rol?.talento?.apellido}`)
 										.replace('[N3]', `${horario_complete?.proyecto.cazatalentos.nombre}`).replace('[N4]', `${horario_complete?.proyecto.cazatalentos.apellido}`)
-										.replace('[N5]', `${i.rol?.nombre}`).replace('[N6]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N7]', `${i.hora}`)
+										.replace('[N5]', `${i.aplicacion_rol?.rol?.nombre}`).replace('[N6]', `${b.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`).replace('[N7]', `${i.hora}`)
 									}
 								}) 
 							} 
@@ -581,29 +603,69 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			});
 		}
 	),
+	removeTalentoFromIntervaloHorario: protectedProcedure
+		.input(z.number())
+		.mutation(async ({ input, ctx }) => {
+			console.log(input);
+			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
+			const getResponse = ApiResponses('AgendaVirtualRouter_updateIntervaloHorario', lang);
+
+			const saved_intervalo = await ctx.prisma.intervaloBloqueHorario.update({
+				where: {
+					id: input
+				},
+				data: {
+					id_aplicacion_rol: null
+				}
+			});
+
+			if (!saved_intervalo) {
+				throw new TRPCError({
+					code: 'INTERNAL_SERVER_ERROR',
+					message: getResponse('error_saved_intervalos'),
+				});
+			}
+			return saved_intervalo;
+		}
+	),
 	updateIntervaloHorario: protectedProcedure
 		.input(z.object({
 			id_intervalo: z.number(),
-			id_rol: z.number().nullish(),
-			id_talento: z.number().nullish(),
+			id_aplicacion_rol: z.number().nullish(),
 			estado: z.string()
 		}))
 		.mutation(async ({ input, ctx }) => {
+			console.log(input);
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
 			const getResponse = ApiResponses('AgendaVirtualRouter_updateIntervaloHorario', lang);
+			try {
+				await ctx.prisma.intervaloBloqueHorario.updateMany({
+					where: {
+						id_aplicacion_rol: input.id_aplicacion_rol,
+					},
+					data: {
+						id_aplicacion_rol: null
+					}
+				});
+			} catch (e) {
+				console.log(e);
+			}
 			
 			const saved_intervalos = await ctx.prisma.intervaloBloqueHorario.update({
 				where: {
-					id: input.id_intervalo
+					id: input.id_intervalo,
 				},
 				data: {
-					id_rol: input.id_rol,
-					id_talento: input.id_talento,
+					id_aplicacion_rol: input.id_aplicacion_rol,
 					estado: input.estado
 				},
 				include: {
-					talento: true,
-					rol: true,
+					aplicacion_rol: {
+						include: {
+							talento: true,
+							rol: true,
+						}
+					},
 					bloque_horario: {
 						include: {
 							horario_agenda: {
@@ -631,16 +693,16 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				switch (saved_intervalos.estado) {
 					case Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO: {
 						alert_message = (saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback') ? getResponse('alert_message_callback_confirmado') : getResponse('alert_message_audicion_confirmado');
-						alert_message = alert_message.replace('[N1]', `${cazatalentos.nombre}`).replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${saved_intervalos.talento?.nombre}`)
-						.replace('[N4]', `${saved_intervalos.talento?.apellido}`).replace('[N5]', `${saved_intervalos.bloque_horario.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`)
-						.replace('[N6]', `${saved_intervalos.hora}`).replace('[N7]', `${saved_intervalos.rol?.nombre}`)
+						alert_message = alert_message.replace('[N1]', `${cazatalentos.nombre}`).replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${saved_intervalos.aplicacion_rol?.talento?.nombre}`)
+						.replace('[N4]', `${saved_intervalos.aplicacion_rol?.talento?.apellido}`).replace('[N5]', `${saved_intervalos.bloque_horario.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`)
+						.replace('[N6]', `${saved_intervalos.hora}`).replace('[N7]', `${saved_intervalos.aplicacion_rol?.rol?.nombre}`)
 						break;
 					}
 					case Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO: {
 						alert_message = (saved_intervalos.bloque_horario.horario_agenda.tipo_agenda.toLowerCase() === 'callback') ? getResponse('alert_message_callback_rechazado') : getResponse('alert_message_audicion_rechazado');
-						alert_message = alert_message.replace('[N1]', `${cazatalentos.nombre}`).replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${saved_intervalos.talento?.nombre}`)
-						.replace('[N4]', `${saved_intervalos.talento?.apellido}`).replace('[N5]', `${saved_intervalos.bloque_horario.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`)
-						.replace('[N6]', `${saved_intervalos.hora}`).replace('[N7]', `${saved_intervalos.rol?.nombre}`)
+						alert_message = alert_message.replace('[N1]', `${cazatalentos.nombre}`).replace('[N2]', `${cazatalentos.apellido}`).replace('[N3]', `${saved_intervalos.aplicacion_rol?.talento?.nombre}`)
+						.replace('[N4]', `${saved_intervalos.aplicacion_rol?.talento?.apellido}`).replace('[N5]', `${saved_intervalos.bloque_horario.fecha.toLocaleString(lang === 'es' ? 'es-mx' : 'en-us', { weekday: "long", year: "numeric", month: "long", day: "numeric", })}`)
+						.replace('[N6]', `${saved_intervalos.hora}`).replace('[N7]', `${saved_intervalos.aplicacion_rol?.rol?.nombre}`)
 						break;
 					}
 				}
@@ -667,12 +729,12 @@ export const AgendaVirtualRouter = createTRPCRouter({
 			tipo_administracion_intervalo: z.string(),
 			hora_inicio: z.string(),
 			hora_fin: z.string(),
-			minutos_por_talento: z.number(),
-			hora_descanso_inicio: z.string().nullish(),
-			hora_descanso_fin: z.string().nullish(),
-			id_locacion: z.number()		
+			intervalos_count: z.number(),
+			duracion_descanso: z.number().nullish(),
+			id_locacion: z.number()
 		}))
 		.mutation(async ({ input, ctx }) => {	
+			console.log(input);
 			const lang = (ctx.session && ctx.session.user) ? ctx.session.user.lang : 'es';
 			const getResponse = ApiResponses('AgendaVirtualRouter_updateBloqueHorario', lang);
 			
@@ -689,11 +751,10 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				update: {
 					hora_inicio: input.hora_inicio,
 					hora_fin: input.hora_fin,
-					minutos_por_talento: input.minutos_por_talento,
-					hora_descanso_inicio: input.hora_descanso_inicio,
+					intervalos_count: input.intervalos_count,
+					duracion_descanso: input.duracion_descanso,
 					tipo_administracion_intervalo: input.tipo_administracion_intervalo,
-					hora_descanso_fin: input.hora_descanso_fin,
-					id_locacion: input.id_locacion	
+					id_locacion: input.id_locacion
 				},
 				create: {
 					id_horario_agenda: input.id_horario_agenda,
@@ -701,10 +762,9 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					hora_inicio: input.hora_inicio,
 					hora_fin: input.hora_fin,
 					tipo_administracion_intervalo: input.tipo_administracion_intervalo,
-					minutos_por_talento: input.minutos_por_talento,
-					hora_descanso_inicio: input.hora_descanso_inicio,
-					hora_descanso_fin: input.hora_descanso_fin,
-					id_locacion: input.id_locacion	
+					intervalos_count: input.intervalos_count,
+					duracion_descanso: input.duracion_descanso,
+					id_locacion: input.id_locacion
 				}
 			})
 
@@ -716,14 +776,14 @@ export const AgendaVirtualRouter = createTRPCRouter({
 				}
 			})
 
-			const intervalos_generados = generateIntervalos(bloque.minutos_por_talento, 
-                bloque.hora_inicio, 
-                bloque.hora_fin, 
-                (bloque.hora_descanso_inicio && bloque.hora_descanso_inicio !== '00:00' && bloque.hora_descanso_fin && bloque.hora_descanso_fin !== '00:00') ? 
-                {inicio_tiempo: bloque.hora_descanso_inicio, fin_tiempo: bloque.hora_descanso_fin} : undefined);
+			const intervalos_generados = generateIntervalos(
+				bloque.hora_inicio,
+				bloque.hora_fin,
+				input.duracion_descanso??0,
+				input.intervalos_count);
 
-			const asignaciones_roles_por_talentos: {id_rol: number, id_talento: number}[] = []; 
-			if (horario_agenda && input.tipo_administracion_intervalo.toLowerCase() === 'automaticamente') {
+			const asignaciones_roles_por_talentos: AplicacionRolPorTalento[] = []; 
+			if (horario_agenda && ['automaticamente', 'automatically'].includes(input.tipo_administracion_intervalo.toLowerCase())) {
 				const proyecto = await ctx.prisma.proyecto.findFirst({
 					where: {
 						id: horario_agenda.id_proyecto
@@ -767,15 +827,19 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						id_horario_agenda: input.id_horario_agenda,
 					},
 					include: {
-						intervalos: true
+						intervalos: {
+							include: {
+								aplicacion_rol: true
+							}
+						},
 					}
 				})
 				
 				const asignaciones_otros_bloques = (bloques) ? bloques.map(r => r.intervalos).flat() : [];
 				aplicaciones_roles.forEach((asig) => {
 					asig.aplicaciones_por_talento.forEach(a => {
-						if (asignaciones_otros_bloques.filter(aob => aob.id_rol === a.id_rol && aob.id_talento === a.id_talento).length === 0) {
-							asignaciones_roles_por_talentos.push({id_rol: a.id_rol, id_talento: a.id_talento});
+						if (asignaciones_otros_bloques.filter(aob => aob.aplicacion_rol?.id_rol === a.id_rol && aob.aplicacion_rol?.id_talento === a.id_talento).length === 0) {
+							asignaciones_roles_por_talentos.push(a);
 						}
 					})
 				});
@@ -792,8 +856,7 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					return {
 						id_bloque_horario: bloque.id,
 						hora: `${h_inicio_parsed} - ${h_fin_parsed}`, 
-						id_rol: (asig) ? asig.id_rol : undefined,
-						id_talento: (asig) ? asig.id_talento : undefined,
+						id_aplicacion_rol: asig ? asig.id : null,
 						estado: 'Pendiente',
 						tipo: intervalo.tipo
 					}
@@ -820,7 +883,16 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					id_horario_agenda: input.id_horario_agenda,
 				},
 				include: {
-					intervalos: true
+					intervalos: {
+						include: {
+							aplicacion_rol: {
+								include: {
+									talento: true,
+									rol: true
+								}
+							}
+						}
+					}
 				}
 			})
 			if (bloque) {
@@ -861,20 +933,24 @@ export const AgendaVirtualRouter = createTRPCRouter({
 					},
 					intervalos: {
 						include: {
-							rol: true,
-							talento: {
+							aplicacion_rol: {
 								include: {
-									info_basica: {
+									rol: true,
+									talento: {
 										include: {
-											estado_republica: true
+											info_basica: {
+												include: {
+													estado_republica: true
+												}
+											},
+											media: {
+												include: {
+													media: true
+												}
+											},
+											destacados: true
 										}
-									},
-									media: {
-										include: {
-											media: true
-										}
-									},
-									destacados: true
+									}
 								}
 							}
 						},
