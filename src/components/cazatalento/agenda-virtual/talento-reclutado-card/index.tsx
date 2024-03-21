@@ -107,10 +107,12 @@ export const TalentoReclutadoCard: FC<TalentoReclutadoCardProps> = ({ id_talento
             </Grid>
             {notas &&
               <Grid xs={12}>
+                <Divider orientation='horizontal' style={{margin: 2}} />
                   <Grid container>
                     {notas.cazatalentos &&
-                      <Grid item xs={(notas.cazatalentos && !notas.cazatalentos) ? 12 : 4}>
-                        {notas.cazatalentos}
+                      <Grid item padding={1} xs={(notas.cazatalentos && !notas.talento) ? 12 : 4}>
+                        <p style={{ fontSize: 10, fontWeight: 600, color: '#069cb1' }}>Nota cazatalentos</p>
+                        <p style={{ fontSize: 12 }}>{notas.cazatalentos}</p>
                       </Grid>
                     }
                     {notas.cazatalentos && notas.talento &&
@@ -119,8 +121,10 @@ export const TalentoReclutadoCard: FC<TalentoReclutadoCardProps> = ({ id_talento
                       </Grid>
                     }
                     {notas.talento &&
-                      <Grid item xs={(!notas.cazatalentos && notas.cazatalentos) ? 12 : 4}>
-                        {notas.talento}
+                      <Grid item padding={1} xs={(!notas.cazatalentos && notas.talento) ? 12 : 4}>
+                        <p style={{ fontSize: 10, fontWeight: 600, color: '#069cb1'}}>Nota talento</p>
+                        <p style={{ fontSize: 12 }}>{notas.talento}</p>
+                        
                       </Grid>
                     }
                   </Grid>

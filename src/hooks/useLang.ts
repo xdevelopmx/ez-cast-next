@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 
 export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
   en: {
+    order_by_rating: 'Order by rating',
+    ascendant: 'Ascendant',
+    descendant: 'Descendant',
     fechas_disponibles: 'Available dates',
     enviado_aprobacion: "To be approved",
     FILE_COMPRESSORS_SITES: 'Please use a compression tool like https://www.freeconvert.com/video-compressor or https://www.iloveimg.com/compress-image to reduce the file size.',
@@ -317,6 +320,9 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     proyecto: 'Project',
     proyecto_por: "Project By",
     ver: "See",
+    notas: 'Notes',
+    ninguna: 'None',
+    ambas: 'Both',
     desde_hasta: "From [N1] to [N2]",
     cerrar: "Close",
     pagado: "Paid",
@@ -527,6 +533,9 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     se_actualizo_reporte_talento_con_exito: 'The talent report was successfully sent',
   },
   es: {
+    order_by_rating: 'Ordenar por calificacion',
+    ascendant: 'Ascendente',
+    descendant: 'Descendiente',
     fechas_disponibles: 'Fechas disponibles',
     enviado_aprobacion: "Por aprobar",
     FILE_COMPRESSORS_SITES: 'Por favor, utiliza una herramienta de compresión como https://www.freeconvert.com/video-compressor o https://www.iloveimg.com/compress-image para reducir el tamaño de los archivos.',
@@ -842,6 +851,9 @@ export const COMMON_TEXTS: { [lang: string]: { [key: string]: string } } = {
     en: "En",
     proyecto_por: "Proyecto Por",
     ver: "Ver",
+    notas: 'Notas',
+    ninguna: 'Ninguna',
+    ambas: 'Ambas',
     desde_hasta: "De [N1] a [N2]",
     cerrar: "Cerrar",
     pagado: "Pagado",

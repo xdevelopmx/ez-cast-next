@@ -282,6 +282,7 @@ export const RolesRouter = createTRPCRouter({
       console.log(input);
       if (rol) {
         let applications = await Promise.all(rol.aplicaciones_por_talento.map(async (apt) => {
+          console.log(apt);
           if ([Constants.ESTADOS_APLICACION_ROL.AUDICION, Constants.ESTADOS_APLICACION_ROL.CALLBACK].includes(apt.id_estado_aplicacion)) {
             const audicion_talento = await ctx.prisma.audicionTalento.findFirst({
               where: {
@@ -297,8 +298,10 @@ export const RolesRouter = createTRPCRouter({
             } else {
               const audicion_talento_agenda_virtual = await ctx.prisma.intervaloBloqueHorario.findFirst({
                 where: {
-                  id_talento: apt.id_talento,
-                  id_rol: apt.id_rol
+                  aplicacion_rol: {
+                    id_talento: apt.id_talento,
+                    id_rol: apt.id_rol
+                  }
                 }
               });
               if (audicion_talento_agenda_virtual) {
@@ -876,8 +879,10 @@ export const RolesRouter = createTRPCRouter({
             } else {
               const audicion_talento_agenda_virtual = await ctx.prisma.intervaloBloqueHorario.findFirst({
                 where: {
-                  id_talento: apt.id_talento,
-                  id_rol: apt.id_rol
+                  aplicacion_rol: {
+                    id_talento: apt.id_talento,
+                    id_rol: apt.id_rol
+                  }
                 }
               });
               if (audicion_talento_agenda_virtual) {

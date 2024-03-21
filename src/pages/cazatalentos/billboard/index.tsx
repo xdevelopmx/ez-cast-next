@@ -41,6 +41,7 @@ import AppContext from "~/context/app";
 import useLang from "~/hooks/useLang";
 import { useRouter } from "next/router";
 import MAlert from "~/components/shared/MAlert";
+import { CalificacionOrderSelect } from "~/components/shared/CalificacionOrderSelect";
 
 type BillboardCazaTalentosPageProps = {
   user: User;
@@ -802,18 +803,13 @@ const BillboardPage: NextPage<BillboardCazaTalentosPageProps> = ({
                         sx={{textAlign: 'end'}}
                         xs={12}
                       >
-                        <Box sx={{ m: 1, gap: 2, minWidth: 120, display: 'flex', flexDirection: 'row', justifyContent: 'end'}}>
-
-                          <InputLabel id="demo-simple-select-standard-label">Ordenar por valoracion</InputLabel>
-                          <Select
-                            value={order}
-                            variant='standard'
-                            onChange={(value) => { setOrder(`${value.target.value}` === 'asc' ? 'asc' : 'desc') }}
-                          >
-                            <MenuItem value={'asc'}>Ascendente</MenuItem>
-                            <MenuItem value={'desc'}>Descendente</MenuItem>
-                          </Select>
-                        </Box>
+                        <CalificacionOrderSelect
+                          justifyContent='end'
+                          value={order}
+                          onChange={(value) => {
+                            setOrder(value === 'asc' ? 'asc' : 'desc')
+                          }}
+                        />
                       </Grid>
                     
                     }

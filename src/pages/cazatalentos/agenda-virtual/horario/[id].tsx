@@ -46,6 +46,7 @@ import {
 } from "~/components";
 import { DraggableHorarioContainer } from "~/components/cazatalento/agenda-virtual/horarios-tabla/DraggableHorarioContainer";
 import { TalentoReclutadoListCard } from "~/components/cazatalento/agenda-virtual/talento-reclutado-card/list-card";
+import { CalificacionOrderSelect } from "~/components/shared/CalificacionOrderSelect";
 import ConfirmationDialog from "~/components/shared/ConfirmationDialog";
 import { ResourceAlert } from "~/components/shared/ResourceAlert";
 import Constants from "~/constants";
@@ -120,6 +121,8 @@ const AudicionPorId = (props: {
   const { id, ask_for_callback } = router.query;
 
   const [opcionSelected, setOpcionSelected] = useState<string>("");
+
+  const [talent_order, setTalentOrder] = useState<string>('desc');
 
   const [confirmation_dialog, setConfirmationDialog] = useState<{
     opened: boolean;
@@ -206,11 +209,28 @@ const AudicionPorId = (props: {
   const [talentos, setTalentos] = useState<
     (Talentos & {
       id_rol_application: number,
+      nota_talento: string,
       destacado: TalentosDestacados[];
       notas?: NotasTalentos[];
       media: (MediaPorTalentos & { media: Media })[];
     })[]
   >([]);
+
+  useEffect(() => {
+    setTalentos(prev => {
+      return [...prev].sort((a, b) => {
+        const a_value = a.destacado.reduce((c, d) => c + d.calificacion, 0);
+        const b_value = b.destacado.reduce((c, d) => c + d.calificacion, 0);
+        if (talent_order === 'asc') {
+          return a_value - b_value;
+        } else {
+          return b_value - a_value;
+        }
+      })
+    })
+  }, [talentos.length, talent_order]);
+
+  console.log(talentos);
 
   const [selected_rol, setSelectedRol] = useState(0);
 
@@ -370,6 +390,7 @@ const AudicionPorId = (props: {
               .map((aplicacion, j) => {
                 return {
                   ...aplicacion.talento,
+                  nota_talento: aplicacion.nota??'',
                   id_rol_application: aplicacion.id,
                   notas: aplicacion.talento.notas,
                   destacado: aplicacion.talento.destacados,
@@ -627,22 +648,22 @@ const AudicionPorId = (props: {
                                 </Grid>
                                 <Grid xs={12}>
                                   <Box>
-                                    <Typography>{textos['ver']}:</Typography>
+                                    <Typography>{textos['notas']}</Typography>
                                     <MSelect
                                       id="posicion-contenido-select"
                                       labelStyle={{ fontWeight: 600 }}
                                       labelClassName={"form-input-label"}
                                       options={[
-                                        { value: "ninguna", label: "Ninguna" },
+                                        { value: "ninguna", label: `${textos['ninguna']}` },
                                         {
                                           value: "cazatalento",
-                                          label: "Notas del Cazatalento",
+                                          label: `${textos['cazatalentos']}`,
                                         },
                                         {
                                           value: "talento",
-                                          label: "Notas del Aplicante",
+                                          label: `${textos['talento']}`,
                                         },
-                                        { value: "ambas", label: "Ambas" },
+                                        { value: "ambas", label: `${textos['ambas']}` },
                                       ]}
                                       value={tipo_nota_selected}
                                       className={"form-input-md"}
@@ -652,6 +673,15 @@ const AudicionPorId = (props: {
                                       }}
                                     />
                                   </Box>
+                                </Grid>
+                                <Grid xs={12} style={{ backgroundColor: 'grey'}}>
+                                  <CalificacionOrderSelect
+                                    justifyContent="start"
+                                    value={talent_order}
+                                    onChange={(value) => {
+                                      setTalentOrder(value);
+                                    }}
+                                  />
                                 </Grid>
                               </Grid>
                               <Grid item xs={12}>
@@ -714,6 +744,12 @@ const AudicionPorId = (props: {
                                         id_talento={t.id}
                                         notas={(() => {
                                           switch (tipo_nota_selected) {
+                                            case 'talento': {
+                                              return {
+                                                talento: t.nota_talento,
+                                              };
+                                              break;
+                                            }
                                             case "cazatalento": {
                                               if (t.notas) {
                                                 const nota = t.notas.filter(
@@ -738,13 +774,10 @@ const AudicionPorId = (props: {
                                                     proyecto.data
                                                       ?.id_cazatalentos
                                                 )[0];
-                                                if (nota) {
-                                                  return {
-                                                    cazatalentos: nota.nota,
-                                                    talento:
-                                                      "esto es una prueba",
-                                                  };
-                                                }
+                                                return {
+                                                  cazatalentos: nota ? nota.nota : undefined,
+                                                  talento: t.nota_talento,
+                                                };
                                               }
                                               break;
                                             }
@@ -1130,7 +1163,7 @@ const AudicionPorId = (props: {
                                               left: 8,
                                             }}
                                           >
-                                            {i.hora}  - {i.id}
+                                            {i.hora}
                                           </p>
                                           <div
                                             style={{
@@ -1167,7 +1200,7 @@ const AudicionPorId = (props: {
                                                     left: 8,
                                                   }}
                                                 >
-                                                  {i.hora}  - {i.id}
+                                                  {i.hora}
                                                 </p>
                                                 <DraggableHorarioContainer
                                                   onDrop={(item) => {
