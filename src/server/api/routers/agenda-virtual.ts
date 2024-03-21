@@ -270,6 +270,11 @@ export const AgendaVirtualRouter = createTRPCRouter({
 						}
 					},
 					include: {
+						bloque_horario: {
+							include: {
+								intervalos: true
+							}
+						},
 						fechas: true,
 						proyecto: {
 							include: {

@@ -522,7 +522,7 @@ const NuevoHorarioAgendaVirtual = () => {
 																				<Typography>
 																					{loc.direccion}, {estados_republica.data?.filter(e => e.id === loc.id_estado_republica)[0]?.es} - {loc.id}
 																				</Typography> 
-																				{loc.guardado_en_bd && <Chip sx={{marginLeft: 2, backgroundColor: input_background_color, color: 'white'}} label={`${textos['guardado']}`} />}
+																				{loc.guardado_en_bd && <Chip sx={{marginLeft: 4, padding: 2, backgroundColor: input_background_color, color: 'white'}} label={`${textos['guardado']}`} />}
 																			</MContainer>
 																		</Grid>
 																		<Grid xs={2}>
@@ -554,7 +554,7 @@ const NuevoHorarioAgendaVirtual = () => {
 													<MotionDiv show={tipoLocacion.value === 'PRESENCIAL'} animation='fade'>
 														<Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
 															<AddButton
-																aStyles={{ margin: 0, borderRadius: '2rem' }}
+																aStyles={{ margin: 0, width: 200, borderRadius: '2rem' }}
 																text={`${textos['agregar']} ${textos['locacion']}`}
 																onClick={() => { 
 																	setLocationSelected(undefined);

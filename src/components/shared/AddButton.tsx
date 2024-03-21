@@ -30,7 +30,7 @@ export const AddButton: FC<Props> = ({
   return (
     <a
       onClick={onClick}
-      style={{ ...styles, ...aStyles, width: "150px" }}
+      style={{ ...styles, width: "150px", ...aStyles }}
       className={`btn  btn-social ${className}`}
     >
       <Image

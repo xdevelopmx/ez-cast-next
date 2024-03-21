@@ -85,7 +85,7 @@ export const ModalLocacion: FC<Props> = ({
         guardado_en_bd: false,
       });
     }
-  }, [initialData]);
+  }, [initialData, isOpen]);
 
   return (
     <Dialog

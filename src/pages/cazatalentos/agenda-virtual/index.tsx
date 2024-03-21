@@ -31,6 +31,7 @@ import dayjs from "dayjs";
 import useLang from "~/hooks/useLang";
 import AppContext from "~/context/app";
 import { useContext } from "react";
+import Constants from "~/constants";
 
 const estilos_calendario: SxProps<Theme> = {
   "& .MuiPickersCalendarHeader-label": {
@@ -74,6 +75,8 @@ const AgendaVirtual = () => {
       refetchOnWindowFocus: false,
     }
   );
+
+  console.log(horarios.data);
 
   const { notify } = useNotify();
 
@@ -262,17 +265,17 @@ const AgendaVirtual = () => {
                       columns={18}
                     >
                       <Grid item md={4} textAlign={"center"}>
-                        <Typography variant="subtitle1" fontWeight={800}>
+                        <Typography variant="subtitle1" fontWeight={600}>
                           {textos["nombre"]}
                         </Typography>
                       </Grid>
                       <Grid item md={1} textAlign={"center"}>
-                        <Typography variant="subtitle1" fontWeight={800}>
+                        <Typography variant="subtitle1" fontWeight={600}>
                           {textos["roles"]}
                         </Typography>
                       </Grid>
                       <Grid item md={3} textAlign={"center"}>
-                        <Typography variant="subtitle1" fontWeight={800}>
+                        <Typography variant="subtitle1" fontWeight={600}>
                           {textos["f_creacion"]}
                         </Typography>
                       </Grid>
@@ -281,7 +284,6 @@ const AgendaVirtual = () => {
                           src="/assets/img/iconos/relojdearena.svg"
                           width={20}
                           height={20}
-                          style={{ filter: "invert(1)" }}
                           alt=""
                         />
                       </Grid>
@@ -290,7 +292,6 @@ const AgendaVirtual = () => {
                           src="/assets/img/iconos/check-k.svg"
                           width={20}
                           height={20}
-                          style={{ filter: "invert(1)" }}
                           alt=""
                         />
                       </Grid>
@@ -299,7 +300,6 @@ const AgendaVirtual = () => {
                           src="/assets/img/iconos/tache.svg"
                           width={20}
                           height={20}
-                          style={{ filter: "invert(1)" }}
                           alt=""
                         />
                       </Grid>
@@ -363,6 +363,18 @@ const AgendaVirtual = () => {
                               disable_actions = true;
                             }
                           }
+                          const pendientes_count = h.bloque_horario.map(b => {
+                            const inter = b.intervalos.filter(i => i.estado.toUpperCase() === Constants.ESTADOS_ASIGNACION_HORARIO.PENDIENTE.toUpperCase() && i.tipo !== 'descanso' && i.id_aplicacion_rol).length;
+                            return inter;
+                          }).reduce((a, b) => a + b, 0);
+                          const confirmados_count = h.bloque_horario.map(b => {
+                            const inter = b.intervalos.filter(i => i.estado.toUpperCase() === Constants.ESTADOS_ASIGNACION_HORARIO.CONFIRMADO.toUpperCase() && i.tipo !== 'descanso' && i.id_aplicacion_rol).length;
+                            return inter;
+                          }).reduce((a, b) => a + b, 0);
+                          const rechazados_count = h.bloque_horario.map(b => {
+                            const inter = b.intervalos.filter(i => i.estado.toUpperCase() === Constants.ESTADOS_ASIGNACION_HORARIO.RECHAZADO.toUpperCase() && i.tipo !== 'descanso' && i.id_aplicacion_rol).length;
+                            return inter;
+                          }).reduce((a, b) => a + b, 0);
                           return (
                             <Grid
                               key={i}
@@ -389,13 +401,13 @@ const AgendaVirtual = () => {
                                 {h.fecha_creacion.toLocaleDateString("es-mx")}
                               </Grid>
                               <Grid item md={2} textAlign={"center"}>
-                                9
+                                {pendientes_count}
                               </Grid>
                               <Grid item md={2} textAlign={"center"}>
-                                1
+                                {confirmados_count}
                               </Grid>
                               <Grid item md={2} textAlign={"center"}>
-                                1
+                                {rechazados_count} 
                               </Grid>
                               <Grid item md={2} textAlign={"center"}>
                                 {h.tipo_agenda.toLowerCase() === "callback" ||

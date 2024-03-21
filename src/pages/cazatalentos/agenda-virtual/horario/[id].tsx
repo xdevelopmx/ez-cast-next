@@ -1116,7 +1116,7 @@ const AudicionPorId = (props: {
                                         }
                                         const has_descanso = i.tipo === 'descanso' && bloque.data && bloque.data.duracion_descanso && bloque.data.duracion_descanso > 0 ? <div
                                           style={{
-                                            backgroundColor: "#94f0d1",
+                                            backgroundColor: "yellow",
                                             width: "90%",
                                             height: 88,
                                             margin: 8,
@@ -1153,7 +1153,7 @@ const AudicionPorId = (props: {
                                             {i.tipo !== "descanso" && (
                                               <div
                                                 style={{
-                                                  backgroundColor: input_background_hover_color,
+                                                  backgroundColor: '#069cb1',
                                                   width: "90%",
                                                   height: 88,
                                                   margin: 8,
